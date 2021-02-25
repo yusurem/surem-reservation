@@ -21,7 +21,7 @@ const CalListScreen = ({ navigation }) => {
     };
 
     const onDayLongPress = (day) => {
-        navigation.navigate("Agenda", day.dateString);
+        navigation.navigate("Agenda", {date: day.dateString});
     }
     
     const selectedDates = {

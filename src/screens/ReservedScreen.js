@@ -26,7 +26,6 @@ const ReservedScreen = ({ navigation, route }) => {
             </View> */}
             <Text></Text>
 
-
             <TouchableHighlight
                 style={styles.openButtonOne}
                 onPress={() => {

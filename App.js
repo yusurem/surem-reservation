@@ -51,7 +51,7 @@ const SecondStack = () => {
       initialRouteName='CalendarList'
     >
         <Stack.Screen name="Calendar" component={CalendarScreen} />
-        <Stack.Screen name="Reservation" component={ReservationScreen} />
+        <Stack.Screen name="Reservation" component={ReservationScreen} options={{ title: '회의실 예약'}} />
         <Stack.Screen name="Reserved" component={ReservedScreen} />
         <Stack.Screen name="Date" component={DatePicker} />
         <Stack.Screen name="Agenda" component={AgendaScreen} />

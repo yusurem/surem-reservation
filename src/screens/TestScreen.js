@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, Button, ScrollView } from 'react-native';
 import axios from 'axios';
-
 import { Table, TableWrapper, Row, Rows, Col } from 'react-native-table-component';
-
-
 
 const USER_CODE = "suremqr";
 const DEPT_CODE = "35--SX-DQ";
-
 
 const TestScreen = () => {
     

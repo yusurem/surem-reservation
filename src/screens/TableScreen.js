@@ -25,7 +25,7 @@ const TableScreen = ({ navigation, route }) => {
                 <TouchableOpacity
                     onPress={() => navigation.navigate("Reservation")}
                 >
-                    <View style={{ flexGrow: 1, backgroundColor: '#faefe1', padding: 20}}>
+                    <View style={{ flexGrow: 1, backgroundColor: '#faefe1', padding: 19}}>
                         <Text style={{ textAlign: 'center' }}>예약가능</Text>
                     </View>
                 </TouchableOpacity>
@@ -39,7 +39,7 @@ const TableScreen = ({ navigation, route }) => {
     const reservedElements = (value) => {
         return (
             <View>
-                <Text style={{ padding: 20 , backgroundColor:'#f29116', textAlign: 'center'}}>예약완료</Text>
+                <Text style={{ padding: 19 , backgroundColor:'#f29116', textAlign: 'center'}}>예약완료</Text>
             </View>
         )
     };
@@ -47,7 +47,7 @@ const TableScreen = ({ navigation, route }) => {
     const myReservedElements = (value) => {
         return (
             <View>
-                <Text style={{ padding: 20 , backgroundColor:'#51bbe8', textAlign: 'center'}}>내 예약</Text>
+                <Text style={{ padding: 19 , backgroundColor:'#51bbe8', textAlign: 'center'}}>내 예약</Text>
             </View>
         )
     };
