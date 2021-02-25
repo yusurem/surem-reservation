@@ -31,6 +31,9 @@ const MainStack = () => {
   return (
     <Stack.Navigator
         initialRouteName='Demo'
+        screenOptions={{
+          headerShown:false
+        }}
       >
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="OldAgenda" component={OldAgenda} />
