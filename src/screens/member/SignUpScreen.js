@@ -1,26 +1,105 @@
 import React, { useState } from 'react';
-import { View, Text, Button, TextInput, StatusBar } from 'react-native'
+import { View, Text, Button, TextInput, StatusBar, StyleSheet, TouchableOpacity} from 'react-native'
+
 import axios from 'axios';
 import SignUpButton from '../../button/SignUpButton'
-import GoogleLoginButton from '../../button/GoogleLoginButton'
-import KakaoLoginButton from '../../button/KakaoLoginButton'
-import NaverLoginButton from '../../button/NaverLoginButton'
-
-import KeepSignedChkBox from '../../components/Checkbox/KeepSignedChkbox'
-import LoginSelector from '../../components/LoginSelector'
 import AcceptTermsChkbox from '../../components/Checkbox/AcceptTermsChkbox'
-import AcceptAlarmChkbox from '../../components/Checkbox/AcceptAlarmChkbox'
 import AuthNumberInput from '../../components/AuthNumberInput'
 
 import Header from '../../components/Header'
+import * as SQLite from 'expo-sqlite';
+
 
 const USER_CODE = "suremqr";
 const DEPT_CODE = "35--SX-DQ";
+const db = SQLite.openDatabase('db.db');
+db.transaction(tx=>{
+  tx.executeSql('CREATE TABLE IF NOT EXISTS AuthNumbers (_id INTEGER PRIMARY KEY, authNumber TEXT);')
+})
 
 export default function SignUpScreen({ navigation }) {
   const [name, setName] = useState("");
   const [phoneNum, setPhoneNum] = useState("");
+  const [isSentAuth, setIsSentAuth] = useState(false);
+  const [isAuth, setIsAuth] = useState(false);
+  const [isCheckAcceptedTerm, setIsCheckAcceptedTerm] = useState(false);
 
+
+  const makeId = () => {
+    var text = "";
+    var possible = "0123456789"
+    for (let i=0; i<4; i++)
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    return text
+  }
+
+  const sendMessage = (callphone,authNumberText) => {
+    var data = JSON.stringify(
+      {
+        "usercode":"suremtest",
+        "deptcode":"IX-TEX-LC",
+        "messages":
+        [
+          {"message_id":"1","to":callphone},
+        ],
+        "text":"인증번호 : "+authNumberText+" 입니다","from":"15884640","reserved_time":"000000000000"});
+
+    var config = {
+      method: 'post',
+      url: 'https://rest.surem.com/sms/v1/json',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+        data : data
+    };
+
+    axios(config)
+      .then(function (response) {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+
+  const saveAuthNumber = (authNumberText) => {
+    db.transaction((tx)=>{
+      tx.executeSql("INSERT INTO AuthNumbers(authNumber) Values(?)",[authNumberText],(tx, results)=>{
+        console.log("RESULT :: ")
+        console.log(results)
+
+      },(tx, error)=>{
+        console.log("ERROR :: ",error)
+        console.log("ERROR")
+      })
+    })
+  }
+
+  const selectAuthNumbers = () => {
+    db.transaction((tx)=>{
+      tx.executeSql(
+        `select * from AuthNumbers;`,
+        [],
+        (tx, results) =>{
+          console.log('SELECT AUTHNUMBERS :: ',results)
+          console.log('Hello :: ')
+        }
+      )
+    })
+  }
+  
+  const dropTable = () => {
+    db.transaction((tx)=>{
+      tx.executeSql(
+        `drop table AuthNumbers;`,
+        [],
+        (tx, results) =>{
+          console.log('DROP TABLE AUTHNUMBERS :: ',results)
+          console.log('Hello :: ')
+        }
+      )
+    })
+  }
   return (
     <View
     style={{
@@ -28,7 +107,7 @@ export default function SignUpScreen({ navigation }) {
         flex:1,
         marginTop: StatusBar.currentHeight
     }}
->
+    >
       <Header color="#F3F4F8"></Header>
       <Text></Text>
       <Text style={{ textAlign: 'center', fontSize:20}}>회원가입</Text>
@@ -52,7 +131,18 @@ export default function SignUpScreen({ navigation }) {
           onChangeText={(newValue) => setPhoneNum(newValue)}
       />
       <View height='1%'></View>
-      <AuthNumberInput/>
+      { isSentAuth === true ? <AuthNumberInput setIsAuth={setIsAuth}/> : 
+      <TouchableOpacity style={styles.button} onPress={ () => {
+        var authNumberText = makeId()
+        saveAuthNumber(authNumberText)
+        selectAuthNumbers()
+        setIsSentAuth(true)
+      }}> 
+      
+      <Text style={styles.title}>
+        인증번호 발송하기
+      </Text> 
+      </TouchableOpacity>}
       <View height='5%'></View>
       <View
         style={{
@@ -62,8 +152,7 @@ export default function SignUpScreen({ navigation }) {
             alignSelf: 'center'
         }}
       />
-      <AcceptTermsChkbox/>
-      <AcceptAlarmChkbox/>
+      <AcceptTermsChkbox setIsCheckAcceptedTerm={setIsCheckAcceptedTerm}/>
       <View
         style={{
             borderBottomColor: 'black',
@@ -73,12 +162,23 @@ export default function SignUpScreen({ navigation }) {
             alignSelf: 'center'
         }}
       />
-      <SignUpButton/>
-      <View height='5%'></View>
-      <KakaoLoginButton color='#FFFFFF'/>
-      <NaverLoginButton color='#FFFFFF'/>
-      <GoogleLoginButton color='#FFFFFF'/>
-      <Text></Text>
+      <SignUpButton isAuth={isAuth} isCheckAcceptedTerm={isCheckAcceptedTerm}/>
     </View>
   );  
 }
+
+const styles = StyleSheet.create({
+  button: {
+    height: 50,
+    width: '70%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#404757',
+    borderRadius:10,
+    alignSelf:'center'
+  },
+  title: {
+    fontSize: 15,
+    color: '#FFFFFF'
+  },
+});

@@ -23,4 +23,6 @@ target 'reservation' do
   #  end
   pod 'IamportReactNative', :path => '../node_modules/iamport-react-native'
 
+  pod 'react-native-sqlite-storage', :path => '../node_modules/react-native-sqlite-storage'
+
 end

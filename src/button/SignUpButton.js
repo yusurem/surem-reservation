@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { Component } from 'react';
 import {
   TouchableOpacity,
@@ -5,18 +6,21 @@ import {
   StyleSheet,
 } from 'react-native';
 
-export default class SignUpButton extends Component{
-  constructor(props){
-    super(props);
-  }
 
-  render(){
-    return (
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.title}>회원가입</Text>
-      </TouchableOpacity>
-    )
-  }
+export default function SignUpButton(props){
+  const navigation = useNavigation();
+
+  return (
+    <TouchableOpacity style={styles.button} onPress={()=>{
+        console.log(props)
+        if(props.isAuth && props.isCheckAcceptedTerm){
+          navigation.navigate('Home')
+        }
+      }
+    }>
+      <Text style={styles.title}>회원가입</Text>
+    </TouchableOpacity>
+  )
 }
 
 const styles = StyleSheet.create({

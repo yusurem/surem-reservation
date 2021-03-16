@@ -18,10 +18,12 @@ export default class KeepSignedChkbox extends Component{
           style={styles.checkbox}
           disabled={false}
           value={this.state.value0}
-          onValueChange={(value) => 
+          onValueChange={(value) =>{
+
             this.setState({
               value0: value,
             })
+          } 
           }  
         />
         <Text style={styles.label}>로그인 상태 유지</Text>

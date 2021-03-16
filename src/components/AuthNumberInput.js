@@ -1,27 +1,70 @@
 import React, { Component,useState } from "react";
-import { Text, StyleSheet, View, TextInput,TouchableOpacity,Image } from "react-native";
+import { Text, StyleSheet, View, TextInput,TouchableOpacity,Image, RefreshControl } from "react-native";
+import * as SQLite from 'expo-sqlite';
+
 
 export default class AuthNumberInput extends Component{
   constructor(props){
-    super(props);
+    super();
+    this.db = SQLite.openDatabase('db.db');
+    this.state = { 
+      authNumber: null,
+      isAuth: false
+    }
+  }
+
+  selectAuthNumbers() {
+    console.log('hello')
+    this.db.transaction((tx)=>{
+      tx.executeSql(
+        `SELECT * FROM AuthNumbers ORDER BY _id DESC LIMIT 1;`,
+        [],
+        (tx, results) =>{
+          console.log(results)
+          console.log(results.rows.item(0))
+          console.log(results.rows.item(0).authNumber)
+          if(results.rows.item(0).authNumber === this.state.authNumber){
+            console.log('correct')
+            this.props.setIsAuth(true)
+            this.setState({isAuth: true})
+          }
+          console.log('SELECT NUMBER :: ')
+        }
+      )
+    })
   }
 
   render(){
-    return (
-      <View style={[styles.inputContainer, {backgroundColor: this.props.color}]}>
-        <TextInput 
-          style={{ textAlign: 'left', justifyContent: 'center', borderWidth: 1 , height: 50, width: '70%', alignSelf: 'center', borderRadius:10, backgroundColor:'#FFFFFF'}} 
-          placeholder="인증번호 4자리"
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
-        <TouchableOpacity style={styles.button}>
-          <View style={[styles.buttonBox,{backgroundColor:"#FFFFFF"}]}>
-            <Text style={styles.title}>인증하기</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-    )
+    if(!this.state.isAuth){
+      return (
+        <View style={[styles.inputContainer, {backgroundColor: this.props.color}]}>
+          <TextInput 
+            style={{ textAlign: 'left', justifyContent: 'center', borderWidth: 1 , height: 50, width: '70%', alignSelf: 'center', borderRadius:10, backgroundColor:'#FFFFFF'}} 
+            placeholder="인증번호 4자리"
+            autoCapitalize="none"
+            autoCorrect={false}
+            onChangeText={
+              authNumber => this.setState({authNumber})
+            }
+          />
+          <TouchableOpacity style={styles.button}
+            onPress={ () => {
+                this.selectAuthNumbers()
+                console.log('This STATE {}',this.state)
+              }
+            }
+          >
+            <View style={[styles.buttonBox,{backgroundColor:"#FFFFFF"}]}>
+              <Text style={styles.title}>인증하기</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      )
+    }else{
+      return(
+        <Text style={[styles.inputContainer]}>인증이 완료되었습니다.</Text>
+      )
+    }
   }
 }
 

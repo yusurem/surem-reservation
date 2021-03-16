@@ -18,10 +18,14 @@ export default class AcceptTermsChkbox extends Component{
           style={styles.checkbox}
           disabled={false}
           value={this.state.value0}
-          onValueChange={(value) => 
+          onValueChange={(value) => {
+
             this.setState({
               value0: value,
             })
+            
+            this.props.setIsCheckAcceptedTerm(value);
+          }
           }  
         />
         <Text style={styles.label}>이용약관 및 개인정보 처리방침 동의(필수)</Text>
