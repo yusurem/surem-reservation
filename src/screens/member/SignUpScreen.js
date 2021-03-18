@@ -5,16 +5,20 @@ import axios from 'axios';
 import SignUpButton from '../../button/SignUpButton'
 import AcceptTermsChkbox from '../../components/Checkbox/AcceptTermsChkbox'
 import AuthNumberInput from '../../components/AuthNumberInput'
+import CountDownTimer from '../../components/CountDownTimer'
 
 import Header from '../../components/Header'
 import * as SQLite from 'expo-sqlite';
-
+import { useEffect } from 'react';
 
 const USER_CODE = "suremqr";
 const DEPT_CODE = "35--SX-DQ";
 const db = SQLite.openDatabase('db.db');
 db.transaction(tx=>{
   tx.executeSql('CREATE TABLE IF NOT EXISTS AuthNumbers (_id INTEGER PRIMARY KEY, authNumber TEXT);')
+})
+db.transaction(tx=>{
+  tx.executeSql('CREATE TABLE IF NOT EXISTS UserId (_id INTEGER PRIMARY KEY, code TEXT);')
 })
 
 export default function SignUpScreen({ navigation }) {
@@ -23,7 +27,8 @@ export default function SignUpScreen({ navigation }) {
   const [isSentAuth, setIsSentAuth] = useState(false);
   const [isAuth, setIsAuth] = useState(false);
   const [isCheckAcceptedTerm, setIsCheckAcceptedTerm] = useState(false);
-
+  const [minutes, setMinutes] = useState(1);
+  const [seconds, setSeconds] = useState(0);
 
   const makeId = () => {
     var text = "";
@@ -87,6 +92,22 @@ export default function SignUpScreen({ navigation }) {
       )
     })
   }
+  const hasUserId = () => {
+    db.transaction((tx)=>{
+      tx.executeSql(
+        `select * from UserId;`,
+        [],
+        (tx, results) =>{
+          console.log('SELECT AUTHNUMBERS :: ',results)
+          if(results.rows.length > 0){
+            navigation.navigate('Home')
+          }
+          console.log('Hello :: ')
+        }
+      )
+    })
+  }
+  
   
   const dropTable = () => {
     db.transaction((tx)=>{
@@ -100,6 +121,11 @@ export default function SignUpScreen({ navigation }) {
       )
     })
   }
+
+  useEffect(()=>{
+    hasUserId();
+  });
+
   return (
     <View
     style={{
@@ -129,20 +155,35 @@ export default function SignUpScreen({ navigation }) {
           autoCorrect={false}
           value={phoneNum}
           onChangeText={(newValue) => setPhoneNum(newValue)}
+          keyboardType="number-pad"
       />
       <View height='1%'></View>
-      { isSentAuth === true ? <AuthNumberInput setIsAuth={setIsAuth}/> : 
-      <TouchableOpacity style={styles.button} onPress={ () => {
-        var authNumberText = makeId()
-        saveAuthNumber(authNumberText)
-        selectAuthNumbers()
-        setIsSentAuth(true)
-      }}> 
-      
+      { isSentAuth === true ? 
+        <AuthNumberInput setIsAuth={setIsAuth}/> : 
+        <TouchableOpacity style={styles.button} onPress={ () => {
+          var authNumberText = makeId()
+          if(name === ""){
+            alert("이름을 입력해주세요.")
+            return
+          }
+
+          if(phoneNum === ""){
+            alert('핸드폰 번호를 입력해주세요.')
+            return
+          }
+          saveAuthNumber(authNumberText)
+          selectAuthNumbers()
+          setIsSentAuth(true)
+          sendMessage(phoneNum,authNumberText)
+        }}
+      >
       <Text style={styles.title}>
         인증번호 발송하기
       </Text> 
       </TouchableOpacity>}
+      { isSentAuth === true ? 
+        <CountDownTimer minutes={minutes} seconds={seconds} setMinutes={setMinutes} setSeconds={setSeconds} setIsSentAuth={setIsSentAuth} />:null
+      }
       <View height='5%'></View>
       <View
         style={{
@@ -162,7 +203,7 @@ export default function SignUpScreen({ navigation }) {
             alignSelf: 'center'
         }}
       />
-      <SignUpButton isAuth={isAuth} isCheckAcceptedTerm={isCheckAcceptedTerm}/>
+      <SignUpButton isAuth={isAuth} isCheckAcceptedTerm={isCheckAcceptedTerm} username={name} phoneNum={phoneNum}/>
     </View>
   );  
 }
