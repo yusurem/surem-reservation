@@ -27,7 +27,7 @@ export default function SignUpScreen({ navigation }) {
   const [isSentAuth, setIsSentAuth] = useState(false);
   const [isAuth, setIsAuth] = useState(false);
   const [isCheckAcceptedTerm, setIsCheckAcceptedTerm] = useState(false);
-  const [minutes, setMinutes] = useState(1);
+  const [minutes, setMinutes] = useState(3);
   const [seconds, setSeconds] = useState(0);
 
   const makeId = () => {
@@ -100,9 +100,8 @@ export default function SignUpScreen({ navigation }) {
         (tx, results) =>{
           console.log('SELECT AUTHNUMBERS :: ',results)
           if(results.rows.length > 0){
-            navigation.navigate('Home')
+            navigation.reset({index: 0, routes: [{name: 'Home'}] })
           }
-          console.log('Hello :: ')
         }
       )
     })

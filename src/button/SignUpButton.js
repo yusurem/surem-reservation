@@ -54,7 +54,7 @@ export default function SignUpButton(props){
       console.log(JSON.stringify(response.data));
       if(response.data.returnCode === "E0000"){
         saveAuthNumber(response.data.secretcode)
-        navigation.navigate('Home')
+        navigation.reset({index: 0, routes: [{name: 'Home'}] })
       }
       else if(response.data.returnCode === "E3001"){
         var data = JSON.stringify(
@@ -77,7 +77,8 @@ export default function SignUpButton(props){
             alert("사용자가 없습니다.")
           }else{
             saveAuthNumber(response.data.secretcode)
-            navigation.navigate('Home')          }
+            navigation.reset({index: 0, routes: [{name: 'Home'}] })
+          }
         })
 
       }else{
