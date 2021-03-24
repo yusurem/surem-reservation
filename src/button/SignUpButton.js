@@ -11,12 +11,12 @@ import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('db.db');
 
 db.transaction(tx=>{
-  tx.executeSql('CREATE TABLE IF NOT EXISTS UserId (_id INTEGER PRIMARY KEY, code TEXT);')
+  tx.executeSql('CREATE TABLE IF NOT EXISTS UserId (_id INTEGER PRIMARY KEY, secretCode TEXT, usercode TEXT);')
 })
 
-const saveAuthNumber = (secretcode) => {
+const saveUserId = (secretcode,phoneNum) => {
   db.transaction((tx)=>{
-    tx.executeSql("INSERT INTO UserId(code) Values(?)",[secretcode],(tx, results)=>{
+    tx.executeSql("INSERT INTO UserId(secretCode,usercode) Values(?,?)",[secretcode,phoneNum],(tx, results)=>{
       console.log("RESULT :: ")
       console.log(results)
 
@@ -29,7 +29,7 @@ const saveAuthNumber = (secretcode) => {
 
 export default function SignUpButton(props){
   const navigation = useNavigation();
-  const signUp = (username,callphone) => {
+  const signUp = () => {
     var data = JSON.stringify(
       {
         "usercode":props.phoneNum,
@@ -53,7 +53,7 @@ export default function SignUpButton(props){
       .then(function (response) {
       console.log(JSON.stringify(response.data));
       if(response.data.returnCode === "E0000"){
-        saveAuthNumber(response.data.secretcode)
+        saveUserId(response.data.returnCode, props.phoneNum)
         navigation.reset({index: 0, routes: [{name: 'Home'}] })
       }
       else if(response.data.returnCode === "E3001"){
@@ -76,7 +76,7 @@ export default function SignUpButton(props){
           if(response.data.returnCode === "E2007"){
             alert("사용자가 없습니다.")
           }else{
-            saveAuthNumber(response.data.secretcode)
+            saveUserId(response.data.returnCode, props.phoneNum)
             navigation.reset({index: 0, routes: [{name: 'Home'}] })
           }
         })

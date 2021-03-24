@@ -9,6 +9,7 @@ import CountDownTimer from '../../components/CountDownTimer'
 
 import Header from '../../components/Header'
 import * as SQLite from 'expo-sqlite';
+
 import { useEffect } from 'react';
 
 const USER_CODE = "suremqr";
@@ -18,7 +19,7 @@ db.transaction(tx=>{
   tx.executeSql('CREATE TABLE IF NOT EXISTS AuthNumbers (_id INTEGER PRIMARY KEY, authNumber TEXT);')
 })
 db.transaction(tx=>{
-  tx.executeSql('CREATE TABLE IF NOT EXISTS UserId (_id INTEGER PRIMARY KEY, code TEXT);')
+  tx.executeSql('CREATE TABLE IF NOT EXISTS UserId (_id INTEGER PRIMARY KEY, secretCode TEXT, usercode TEXT);')
 })
 
 export default function SignUpScreen({ navigation }) {
@@ -98,7 +99,7 @@ export default function SignUpScreen({ navigation }) {
         `select * from UserId;`,
         [],
         (tx, results) =>{
-          console.log('SELECT AUTHNUMBERS :: ',results)
+          console.log('SELECT UserId :: ',results)
           if(results.rows.length > 0){
             navigation.reset({index: 0, routes: [{name: 'Home'}] })
           }
@@ -106,12 +107,11 @@ export default function SignUpScreen({ navigation }) {
       )
     })
   }
-  
-  
-  const dropTable = () => {
+
+  const deleteAuthNumbers = () => {
     db.transaction((tx)=>{
       tx.executeSql(
-        `drop table AuthNumbers;`,
+        `delete from AuthNumbers;`,
         [],
         (tx, results) =>{
           console.log('DROP TABLE AUTHNUMBERS :: ',results)
@@ -170,6 +170,7 @@ export default function SignUpScreen({ navigation }) {
             alert('핸드폰 번호를 입력해주세요.')
             return
           }
+          deleteAuthNumbers()
           saveAuthNumber(authNumberText)
           selectAuthNumbers()
           setIsSentAuth(true)
