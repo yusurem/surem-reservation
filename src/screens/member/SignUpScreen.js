@@ -23,7 +23,6 @@ db.transaction(tx=>{
 })
 
 export default function SignUpScreen({ navigation }) {
-  const [name, setName] = useState("");
   const [phoneNum, setPhoneNum] = useState("");
   const [isSentAuth, setIsSentAuth] = useState(false);
   const [isAuth, setIsAuth] = useState(false);
@@ -140,15 +139,6 @@ export default function SignUpScreen({ navigation }) {
       <Text></Text>
       <TextInput 
           style={{ textAlign: 'left', borderWidth: 1 , height: 50, width: '70%', alignSelf: 'center', borderRadius:10, backgroundColor:'#FFFFFF'}} 
-          placeholder="이름"
-          autoCapitalize="none"
-          autoCorrect={false}
-          value={name}
-          onChangeText={(newValue) => setName(newValue)}
-      />
-      <View height='1%'></View>
-      <TextInput 
-          style={{ textAlign: 'left', borderWidth: 1 , height: 50, width: '70%', alignSelf: 'center', borderRadius:10, backgroundColor:'#FFFFFF'}} 
           placeholder="휴대폰번호"
           autoCapitalize="none"
           autoCorrect={false}
@@ -161,10 +151,6 @@ export default function SignUpScreen({ navigation }) {
         <AuthNumberInput setIsAuth={setIsAuth}/> : 
         <TouchableOpacity style={styles.button} onPress={ () => {
           var authNumberText = makeId()
-          if(name === ""){
-            alert("이름을 입력해주세요.")
-            return
-          }
 
           if(phoneNum === ""){
             alert('핸드폰 번호를 입력해주세요.')
@@ -203,7 +189,7 @@ export default function SignUpScreen({ navigation }) {
             alignSelf: 'center'
         }}
       />
-      <SignUpButton isAuth={isAuth} isCheckAcceptedTerm={isCheckAcceptedTerm} username={name} phoneNum={phoneNum}/>
+      <SignUpButton isAuth={isAuth} isCheckAcceptedTerm={isCheckAcceptedTerm} phoneNum={phoneNum}/>
     </View>
   );  
 }
