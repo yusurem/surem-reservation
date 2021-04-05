@@ -17,6 +17,11 @@ const ReservationScreen = ({ navigation, route }) => {
     const [errorMessageA, setErrorMessageA] = useState("");
     const [isValid, setIsValid] = useState(false);
     const [roomInfo, setRoomInfo] = useState("Hi");
+    const [duration, setDuration] = useState(0);
+    const [cost, setCost] = useState("0")
+
+    const [info, setInfo] = useState("");
+    const [subInfo, setSubInfo] = useState("");
 
     const [endLabels, setEndLabels] = useState([]);
     const [endVals, setEndVals] = useState([]);
@@ -99,6 +104,8 @@ const ReservationScreen = ({ navigation, route }) => {
             // console.log(response.data);
             console.log("API call successful!");
             setRoomInfo(response.data);
+            setInfo(response.data.room.info);
+            setSubInfo(response.data.room.subInfo);
         } catch (err) {
             setErrorMessageA("API 문제발생");
             console.log(err);
@@ -109,10 +116,26 @@ const ReservationScreen = ({ navigation, route }) => {
     if(endVals.length == 0){
         buildPickerData(filterEndTime(findSIndex(startTime, route.params.optionVals), valsToInt(route.params.optionVals)));
         getRoomInfo();
+        return (
+            <SafeAreaView style={{flex: 1, justifyContent: 'center'}}>
+                <View style={{ flex: 1, justifyContent: 'center'}}>
+                    <Text style={{ textAlign: 'center' }}>Loading...</Text>
+                </View>
+            </SafeAreaView>
+        )
     }
     console.log("---------------------------");
     console.log(roomInfo);
     console.log("---------------------------");
+
+    const calculatePrice = () => {
+        if(route.params.weekDay < 5){
+            return (10000 * duration).toLocaleString();
+        }
+        else{
+            return (10000 * duration).toLocaleString();
+        }
+    }
 
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
@@ -131,15 +154,17 @@ const ReservationScreen = ({ navigation, route }) => {
                         <Text style={styles.headerText}>시설안내</Text>
                     </View>
                     <View style={styles.description}>
-                        <Text style={styles.descriptionText}>4인 의자와 모니터, 화이트보드가 사용가능한 프리미엄 공간 회의실입니다. 편안한 업무를위해 생수, 커피, 다과 등이 무료로
-                                                             제공되며 회의, 면접, 강의 등 다양한 공간으로 사용할수 있는 회의실입니다.</Text>
+                        {/* <Text style={styles.descriptionText}>4인 의자와 모니터, 화이트보드가 사용가능한 프리미엄 공간 회의실입니다. 편안한 업무를위해 생수, 커피, 다과 등이 무료로
+                                                             제공되며 회의, 면접, 강의 등 다양한 공간으로 사용할수 있는 회의실입니다.</Text> */}
+                        <Text style={styles.descriptionText}>{info}</Text>
                     </View>
                     <View style={styles.headerBox}>
                         <View style={styles.blueBar}/>
                         <Text style={styles.headerText}>부가서비스</Text>
                     </View>
                     <View style={styles.description}>
-                        <Text style={styles.descriptionText}>빔프로젝트, 화이트보드, TV, 에어컨, 난방기</Text>
+                        {/* <Text style={styles.descriptionText}>빔프로젝트, 화이트보드, TV, 에어컨, 난방기</Text> */}
+                        <Text style={styles.descriptionText}>{subInfo}</Text>
                     </View>
                     <View style={styles.headerBox}>
                         <View style={styles.blueBar}/>
@@ -157,6 +182,8 @@ const ReservationScreen = ({ navigation, route }) => {
                                     buildPickerData(filterEndTime(findSIndex(itemValue, route.params.optionVals), valsToInt(route.params.optionVals)));
                                     setStartTime(itemValue);
                                     setEndTime("0");
+                                    setDuration(0);
+                                    setCost("0")
                                     setIsValid(false);
                                 }}>
                                 {route.params.options.map((item, index) => {
@@ -170,11 +197,16 @@ const ReservationScreen = ({ navigation, route }) => {
                                 selectedValue={endTime}
                                 style={{height: 30, width: 140 }}
                                 onValueChange={(itemValue, itemIndex) => {
-                                    console.log(itemValue);
                                     setEndTime(itemValue);
                                     if(itemValue != "0"){
                                         setErrorMessageA(false);
                                         setIsValid(true);
+                                        // console.log("dapeta" + endTime);
+                                        // console.log("APEOITUNAPET: " + endTime.substring(0,2));
+                                        // console.log("APEOITUNAPET: " + parseInt(endTime.substring(0,2)));
+                                        setDuration(parseInt(itemValue.substring(0,2)) - parseInt(startTime.substring(0,2)));
+                                        console.log(calculatePrice());
+                                        setCost(calculatePrice());
                                     }
                                     else{
                                         setIsValid(false);
@@ -206,12 +238,12 @@ const ReservationScreen = ({ navigation, route }) => {
                     <View style={[styles.priceBox]}>
                         <Text style={styles.priceText}>총</Text>
                         <View>
-                            <Text style={styles.priceText}>     {2}     </Text>
+                            <Text style={styles.priceText}>     {duration}     </Text>
                             <View style={{ borderBottomColor: '#5D5D5D', borderBottomWidth: 1 }}/>
                         </View>
                         <Text style={styles.priceText}> 시간   </Text>
                         <View>
-                            <Text style={styles.priceText}>     {'40,000원'}     </Text>
+                            <Text style={styles.priceText}>     {cost}     </Text>
                             <View style={{ borderBottomColor: '#5D5D5D', borderBottomWidth: 1 }}/>
                         </View>
                         <Text style={styles.priceText}>원</Text>

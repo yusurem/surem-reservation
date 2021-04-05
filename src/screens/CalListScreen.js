@@ -86,7 +86,7 @@ const CalListScreen = ({ navigation }) => {
                         style={styles.calendars}
                         onDayPress={onDayPress}
                         // current={"2019-10-10"}
-                        // minDate={Date()}
+                        minDate={Date()}
                         onDayLongPress={onDayLongPress}
                         hideArrows={false}
                         renderArrow={(direction) => {

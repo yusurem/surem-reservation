@@ -92,6 +92,8 @@ export default function SignUpScreen({ navigation }) {
       )
     })
   }
+
+
   const hasUserId = () => {
     db.transaction((tx)=>{
       tx.executeSql(

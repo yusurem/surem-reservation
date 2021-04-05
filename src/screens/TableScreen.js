@@ -35,7 +35,8 @@ const TableScreen = ({ navigation, route }) => {
     console.log("Entered TableScreen. Params: ");
     console.log(route.params);
 
-    const roomCodes = [ "21D7E4B9B8C840F", "7105507F78B7422", "7F2AB0EE33674A7" ];
+    // const roomCodes = [ "21D7E4B9B8C840F", "7105507F78B7422", "7F2AB0EE33674A7" ];
+    const roomCodes = [ "21D7E4B9B8C840F", "98A148A0C7134C1", "98A148A0C7134C1" ];
 
     const getResrvLists = async () => {
         try{
@@ -44,7 +45,7 @@ const TableScreen = ({ navigation, route }) => {
                 const resrvList = await getAvailableList(route.params.dateString.replace(/-/g,""), roomCodes[i]);
                 tempLists.push(resrvList);
             }
-            // console.log(tempLists);
+            console.log(tempLists);
             setResrvLists(tempLists);
         } catch (err) {
             console.log(err);
@@ -93,8 +94,8 @@ const TableScreen = ({ navigation, route }) => {
         optionValList.push(optionVals);
     }
 
-    console.log(optionsList);
-    console.log(optionValList);
+    // console.log(optionsList);
+    // console.log(optionValList);
 
     const tableData = [];
     for(let i = 0; i < state.tableTitle.length - 1; i++){
