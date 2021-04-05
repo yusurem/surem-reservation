@@ -2,17 +2,14 @@ import React, { useState } from 'react';
 import { View, StatusBar, Text } from 'react-native'
 import Header from '../../components/Header'
 
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 export default function HomeScreen({ navigation }) {
   const [name, setName] = useState("");
 
   return (
-    <View
-        style={{
-            backgroundColor: '#FFFFFF',
-            flex:1,
-            marginTop: StatusBar.currentHeight
-        }}
-    >
+    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+      <View>
       <Header color="#FFFFFF"></Header>
       <View style={{width:'90%',height:'20%',backgroundColor:'#A2AFDC',borderRadius:10,alignSelf:'center'}}>
         <View style={{height:'30%'}}/>
@@ -131,5 +128,7 @@ export default function HomeScreen({ navigation }) {
         <Text style={{color:'black'}}>이제 회의실 예약도 간편한 오피스쉐어 APP으로!</Text>
       </View>
     </View>
+    </SafeAreaView>
+   
   );  
 }

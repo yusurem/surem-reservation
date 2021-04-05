@@ -1,20 +1,28 @@
 import React, {useState} from 'react';
-import { View, Text, StyleSheet, Button, TouchableHighlight, TextInput, Platform, Image } from 'react-native';
+import { View, Text, StyleSheet, Button, TouchableHighlight, TextInput, Platform, Image, Alert, ScrollView, TouchableOpacity} from 'react-native';
 
+import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
 import { SliderBox } from 'react-native-image-slider-box';
+
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 // import DateTimePicker from '@react-native-community/datetimepicker';
 
 const ReservationScreen = ({ navigation, route }) => {
-    const [startTime, setStartTime] = useState("12");
+    const [startTime, setStartTime] = useState(route.params.startTime);
     const [endTime, setEndTime] = useState("0");
     const [memo, setMemo] = useState("");
+    const [errorMessageA, setErrorMessageA] = useState("");
+    const [isValid, setIsValid] = useState(false);
+    const [roomInfo, setRoomInfo] = useState("Hi");
 
-    // Ask how to choose what pickers show
-    const pickerItem = (pLabel, pValue) => {
-        return <Picker.Item label={pLabel} value={pValue} />
-    }
+    const [endLabels, setEndLabels] = useState([]);
+    const [endVals, setEndVals] = useState([]);
+
+    console.log("Entered ReservationScreen. Params: ");
+    console.log(route.params);
 
     const images = [
         require("../../assets/office1.png"),
@@ -23,151 +31,337 @@ const ReservationScreen = ({ navigation, route }) => {
         require("../../assets/office4.png")
     ];
 
-    const makeReservation = async () => {
+    const valsToInt = (vals) => {
+        var temp;
+        const intVals = [];
+        for(let i = 0; i < vals.length; i++){
+            temp = (vals[i].charAt(0) == '0' ? vals[i].charAt(1) + "" : vals[i].substring(0,2));
+            intVals.push(parseInt(temp));
+        }
+        return intVals;
+    }
+
+    const findSIndex = (sValue, timeVals) => {
+        for(let i = 0; i < timeVals.length; i++){
+            if(timeVals[i] === sValue){
+                return i;
+            }
+        }
+        return -1; // not found
+    }
+
+    const filterEndTime = (sIndex, timeVals) => {
+        var init = timeVals[sIndex];
+        const endVals = [];
+        for(var i = sIndex + 1; i < timeVals.length; i++){
+            if(timeVals[i] - init != 1){
+                break;
+            }
+            endVals.push(timeVals[i]);
+            init = timeVals[i];
+        }
+        endVals.push(init + 1);
+        return endVals;
+    }
+
+    const buildPickerData = (endVals) => {
+        const pickerVals = [];
+        const pickerLabels = [];
+        var flag = false;
+        for(var i = 0; i < endVals.length; i++){
+            if(endVals[i] > 9){
+                if(endVals[i] == 24){ // if 23 is called, 0:00 AM has to be added (special case)
+                    pickerVals.push('000000');
+                    pickerLabels.push('24:00 AM');
+                    break; // if 23, then at the end of the array
+                }
+                flag = true;
+            }
+            pickerVals.push(`${flag ? endVals[i] + "" : '0' + endVals[i]}0000`);
+            pickerLabels.push(`${endVals[i]}:00 ${flag ? "PM" : "AM"}`);
+            flag = false;
+        }
+        setEndVals(pickerVals);
+        setEndLabels(pickerLabels);
+        // return {
+        //     pVals: pickerVals,
+        //     pLabels: pickerLabels
+        // };
+    }
+
+    const getRoomInfo = async () => {
         try{
-            console.log("Attempting to make reservation...");
-            const response = await axios.post('http://112.221.94.101:8980/getEncryptCode', {
-                'usercode' : 'admin1'
+            console.log("Attempting to retreive room information...");
+            console.log("roomCode: " + route.params.roomCode);
+            const response = await axios.post('http://112.221.94.101:8980/getRoomInfo', {
+                roomCode: route.params.roomCode
             });
-            console.log(`Got the response!`);
-            console.log(response)
+            // console.log(response.data);
+            console.log("API call successful!");
+            setRoomInfo(response.data);
         } catch (err) {
             setErrorMessageA("API 문제발생");
             console.log(err);
+            return 'Error';
         }
     }
 
+    if(endVals.length == 0){
+        buildPickerData(filterEndTime(findSIndex(startTime, route.params.optionVals), valsToInt(route.params.optionVals)));
+        getRoomInfo();
+    }
+    console.log("---------------------------");
+    console.log(roomInfo);
+    console.log("---------------------------");
+
     return (
-        <View>
-            <Text style={{ alignSelf: 'center', fontSize: 18, paddingVertical: 4 }}>1호실</Text>
-            <View >
-                {/* <Image style={styles.imageStyle} source={require("../../assets/office1.png")} /> */}
-                <SliderBox sliderBoxHeight={190} images={images} disableOnPress={true}/>
-            </View>
-            <Text></Text>
-            <View style={{ alignSelf: 'center' }}>
-                <Text>3인실</Text>
-                <Text>모니터 사용 가능, 화이트보드 사용 가능, 스피커 지원</Text>
-            </View>
-            <Text></Text>
-            <View style={{ borderBottomColor: 'black', borderBottomWidth: 1, marginHorizontal: 15, marginBottom: 10}}/>
+        <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+            <ScrollView>
+                <View style={styles.mainBox}>
+                    <View style={styles.headerBox}>
+                        <View style={styles.blueBar}/>
+                        <Text style={styles.headerText}>회의실 {"1호실"}</Text>
+                    </View>
+                    <View style={{alignItems: 'center', height: 190, marginBottom: 17, marginTop: 7}}>
+                        {/* <Image style={styles.imageStyle} source={require("../../assets/office1.png")} /> */}
+                        <SliderBox parentWidth={330} sliderBoxHeight={190} images={images} disableOnPress={true}/>
+                    </View>
+                    <View style={styles.headerBox}>
+                        <View style={styles.blueBar}/>
+                        <Text style={styles.headerText}>시설안내</Text>
+                    </View>
+                    <View style={styles.description}>
+                        <Text style={styles.descriptionText}>4인 의자와 모니터, 화이트보드가 사용가능한 프리미엄 공간 회의실입니다. 편안한 업무를위해 생수, 커피, 다과 등이 무료로
+                                                             제공되며 회의, 면접, 강의 등 다양한 공간으로 사용할수 있는 회의실입니다.</Text>
+                    </View>
+                    <View style={styles.headerBox}>
+                        <View style={styles.blueBar}/>
+                        <Text style={styles.headerText}>부가서비스</Text>
+                    </View>
+                    <View style={styles.description}>
+                        <Text style={styles.descriptionText}>빔프로젝트, 화이트보드, TV, 에어컨, 난방기</Text>
+                    </View>
+                    <View style={styles.headerBox}>
+                        <View style={styles.blueBar}/>
+                        <Text style={styles.headerText}>이용시간</Text>
+                    </View>
 
-            <Text style={{ marginLeft: 13, fontSize: 13 }}>이용 시간</Text>
-            <View style={{ padding: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
-                <View style={styles.pickerViewStyle}>
-                    <Picker
-                        selectedValue={startTime}
-                        style={{height: 30, width: 140 }}
-                        onValueChange={(itemValue, itemIndex) =>
-                            setStartTime(itemValue)
-                        }>
-                        {(false) ? <Picker.Item label="8:00 AM" value="8" /> : null} 
-                        <Picker.Item label="9:00 AM" value="9" />
-                        <Picker.Item label="10:00 AM" value="10" />
-                        <Picker.Item label="11:00 AM" value="11" />
-                        <Picker.Item label="12:00 PM" value="12" />
-                        <Picker.Item label="13:00 PM" value="13" />
-                        <Picker.Item label="14:00 PM" value="14" />
-                        <Picker.Item label="15:00 PM" value="15" />
-                        <Picker.Item label="16:00 PM" value="16" />
-                        <Picker.Item label="17:00 PM" value="17" />
-                        <Picker.Item label="18:00 PM" value="18" />
-                        <Picker.Item label="19:00 PM" value="19" />
-                        <Picker.Item label="20:00 PM" value="20" />
-                        <Picker.Item label="21:00 PM" value="21" />
-                        <Picker.Item label="22:00 PM" value="22" />
-                        <Picker.Item label="23:00 PM" value="23" />
-                        <Picker.Item label="24:00 AM" value="24" />
-                    </Picker>
+                    <View style={styles.pickerBox}>
+                        <View style={styles.pickerView}>
+                            <Picker
+                                style={styles.picker}
+                                itemStyle={styles.pickerItem}
+                                selectedValue={startTime}
+                                style={{height: 30, width: 140 }}
+                                onValueChange={(itemValue, itemIndex) => {
+                                    buildPickerData(filterEndTime(findSIndex(itemValue, route.params.optionVals), valsToInt(route.params.optionVals)));
+                                    setStartTime(itemValue);
+                                    setEndTime("0");
+                                    setIsValid(false);
+                                }}>
+                                {route.params.options.map((item, index) => {
+                                    return (<Picker.Item label={item} color='#A0A0A0' value={route.params.optionVals[index]} key={index}/>) 
+                                })}
+                            </Picker>
+                        </View>
+                        <Text style={{color: '#A0A0A0', fontSize: 20}}>~</Text>
+                        <View style={styles.pickerView}>
+                            <Picker
+                                selectedValue={endTime}
+                                style={{height: 30, width: 140 }}
+                                onValueChange={(itemValue, itemIndex) => {
+                                    console.log(itemValue);
+                                    setEndTime(itemValue);
+                                    if(itemValue != "0"){
+                                        setErrorMessageA(false);
+                                        setIsValid(true);
+                                    }
+                                    else{
+                                        setIsValid(false);
+                                    }
+                                }}>
+                                <Picker.Item label="종료 시간" color='#A0A0A0' value="0" />
+                                {endLabels.map((item, index) => {
+                                    return (<Picker.Item label={item} color='#A0A0A0' value={endVals[index]} key={index}/>) 
+                                })}
+                            </Picker>
+                        </View>
+                    </View>
+
+
+                    <View style={styles.headerBox}>
+                        <View style={styles.blueBar}/>
+                        <Text style={styles.headerText}>메모</Text>
+                    </View>
+                    <View style={styles.memoBox}>
+                        <TextInput 
+                            style={styles.textInput} 
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            value={memo}
+                            onChangeText={(newValue) => setMemo(newValue)}
+                        />
+                    </View>
+
+                    <View style={[styles.priceBox]}>
+                        <Text style={styles.priceText}>총</Text>
+                        <View>
+                            <Text style={styles.priceText}>     {2}     </Text>
+                            <View style={{ borderBottomColor: '#5D5D5D', borderBottomWidth: 1 }}/>
+                        </View>
+                        <Text style={styles.priceText}> 시간   </Text>
+                        <View>
+                            <Text style={styles.priceText}>     {'40,000원'}     </Text>
+                            <View style={{ borderBottomColor: '#5D5D5D', borderBottomWidth: 1 }}/>
+                        </View>
+                        <Text style={styles.priceText}>원</Text>
+                    </View>
+                   
+                    <View style={styles.errorBox}>
+                        {errorMessageA ? <Text style={styles.errorMessageA}>이용시간을 다시 입력해주세요.</Text> : null}
+                    </View>
+
+                    <View style={styles.buttonView} >
+                        <TouchableOpacity
+                            style={[ styles.resrvButton, isValid ? styles.valid : styles.invalid ]}
+                            onPress={() => {
+                                if(isValid){
+                                    setErrorMessageA(false);
+
+                                    navigation.navigate("Payment", {
+                                        startTime: startTime,
+                                        endTime: endTime,
+                                        dateString: route.params.dateString,
+                                        year: route.params.year,
+                                        month: route.params.month,
+                                        day: route.params.day,
+                                        memo: memo,
+                                        weekDay: route.params.weekDay,
+                                        roomCode: route.params.roomCode
+                                    });
+                                }
+                                else{
+                                    setErrorMessageA(true);
+                                }
+                            }}
+                        >
+                            <Text style={ styles.buttonText }>예약하기</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-                <Text>~</Text>
-                <View style={styles.pickerViewStyle}>
-                    <Picker
-                        selectedValue={endTime}
-                        style={{height: 30, width: 140 }}
-                        onValueChange={(itemValue, itemIndex) =>
-                            setEndTime(itemValue)
-                        }>
-                        <Picker.Item label="종료 시간" value="0" />
-                        <Picker.Item label="9:00 AM" value="9" />
-                        <Picker.Item label="10:00 AM" value="10" />
-                        <Picker.Item label="11:00 AM" value="11" />
-                        <Picker.Item label="12:00 PM" value="12" />
-                        <Picker.Item label="13:00 PM" value="13" />
-                        <Picker.Item label="14:00 PM" value="14" />
-                        <Picker.Item label="15:00 PM" value="15" />
-                        <Picker.Item label="16:00 PM" value="16" />
-                        <Picker.Item label="17:00 PM" value="17" />
-                        <Picker.Item label="18:00 PM" value="18" />
-                        <Picker.Item label="19:00 PM" value="19" />
-                        <Picker.Item label="20:00 PM" value="20" />
-                        <Picker.Item label="21:00 PM" value="21" />
-                        <Picker.Item label="22:00 PM" value="22" />
-                        <Picker.Item label="23:00 PM" value="23" />
-                        <Picker.Item label="24:00 AM" value="24" />
-                    </Picker>
-                </View>
-            </View>
 
-            <Text style={styles.memoStyle}>메모</Text>
-            <TextInput 
-                style={{ borderWidth: 1 , height: 40, width: 330, alignSelf: 'center'}} 
-                autoCapitalize="none"
-                autoCorrect={false}
-                value={memo}
-                onChangeText={(newValue) => setMemo(newValue)}
-            />
-
-            <Text style={styles.costStyle}>총          시간                            원</Text>
-
-            <TouchableHighlight
-                style={styles.openButton}
-                onPress={() => {
-                    navigation.navigate('Reserved');
-                }}
-            >
-                <Text style={styles.textStyle}>예약하기</Text>
-            </TouchableHighlight>
-
-        </View>
+            </ScrollView>
+        </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({ 
-    memoStyle: {
-        marginTop: 6,
-        marginLeft: 16,
-        marginBottom: 4
+    headerBox: {
+        flexDirection: 'row',
+        // marginBottom: 5,
+        // borderWidth: 1,
+        // borderColor: 'black'
     },
-    costStyle: {
-        marginTop: 15,
-        textAlign: 'center',
-        fontSize: 19,
-        fontWeight: "bold"
+    blueBar: {
+        backgroundColor: '#A1C1F1',
+        height: 14.5,
+        width: 5,
+        borderRadius: 5,
+        marginTop: 3.5,
+        marginRight: 3
     },
-    imageStyle: {
-        width: 330,
-        height: 180,
-        alignSelf: 'center'
+    headerText: {
+        fontSize: 14,
+        color: "#39393A",
     },
-    pickerViewStyle: {
-        borderWidth: 1,
-        borderColor: 'black'
-    },
-    openButton: {
-        alignSelf: 'center',
-        backgroundColor: "#24b4d1",
-        borderRadius: 15,
-        marginTop: 10,
+    mainBox: {
         paddingVertical: 10,
-        paddingHorizontal: 88,
+        paddingHorizontal: 12
+    },
+    description: {
+        marginLeft: 8.5,
+        marginBottom: 9
+    },
+    descriptionText: {
+        fontSize: 11,
+        color: '#39393A',
+    },
+    pickerBox: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 7,
+        marginBottom: 12,
+        marginHorizontal: 8.5
+    },
+    pickerView: {
+        borderWidth: 1,
+        borderColor: '#B2B2B2',
+        borderRadius: 5,
+    },
+    picker: {
+        color: '#B2B2B2',
+        // backgroundColor: 'red'
+    },
+    pickerItem: {
+        color: '#B2B2B2',
+        textAlign: 'center',
+        fontSize: 10,
+    },
+    memoBox: {
+        marginTop: 7,
+        marginHorizontal: 8.5,
+        marginBottom: 17
+    },
+    textInput: {
+        borderRadius: 7,
+        borderColor: '#A0A0A0',
+        borderWidth: 1,
+        height: 40,
+        color: '#A0A0A0',
+        paddingHorizontal: 12,
+        fontSize: 11,
+    },
+    priceBox: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        marginHorizontal: 8.5,
+        marginBottom: 13,
+    },
+    priceText: {
+        color: '#5D5D5D'
+    },
+    buttonView: {
+        marginHorizontal: 8.5,
+        // borderWidth: 1,
+        // borderColor: 'black'
+        // marginTop: 13,
+    },
+    resrvButton: {
+        alignSelf: 'stretch',
+        borderRadius: 15,
+        paddingVertical: 12,
         elevation: 2
     },
-    textStyle: {
+    buttonText: {
         color: "white",
-        fontWeight: "bold",
         textAlign: "center",
+        fontSize: 13
     },
+    valid: {
+        backgroundColor: '#4184E4',
+    },
+    invalid: {
+        backgroundColor: '#D2D1CB',
+    },
+    errorBox: {
+        alignItems: 'flex-end',
+        marginBottom: 3,
+        marginRight: 10
+    },
+    errorMessageA : {
+        color: 'red',
+        fontSize: 12
+    }
 });
 
 

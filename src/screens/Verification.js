@@ -1,18 +1,19 @@
+/*
 import React from 'react';
-/* 아임포트 본인인증 모듈을 불러옵니다. */
+// 아임포트 본인인증 모듈을 불러옵니다. 
 import { View, Text, StyleSheet } from 'react-native';
 import IMP from 'iamport-react-native';
 
-/* 로딩 컴포넌트를 불러옵니다. */
+// 로딩 컴포넌트를 불러옵니다. 
 import Loading from '../components/Loading';
 
 export function Verification({ navigation }) {
-  /* [필수입력] 본인인증 종료 후, 라우터를 변경하고 결과를 전달합니다. */
+  // [필수입력] 본인인증 종료 후, 라우터를 변경하고 결과를 전달합니다. 
   function callback(response) {
     navigation.replace('VerificationResult', {response: response});
   }
 
-  /* [필수입력] 본인인증에 필요한 데이터를 입력합니다. */
+  // [필수입력] 본인인증에 필요한 데이터를 입력합니다. 
   const data = {
     merchant_uid: `mid_${new Date().getTime()}`,
     company: '아임포트',
@@ -34,3 +35,4 @@ export function Verification({ navigation }) {
 }
 
 export default Verification;
+*/

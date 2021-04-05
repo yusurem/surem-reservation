@@ -1,7 +1,11 @@
 import React from 'react';
+import { Image, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
 import { Entypo, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 
 import HomeScreen from './src/screens/home/HomeScreen';
@@ -10,9 +14,9 @@ import CalendarScreen from './src/screens/CalendarScreen';
 import ReservationScreen from './src/screens/ReservationScreen';
 import DatePicker from './src/screens/DatePicker';
 import ReservedScreen from './src/screens/ReservedScreen';
-import VerificationScreen from './src/screens/VerificationScreen';
+// import VerificationScreen from './src/screens/VerificationScreen';
 import VerificationResult from './src/screens/VerificationResult';
-import Verification from './src/screens/Verification';
+// import Verification from './src/screens/Verification';
 import AgendaScreen from './src/screens/AgendaScreen';
 import CalListScreen from './src/screens/CalListScreen';
 import OldAgenda from './src/screens/OldAgenda';
@@ -23,6 +27,8 @@ import TestScreen from './src/screens/TestScreen';
 import SignupScreen from './src/screens/member/SignUpScreen'
 import FindPassword from './src/screens/member/FindPasswordScreen'
 import LoginMenuScreen from './src/screens/LoginMenuScreen';
+import PaymentScreen from './src/screens/PaymentScreen';
+
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -30,7 +36,10 @@ const Tab = createBottomTabNavigator();
 const MainStack = () => {
   return (
     <Stack.Navigator
-        initialRouteName='Demo'
+        initialRouteName='Home'
+        screenOptions={{
+          headerShown: false
+        }}
       >
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="OldAgenda" component={OldAgenda} />
@@ -49,6 +58,9 @@ const SecondStack = () => {
   return (
     <Stack.Navigator 
       initialRouteName='CalendarList'
+      screenOptions={{
+        headerShown: false
+      }}
     >
         <Stack.Screen name="Calendar" component={CalendarScreen} />
         <Stack.Screen name="Reservation" component={ReservationScreen} options={{ title: '회의실 예약'}} />
@@ -57,6 +69,7 @@ const SecondStack = () => {
         <Stack.Screen name="Agenda" component={AgendaScreen} />
         <Stack.Screen name="CalendarList" component={CalListScreen} />
         <Stack.Screen name="Table" component={TableScreen} />
+        <Stack.Screen name="Payment" component={PaymentScreen} />
     </Stack.Navigator>
   );
 }
@@ -64,11 +77,11 @@ const SecondStack = () => {
 const ThirdStack = () => {
   return (
     <Stack.Navigator 
-      initialRouteName='VerificationScreen'
+      initialRouteName='VerificationResult'
     >
-        <Stack.Screen name="VerificationScreen" component={VerificationScreen} options={{ title: '본인인증' }}/>
+        {/* <Stack.Screen name="VerificationScreen" component={VerificationScreen} options={{ title: '본인인증' }}/> */}
         <Stack.Screen name="VerificationResult" component={VerificationResult} options={{ title: '본인인증' }}/>
-        <Stack.Screen name="Verification" component={Verification} options={{ title: '본인인증' }}/>
+        {/* <Stack.Screen name="Verification" component={Verification} options={{ title: '본인인증' }}/> */}
     </Stack.Navigator>
   );
 }
@@ -87,44 +100,76 @@ const FourthStack = () => {
 
 function App() {
   return (
-    <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen 
-          name="홈" 
-          component={MainStack} 
-          options={{
-            tabBarLabel: '홈',
-            tabBarIcon: () => <Entypo name="home" color="blue" size={24} />,
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <Tab.Navigator
+          tabBarOptions={{
+            style: {
+              height: 70,
+              // paddingTop: 10,
+              // marginTop: 20
+            },
+            labelStyle:{
+              marginBottom: 15
+            },
+            activeTintColor: '#474747',
+            inactiveTintColor: '#474747',
+            activeBackgroundColor: '#D9D8D8'
           }}
-        />
-        <Tab.Screen 
-          name="예약하기" 
-          component={SecondStack} 
-          options={{
-            tabBarLabel: '예약하기',
-            tabBarIcon: () => <MaterialCommunityIcons name="calendar-clock" color="blue" size={24} />,
-          }}
-        />
-        <Tab.Screen 
-          name="예약확인" 
-          component={ThirdStack} 
-          options={{
-            tabBarLabel: '예약확인',
-            tabBarIcon: () => <MaterialCommunityIcons name="checkbox-marked-outline" color="blue" size={24} />,
-          }}
-        />
-        <Tab.Screen 
-          name="MY" 
-          component={FourthStack} 
-          options={{
-            tabBarLabel: 'MY',
-            tabBarIcon: () => <FontAwesome5 name="user-alt" color="blue" size={24} />,
-          }}
-        />
-      </Tab.Navigator>
-    </NavigationContainer>
+        >
+          <Tab.Screen 
+            name="홈" 
+            component={MainStack} 
+            options={{
+              tabBarLabel: '홈',
+              // tabBarIcon: () => {
+              //   return (
+              //     <Image
+              //         style={styles.iconStyle}
+              //         source={require('./assets/cuts/home.png')}
+              //     />
+              //   );
+              // }
+                
+              tabBarIcon: () => <Entypo name="home" color="#474747" size={24} style={{alignSelf: 'center', marginLeft: 0.5, marginTop: 15}} />,
+            }}
+          />
+          <Tab.Screen 
+            name="예약하기" 
+            component={SecondStack} 
+            options={{
+              tabBarLabel: '예약하기',
+              tabBarIcon: () => <MaterialCommunityIcons name="calendar-clock" color="#474747" size={24} style={{ marginTop: 15 }}/>,
+            }}
+          />
+          <Tab.Screen 
+            name="예약확인" 
+            component={ThirdStack} 
+            options={{
+              tabBarLabel: '예약확인',
+              tabBarIcon: () => <MaterialCommunityIcons name="checkbox-marked-outline" color="#474747" size={24} style={{ marginTop: 15 }}/>,
+            }}
+          />
+          <Tab.Screen 
+            name="MY" 
+            component={FourthStack} 
+            options={{
+              tabBarLabel: 'MY',
+              tabBarIcon: () => <FontAwesome5 name="user-alt" color="#474747" size={24} style={{ marginTop: 15 }}/>,
+            }}
+          />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  iconStyle: {
+    width: 30,
+    height: 30
+  }
+})
 
 export default App;
 

@@ -1,0 +1,86 @@
+2021-04-05
+- 문제점
+    - reservation 콜하면 룸정보없다는 에러 E2005   
+        - 메모 추가해야함
+    - joinMember internal error E9999
+    - getRoomInfo 룸없다 E2005
+        - weird cuz the table getReservationList works perfectly fine
+
+
+
+
+2021-03-08
+
+-  기회팀
+    - 새로운 기획서를 못받고있습니다
+    - 예약할때 시간대를 설정할때, 거기에 가능시간과 가능하지 않은 시간등등을 어떻게 표기할지
+    - 금액 계산이 어떻게될지
+    - 결제약관
+    - 00시 부터 예약가능한걸로하나요?
+    - 쿠폰들은 어떻게 되는건가요? 사용자 따라 달라지나요? 방따라 달라지나요? 다 똑같나요? 
+        - 사용ㅎ
+
+- API 질문
+    - 사용자는 어떻게 등록하는건가요?
+        = 유재영씨가 해결하는걸로
+    - 지점하고 지점에있는 룸들은 어떻게 정리하고 조회되는건가요? 아크텍쳐가 잘 이해가 안가요
+        = 나중에 해결, 일단은 testing만하는걸로
+    - QR code generation
+        - Get method에 암호화키를 expose해도괜찮은지
+        - Return data가 html <img> element에 소스가 붙여져 오는데 그냥 이 소스 url만 리턴해서 제가 qr code를 generate하면 보안상 달라지는게 있나요? 이렇게 하면 굳이 webview를 안해가면서 해결할수있을것같아서요
+        - WebView 돌아올때 has to be in one-line not broken apart
+        = URL만 보내느걸로 결정, 하지만 차후 QR code가 공유되는 부분은 보안측에서 어떻게 할지 고민해야한다
+
+- API endpoints
+    - 방 사진들
+        = 추가하는거로
+    - 방 detail
+        - 인원수
+        - 디테일
+        - 금액
+            - 근데 시간별로 계산된다 들어서 어떻게 될지 모르겠다
+        = 추가하는걸로, 근데 인원수는 방 조회될때 같이 오는걸로 정해짐
+    - reservation
+        - 메모도 추가할수있어야한다
+        = 추가하는걸로
+    - 쿠폰
+        = 추가하는걸로
+    - 결제약관 동의 내역 (?)
+        = 생략가능
+
+
+2021-03-22
+
+-   기획팀
+    - 쿠폰 어떻게할건지, 갯수가 정해져있는지, 3개보다 많거나 적으면 어떻게 보여야하는지
+        = 쿠폰 수에 따라 커지고 작아지면된다
+        = 따로 페이지를 구축
+    - 금액관련 부분은 어떻게 할것인지
+        = 평일, 주말
+        = 금액은 시간당 계산
+            = receiving it from th API endpoint
+    - 기획서에 나온것보다 테이블에서 보여지는 값이 0:00 부터 23:00 까지인데 안그러는건지
+        -만약 괜찮다면 어떻게 기획서와 달리 밑으로 이어지는데 괜찮은지
+            = 괜찮다
+        = 영업시간대로 렌더링되어야한다
+    - 결제약관
+        = 이미지로 나중에 받기
+    - 시작시간 / 종료시간
+        - only display the avialable end times once the start time is selected
+        - only dispaly the available start time from the beginning
+    - 공유하기
+        = 어플을 여는 URL 연구
+    = 이미 이용중인것만 "연장하기"
+        나머지는 변경하기
+
+-   API 
+    - 방정보 api가 어떻게되는것인지
+        - 이미지코드가 뭐인지
+            = 방이미지 고유 키 값- 나중에 endpoint로 연결
+    = 예약할때 memo도 넣을수있게 만듬
+    = 위에 결정된 모든 금액 등등 api 추가해야함
+    = 이미지 api 만듬
+    = 방정보 api 수정
+
+-   재영씨
+    - 회원가입 완료된것인지
