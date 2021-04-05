@@ -27,7 +27,7 @@ export function LoginMenuScreen({ navigation, route }) {
             <Button
                 title="회원가입" 
                 onPress = {() => {
-                    navigation.navigate("Sigup")}}
+                    navigation.navigate("Signup")}}
             />
             <Text></Text>
             <Button

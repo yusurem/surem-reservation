@@ -57,10 +57,15 @@ export function DemoScreen({ navigation, route }) {
             <Button
                 title="Go to Login" 
                 onPress = {() => {
-                    navigation.navigate("Login")}}
+                    navigation.navigate("LoginMenu")}}
             />
             <Text></Text>
 
+            <Button
+                title="Go to Main Menu" 
+                onPress = {() => {
+                    navigation.navigate("HomeMenu")}}
+            />
             <Text style={{ fontSize: 17, alignSelf: 'center' }}>Recent Reservations: </Text>
             <Text></Text>
             <View style={styles.listStyle}>

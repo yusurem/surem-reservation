@@ -20,10 +20,6 @@ const DEPT_CODE = "35--SX-DQ";
 export default function SignUpScreen({ navigation }) {
   const [name, setName] = useState("");
   const [phoneNum, setPhoneNum] = useState("");
-  const [verifyNum, setVerifyNum] = useState("");
-  const [errorMessageA, setErrorMessageA] = useState("");
-  const [codeNum, setCodeNum] = useState("");
-  const [errorMessageB, setErrorMessageB] = useState("");
 
   return (
     <View
@@ -82,7 +78,6 @@ export default function SignUpScreen({ navigation }) {
       <KakaoLoginButton color='#FFFFFF'/>
       <NaverLoginButton color='#FFFFFF'/>
       <GoogleLoginButton color='#FFFFFF'/>
-      {errorMessageB ? <Text style={{ color: 'red' }}>{errorMessageB}</Text> : null}
       <Text></Text>
     </View>
   );  
