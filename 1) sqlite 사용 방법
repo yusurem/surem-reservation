@@ -1,0 +1,36 @@
+1) sqlite 사용 방법
+
+    1. expo install expo-sqlite
+    SQLite 패키지를 다운 받는다.
+
+    2. 코드 작성 예시
+
+    import * as SQLite from 'expo-sqlite';
+
+    const db = SQLite.openDatabase('db.db')
+    db.transaction(tx=>{
+        tx.executeSql('CREATE TABLE IF NOT EXISTS UserId (_id INTEGER PRIMARY KEY, secretCode TEXT, usercode TEXT);')
+    })
+    const hasUserId = () => {
+        db.transaction((tx)=>{
+        tx.executeSql(
+            `select * from UserId;`,
+            [],
+            (tx, results) =>{
+                console.log('SELECT UserId :: ',results)
+
+            }
+        )
+        })
+    }
+
+2) 변경된 파일 목록
+    package.json
+
+    src/button/SignUpButton.js
+    src/components/AuthNumberInput.js 
+    src/components/Checkbox/AcceptTermsChkbox.js 
+    src/components/Checkbox/KeepSignedChkbox.js 
+    src/components/CountDownTimer.js 
+    src/screens/HomeScreen.js 
+    src/screens/member/SignUpScreen.js 
