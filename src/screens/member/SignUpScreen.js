@@ -51,7 +51,7 @@ export default function SignUpScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      url: 'https://rest.surem.com/sms/v1/json',
+      url: 'https://dynapi.surem.com/sms/v1/json?secuCd=f71742597bd420117f7736f9b052a665fed39d1cdf53707f955da2d6921dcd32',
       headers: {
         'Content-Type': 'application/json'
       },
