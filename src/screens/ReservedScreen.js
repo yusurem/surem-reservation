@@ -1,74 +1,182 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableHighlight, TextInput } from 'react-native';
+import { View, Text, StyleSheet, TouchableHighlight, TextInput, Image, Button, Alert, TouchableOpacity } from 'react-native';
+import axios from 'axios';
+import { Feather } from '@expo/vector-icons'; 
+import QRCode from 'react-native-qrcode-svg';
+import Modal from 'react-native-modal';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+
+// import { WebView } from 'react-native-webview';
+
 
 const ReservedScreen = ({ navigation, route }) => {
     const [name, setName] = useState("");
-    const date = route.params.reservationDate;
+    const [modalVisible, setModalVisible] = useState(false);
 
-    return (
-        <View style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: 25 }} >예약완료!</Text>
-            <Text>예약날짜:</Text>
-            <Text>Date: {`${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`}</Text>
-            {/* <Text>Time: {`${date.getHours()}:${date.getMinutes()}`}</Text> */}
-            <Text>Time: 16:30 pm ~ 18:30 pm</Text>
+    console.log("Entered ReservedScreen. Params: ");
+    console.log(route.params);
 
-            {/* <View>
-                <Text>이름: </Text>
-                <TextInput 
-                    style={styles.input} 
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    value={name}
-                    onChangeText={(newValue) => setName(newValue)}
-                />
-                {name.length > 0 ? null : <Text>Example: Brandon</Text>}
-            </View> */}
-            <Text></Text>
+    const weekDays = new Array('일', '월', '화', '수', '목', '금', '토');
 
-            <TouchableHighlight
-                style={styles.openButtonOne}
-                onPress={() => {
-                    navigation.navigate('CalendarList');
-                }}
-            >
-                <Text style={styles.textStyle}>더 예약하기</Text>
-            </TouchableHighlight>
-            <Text></Text>
-            <TouchableHighlight
-                style={styles.openButtonTwo}
-                onPress={() => {
-                    navigation.navigate('Home');
-                }}
-            >
-                <Text style={styles.textStyle}>홈</Text>
-            </TouchableHighlight>
-        </View>
+    // TODO: Room information API connect
+    return (    
+        <SafeAreaView style={{ flex: 1 }}>
+            <View style={styles.viewStyle}>
+                <Feather style={styles.iconStyle} name="check-circle" size={40} color="black" />
+                <Text style={styles.titleStyle}>예약이 완료 되었습니다!</Text>
+                <Text style={styles.textStyle}>1호실 (4인실)</Text>
+                <Text style={styles.textStyle}>날짜 : {route.params.dateString.replace(/-/g," / ")} ({weekDays[route.params.weekDay]}) </Text>
+                <Text style={styles.textStyle}>시간 : {route.params.startTime} ~ {route.params.endTime}</Text>
+
+                <View style={styles.qrStyle}>
+                    <QRCode
+                        size={140}
+                        value={route.params.resrvCode}
+                    />
+                </View>
+
+                <TouchableHighlight
+                    style={styles.buttonStyle}
+                    onPress={() => {
+                        setModalVisible(!modalVisible);
+                    }}
+                >
+                    <Text style={styles.buttonText}>공유하기</Text>
+                </TouchableHighlight>
+
+                <Modal 
+                    isVisible={modalVisible}
+                    backdropTransitionOutTiming={0}
+                    style={styles.modal}
+                    swipeDirection={['down']}
+                    onSwipeComplete={() => {
+                        setModalVisible(!modalVisible);
+                    }}
+                >
+                    <View style={styles.bottomBar}>
+                        <View style={{ backgroundColor: '#5d5e61', width: 23, height: 3, alignSelf: 'center', borderRadius: 500, marginBottom: 11 }} />
+                        <View style={styles.modalStyle}>
+                            <View style={styles.innerModal}>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        Alert.alert("카카오톡");
+                                    }}
+                                >
+                                    <View>
+                                        <Image
+                                            style={styles.logoStyle}
+                                            source={require('../../assets/cuts/kakao.png')}
+                                        />
+                                        <Text style={styles.logoCaption}>카카오톡</Text>
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        Alert.alert("문자메시지");
+                                    }}
+                                >
+                                    <View>
+                                        <Image
+                                            style={styles.logoStyle}
+                                            source={require('../../assets/cuts/message.png')}
+                                        />
+                                        <Text style={styles.logoCaption}>문자메시지</Text>
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        Alert.alert("URL복사");
+                                    }}
+                                >
+                                    <View>
+                                        <Image
+                                            style={styles.logoStyle}
+                                            source={require('../../assets/cuts/urlcopy.png')}
+                                        />
+                                        <Text style={styles.logoCaption}>URL복사</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
+            </View>
+        </SafeAreaView> 
     );
 }
 
 const styles = StyleSheet.create({ 
-    openButtonOne: {
-        backgroundColor: "orange",
-        borderRadius: 20,
-        padding: 20,
-        elevation: 2
-    },
-    openButtonTwo: {
-        backgroundColor: "blue",
-        borderRadius: 20,
-        padding: 20,
-        elevation: 2
+    viewStyle: {
+        alignItems: 'center',
+        backgroundColor: '#f3f4f8',
+        flexGrow: 1,
     },
     textStyle: {
-        color: "white",
-        fontWeight: "bold",
-        textAlign: "center",
+        textAlign: 'center',
+        backgroundColor: 'white',
+        borderRadius: 8,
+        fontSize: 13,
+        marginBottom: 2,
+        padding: 2,
+        paddingHorizontal: 10
     },
-    input: {
-        margin: 15,
-        borderColor: 'black',
-        borderWidth: 1
+    titleStyle: {
+        fontSize: 16,
+        marginBottom: 18
+    },
+    iconStyle: {
+        marginTop: 50,
+        color: '#07a7e6',
+        marginBottom: 10
+    },
+    qrStyle: {
+        marginTop: 65,
+    },
+    buttonStyle: {
+        backgroundColor: "#262829",
+        borderRadius: 7,
+        marginTop: 35,
+        paddingVertical: 12,
+        paddingHorizontal: 80,
+        elevation: 2
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 14
+    },
+    modalStyle: {
+        backgroundColor: 'white',
+        // flexDirection: 'row',
+        padding: 10,
+        paddingVertical: 30,
+        borderTopWidth: 1,
+        borderTopColor: '#5f6061'
+    },
+    innerModal:{
+        marginHorizontal: 48,
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+    logoStyle: {
+        width: 50,
+        height: 50,
+        // resizeMode: 'contain',
+        // borderColor: 'black',
+        // borderWidth: 1
+    },
+    logoCaption: {
+        textAlign: 'center',
+        fontSize: 10,
+    },
+    modal: {
+        justifyContent: 'flex-end',
+        margin: 0
+    },
+    bottomBar: {
+        backgroundColor: 'white',
+        borderRadius: 20,
+        paddingTop: 11
     }
 });
 

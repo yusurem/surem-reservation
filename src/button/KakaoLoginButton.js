@@ -1,6 +1,7 @@
-import { View } from 'native-base';
+// import { View } from 'native-base';
 import React, { Component } from 'react';
 import {
+  View,
   TouchableOpacity,
   Text,
   StyleSheet,

@@ -1,0 +1,9 @@
+- Test Room codes
+    21D7E4B9B8C840F  -> currently using this as testing purposes
+    7105507F78B7422  -> 2호실
+    7F2AB0EE33674A7  -> 3호실
+    9CEA21E68822448
+    A4819327DB0646D
+    BED3D146E9DB457
+    FABE128F345948A
+
