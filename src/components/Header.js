@@ -1,7 +1,7 @@
 import React, { Component,useState } from "react";
 import { Text, StyleSheet, View, Image } from "react-native";
 
-export default class  extends Component{
+export default class Header extends Component{
   constructor(props){
     super(props);
   }

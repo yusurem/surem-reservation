@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Button, TextInput, StatusBar, StyleSheet, TouchableOpacity} from 'react-native'
 
 import axios from 'axios';
@@ -10,14 +10,15 @@ import CountDownTimer from '../../components/CountDownTimer'
 import Header from '../../components/Header'
 import * as SQLite from 'expo-sqlite';
 
-import { useEffect } from 'react';
-
 const USER_CODE = "suremqr";
 const DEPT_CODE = "35--SX-DQ";
+
 const db = SQLite.openDatabase('db.db');
+
 db.transaction(tx=>{
   tx.executeSql('CREATE TABLE IF NOT EXISTS AuthNumbers (_id INTEGER PRIMARY KEY, authNumber TEXT);')
 })
+
 db.transaction(tx=>{
   tx.executeSql('CREATE TABLE IF NOT EXISTS UserId (_id INTEGER PRIMARY KEY, secretCode TEXT, usercode TEXT);')
 })
@@ -27,7 +28,7 @@ export default function SignUpScreen({ navigation }) {
   const [isSentAuth, setIsSentAuth] = useState(false);
   const [isAuth, setIsAuth] = useState(false);
   const [isCheckAcceptedTerm, setIsCheckAcceptedTerm] = useState(false);
-  const [minutes, setMinutes] = useState(3);
+  const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
 
   const makeId = () => {
@@ -92,6 +93,8 @@ export default function SignUpScreen({ navigation }) {
       )
     })
   }
+
+
   const hasUserId = () => {
     db.transaction((tx)=>{
       tx.executeSql(
@@ -151,7 +154,7 @@ export default function SignUpScreen({ navigation }) {
         <AuthNumberInput setIsAuth={setIsAuth}/> : 
         <TouchableOpacity style={styles.button} onPress={ () => {
           var authNumberText = makeId()
-
+          console.log('AUTH NUMBER :: ',authNumberText)
           if(phoneNum === ""){
             alert('핸드폰 번호를 입력해주세요.')
             return
@@ -159,6 +162,7 @@ export default function SignUpScreen({ navigation }) {
           deleteAuthNumbers()
           saveAuthNumber(authNumberText)
           selectAuthNumbers()
+          setMinutes(3)
           setIsSentAuth(true)
           sendMessage(phoneNum,authNumberText)
         }}

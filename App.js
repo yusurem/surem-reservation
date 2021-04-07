@@ -36,7 +36,7 @@ const Tab = createBottomTabNavigator();
 const MainStack = () => {
   return (
     <Stack.Navigator
-        initialRouteName='Home'
+        initialRouteName='SignUp'
         screenOptions={{
           headerShown: false
         }}
@@ -46,7 +46,7 @@ const MainStack = () => {
         <Stack.Screen name="Demo" component={DemoScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Test" component={TestScreen} />
-        <Stack.Screen name="Signup" component={SignupScreen}/>
+        <Stack.Screen name="SignUp" component={SignupScreen}/>
         <Stack.Screen name="FindPassword" component={FindPassword}/>
         <Stack.Screen name="HomeMenu" component={HomeMenuScreen}/>
         <Stack.Screen name="LoginMenu" component={LoginMenuScreen} />
@@ -77,8 +77,12 @@ const SecondStack = () => {
 const ThirdStack = () => {
   return (
     <Stack.Navigator 
-      initialRouteName='VerificationResult'
+      initialRouteName='Home'
+      screenOptions={{
+        headerShown: false
+      }}
     >
+      <Stack.Screen name="Home" component={HomeScreen} />
         {/* <Stack.Screen name="VerificationScreen" component={VerificationScreen} options={{ title: '본인인증' }}/> */}
         <Stack.Screen name="VerificationResult" component={VerificationResult} options={{ title: '본인인증' }}/>
         {/* <Stack.Screen name="Verification" component={Verification} options={{ title: '본인인증' }}/> */}
