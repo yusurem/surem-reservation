@@ -85,14 +85,13 @@ const CalListScreen = ({ navigation }) => {
                     <Calendar
                         style={styles.calendars}
                         onDayPress={onDayPress}
-                        // current={"2019-10-10"}
+                        current={Date()}
                         minDate={Date()}
                         onDayLongPress={onDayLongPress}
                         hideArrows={false}
                         renderArrow={(direction) => {
                             if(direction === 'left'){
                                 return <FontAwesome5 name="less-than" size={24} color="#BFBEBE" />;
-
                             }
                             else{
                                 return <FontAwesome5 name="greater-than" size={24} color="#BFBEBE" />;

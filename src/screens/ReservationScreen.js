@@ -8,8 +8,6 @@ import { SliderBox } from 'react-native-image-slider-box';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
-// import DateTimePicker from '@react-native-community/datetimepicker';
-
 const ReservationScreen = ({ navigation, route }) => {
     const [startTime, setStartTime] = useState(route.params.startTime);
     const [endTime, setEndTime] = useState("0");
@@ -17,8 +15,13 @@ const ReservationScreen = ({ navigation, route }) => {
     const [errorMessageA, setErrorMessageA] = useState("");
     const [isValid, setIsValid] = useState(false);
     const [roomInfo, setRoomInfo] = useState("Hi");
+
     const [duration, setDuration] = useState(0);
+    const [hours, setHours] = useState(0);
+    const [mins, setMins] = useState(0);
+
     const [cost, setCost] = useState("0")
+    const [roomName, setRoomName] = useState("회의실");
 
     const [info, setInfo] = useState("");
     const [subInfo, setSubInfo] = useState("");
@@ -27,7 +30,7 @@ const ReservationScreen = ({ navigation, route }) => {
     const [endVals, setEndVals] = useState([]);
 
     console.log("Entered ReservationScreen. Params: ");
-    console.log(route.params);
+    // console.log(route.params);
 
     const images = [
         require("../../assets/office1.png"),
@@ -40,10 +43,21 @@ const ReservationScreen = ({ navigation, route }) => {
         var temp;
         const intVals = [];
         for(let i = 0; i < vals.length; i++){
-            temp = (vals[i].charAt(0) == '0' ? vals[i].charAt(1) + "" : vals[i].substring(0,2));
-            intVals.push(parseInt(temp));
+            // temp = (vals[i].charAt(0) == '0' ? vals[i].substring(1) + "" : vals[i].substring(0,2));
+            intVals.push(parseInt(vals[i]));
         }
         return intVals;
+    }
+
+    const valsToDate = (vals) => {
+        const dateVals = [];
+        for(let i = 0; i < vals.length; i++){
+            dateVals.push({
+                hour: parseInt(vals[i].substring(0,2)),
+                min: parseInt(vals[i].charAt(2)),
+            });
+        }
+        return dateVals;
     }
 
     const findSIndex = (sValue, timeVals) => {
@@ -56,17 +70,37 @@ const ReservationScreen = ({ navigation, route }) => {
     }
 
     const filterEndTime = (sIndex, timeVals) => {
-        var init = timeVals[sIndex];
         const endVals = [];
+        var init = timeVals[sIndex];
         for(var i = sIndex + 1; i < timeVals.length; i++){
-            if(timeVals[i] - init != 1){
+            if(timeVals[i].hour == init.hour){
+                if(timeVals[i].min - init.min == 1){
+                    endVals.push(timeVals[i]);
+                }
+            }
+            else if(timeVals[i].hour - init.hour == 1){
+                if(timeVals[i].min == 0 && init.min == 5){
+                    endVals.push(timeVals[i]);
+                }
+            }
+            else{
                 break;
             }
-            endVals.push(timeVals[i]);
             init = timeVals[i];
         }
-        endVals.push(init + 1);
         return endVals;
+
+        // var init = timeVals[sIndex];
+        // const endVals = [];
+        // for(var i = sIndex + 1; i < timeVals.length; i++){
+        //     if(timeVals[i] - init != 1){
+        //         break;
+        //     }
+        //     endVals.push(timeVals[i]);
+        //     init = timeVals[i];
+        // }
+        // endVals.push(init + 1);
+        // return endVals;
     }
 
     const buildPickerData = (endVals) => {
@@ -74,17 +108,17 @@ const ReservationScreen = ({ navigation, route }) => {
         const pickerLabels = [];
         var flag = false;
         for(var i = 0; i < endVals.length; i++){
-            if(endVals[i] > 9){
-                if(endVals[i] == 24){ // if 23 is called, 0:00 AM has to be added (special case)
-                    pickerVals.push('000000');
+            if(endVals[i].hour > 9){
+                if(endVals[i].hour == 23 && endVals[i].min == 5){
+                    pickerVals.push("000000");
                     pickerLabels.push('24:00 AM');
-                    break; // if 23, then at the end of the array
+                    break;
                 }
                 flag = true;
             }
-            pickerVals.push(`${flag ? endVals[i] + "" : '0' + endVals[i]}0000`);
-            pickerLabels.push(`${endVals[i]}:00 ${flag ? "PM" : "AM"}`);
-            flag = false;
+
+            pickerVals.push(`${flag ? endVals[i].hour : "0" + endVals[i].hour}${endVals[i].min}000`);
+            pickerLabels.push(`${endVals[i].hour}:${endVals[i].min}0 ${flag ? "PM" : "AM"}`);
         }
         setEndVals(pickerVals);
         setEndLabels(pickerLabels);
@@ -101,11 +135,12 @@ const ReservationScreen = ({ navigation, route }) => {
             const response = await axios.post('http://112.221.94.101:8980/getRoomInfo', {
                 roomCode: route.params.roomCode
             });
-            // console.log(response.data);
+            console.log(response.data);
             console.log("API call successful!");
             setRoomInfo(response.data);
             setInfo(response.data.room.info);
             setSubInfo(response.data.room.subInfo);
+            setRoomName(response.data.room.roomName);
         } catch (err) {
             setErrorMessageA("API 문제발생");
             console.log(err);
@@ -114,7 +149,12 @@ const ReservationScreen = ({ navigation, route }) => {
     }
 
     if(endVals.length == 0){
-        buildPickerData(filterEndTime(findSIndex(startTime, route.params.optionVals), valsToInt(route.params.optionVals)));
+        console.log("Initializing Data..");
+        // var sIn = findSIndex(startTime, route.params.optionVals);
+        // var vInt = valsToDate(route.params.optionVals);
+        // console.log(sIn);
+        // console.log(vInt);
+        buildPickerData(filterEndTime(findSIndex(startTime, route.params.optionVals), valsToDate(route.params.optionVals)));
         getRoomInfo();
         return (
             <SafeAreaView style={{flex: 1, justifyContent: 'center'}}>
@@ -124,9 +164,12 @@ const ReservationScreen = ({ navigation, route }) => {
             </SafeAreaView>
         )
     }
-    console.log("---------------------------");
-    console.log(roomInfo);
-    console.log("---------------------------");
+    // console.log("---------------------------");
+    // console.log(endVals);
+    // console.log("---------------------------");
+
+    // const images = [];
+
 
     const calculatePrice = () => {
         if(route.params.weekDay < 5){
@@ -143,7 +186,7 @@ const ReservationScreen = ({ navigation, route }) => {
                 <View style={styles.mainBox}>
                     <View style={styles.headerBox}>
                         <View style={styles.blueBar}/>
-                        <Text style={styles.headerText}>회의실 {"1호실"}</Text>
+                        <Text style={styles.headerText}>{roomName}</Text>
                     </View>
                     <View style={{alignItems: 'center', height: 190, marginBottom: 17, marginTop: 7}}>
                         {/* <Image style={styles.imageStyle} source={require("../../assets/office1.png")} /> */}
@@ -204,9 +247,19 @@ const ReservationScreen = ({ navigation, route }) => {
                                         // console.log("dapeta" + endTime);
                                         // console.log("APEOITUNAPET: " + endTime.substring(0,2));
                                         // console.log("APEOITUNAPET: " + parseInt(endTime.substring(0,2)));
-                                        setDuration(parseInt(itemValue.substring(0,2)) - parseInt(startTime.substring(0,2)));
-                                        console.log(calculatePrice());
-                                        setCost(calculatePrice());
+
+                                        var startDate = new Date(0, 0, 0, parseInt(startTime.substring(0,2)), parseInt(startTime.charAt(2)) * 10, 0);
+                                        var endDate = new Date(0, 0, 0, parseInt(itemValue.substring(0,2)), parseInt(itemValue.charAt(2)) * 10, 0);
+                                        var diff = endDate.getTime() - startDate.getTime();
+                                        var hours = Math.floor(diff / 1000 / 60 / 60);
+                                        diff -= hours * 1000 * 60 * 60;
+                                        var minutes = Math.floor(diff / 1000 / 60);
+
+                                        setHours(hours);
+                                        setMins(minutes);
+
+                                        // console.log(calculatePrice());
+                                        // setCost(calculatePrice());
                                     }
                                     else{
                                         setIsValid(false);
@@ -238,15 +291,20 @@ const ReservationScreen = ({ navigation, route }) => {
                     <View style={[styles.priceBox]}>
                         <Text style={styles.priceText}>총</Text>
                         <View>
-                            <Text style={styles.priceText}>     {duration}     </Text>
+                            <Text style={styles.priceText}>     {hours}     </Text>
                             <View style={{ borderBottomColor: '#5D5D5D', borderBottomWidth: 1 }}/>
                         </View>
                         <Text style={styles.priceText}> 시간   </Text>
                         <View>
+                            <Text style={styles.priceText}>     {mins}     </Text>
+                            <View style={{ borderBottomColor: '#5D5D5D', borderBottomWidth: 1 }}/>
+                        </View>
+                        <Text style={styles.priceText}> 분   </Text>
+                        {/* <View>
                             <Text style={styles.priceText}>     {cost}     </Text>
                             <View style={{ borderBottomColor: '#5D5D5D', borderBottomWidth: 1 }}/>
                         </View>
-                        <Text style={styles.priceText}>원</Text>
+                        <Text style={styles.priceText}>원</Text> */}
                     </View>
                    
                     <View style={styles.errorBox}>
@@ -269,7 +327,8 @@ const ReservationScreen = ({ navigation, route }) => {
                                         day: route.params.day,
                                         memo: memo,
                                         weekDay: route.params.weekDay,
-                                        roomCode: route.params.roomCode
+                                        roomCode: route.params.roomCode,
+                                        roomName: roomName
                                     });
                                 }
                                 else{

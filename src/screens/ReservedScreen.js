@@ -25,7 +25,7 @@ const ReservedScreen = ({ navigation, route }) => {
             <View style={styles.viewStyle}>
                 <Feather style={styles.iconStyle} name="check-circle" size={40} color="black" />
                 <Text style={styles.titleStyle}>예약이 완료 되었습니다!</Text>
-                <Text style={styles.textStyle}>1호실 (4인실)</Text>
+                <Text style={styles.textStyle}>{route.params.roomName}</Text>
                 <Text style={styles.textStyle}>날짜 : {route.params.dateString.replace(/-/g," / ")} ({weekDays[route.params.weekDay]}) </Text>
                 <Text style={styles.textStyle}>시간 : {route.params.startTime} ~ {route.params.endTime}</Text>
 
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     buttonStyle: {
         backgroundColor: "#262829",
         borderRadius: 7,
-        marginTop: 35,
+        marginTop: 50,
         paddingVertical: 12,
         paddingHorizontal: 80,
         elevation: 2
