@@ -6,6 +6,8 @@ import axios from 'axios';
 import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 import CheckBox from '@react-native-community/checkbox';
 import Modal from 'react-native-modal';
+import * as SQLite from 'expo-sqlite';
+import { useEffect } from 'react';
 
 const PaymentScreen = ({ navigation, route }) => {
     const [errorMessageA, setErrorMessageA] = useState("");
@@ -14,8 +16,13 @@ const PaymentScreen = ({ navigation, route }) => {
     const [toggleCheckBox, setToggleCheckBox] = useState(false)
     const [checked, setChecked] = useState(false);
 
+    const [usercode, setUsercode] = useState("");
+	const [secretCode, setSecretCode] = useState("");
+
     console.log("Entered PaymentScreen. Params: ");
     console.log(route.params);
+
+    const db = SQLite.openDatabase('db.db');
 
     const weekDays = new Array('일', '월', '화', '수', '목', '금', '토');
 
@@ -26,6 +33,26 @@ const PaymentScreen = ({ navigation, route }) => {
     var eTime = route.params.endTime.substring(0,2);
     if(eTime[0] == '0'){
         eTime = eTime[1];
+    }
+
+    const getUserId = async () => {
+        console.log("in getuserID");
+        try{
+            await db.transaction(async (tx)=>{
+            tx.executeSql(
+                `select * from UserId order by _id desc;`,
+                [],
+                (tx, results) =>{
+                console.log("doing getUserId");
+                console.log('SELECT DDDDD :: ', results)
+                            setUsercode(results.rows.item(0).usercode)
+                            setSecretCode(results.rows.item(0).secretCode)
+                }
+            )
+            })
+        } catch (err){
+            console.log(err);
+        }
     }
 
     // 1. 룸 예약
@@ -42,10 +69,14 @@ const PaymentScreen = ({ navigation, route }) => {
         try{
             console.log("Attempting to make reservation...");
             // console.log(`${route.params.year}${route.params.month}${route.params.day}${route.params.startTime}`);
+            console.log("usercode: " + usercode);
+            console.log("secretcode: " + secretCode);
             const response = await axios.post('http://112.221.94.101:8980/reservation', {
                 'roomCode' : route.params.roomCode,
-                'usercode' : "testId1",
-                "secretCode" : "EI1MLYNV5v0pQLLlYn1hrfL2jITz5M5cArB6pnP84k0uFQLudygVvSlA9ssPlh6SKVsiAg==",
+                // 'usercode' : "testId1",
+                // "secretCode" : "EI1MLYNV5v0pQLLlYn1hrfL2jITz5M5cArB6pnP84k0uFQLudygVvSlA9ssPlh6SKVsiAg==",
+                'usercode' : usercode,
+                'secretCode' : secretCode,
                 "resrvStime" : `${route.params.year}${route.params.month}${route.params.day}${route.params.startTime}`,
                 "resrvEtime" : `${route.params.year}${route.params.month}${route.params.day}${route.params.endTime}`
             });
@@ -101,6 +132,10 @@ const PaymentScreen = ({ navigation, route }) => {
         }
     }
 
+    useEffect(() => {
+        getUserId()
+    },[usercode,secretCode])
+
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <ScrollView>
@@ -134,7 +169,7 @@ const PaymentScreen = ({ navigation, route }) => {
                         <View style={styles.infoRowStyle}>
                             <Text style={styles.subTitleStyle}>이용 금액</Text>
                             <View style={{marginRight: 4}}>
-                                <Text style={styles.valueStyle}>{'40,000원'}</Text>
+                                <Text style={styles.valueStyle}>{route.params.totalCost}원</Text>
                             </View>
                         </View>
                         <View style={styles.infoRowStyle}>
@@ -156,7 +191,7 @@ const PaymentScreen = ({ navigation, route }) => {
                     <View style={styles.infoRowStyle}>
                             <Text style={styles.subTitleStyle}>결제 금액 (vat포함)</Text>
                             <View style={{marginRight: 4}}>
-                                <Text style={styles.valueStyle}>{'40,000원'}</Text>
+                                <Text style={styles.valueStyle}>{route.params.totalCost}원</Text>
                             </View>
                     </View>
                     
@@ -204,6 +239,7 @@ const PaymentScreen = ({ navigation, route }) => {
                             style={[styles.openButton, checked ? styles.valid : styles.invalid]}
                             onPress={ async () => {
                                 if(checked){
+                                    // await getUserId();
                                     const res = await makeReservation(sTime, eTime);
                                     console.log(res);
                                     // const qr = await getQrCode(res.qrCode);

@@ -20,7 +20,7 @@ const ReservationScreen = ({ navigation, route }) => {
     const [hours, setHours] = useState(0);
     const [mins, setMins] = useState(0);
 
-    const [cost, setCost] = useState("0")
+    const [totalCost, setTotalCost] = useState("0")
     const [roomName, setRoomName] = useState("회의실");
 
     const [info, setInfo] = useState("");
@@ -258,10 +258,12 @@ const ReservationScreen = ({ navigation, route }) => {
                                         setHours(hours);
                                         setMins(minutes);
 
-                                        
+                                        var price = (minutes / 10) * parseInt(roomInfo.room.weekPrice);
+                                        price += hours * 6 * parseInt(roomInfo.room.weekPrice);
+                                        price = price.toLocaleString();
 
-                                        // console.log(calculatePrice());
-                                        // setCost(calculatePrice());
+                                        console.log(price);
+                                        setTotalCost(price);
                                     }
                                     else{
                                         setIsValid(false);
@@ -302,11 +304,11 @@ const ReservationScreen = ({ navigation, route }) => {
                             <View style={{ borderBottomColor: '#5D5D5D', borderBottomWidth: 1 }}/>
                         </View>
                         <Text style={styles.priceText}> 분   </Text>
-                        {/* <View>
-                            <Text style={styles.priceText}>     {cost}     </Text>
+                        <View>
+                            <Text style={styles.priceText}>     {totalCost}     </Text>
                             <View style={{ borderBottomColor: '#5D5D5D', borderBottomWidth: 1 }}/>
                         </View>
-                        <Text style={styles.priceText}>원</Text> */}
+                        <Text style={styles.priceText}>원</Text>
                     </View>
                    
                     <View style={styles.errorBox}>
@@ -330,7 +332,8 @@ const ReservationScreen = ({ navigation, route }) => {
                                         memo: memo,
                                         weekDay: route.params.weekDay,
                                         roomCode: route.params.roomCode,
-                                        roomName: roomName
+                                        roomName: roomName,
+                                        totalCost: totalCost
                                     });
                                 }
                                 else{

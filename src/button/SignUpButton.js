@@ -52,7 +52,7 @@ export default function SignUpButton(props){
       .then(function (response) {
       console.log(JSON.stringify(response.data));
       if(response.data.returnCode === "E0000"){
-        saveUserId(response.data.returnCode, props.phoneNum)
+        saveUserId(response.data.secretCode, props.phoneNum)
         navigation.reset({index: 0, routes: [{name: 'Home'}] })
       }
       else if(response.data.returnCode === "E3001"){

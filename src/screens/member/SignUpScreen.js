@@ -165,7 +165,7 @@ export default function SignUpScreen({ navigation }) {
           selectAuthNumbers()
           setMinutes(3)
           setIsSentAuth(true)
-          //sendMessage(phoneNum,authNumberText)
+          sendMessage(phoneNum,authNumberText)
         }}
       >
       <Text style={styles.title}>

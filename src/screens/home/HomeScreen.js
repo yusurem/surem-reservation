@@ -18,7 +18,7 @@ export default function HomeScreen({navigation}) {
       <Header color="#FFFFFF"></Header>
       <TouchableOpacity style={styles.reserveRoomBtn}
         onPress={()=>{
-          navigation.navigate('Reserve')
+          navigation.navigate('Reserve');
         }}>
         <View style={styles.reserveRoomBtnView}>
           <Image style={styles.leftSideImg} source={require("../../../assets/resrvBtn.png")} />
