@@ -1,3 +1,19 @@
+2021-04-08
+- api 문제점
+    - image
+        - base64 Encoded is hard to handle, send URL please
+
+    - time  
+        - 10분 얼마?
+    
+
+2021-04-06
+- api 문제점   
+    - getLocationList
+        - returns a string version
+
+
+
 2021-04-05
 - 문제점
     - reservation 콜하면 룸정보없다는 에러 E2005   

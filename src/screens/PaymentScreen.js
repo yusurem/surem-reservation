@@ -9,8 +9,10 @@ import Modal from 'react-native-modal';
 
 const PaymentScreen = ({ navigation, route }) => {
     const [errorMessageA, setErrorMessageA] = useState("");
+    const [errorMessageB, setErrorMessageB] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
     const [toggleCheckBox, setToggleCheckBox] = useState(false)
+    const [checked, setChecked] = useState(false);
 
     console.log("Entered PaymentScreen. Params: ");
     console.log(route.params);
@@ -67,8 +69,8 @@ const PaymentScreen = ({ navigation, route }) => {
             // });
             return {
                 dateString: route.params.dateString,
-                startTime: `${sTime}:00 ${sTime > 11 ? "PM" : "AM"}`,
-                endTime: `${eTime}:00 ${eTime > 11 ? "PM" : "AM"}`,
+                startTime: `${sTime}:${route.params.startTime.charAt(2)}0 ${sTime > 11 ? "PM" : "AM"}`,
+                endTime: `${eTime}:${route.params.endTime.charAt(2)}0 ${eTime > 11 ? "PM" : "AM"}`,
                 resrvCode: rCode
             };
         } catch (err) {
@@ -124,15 +126,15 @@ const PaymentScreen = ({ navigation, route }) => {
                         <View style={styles.rowStyle}>
                             <Text style={styles.subTitleStyle}>이용 시간</Text>
                             <View style={styles.valueView}>
-                                <Text style={styles.valueStyle}>{sTime}시~{eTime}시</Text>
+                                <Text style={styles.valueStyle}>{sTime}시{route.params.startTime.charAt(2)}0분~{eTime}시{route.params.endTime.charAt(2)}0분</Text>
                             </View>
                         </View>
-                        <View style={styles.rowStyle}>
+                        {/* <View style={styles.rowStyle}>
                             <Text style={styles.subTitleStyle}>회의실</Text>
                             <View style={styles.valueView}>
                                 <Text style={styles.valueStyle}>{'4인실'}</Text>
                             </View>
-                        </View>
+                        </View> */}
                     </View>
 
                     <View style={styles.infoStyle}>
@@ -191,32 +193,48 @@ const PaymentScreen = ({ navigation, route }) => {
                             <CheckBox
                                 disabled={false}
                                 value={toggleCheckBox}
-                                onValueChange={(newValue) => setToggleCheckBox(newValue)}
+                                onValueChange={(newValue) => {
+                                    setErrorMessageB("");
+                                    setChecked(newValue);
+                                    setToggleCheckBox(newValue);
+                                }}
                             />
                             <Text style={styles.termsCaption}>이용약관 및 개인정보 처리방침에 동의합니다.</Text>
+                        </View>
+
+                        <View style={styles.errorBox}>
+                            {errorMessageB ? <Text style={styles.errorMessage}>{errorMessageB}</Text> : <Text style={styles.errorMessage}></Text>}
                         </View>
                     </View>
 
                     <View>
                         <Text style={styles.titleStyle}>결제수단 선택</Text>
-                        <TouchableHighlight
-                            style={styles.openButton}
+                        <TouchableOpacity
+                            style={[styles.openButton, checked ? styles.valid : styles.invalid]}
                             onPress={ async () => {
-                                const res = await makeReservation(sTime, eTime);
-                                console.log(res);
-                                // const qr = await getQrCode(res.qrCode);
-                                // console.log(qr);
-                                navigation.navigate('Reserved', {
-                                    dateString: res.dateString,
-                                    startTime: res.startTime,
-                                    endTime: res.endTime,
-                                    resrvCode: res.resrvCode,
-                                    weekDay: route.params.weekDay
-                                });
+                                if(checked){
+                                    const res = await makeReservation(sTime, eTime);
+                                    console.log(res);
+                                    // const qr = await getQrCode(res.qrCode);
+                                    // console.log(qr);
+                                    navigation.navigate('Reserved', {
+                                        dateString: res.dateString,
+                                        startTime: res.startTime,
+                                        endTime: res.endTime,
+                                        resrvCode: res.resrvCode,
+                                        weekDay: route.params.weekDay,
+                                        roomName: route.params.roomName
+                                    });
+                                }
+                                else{
+                                    setErrorMessageB("계속 진행하려면 이용 약관을 읽고 동의해야 합니다.");
+                                }
+
+                                
                             }}
                         >
                             <Text style={styles.textStyle}>예약하기</Text>
-                        </TouchableHighlight>
+                        </TouchableOpacity>
                     </View>
                 
                     <Modal 
@@ -300,7 +318,7 @@ const styles = StyleSheet.create({
         flexGrow: 1
     },
     guideStyle: {
-        paddingBottom: 30
+        paddingBottom: 17
     },
     titleStyle: {
         fontSize: 14,
@@ -321,14 +339,16 @@ const styles = StyleSheet.create({
         fontSize: 13
     },
     valueView: {
-        width: 95
+        // borderWidth: 2,
+        // borderColor: 'red',
+        width: 120
     },
     rowStyle: {
         flexDirection: 'row',
         paddingLeft: 3,
         paddingBottom: 4,
         justifyContent: 'space-between',
-        width: 175
+        width: 200
     }, 
     infoStyle: {
         paddingBottom: 5
@@ -340,7 +360,8 @@ const styles = StyleSheet.create({
         paddingBottom: 4
     },
     termsStyle: {
-        marginVertical: 30
+        marginTop: 25,
+        marginBottom: 10
     },
     termBox : {
         backgroundColor: 'white',
@@ -444,12 +465,27 @@ const styles = StyleSheet.create({
     },
     openButton: {
         alignSelf: 'center',
-        backgroundColor: "gray",
+        // backgroundColor: "gray",
         borderRadius: 15,
         marginTop: 10,
         paddingVertical: 30,
         paddingHorizontal: 130,
         elevation: 2
+    },
+    errorBox: {
+        alignItems: 'flex-end',
+        marginBottom: 3,
+        marginRight: 10
+    },
+    errorMessage : {
+        color: 'red',
+        fontSize: 11
+    },
+    valid: {
+        backgroundColor: 'gray',
+    },
+    invalid: {
+        backgroundColor: '#D2D1CB',
     },
 });
 
