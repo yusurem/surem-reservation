@@ -28,6 +28,8 @@ import SignupScreen from './src/screens/member/SignUpScreen'
 import FindPassword from './src/screens/member/FindPasswordScreen'
 import LoginMenuScreen from './src/screens/LoginMenuScreen';
 import PaymentScreen from './src/screens/PaymentScreen';
+import ReservationListScreen from './src/screens/reservation/ReservationListScreen'
+import ChooseRegionScreen from './src/screens/reservation/ChooseRegionScreen'
 
 
 const Stack = createStackNavigator();
@@ -63,7 +65,7 @@ const SecondStack = () => {
       }}
     >
         <Stack.Screen name="Calendar" component={CalendarScreen} />
-        <Stack.Screen name="Reservation" component={ReservationScreen} options={{ title: '회의실 예약'}} />
+        <Stack.Screen name="Reservation" component={ReservationScreen} options={{ title: '회의실 예약' }} />
         <Stack.Screen name="Reserved" component={ReservedScreen} />
         <Stack.Screen name="Date" component={DatePicker} />
         <Stack.Screen name="Agenda" component={AgendaScreen} />
@@ -77,12 +79,12 @@ const SecondStack = () => {
 const ThirdStack = () => {
   return (
     <Stack.Navigator 
-      initialRouteName='Home'
+      initialRouteName='ReservationListScreen'
       screenOptions={{
         headerShown: false
       }}
     >
-      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="ReservationListScreen" component={ReservationListScreen} />
         {/* <Stack.Screen name="VerificationScreen" component={VerificationScreen} options={{ title: '본인인증' }}/> */}
         <Stack.Screen name="VerificationResult" component={VerificationResult} options={{ title: '본인인증' }}/>
         {/* <Stack.Screen name="Verification" component={Verification} options={{ title: '본인인증' }}/> */}
@@ -122,24 +124,15 @@ function App() {
           }}
         >
           <Tab.Screen 
-            name="홈" 
+            name="Home" 
             component={MainStack} 
             options={{
               tabBarLabel: '홈',
-              // tabBarIcon: () => {
-              //   return (
-              //     <Image
-              //         style={styles.iconStyle}
-              //         source={require('./assets/cuts/home.png')}
-              //     />
-              //   );
-              // }
-                
               tabBarIcon: () => <Entypo name="home" color="#474747" size={24} style={{alignSelf: 'center', marginLeft: 0.5, marginTop: 15}} />,
             }}
           />
           <Tab.Screen 
-            name="예약하기" 
+            name="Reserve" 
             component={SecondStack} 
             options={{
               tabBarLabel: '예약하기',
@@ -147,7 +140,7 @@ function App() {
             }}
           />
           <Tab.Screen 
-            name="예약확인" 
+            name="ConfirmReserved" 
             component={ThirdStack} 
             options={{
               tabBarLabel: '예약확인',

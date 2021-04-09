@@ -273,7 +273,7 @@ const ReservationScreen = ({ navigation, route }) => {
                                 })}
                             </Picker>
                         </View>
-                    </View>
+                    </View> 
 
 
                     <View style={styles.headerBox}>

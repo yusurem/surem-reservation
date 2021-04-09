@@ -34,9 +34,8 @@ export default function SignUpButton(props){
       {
         "usercode":props.phoneNum,
         "userpass":props.phoneNum,
-        "username":props.phoneNum,
-        "userCallphone":props.phoneNum,
-        "userkind":"c"
+        "username":'test',
+        "userCallphone":props.phoneNum
       }
     );
 

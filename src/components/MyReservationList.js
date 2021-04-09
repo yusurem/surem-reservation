@@ -4,6 +4,9 @@ import * as SQLite from 'expo-sqlite';
 import { useEffect } from 'react';
 import axios from 'axios';
 import MyReservationRow from './MyReservationRow';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native'
+import ReservationListScreen from '../screens/reservation/ReservationListScreen'
 
 const db = SQLite.openDatabase('db.db');
 db.transaction(tx=>{
@@ -15,9 +18,10 @@ db.transaction(tx=>{
 
 export default function MyReservationList() {
 
-	const [myReservList, setMyRservationList] = useState();
+	const [myReservList, setMyRservationList] = useState([]);
 	const [usercode, setUsercode] = useState();
 	const [secretCode, setSecretCode] = useState();
+  const navigation = useNavigation();
 
   const getUserId = async () => {
     try{
@@ -37,7 +41,7 @@ export default function MyReservationList() {
     }
   }
 	
-	const getMyReserveList = () => {
+  const getMyReserveList = async () => {
     var data = JSON.stringify(
 				{
 					"usercode":usercode,
@@ -57,13 +61,11 @@ export default function MyReservationList() {
         data : data
     };
 
-    axios(config)
-      .then(function (response) {
-        console.log("RETURN CODE :: ",data)
+    await axios(config)
+      .then(async function (response) {
         if(response.data.returnCode == 'E0000'){
-          console.log(response.data.reservations)
+          setMyRservationList(response.data.reservations)
         }
-        console.log(response.data)
     })
     .catch(function (error) {
       console.log(error);
@@ -73,31 +75,36 @@ export default function MyReservationList() {
 	useEffect(()=>{
     getUserId();
 		getMyReserveList();
-  });
+    console.log(myReservList)
+  },[usercode,secretCode]);
 
   return (
     <View style={styles.MyReservationList}>
         <Text style={styles.MyReservationTitle}>MY 예약내역</Text>
-        <MyReservationRow/>
-        <MyReservationRow/>
-        <MyReservationRow/>
-        <MyReservationRow/>
-        <MyReservationRow/>
-        <Text style={styles.more}>더보기</Text>
+        {
+          myReservList.map((item,index)=>{
+            if(index < 3)
+              return(<MyReservationRow resrvStime={item.resrvStime} resrvEtime={item.resrvEtime} roomName={item.roomName} resrvCode={item.resrvCode} key={index}/>)
+          })
+        }
+        <TouchableOpacity onPress={()=>{
+          navigation.navigate('ConfirmReserved')
+        }}>
+          <Text style={styles.more}>더보기</Text>
+        </TouchableOpacity>
       </View>
   );  
 }
 
 const styles = StyleSheet.create({
     MyReservationList: {
-      width:'90%',height:220,backgroundColor:'#4284E4',borderRadius:10,alignSelf:'center'
+      width:'90%',height:150,backgroundColor:'#4284E4',borderRadius:10,alignSelf:'center'
     },
 		MyReservationTitle: {
 			color:'white',
 			marginLeft:'3%',
-			fontSize:15, 
+			fontSize:20, 
 			marginTop: '5%',
-      marginBottom: '3%'
 		},
     more: {
       width:'100%',

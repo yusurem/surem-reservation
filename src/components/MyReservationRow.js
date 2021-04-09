@@ -1,31 +1,46 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
+import moment from 'moment';
+import Dialog from 'react-native-dialog';
+import QRCode from 'react-native-qrcode-svg';
 
-export default function MyReservationRow() {
+export default function MyReservationRow(props) {
   const [date, setDate] = useState()
-	const [time, setTime] = useState()
-	const [duration, setDuration] = useState()
-	const [roomId, setRoomId] = useState()
+	const [startTime, setTime] = useState()
+	const [endTime, setDuration] = useState()
+	const [roomId, setroomId] = useState()
+	const [qrVisible, setQrVisible] = useState(false)
 
-	const onPress = () => {console.log('hi')}
+	const onPress = () => {
+		setQrVisible(true)
+	}
 
+	const handleQrCancel = () => {
+		setQrVisible(false)
+	}
 	useEffect(()=>{
-    setDate('2021/02/24')
-		setTime('10:00PM')
-		setDuration('2시간')
-		setRoomId('1호')
   });
-	
   return (
 	<View style={styles.row}>
-		<Text style={styles.rowContent}>{date} {time} {duration} {roomId}</Text>
+		<Text style={styles.rowContent}>{moment(props.resrvStime,'YYYYMMDDHHmmss').format('YYYY/MM/DD')}  {moment(props.resrvStime,'YYYYMMDDHHmmss').format('HH:mm')} ~ {moment(props.resrvEtime,'YYYYMMDDHHmmss').format('HH:mm')}   {props.roomName}</Text>
 		<TouchableOpacity
 			style={styles.qrBtn}
 			onPress={onPress}
 		>
 			<Text style={styles.qrBtnText}>QR 코드</Text>
 		</TouchableOpacity>
+		<View>
+      <Dialog.Container visible={qrVisible}>
+        <Dialog.Button label="Cancel" onPress={handleQrCancel}/>
+        <View style={styles.qrStyle}>
+          <QRCode
+            size={140}
+            value={props.resrvCode}
+          />
+        </View>
+      </Dialog.Container>
+    </View>
 	</View>
   );  
 }
@@ -47,12 +62,16 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		width:60,
 		height:20,
-		marginLeft:'10%'
+		marginLeft:'15%'
 	}, 
 	qrBtnText:{
 		color:'white',
 		width:'100%',
 		textAlign:'center'
+	},
+	qrStyle:{
+		alignSelf:'center',
+		marginVertical:'15%'
 	}
-  });
+});
   
