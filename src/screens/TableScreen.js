@@ -77,7 +77,7 @@ const TableScreen = ({ navigation, route }) => {
                         '080000', '090000', '100000', '110000', '120000', '130000', '140000', '150000',
                         '160000', '170000', '180000', '190000', '200000', '210000', '220000', '230000' ];
 
-    
+    console.log(state.tableTitle)
 
     const optionsList = [];
     const optionValList = [];

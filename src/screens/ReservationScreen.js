@@ -207,8 +207,7 @@ const ReservationScreen = ({ navigation, route }) => {
                                         setDuration(parseInt(itemValue.substring(0,2)) - parseInt(startTime.substring(0,2)));
                                         console.log(calculatePrice());
                                         setCost(calculatePrice());
-                                    }
-                                    else{
+                                    } else {
                                         setIsValid(false);
                                     }
                                 }}>
@@ -218,7 +217,7 @@ const ReservationScreen = ({ navigation, route }) => {
                                 })}
                             </Picker>
                         </View>
-                    </View>
+                    </View> 
 
 
                     <View style={styles.headerBox}>

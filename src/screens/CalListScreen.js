@@ -19,14 +19,6 @@ const CalListScreen = ({ navigation }) => {
       };
     LocaleConfig.defaultLocale = 'kr';
 
-    // Day Object looks like: 
-    // Object {
-    //     "dateString": "2021-02-11",
-    //     "day": 11,
-    //     "month": 2,
-    //     "timestamp": 1613001600000,
-    //     "year": 2021,
-    // }
     const onDayPress = day => {
         console.log(day);
         let currDate = new Date(day.dateString);

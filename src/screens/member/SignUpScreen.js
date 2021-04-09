@@ -24,6 +24,7 @@ db.transaction(tx=>{
 })
 
 export default function SignUpScreen({ navigation }) {
+  const navigationOptions = { header: null}
   const [phoneNum, setPhoneNum] = useState("");
   const [isSentAuth, setIsSentAuth] = useState(false);
   const [isAuth, setIsAuth] = useState(false);
@@ -164,7 +165,7 @@ export default function SignUpScreen({ navigation }) {
           selectAuthNumbers()
           setMinutes(3)
           setIsSentAuth(true)
-          sendMessage(phoneNum,authNumberText)
+          //sendMessage(phoneNum,authNumberText)
         }}
       >
       <Text style={styles.title}>
