@@ -79,11 +79,6 @@ const PaymentScreen = ({ navigation, route }) => {
         }
     }
 
-    // TODO: get the price from API
-    const getPrice = async () => {
-
-    }
-
     const getQrCode = async (qr) => {
         try{
             console.log("Attempting to get QrCode link...");
@@ -104,10 +99,6 @@ const PaymentScreen = ({ navigation, route }) => {
             console.log(err);
             return 'Error';
         }
-    }
-
-    const couponStyle = (selected, available) => {
-
     }
 
     return (

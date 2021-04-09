@@ -258,6 +258,8 @@ const ReservationScreen = ({ navigation, route }) => {
                                         setHours(hours);
                                         setMins(minutes);
 
+                                        
+
                                         // console.log(calculatePrice());
                                         // setCost(calculatePrice());
                                     }
