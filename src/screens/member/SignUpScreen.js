@@ -41,16 +41,19 @@ export default function SignUpScreen({ navigation }) {
   }
 
   const sendMessage = (callphone,authNumberText) => {
+    console.log('Send Message')
+    console.log('CALLPHONE :: ', callphone)
     var data = JSON.stringify(
       {
-        "usercode":"suremtest",
-        "deptcode":"IX-TEX-LC",
+        "usercode":"suremqr",
+        "deptcode":"35--SX-DQ",
         "messages":
         [
           {"message_id":"1","to":callphone},
         ],
         "text":"인증번호 : "+authNumberText+" 입니다","from":"15884640","reserved_time":"000000000000"});
 
+    console.log('DATA :: ',data)
     var config = {
       method: 'post',
       url: 'https://dynapi.surem.com/sms/v1/json?secuCd=f71742597bd420117f7736f9b052a665fed39d1cdf53707f955da2d6921dcd32',
@@ -126,7 +129,7 @@ export default function SignUpScreen({ navigation }) {
 
   useEffect(()=>{
     hasUserId();
-  });
+  },[]);
 
   return (
     <View
@@ -160,6 +163,7 @@ export default function SignUpScreen({ navigation }) {
             alert('핸드폰 번호를 입력해주세요.')
             return
           }
+          console.log('PhoneNumber :: ',phoneNum)
           deleteAuthNumbers()
           saveAuthNumber(authNumberText)
           selectAuthNumbers()

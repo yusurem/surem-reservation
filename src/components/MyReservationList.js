@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { StyleSheet, View, Text } from 'react-native'
 import * as SQLite from 'expo-sqlite';
 import { useEffect } from 'react';
@@ -25,7 +25,8 @@ export default function MyReservationList() {
 
   const getUserId = async () => {
     try{
-      await db.transaction(async (tx)=>{
+      console.log('hiiiiiii')
+      db.transaction(async (tx)=>{
         tx.executeSql(
           `select * from UserId order by _id desc;`,
           [],
@@ -75,7 +76,12 @@ export default function MyReservationList() {
 	useEffect(()=>{
     getUserId();
 		getMyReserveList();
-    console.log(myReservList)
+    const timer = setInterval(() => {
+      getMyReserveList()
+    },3000);
+    return () => {
+      clearInterval(timer);
+    };
   },[usercode,secretCode]);
 
   return (
@@ -98,7 +104,7 @@ export default function MyReservationList() {
 
 const styles = StyleSheet.create({
     MyReservationList: {
-      width:'90%',height:150,backgroundColor:'#4284E4',borderRadius:10,alignSelf:'center'
+      width:'90%',height:'30%',backgroundColor:'#4284E4',borderRadius:10,alignSelf:'center'
     },
 		MyReservationTitle: {
 			color:'white',
@@ -108,10 +114,10 @@ const styles = StyleSheet.create({
 		},
     more: {
       width:'100%',
-      marginTop:'2%',
+      marginTop:'1%',
       marginLeft:'85%',
+      marginBottom:'2%',
       color:'white'
     }
-		
   });
   

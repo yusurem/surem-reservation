@@ -226,7 +226,7 @@ const ReservationScreen = ({ navigation, route }) => {
                                     setStartTime(itemValue);
                                     setEndTime("0");
                                     setDuration(0);
-                                    setCost("0")
+                                    setTotalCost("0")
                                     setIsValid(false);
                                 }}>
                                 {route.params.options.map((item, index) => {
