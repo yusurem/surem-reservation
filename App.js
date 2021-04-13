@@ -28,8 +28,9 @@ import SignupScreen from './src/screens/member/SignUpScreen'
 import FindPassword from './src/screens/member/FindPasswordScreen'
 import LoginMenuScreen from './src/screens/LoginMenuScreen';
 import PaymentScreen from './src/screens/PaymentScreen';
-import ReservationListScreen from './src/screens/reservation/ReservationListScreen'
-import ChooseRegionScreen from './src/screens/reservation/ChooseRegionScreen'
+import ReservationListScreen from './src/screens/reservation/ReservationListScreen';
+import ChooseRegionScreen from './src/screens/reservation/ChooseRegionScreen';
+import MyScreen from './src/screens/MyScreen';
 
 
 const Stack = createStackNavigator();
@@ -95,11 +96,12 @@ const ThirdStack = () => {
 const FourthStack = () => {
   return (
     <Stack.Navigator 
-      initialRouteName='VerificationScreen'
+      initialRouteName='My'
+      screenOptions={{
+        headerShown: false
+      }}
     >
-        <Stack.Screen name="VerificationScreen" component={VerificationScreen} options={{ title: '본인인증' }}/>
-        <Stack.Screen name="VerificationResult" component={VerificationResult} options={{ title: '본인인증' }}/>
-        <Stack.Screen name="Verification" component={Verification} options={{ title: '본인인증' }}/>
+        <Stack.Screen name="My" component={MyScreen} />
     </Stack.Navigator>
   );
 }

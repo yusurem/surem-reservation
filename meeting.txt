@@ -1,3 +1,16 @@
+2021-04-12
+- Add a 추가 예약하기 button on the reserved screen
+    - Also try to make it so that when you click back, it doesnt return to the previous screen but resets the 예약하기
+- My page
+    - 회원정보
+        - 이름빼고
+    - 약관
+- image
+    - API 연결
+        ? 룸 이미지 array식으로 가능한지
+- Memo
+
+
 2021-04-08
 - api 문제점
     - image

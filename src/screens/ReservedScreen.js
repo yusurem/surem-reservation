@@ -6,9 +6,7 @@ import QRCode from 'react-native-qrcode-svg';
 import Modal from 'react-native-modal';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-
 // import { WebView } from 'react-native-webview';
-
 
 const ReservedScreen = ({ navigation, route }) => {
     const [name, setName] = useState("");
@@ -37,7 +35,16 @@ const ReservedScreen = ({ navigation, route }) => {
                 </View>
 
                 <TouchableHighlight
-                    style={styles.buttonStyle}
+                    style={styles.reserveButton}
+                    onPress={() => {
+                        navigation.navigate("CalendarList");
+                    }}
+                >
+                    <Text style={styles.buttonText}>추가 예약하기</Text>
+                </TouchableHighlight>
+
+                <TouchableHighlight
+                    style={styles.shareButton}
                     onPress={() => {
                         setModalVisible(!modalVisible);
                     }}
@@ -131,14 +138,14 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
     qrStyle: {
-        marginTop: 65,
+        marginTop: 40,
     },
-    buttonStyle: {
+    reserveButton: {
         backgroundColor: "#262829",
         borderRadius: 7,
-        marginTop: 50,
+        marginTop: 40,
         paddingVertical: 12,
-        paddingHorizontal: 80,
+        paddingHorizontal: 63,
         elevation: 2
     },
     buttonText: {
@@ -177,7 +184,15 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 20,
         paddingTop: 11
-    }
+    },
+    shareButton: {
+        backgroundColor: "#262829",
+        borderRadius: 7,
+        marginTop: 25,
+        paddingVertical: 12,
+        paddingHorizontal: 80,
+        elevation: 2
+    },
 });
 
 export default ReservedScreen;

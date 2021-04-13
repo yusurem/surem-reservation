@@ -29,6 +29,9 @@ const ReservationScreen = ({ navigation, route }) => {
     const [endLabels, setEndLabels] = useState([]);
     const [endVals, setEndVals] = useState([]);
 
+    const [imgCodes, setImgCodes] = useState([]);
+    const [imgs, setImgs] = useState([]);
+
     console.log("Entered ReservationScreen. Params: ");
     // console.log(route.params);
 
@@ -137,15 +140,51 @@ const ReservationScreen = ({ navigation, route }) => {
             });
             console.log(response.data);
             console.log("API call successful!");
-            setRoomInfo(response.data);
-            setInfo(response.data.room.info);
-            setSubInfo(response.data.room.subInfo);
-            setRoomName(response.data.room.roomName);
+            // setRoomInfo(response.data);
+            // setInfo(response.data.room.info);
+            // setSubInfo(response.data.room.subInfo);
+            // setRoomName(response.data.room.roomName);
+            // setImgCodes([response.data.imgCode1, response.data.imgCode2, response.data.imgCode3, response.data.imgCode4])
+            return response.data;
         } catch (err) {
             setErrorMessageA("API 문제발생");
             console.log(err);
             return 'Error';
         }
+    }
+
+    const getRoomImg = async (code) => {
+        try{
+            console.log("Attempting to retreive room image...");
+            console.log("imgCode: " + code);
+            const response = await axios.get('http://112.221.94.101:8980/getRoomImg', {
+                params: {
+                    imgCode: code
+                }
+            });
+            console.log(response.data);
+            console.log("API call successful!");
+            // setImgs([...imgs, response.data]);
+            return response.data;
+        } catch (err) {
+            setErrorMessageA("API 문제발생");
+            console.log(err);
+            return 'Error';
+        }
+    }
+
+    const apiCalls = async () => {
+        const roomInfo = await getRoomInfo();
+        const codes = [roomInfo.room.imgCode1, roomInfo.room.imgCode2, roomInfo.room.imgCode3, roomInfo.room.imgCode4];
+        const roomImgs = [];
+        // for(var i = 0; i < codes.length; i++){
+        //     roomImgs.push(await getRoomImg(codes[i]));
+        // }
+        setRoomInfo(roomInfo);
+        setInfo(roomInfo.room.info);
+        setSubInfo(roomInfo.room.subInfo);
+        setRoomName(roomInfo.room.roomName);
+        setImgs(roomImgs);
     }
 
     if(endVals.length == 0){
@@ -155,7 +194,8 @@ const ReservationScreen = ({ navigation, route }) => {
         // console.log(sIn);
         // console.log(vInt);
         buildPickerData(filterEndTime(findSIndex(startTime, route.params.optionVals), valsToDate(route.params.optionVals)));
-        getRoomInfo();
+        // getRoomInfo();
+        apiCalls();
         return (
             <SafeAreaView style={{flex: 1, justifyContent: 'center'}}>
                 <View style={{ flex: 1, justifyContent: 'center'}}>
@@ -164,11 +204,20 @@ const ReservationScreen = ({ navigation, route }) => {
             </SafeAreaView>
         )
     }
-    // console.log("---------------------------");
-    // console.log(endVals);
-    // console.log("---------------------------");
 
-    // const images = [];
+    console.log("---------------------------");
+    console.log(roomInfo);
+    console.log(info);
+    console.log(subInfo);
+    console.log(roomName);
+    console.log("---------------------------");
+
+
+    // return (
+    //     <SafeAreaView>
+    //         <SliderBox parentWidth={330} sliderBoxHeight={190} images={imgs} disableOnPress={true}/>
+    //     </SafeAreaView>
+    // )
 
 
     const calculatePrice = () => {
@@ -226,7 +275,7 @@ const ReservationScreen = ({ navigation, route }) => {
                                     setStartTime(itemValue);
                                     setEndTime("0");
                                     setDuration(0);
-                                    setCost("0")
+                                    setTotalCost("0")
                                     setIsValid(false);
                                 }}>
                                 {route.params.options.map((item, index) => {
@@ -354,7 +403,7 @@ const ReservationScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({ 
     headerBox: {
         flexDirection: 'row',
-        // marginBottom: 5,
+        marginBottom: 5,
         // borderWidth: 1,
         // borderColor: 'black'
     },
@@ -375,7 +424,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12
     },
     description: {
-        marginLeft: 8.5,
+        marginLeft: 18,
         marginBottom: 9
     },
     descriptionText: {
