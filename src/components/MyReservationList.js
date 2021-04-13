@@ -25,13 +25,11 @@ export default function MyReservationList() {
 
   const getUserId = async () => {
     try{
-      console.log('hiiiiiii')
       db.transaction(async (tx)=>{
         tx.executeSql(
           `select * from UserId order by _id desc;`,
           [],
           (tx, results) =>{
-            console.log('SELECT DDDDD :: ', results)
 						setUsercode(results.rows.item(0).usercode)
 						setSecretCode(results.rows.item(0).secretCode)
           }
@@ -49,9 +47,6 @@ export default function MyReservationList() {
 					"secretCode":secretCode
 				}
 			);
-
-		console.log("USERCODE :: ",usercode)
-		console.log("secretCode :: ",secretCode)
 
     var config = {
       method: 'post',
