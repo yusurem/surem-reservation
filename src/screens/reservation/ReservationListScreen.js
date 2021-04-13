@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Alert } from 'react-native'
+import React, { useState, useEffect, useCallback } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, Alert, SliderComponent } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
@@ -17,7 +17,7 @@ const Item = ({ item, onClickQrBtn, onClickChangeReserv }) => (
       <Text style={styles.room}>{item.roomName}</Text>
       <Text style={styles.itemText}>날짜 : {moment(item.resrvStime,'YYYYMMDDHHmmss').format('YYYY / MM / DD')}</Text>
       <Text style={styles.itemText}>시간 : {moment(item.resrvStime,'YYYYMMDDHHmmss').format('HH:mm')} ~ {moment(item.resrvEtime,'YYYYMMDDHHmmss').format('HH:mm')}</Text>
-      <Text style={styles.itemText}>메모 : {item.resrvNote}</Text>
+      <Text style={styles.itemText}>메모 : {item.resrvNote.replace('null','')}</Text>
     </View>
     <View style={styles.rightSide}>
       <TouchableOpacity
@@ -93,17 +93,20 @@ export default function ReservationListScreen({ navigation }) {
     for(var i=startIndex+1; i <= pickerVals.length-1; i++){
       pickerData.push(pickerVals[i])
     }
-
+    console.log('END TIME :: ',pickerVals[startIndex+1])
+    setEndTime(pickerVals[startIndex+1])
     setEndPickerVals(pickerData)
   }
 
   const getUserId = async () => {
     try{
+      console.log('get User Id')
       await db.transaction(async (tx)=>{
         tx.executeSql(
           `select * from UserId order by _id desc;`,
           [],
           (tx, results) =>{
+            console.log('get User Id')
             console.log('SELECT DDDDD :: ', results)
             console.log(results)
 						setUsercode(results.rows.item(0).usercode)
@@ -136,7 +139,7 @@ export default function ReservationListScreen({ navigation }) {
         data : data
     };
 
-    await axios(config)
+    axios(config)
       .then(async function (response) {
         if(response.data.returnCode == 'E0000'){
           setReservations(response.data.reservations)
@@ -190,7 +193,8 @@ export default function ReservationListScreen({ navigation }) {
           setSelectedRoomName(item.roomName)
           setSelectedReservStime(item.resrvStime)
           setSelectedReservEtime(item.resrvEtime)
-          onChangeSelectedMemo(item.resrvNote)
+          console.log(item.resrvNote)
+          onChangeSelectedMemo(item.resrvNote.replace('null',''))
           getRoomInfo(item.roomCode)
           console.log(item.resrvStime)
         }}
@@ -224,7 +228,8 @@ export default function ReservationListScreen({ navigation }) {
         "secretCode":secretCode,
         "roomCode":selectedRoomCode,
         "resrvStime":moment(selectedReservStime,'YYYYMMDDHHmmss').format('YYYYMMDD') + moment(startTime,'HHmm').format('HHmmss'),
-        "resrvEtime":moment(selectedReservEtime,'YYYYMMDDHHmmss').format('YYYYMMDD') + moment(endTime,'HHmm').format('HHmmss')
+        "resrvEtime":moment(selectedReservEtime,'YYYYMMDDHHmmss').format('YYYYMMDD') + moment(endTime,'HHmm').format('HHmmss'),
+        "resrvNote":selectedMemo
       }
     );
 
@@ -259,9 +264,15 @@ export default function ReservationListScreen({ navigation }) {
   }
 
   useEffect(()=>{
-    getUserId()
-    getMyReserveList();
+    getUserId();
     buildPickerData();
+    getMyReserveList();
+    const timer = setInterval(() => {
+      getMyReserveList()
+    },3000);
+    return () => {
+      clearInterval(timer);
+    };
   },[usercode,secretCode]);
 
   return (
@@ -300,7 +311,6 @@ export default function ReservationListScreen({ navigation }) {
            onValueChange={(itemValue, itemIndex) => {
              setStartTime(itemValue)
              buildEndPickerData(itemValue)
-             setEndTime(itemValue)
            }}
           >
             {pickerVals.map((item,index)=><Picker.Item label={moment(item,'HHmm').format('HH:mm')} value={item} key={index}/>)}
@@ -342,7 +352,7 @@ const styles = StyleSheet.create({
     },
     leftSide: {
       height:'100%',
-      flex: 1
+      flex: 1,
     },
     rightSide: {
       height:'100%',

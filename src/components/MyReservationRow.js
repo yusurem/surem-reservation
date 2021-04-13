@@ -23,7 +23,7 @@ export default function MyReservationRow(props) {
   });
   return (
 	<View style={styles.row}>
-		<Text style={styles.rowContent}>{moment(props.resrvStime,'YYYYMMDDHHmmss').format('YYYY/MM/DD')}  {moment(props.resrvStime,'YYYYMMDDHHmmss').format('HH:mm')} ~ {moment(props.resrvEtime,'YYYYMMDDHHmmss').format('HH:mm')}   {props.roomName}</Text>
+		<Text style={styles.rowContent}>{moment(props.resrvStime,'YYYYMMDDHHmmss').format('YYYY/MM/DD')} {moment(props.resrvStime,'YYYYMMDDHHmmss').format('HH:mm')} ~ {moment(props.resrvEtime,'YYYYMMDDHHmmss').format('HH:mm')} {props.roomName}</Text>
 		<TouchableOpacity
 			style={styles.qrBtn}
 			onPress={onPress}
@@ -48,26 +48,29 @@ export default function MyReservationRow(props) {
 const styles = StyleSheet.create({
 	row: {
 		width:'100%',
+		flex:1,
 		flexDirection:'row',
 		marginTop:'0.5%',
-		marginBottom:'0.5%'
+		marginBottom:'0.5%',
+		justifyContent: 'space-between'
 	},
 	rowContent: {
 		color:'white',
-		marginLeft:'5%'
+		marginLeft:'4%',
+		width:'73%'
 	},
 	qrBtn:{
 		borderRadius:7,
 		borderColor:'white',
 		borderWidth: 1,
-		width:60,
+		width:'20%',
 		height:20,
-		marginLeft:'15%'
 	}, 
 	qrBtnText:{
+		flex:1,
 		color:'white',
 		width:'100%',
-		textAlign:'center'
+		textAlign:'center',
 	},
 	qrStyle:{
 		alignSelf:'center',

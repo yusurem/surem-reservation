@@ -17,7 +17,7 @@ export default function MainNotices() {
     <View style={styles.notices}>
 			<Text style={styles.noticeTitle}>공지사항</Text>
 			<View style={styles.noticeList}>
-				<Text style={{color:'black',marginLeft:'10%',width:'60%'}}>신규 오픈 안내문입니다.</Text>
+				<Text style={{color:'black',marginLeft:'4%',width:'60%'}}>신규 오픈 안내문입니다.</Text>
 				<View
 					style={{
 						borderRadius:7,
@@ -31,7 +31,7 @@ export default function MainNotices() {
 			</View>
 			<View style={{height:'5%'}}/>
 			<View style={{width:'100%',flexDirection:'row'}}>
-				<Text style={{color:'black',marginLeft:'10%',width:'60%'}}>어플 안내공지 1차 안내문 입니다.</Text>
+				<Text style={{color:'black',marginLeft:'4%',width:'60%'}}>어플 안내공지 1차 안내문 입니다.</Text>
 				<View
 					style={{
 						borderRadius:7,
@@ -53,28 +53,28 @@ export default function MainNotices() {
 const styles = StyleSheet.create({
     more: {
       width:'100%',
-      marginTop:'2%',
+      marginTop:'1%',
       marginLeft:'85%',
       color:'white'
     }, 
-		notices: {
-			width:'90%',
-			height:130,
-			backgroundColor:'#ECEFF4',
-			borderRadius:10,
-			alignSelf:'center'
-		},
-		noticeTitle: {
-			color:'black',
-			marginTop:'4%',
-			marginBottom:10,
-			marginLeft:'3%',
-			fontSize:15
-		},
-		noticeList: {
-			width:'100%',
-			flexDirection:'row'
-		}
+	notices: {
+		width:'90%',
+		height:130,
+		backgroundColor:'#ECEFF4',
+		borderRadius:10,
+		alignSelf:'center'
+	},
+	noticeTitle: {
+		color:'black',
+		marginTop:'4%',
+		marginBottom:10,
+		marginLeft:'3%',
+		fontSize:15
+	},
+	noticeList: {
+		width:'100%',
+		flexDirection:'row'
+	}
 		
   });
   
