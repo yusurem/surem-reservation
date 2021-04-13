@@ -123,7 +123,6 @@ export default function VerifictionScreen({ navigation }) {
       <Button
         title="인증" 
         onPress = {() => {
-            console.log("Verifying SMS");
             // verifySMS();
             navigation.navigate('Home');
         }}

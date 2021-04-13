@@ -14,7 +14,6 @@ export default class AuthNumberInput extends Component{
   }
 
   selectAuthNumbers() {
-    console.log('hello')
     this.db.transaction((tx)=>{
       tx.executeSql(
         `SELECT * FROM AuthNumbers ORDER BY _id DESC LIMIT 1;`,

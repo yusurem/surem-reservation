@@ -87,28 +87,22 @@ export default function ReservationListScreen({ navigation }) {
 
   const buildEndPickerData = (startTime) => {
     const pickerData = []
-    console.log('hi')
     const findStartIndex = (element) => element === startTime
     var startIndex = pickerVals.findIndex(findStartIndex)
     for(var i=startIndex+1; i <= pickerVals.length-1; i++){
       pickerData.push(pickerVals[i])
     }
-    console.log('END TIME :: ',pickerVals[startIndex+1])
     setEndTime(pickerVals[startIndex+1])
     setEndPickerVals(pickerData)
   }
 
   const getUserId = async () => {
     try{
-      console.log('get User Id')
       await db.transaction(async (tx)=>{
         tx.executeSql(
           `select * from UserId order by _id desc;`,
           [],
           (tx, results) =>{
-            console.log('get User Id')
-            console.log('SELECT DDDDD :: ', results)
-            console.log(results)
 						setUsercode(results.rows.item(0).usercode)
 						setSecretCode(results.rows.item(0).secretCode)
           }
@@ -126,9 +120,6 @@ export default function ReservationListScreen({ navigation }) {
 					"secretCode":secretCode
 				}
 			);
-
-		// console.log("USERCODE :: ",usercode)
-		// console.log("secretCode :: ",secretCode)
 
     var config = {
       method: 'post',
@@ -188,15 +179,12 @@ export default function ReservationListScreen({ navigation }) {
         onClickChangeReserv={async () => {
           clickChangeReserv()
           setReservCode(item.resrvCode)
-          console.log(item.roomCode)
           setSelectedRoomCode(item.roomCode)
           setSelectedRoomName(item.roomName)
           setSelectedReservStime(item.resrvStime)
           setSelectedReservEtime(item.resrvEtime)
-          console.log(item.resrvNote)
           onChangeSelectedMemo(item.resrvNote.replace('null',''))
           getRoomInfo(item.roomCode)
-          console.log(item.resrvStime)
         }}
         roomName={item.roomName}
       />
@@ -233,7 +221,6 @@ export default function ReservationListScreen({ navigation }) {
       }
     );
 
-    console.log(data)
 
     var config = {
       method: 'post',
@@ -246,7 +233,6 @@ export default function ReservationListScreen({ navigation }) {
 
     await axios(config)
       .then(async function (response) {
-        console.log(response.data)
         if(response.data.returnCode == 'E0000'){
           console.log('Success')
         } else if(response.data.returnCode == 'E2005'){

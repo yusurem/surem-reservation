@@ -17,12 +17,9 @@ db.transaction(tx=>{
 const saveUserId = (secretcode,phoneNum) => {
   db.transaction((tx)=>{
     tx.executeSql("INSERT INTO UserId(secretCode,usercode) Values(?,?)",[secretcode,phoneNum],(tx, results)=>{
-      console.log("RESULT :: ")
-      console.log(results)
 
     },(tx, error)=>{
-      console.log("ERROR :: ",error)
-      console.log("ERROR")
+
     })
   })
 }
