@@ -73,7 +73,7 @@ export default function SignUpButton(props){
             alert("사용자가 없습니다.")
           }else{
             saveUserId(response.data.returnCode, props.phoneNum)
-            navigation.reset({index: 0, routes: [{name: 'Home'}] })
+            navigation.reset({index: 0, routes: [{name: 'Reserve'}] })
           }
         })
 
