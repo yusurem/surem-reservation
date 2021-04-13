@@ -79,7 +79,7 @@ const PaymentScreen = ({ navigation, route }) => {
                 'secretCode' : secretCode,
                 "resrvStime" : `${route.params.year}${route.params.month}${route.params.day}${route.params.startTime}`,
                 "resrvEtime" : `${route.params.year}${route.params.month}${route.params.day}${route.params.endTime}`,
-                resrvNote: route.params.memo
+                "resrvNote": route.params.memo
             });
             console.log(`Got the response!`);
             console.log(response.data);
