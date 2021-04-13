@@ -127,8 +127,8 @@ export default function ReservationListScreen({ navigation }) {
 				}
 			);
 
-		console.log("USERCODE :: ",usercode)
-		console.log("secretCode :: ",secretCode)
+		// console.log("USERCODE :: ",usercode)
+		// console.log("secretCode :: ",secretCode)
 
     var config = {
       method: 'post',

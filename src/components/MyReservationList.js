@@ -50,8 +50,8 @@ export default function MyReservationList() {
 				}
 			);
 
-		console.log("USERCODE :: ",usercode)
-		console.log("secretCode :: ",secretCode)
+		// console.log("USERCODE :: ",usercode)
+		// console.log("secretCode :: ",secretCode)
 
     var config = {
       method: 'post',

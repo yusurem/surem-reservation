@@ -97,9 +97,14 @@ const TableScreen = ({ navigation, route }) => {
 
     if(resrvLists.length == 0){
         // console.log("Initializing Reservation List");
+        var tt0 = performance.now();
+
         getLocationList();
         // getRoomList();
         getReservationList(route.params.dateString.replace(/-/g,""), "surem2");
+
+        var tt1 = performance.now()
+         console.log("API call took " + (tt1 - tt0) + " milliseconds.")
 
         return (
             <SafeAreaView style={{flex: 1, justifyContent: 'center'}}>
@@ -109,6 +114,8 @@ const TableScreen = ({ navigation, route }) => {
             </SafeAreaView>
         )
     }
+    var t0 = performance.now();
+
 
     // console.log(locInfo);
     // console.log(resrvLists);
@@ -251,6 +258,8 @@ const TableScreen = ({ navigation, route }) => {
         hourArr.push(180);
     }
 
+    var t1 = performance.now()
+    console.log("Assembling screen took " + (t1 - t0) + " milliseconds.")
 
     return (
         <SafeAreaView style={{ flex: 1}}>
