@@ -30,6 +30,8 @@ import LoginMenuScreen from './src/screens/LoginMenuScreen';
 import PaymentScreen from './src/screens/PaymentScreen';
 import ReservationListScreen from './src/screens/reservation/ReservationListScreen';
 import ChooseRegionScreen from './src/screens/reservation/ChooseRegionScreen';
+import LoadingScreen from './src/screens/LoadingScreen';
+
 import MyScreen from './src/screens/MyScreen';
 
 
@@ -39,7 +41,7 @@ const Tab = createBottomTabNavigator();
 const MainStack = () => {
   return (
     <Stack.Navigator
-        initialRouteName='SignUp'
+        initialRouteName='Home'
         screenOptions={{
           headerShown: false
         }}
@@ -50,6 +52,7 @@ const MainStack = () => {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Test" component={TestScreen} />
         <Stack.Screen name="SignUp" component={SignupScreen}/>
+        <Stack.Screen name="Loading" component={LoadingScreen}/>
         <Stack.Screen name="FindPassword" component={FindPassword}/>
         <Stack.Screen name="HomeMenu" component={HomeMenuScreen}/>
         <Stack.Screen name="LoginMenu" component={LoginMenuScreen} />
@@ -85,7 +88,7 @@ const ThirdStack = () => {
         headerShown: false
       }}
     >
-      <Stack.Screen name="ReservationListScreen" component={ReservationListScreen} />
+      <Stack.Screen name="ReservationListScreen" component={ReservationListScreen}/>
         {/* <Stack.Screen name="VerificationScreen" component={VerificationScreen} options={{ title: '본인인증' }}/> */}
         <Stack.Screen name="VerificationResult" component={VerificationResult} options={{ title: '본인인증' }}/>
         {/* <Stack.Screen name="Verification" component={Verification} options={{ title: '본인인증' }}/> */}
@@ -112,6 +115,7 @@ function App() {
       <NavigationContainer>
         <Tab.Navigator
           initialRouteName="Home"
+          lazy="true"
           tabBarOptions={{
             style: {
               height: 70,
@@ -130,6 +134,7 @@ function App() {
             name="Home" 
             component={MainStack} 
             options={{
+              unmountOnBlur: true,
               tabBarLabel: '홈',
               tabBarIcon: () => <Entypo name="home" color="#474747" size={24} style={{alignSelf: 'center', marginLeft: 0.5, marginTop: 15}} />,
             }}
@@ -146,6 +151,7 @@ function App() {
             name="ConfirmReserved" 
             component={ThirdStack} 
             options={{
+              unmountOnBlur: true,
               tabBarLabel: '예약확인',
               tabBarIcon: () => <MaterialCommunityIcons name="checkbox-marked-outline" color="#474747" size={24} style={{ marginTop: 15 }}/>,
             }}

@@ -17,9 +17,9 @@ db.transaction(tx=>{
 const saveUserId = (secretcode,phoneNum) => {
   db.transaction((tx)=>{
     tx.executeSql("INSERT INTO UserId(secretCode,usercode) Values(?,?)",[secretcode,phoneNum],(tx, results)=>{
-
+      console.log(results)
     },(tx, error)=>{
-
+      console.log(error)
     })
   })
 }
@@ -73,7 +73,7 @@ export default function SignUpButton(props){
             alert("사용자가 없습니다.")
           }else{
             saveUserId(response.data.returnCode, props.phoneNum)
-            navigation.reset({index: 0, routes: [{name: 'Home'}] })
+            navigation.reset({index: 0, routes: [{name: 'Reserve'}] })
           }
         })
 

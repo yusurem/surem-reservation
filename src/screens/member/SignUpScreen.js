@@ -101,7 +101,7 @@ export default function SignUpScreen({ navigation }) {
         [],
         (tx, results) =>{
           if(results.rows.length > 0){
-            navigation.reset({index: 0, routes: [{name: 'Home'}] })
+            navigation.reset({index: 0, routes: [{name: 'Reserve'}] })
           }
         }
       )

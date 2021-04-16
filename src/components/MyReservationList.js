@@ -9,6 +9,7 @@ import { useNavigation } from '@react-navigation/native'
 import ReservationListScreen from '../screens/reservation/ReservationListScreen'
 
 const db = SQLite.openDatabase('db.db');
+
 db.transaction(tx=>{
   tx.executeSql('CREATE TABLE IF NOT EXISTS AuthNumbers (_id INTEGER PRIMARY KEY, authNumber TEXT);')
 })
@@ -41,6 +42,7 @@ export default function MyReservationList() {
   }
 	
   const getMyReserveList = async () => {
+
     var data = JSON.stringify(
 				{
 					"usercode":usercode,
@@ -48,6 +50,8 @@ export default function MyReservationList() {
 				}
 			);
 
+    console.log('ddd')
+    console.log(data)
     var config = {
       method: 'post',
       url: 'http://112.221.94.101:8980/getReservation',
@@ -70,13 +74,7 @@ export default function MyReservationList() {
 
 	useEffect(()=>{
     getUserId();
-		getMyReserveList();
-    const timer = setInterval(() => {
-      getMyReserveList()
-    },3000);
-    return () => {
-      clearInterval(timer);
-    };
+    getMyReserveList();
   },[usercode,secretCode]);
 
   return (

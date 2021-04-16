@@ -154,7 +154,7 @@ const MyScreen = ({ navigation, route }) => {
                         </TouchableOpacity>
                     </View>
 
-                    <Modal 
+                    {/* <Modal 
                         isVisible={modalVisible}
                         backdropTransitionOutTiming={0}
                         style={styles.modal}
@@ -162,7 +162,7 @@ const MyScreen = ({ navigation, route }) => {
                         
                         
                     </Modal>
-                    
+                     */}
                 </View>
             </ScrollView>
         </SafeAreaView> 
