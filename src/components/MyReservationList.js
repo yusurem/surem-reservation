@@ -26,13 +26,14 @@ export default function MyReservationList() {
 
   const getUserId = async () => {
     try{
-      db.transaction(async (tx)=>{
+      await db.transaction((tx)=>{
         tx.executeSql(
           `select * from UserId order by _id desc;`,
           [],
           (tx, results) =>{
-						setUsercode(results.rows.item(0).usercode)
-						setSecretCode(results.rows.item(0).secretCode)
+            console.log('GETUSERID')
+            setUsercode(results.rows.item(0).usercode)
+            setSecretCode(results.rows.item(0).secretCode)
           }
         )
       })
@@ -50,8 +51,7 @@ export default function MyReservationList() {
 				}
 			);
 
-    console.log('ddd')
-    console.log(data)
+    console.log('DATA::',data)
     var config = {
       method: 'post',
       url: 'http://112.221.94.101:8980/getReservation',
@@ -73,6 +73,7 @@ export default function MyReservationList() {
   }
 
 	useEffect(()=>{
+    console.log('hdi')
     getUserId();
     getMyReserveList();
   },[usercode,secretCode]);

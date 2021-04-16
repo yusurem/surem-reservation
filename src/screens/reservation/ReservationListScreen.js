@@ -351,6 +351,7 @@ export default function ReservationListScreen({ navigation }) {
   };
 
   useEffect(()=>{    
+    console.log('ddddd')
     getUserId();
     buildPickerData();
     getMyReserveList();
