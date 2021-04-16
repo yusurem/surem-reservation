@@ -36,7 +36,7 @@ const TableScreen = ({ navigation, route }) => {
         var currInfo = {
             day: currDate.getDate(),
             month: currDate.getMonth() + 1,
-            weekDay: currDate.getDay() + 1,
+            weekDay: currDate.getDay(),
             year: currDate.getFullYear()
         }
         route.params = {

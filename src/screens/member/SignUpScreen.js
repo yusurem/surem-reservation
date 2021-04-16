@@ -134,7 +134,7 @@ export default function SignUpScreen({ navigation }) {
             <Text style={{ textAlign: 'center' }}>Loading...</Text>
         </View>
       </SafeAreaView>
-      );
+    );
   }
 
     return (
