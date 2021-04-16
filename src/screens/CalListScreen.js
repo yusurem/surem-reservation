@@ -7,7 +7,6 @@ import { FontAwesome5 } from '@expo/vector-icons';
 
 const CalListScreen = ({ navigation }) => {
     const [selectedDate, setSelectedDate] = useState('');
-    // const [currentDate, setCurrentDate] = useState("2021-08-24");
     const [select, setSelect] = useState(false);
     
     LocaleConfig.locales['kr'] = {
@@ -31,45 +30,6 @@ const CalListScreen = ({ navigation }) => {
         });
     };
 
-    const onDayLongPress = (day) => {
-        navigation.navigate('Reservation', { startTime: "040000"});
-    }
-    
-    const selectedDates = {
-        '2021-03-16': {selected: true, selectedColor: 'blue'},
-        '2021-03-29': {selected: true, selectedColor: 'blue'},
-        '2021-03-12': {selected: true, selectedColor: 'blue'},
-        '2021-03-06': {selected: true, selectedColor: 'blue'},
-        '2021-03-30': {selected: true, selectedColor: 'blue'},
-        '2021-03-24': {selected: true, selectedColor: 'blue'},
-        '2021-03-17': {marked: true},
-        '2021-03-18': {marked: true, dotColor: 'red', activeOpacity: 0},
-        '2021-03-19': {disabled: true, disableTouchEvent: true}
-    }
-
-    /*
-              <CalendarList
-                    style={styles.calendar}
-                    onDayPress={onDayPress}
-                    onDayLongPress={onDayLongPress}
-                    // hideArrows={true}
-
-                    // markedDates={{ ...selectedDates, 
-                    //     [selectedDate]: {
-                    //     selected: select,
-                    //     disableTouchEvent: false,
-                    //     selectedColor: 'rgb(173, 216, 230)', // light blue
-                    //     selectedTextColor: 'black'
-                    //     }
-                    // }}
-                    // Enable horizontal scrolling, default = false
-                    horizontal={true}
-                    // Enable paging on horizontal, default = false
-                    pagingEnabled={true}
-                    // Set custom calendarWidth.
-                />
-    */
-
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white'}}>
             <View>
@@ -79,7 +39,7 @@ const CalListScreen = ({ navigation }) => {
                         onDayPress={onDayPress}
                         current={Date()}
                         minDate={Date()}
-                        onDayLongPress={onDayLongPress}
+                        // onDayLongPress={onDayLongPress}
                         hideArrows={false}
                         renderArrow={(direction) => {
                             if(direction === 'left'){

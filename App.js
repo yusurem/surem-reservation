@@ -141,6 +141,7 @@ const TabNav = () => {
         name="Reserve" 
         component={SecondStack} 
         options={{
+          unmountOnBlur: true,
           tabBarLabel: '예약하기',
           tabBarIcon: () => <MaterialCommunityIcons name="calendar-clock" color="#474747" size={24} style={{ marginTop: 15 }}/>,
         }}

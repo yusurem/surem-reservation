@@ -126,6 +126,10 @@ const ReservationScreen = ({ navigation, route }) => {
                 // roomCode: '64D1FEC28CFE4A7'
             });
             // console.log(response.data);
+            if(response.data.returnCode !== "E0000"){
+                console.log("Error: " + response.data.returnCode);
+                navigation.navigate("Table");
+            }
             console.log("API call successful!");
             return response.data;
         } catch (err) {
@@ -143,7 +147,10 @@ const ReservationScreen = ({ navigation, route }) => {
                 imgCode: code
             });
             console.log(response.data);
-            console.log("API call successful!");
+            if(response.data.returnCode !== "E0000"){
+                console.log("Error: " + response.data.returnCode);
+            }
+            console.log("API call done!");
             return response.data;
         } catch (err) {
             setErrorMessageA("API 문제발생");
@@ -182,7 +189,6 @@ const ReservationScreen = ({ navigation, route }) => {
         setInfo(roomInfo.room.info);
         setSubInfo(roomInfo.room.subInfo);
         setRoomName(roomInfo.room.roomName);
-        // setApiCalled(true);
     }
 
     if(endVals.length == 0){
@@ -225,7 +231,6 @@ const ReservationScreen = ({ navigation, route }) => {
                         <Text style={styles.headerText}>{roomName}</Text>
                     </View>
                     <View style={{alignItems: 'center', height: 190, marginBottom: 17, marginTop: 7}}>
-                        {/* <Image style={styles.imageStyle} source={require("../../assets/office1.png")} /> */}
                         <SliderBox parentWidth={330} sliderBoxHeight={190} images={imgs} disableOnPress={true}/>
                     </View>
                     <View style={styles.headerBox}>
@@ -233,8 +238,6 @@ const ReservationScreen = ({ navigation, route }) => {
                         <Text style={styles.headerText}>시설안내</Text>
                     </View>
                     <View style={styles.description}>
-                        {/* <Text style={styles.descriptionText}>4인 의자와 모니터, 화이트보드가 사용가능한 프리미엄 공간 회의실입니다. 편안한 업무를위해 생수, 커피, 다과 등이 무료로
-                                                             제공되며 회의, 면접, 강의 등 다양한 공간으로 사용할수 있는 회의실입니다.</Text> */}
                         <Text style={styles.descriptionText}>{info}</Text>
                     </View>
                     <View style={styles.headerBox}>
@@ -242,7 +245,6 @@ const ReservationScreen = ({ navigation, route }) => {
                         <Text style={styles.headerText}>부가서비스</Text>
                     </View>
                     <View style={styles.description}>
-                        {/* <Text style={styles.descriptionText}>빔프로젝트, 화이트보드, TV, 에어컨, 난방기</Text> */}
                         <Text style={styles.descriptionText}>{subInfo}</Text>
                     </View>
                     <View style={styles.headerBox}>
@@ -280,9 +282,6 @@ const ReservationScreen = ({ navigation, route }) => {
                                     if(itemValue != "0"){
                                         setErrorMessageA(false);
                                         setIsValid(true);
-                                        // console.log("dapeta" + endTime);
-                                        // console.log("APEOITUNAPET: " + endTime.substring(0,2));
-                                        // console.log("APEOITUNAPET: " + parseInt(endTime.substring(0,2)));
 
                                         var startDate = new Date(0, 0, 0, parseInt(startTime.substring(0,2)), parseInt(startTime.charAt(2)) * 10, 0);
                                         var endDate = new Date(0, 0, 0, parseInt(itemValue.substring(0,2)), parseInt(itemValue.charAt(2)) * 10, 0);

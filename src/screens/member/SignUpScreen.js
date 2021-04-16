@@ -32,6 +32,7 @@ export default function SignUpScreen({ navigation }) {
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
 
+
   const makeId = () => {
     var text = "";
     var possible = "0123456789"
@@ -101,7 +102,10 @@ export default function SignUpScreen({ navigation }) {
         [],
         (tx, results) =>{
           if(results.rows.length > 0){
-            navigation.reset({index: 0, routes: [{name: 'Tab'}] })
+            navigation.reset({
+              index: 0, 
+              routes: [{name: 'Tab'}] 
+            })
           }
         }
       )

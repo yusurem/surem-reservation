@@ -37,7 +37,11 @@ const ReservedScreen = ({ navigation, route }) => {
                 <TouchableHighlight
                     style={styles.reserveButton}
                     onPress={() => {
-                        navigation.navigate("CalendarList");
+                        // navigation.navigate("CalendarList");
+                        navigation.reset({
+                            index: 0, 
+                            routes: [{name: 'CalendarList'}] 
+                        })
                     }}
                 >
                     <Text style={styles.buttonText}>추가 예약하기</Text>

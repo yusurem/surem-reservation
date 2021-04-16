@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { Table, TableWrapper, Row, Rows, Col, Cell } from 'react-native-table-component';
 import { MaterialCommunityIcons, AntDesign, FontAwesome5, Feather } from '@expo/vector-icons';
 import axios from 'axios';
@@ -8,11 +8,16 @@ import { CalendarList, Calendar, LocaleConfig } from 'react-native-calendars';
 import Modal from 'react-native-modal';
 
 const TableScreen = ({ navigation, route }) => {
+    const windowWidth = useWindowDimensions().width;
+    const windowHeight = useWindowDimensions().height;
+    
     const [errorMessageA, setErrorMessageA] = useState("");
     const [resrvLists, setResrvLists] = useState([]);
     const [locInfo, setLocInfo] = useState("");
     const [roomLists, setRoomLists] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
+    const [roomWidth, setRoomWidth] = useState(windowWidth - 30 - 115 - 5);
+
 
     const weekDays = new Array('일', '월', '화', '수', '목', '금', '토');
 
@@ -35,9 +40,9 @@ const TableScreen = ({ navigation, route }) => {
             year: currDate.getFullYear()
         }
         route.params = {
-            dateString: `${currInfo.year}-${currInfo.month > 9 ? currInfo.month : "0" + currInfo.month}-${currInfo.day}`,
-            day: currInfo.day,
-            month: currInfo.month,
+            dateString: `${currInfo.year}-${currInfo.month > 9 ? currInfo.month : "0" + currInfo.month}-${currInfo.day > 9 ? currInfo.day : "0" + currInfo.day}`,
+            day: `${currInfo.day > 9 ? currInfo.day : "0" + currInfo.day}`,
+            month: `${currInfo.month > 9 ? currInfo.month : "0" + currInfo.month}`,
             weekDay: currInfo.weekDay,
             year: currInfo.year
         }
@@ -88,6 +93,12 @@ const TableScreen = ({ navigation, route }) => {
                 adminCode: adCode
             });
             // console.log(response.data);
+           
+            if(response.data.returnCode !== "E0000"){
+                console.log("Error: " + response.data.returnCode);
+                navigation.navigate("Home");
+            }
+
             console.log("API call successful!");
             setResrvLists(response.data.roomList);
         } catch (err) {
@@ -125,6 +136,12 @@ const TableScreen = ({ navigation, route }) => {
         roomCodes.push(resrvLists[i].roomCode);
         roomNames.push(resrvLists[i].roomName);
     }
+
+    if(roomCodes.length > 1){
+        setRoomWidth(170 * roomCodes.length);
+    }
+
+    
 
     const state = {
         tableHead: ['1호실', '2호실', '3호실', '4호실', '5호실'],
@@ -329,10 +346,10 @@ const TableScreen = ({ navigation, route }) => {
                                 </Table>
                                 <ScrollView horizontal={true}>
                                     <Table borderStyle={{ borderWidth: 1, borderColor: '#838383' }}>
-                                        <TableWrapper style={{width:700}}>
+                                        <TableWrapper style={{width: roomWidth}}>
                                             <Row data={state.tableHead} style={styles.head} textStyle={styles.text} />
                                         </TableWrapper>
-                                        <TableWrapper style={{width:700}}>
+                                        <TableWrapper style={{width: roomWidth}}>
                                             <Rows data={state.tableData} style={styles.row} textStyle={styles.text} />
                                         </TableWrapper>
                                     </Table>

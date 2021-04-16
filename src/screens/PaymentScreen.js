@@ -71,6 +71,8 @@ const PaymentScreen = ({ navigation, route }) => {
             // console.log(`${route.params.year}${route.params.month}${route.params.day}${route.params.startTime}`);
             console.log("usercode: " + usercode);
             console.log("secretcode: " + secretCode);
+            console.log("startTime" +  `${route.params.year}${route.params.month}${route.params.day}${route.params.startTime}`);
+            console.log("endTime" + `${route.params.year}${route.params.month}${route.params.day}${route.params.endTime}`)
             const response = await axios.post('http://112.221.94.101:8980/reservation', {
                 'roomCode' : route.params.roomCode,
                 // 'usercode' : "testId1",
@@ -242,6 +244,15 @@ const PaymentScreen = ({ navigation, route }) => {
                                 if(checked){
                                     // await getUserId();
                                     const res = await makeReservation(sTime, eTime);
+
+                                    if(res.returnCode !== "E0000"){
+                                        console.log("Error: " + res.returnCode);
+                                        navigation.reset({
+                                            index: 0, 
+                                            routes: [{name: 'CalendarList'}] 
+                                        })
+                                    }
+
                                     console.log(res);
                                     // const qr = await getQrCode(res.qrCode);
                                     // console.log(qr);
