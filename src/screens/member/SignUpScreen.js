@@ -128,14 +128,13 @@ export default function SignUpScreen({ navigation }) {
     hasUserId();
   });
   if(loading){
-
-  return (
-    <SafeAreaView style={{flex: 1, justifyContent: 'center'}}>
-      <View style={{ flex: 1, justifyContent: 'center'}}>
-          <Text style={{ textAlign: 'center' }}>Loading...</Text>
-      </View>
-    </SafeAreaView>
-    );
+    return (
+      <SafeAreaView style={{flex: 1, justifyContent: 'center'}}>
+        <View style={{ flex: 1, justifyContent: 'center'}}>
+            <Text style={{ textAlign: 'center' }}>Loading...</Text>
+        </View>
+      </SafeAreaView>
+      );
   }
 
     return (
