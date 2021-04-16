@@ -7,10 +7,30 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import * as SQLite from 'expo-sqlite';
 import { useNavigation } from '@react-navigation/stack'
 import { NavigationActions } from 'react-navigation';
+import { useEffect } from 'react/cjs/react.development';
+
+const db = SQLite.openDatabase('db.db');
 
 export default function HomeScreen({navigation}) {
 
-  const db = SQLite.openDatabase('db.db');
+  const hasUserId = async () => {
+    await db.transaction((tx)=>{
+      tx.executeSql(
+        `select * from UserId;`,
+        [],
+        (tx, results) =>{
+          console.log(results.rows)
+          if(results.rows.length < 1){
+            navigation.reset({index: 0, routes: [{name: 'SignUp'}] })
+          }
+        }
+      )
+    })
+  }
+
+  useEffect(()=>{
+    hasUserId()
+  })
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>

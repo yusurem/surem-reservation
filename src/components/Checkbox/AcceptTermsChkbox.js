@@ -37,7 +37,7 @@ export default class AcceptTermsChkbox extends Component{
 const styles = StyleSheet.create({
   checkboxContainer: {
     flexDirection: "row",
-    marginLeft: '15%'
+    alignSelf:'center'
   },
   checkbox: {
   },
