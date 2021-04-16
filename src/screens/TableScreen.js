@@ -1,26 +1,58 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Table, TableWrapper, Row, Rows, Col, Cell } from 'react-native-table-component';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { MaterialCommunityIcons, AntDesign, FontAwesome5, Feather } from '@expo/vector-icons';
 import axios from 'axios';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
+import { CalendarList, Calendar, LocaleConfig } from 'react-native-calendars';
+import Modal from 'react-native-modal';
 
 const TableScreen = ({ navigation, route }) => {
     const [errorMessageA, setErrorMessageA] = useState("");
     const [resrvLists, setResrvLists] = useState([]);
     const [locInfo, setLocInfo] = useState("");
     const [roomLists, setRoomLists] = useState("");
+    const [modalVisible, setModalVisible] = useState(false);
 
+    const weekDays = new Array('일', '월', '화', '수', '목', '금', '토');
+
+    console.log("Entered TableScreen. Params: ");
+    console.log(route.params);
+
+    // Object {
+    //     "dateString": "2021-04-15",
+    //     "day": "15",
+    //     "month": "04",
+    //     "weekDay": 4,
+    //     "year": 2021,
+    // }
+    if(route.params === undefined){
+        var currDate = new Date();
+        var currInfo = {
+            day: currDate.getDate(),
+            month: currDate.getMonth() + 1,
+            weekDay: currDate.getDay() + 1,
+            year: currDate.getFullYear()
+        }
+        route.params = {
+            dateString: `${currInfo.year}-${currInfo.month > 9 ? currInfo.month : "0" + currInfo.month}-${currInfo.day}`,
+            day: currInfo.day,
+            month: currInfo.month,
+            weekDay: currInfo.weekDay,
+            year: currInfo.year
+        }
+        console.log("INITIAL");
+        console.log(route.params);
+    }
+    
     const getLocationList = async () => {
         try{
             console.log("Attempting to retrieve location list...");
             const response = await axios.post('http://112.221.94.101:8980/getLocationList', {
-                location: '경기'
+                location: '서울'
             });
             console.log("API call successful!");
-            console.log(typeof(response.data));
+            console.log(response.data);
             // setLocInfo(response.data);
         } catch (err) {
             setErrorMessageA("API 문제발생");
@@ -28,13 +60,12 @@ const TableScreen = ({ navigation, route }) => {
         }
     }
 
-    // {"returnCode":"E0000","place":[{"adminCode":"surem2","adminPlaceName":"지점명"}]
     const getRoomList = async () => {
         try{
             console.log("Attempting to retreive room list...");
             const response = await axios.post('http://112.221.94.101:8980/getRoomList', {
-                adminPlaceName: '지점명',
-                adminCode: "surem2"
+                adminPlaceName: '슈어엠',
+                adminCode: "surem3"
             });
             console.log("API call successful!");
             // console.log(response.data);
@@ -49,7 +80,6 @@ const TableScreen = ({ navigation, route }) => {
     const getReservationList = async (resDate, adCode) => {
         try{
             console.log("Attempting to retreive list of available reservation times...");
-            // console.log("roomBranch: " + rmBranch);
             console.log("resrvCTime: " + resDate);
             console.log("adminCode: " + adCode);
             const response = await axios.post('http://112.221.94.101:8980/getReservationList', {
@@ -59,7 +89,6 @@ const TableScreen = ({ navigation, route }) => {
             });
             // console.log(response.data);
             console.log("API call successful!");
-            // setResrvLists(response.data);
             setResrvLists(response.data.roomList);
         } catch (err) {
             setErrorMessageA("API 문제발생");
@@ -68,40 +97,13 @@ const TableScreen = ({ navigation, route }) => {
         }
     }
 
-    console.log("Entered TableScreen. Params: ");
-    console.log(route.params);
-
-    // const roomCodes = [ "21D7E4B9B8C840F", "7105507F78B7422", "7F2AB0EE33674A7" ];
-    // const roomCodes = [ "21D7E4B9B8C840F", "98A148A0C7134C1", "98A148A0C7134C1" ];
-
-    // const getResrvLists = async () => {
-    //     try{
-    //         const tempLists = []
-    //         for(let i = 0; i < roomCodes.length; i++){
-    //             const resrvList = await getAvailableList(route.params.dateString.replace(/-/g,""), roomCodes[i]);
-    //             tempLists.push(resrvList);
-    //         }
-    //         console.log(tempLists);
-    //         setResrvLists(tempLists);
-    //     } catch (err) {
-    //         console.log(err);
-    //     }
-    // }
-
-    // console.log(locInfo);
-
-    // if(roomList === ""){
-    //     getRoomList();
-    //     getAvailableList(route.params.dateString.replace(/-/g,""), "surem2");
-    // }
-
     if(resrvLists.length == 0){
-        // console.log("Initializing Reservation List");
+        console.log("Initializing Reservation List");
         var tt0 = performance.now();
 
-        getLocationList();
+        // getLocationList();
         // getRoomList();
-        getReservationList(route.params.dateString.replace(/-/g,""), "surem2");
+        getReservationList(route.params.dateString.replace(/-/g,""), "surem3");
 
         var tt1 = performance.now()
          console.log("API call took " + (tt1 - tt0) + " milliseconds.")
@@ -117,25 +119,12 @@ const TableScreen = ({ navigation, route }) => {
     var t0 = performance.now();
 
 
-    // console.log(locInfo);
-    // console.log(resrvLists);
-
     const roomCodes = [];
     const roomNames = [];
     for(var i = 0; i < resrvLists.length; i++){
         roomCodes.push(resrvLists[i].roomCode);
         roomNames.push(resrvLists[i].roomName);
     }
-
-    // console.log(roomNames);
-
-    // const roomInfos = [];
-    // for(var i = 0; i < roomLists.length; i++){
-    //     roomInfos.push({
-    //         roomName: roomLists[i].roomName,
-
-    //     });
-    // }
 
     const state = {
         tableHead: ['1호실', '2호실', '3호실', '4호실', '5호실'],
@@ -174,7 +163,6 @@ const TableScreen = ({ navigation, route }) => {
     state.tableHead = roomNames;
 
     // console.log(Object.values(resrvLists[1])[0]);
-
     const optionsList = [];
     const optionValList = [];
     for(let i = 0; i < state.tableHead.length; i++){
@@ -184,31 +172,19 @@ const TableScreen = ({ navigation, route }) => {
             if(Object.values(resrvLists[i])[j] === 'true'){
                 let hour = Math.floor((j - 2) / 6);
                 let min = (j - 2) % 6;
-
-                // console.log(`${hour}:${min}0 ${hour > 11 ? "PM" : "AM"}`);
                 options.push(`${hour}:${min}0 ${hour > 11 ? "PM" : "AM"}`);
-
-                // console.log(`${hour > 9 ? hour : "0" + hour}${min}000`);
                 optionVals.push(`${hour > 9 ? hour : "0" + hour}${min}000`);
-
-                // options.push(state.tableTitle[j + 1]);
-                // optionVals.push(timeValue[j]);
             }
         }
         optionsList.push(options);
         optionValList.push(optionVals);
     }
 
-    // console.log(optionsList);
-    // console.log(optionValList);
-
     // console.log(Object.values(resrvLists[0]).length);
-
     const tableData = [];
     for(let i = 2; i < state.minTitle.length + 2; i++){
         const rowData = [];
         for(let j = 0; j < state.tableHead.length; j++){
-            // console.log(Object.values(resrvLists[j])[i]);
             if(Object.values(resrvLists[j])[i] === "true"){
                 let hour = Math.floor((i - 2) / 6);
                 let min = (i - 2) % 6;
@@ -245,9 +221,6 @@ const TableScreen = ({ navigation, route }) => {
 
     state.tableData = tableData;
 
-    const weekDays = new Array('일', '월', '화', '수', '목', '금', '토');
-
-
     const minArr = [];
     for(var i = 0; i < 6 * 24; i++){
         minArr.push(30);
@@ -260,6 +233,28 @@ const TableScreen = ({ navigation, route }) => {
 
     var t1 = performance.now()
     console.log("Assembling screen took " + (t1 - t0) + " milliseconds.")
+
+    LocaleConfig.locales['kr'] = {
+        monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+        monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+        dayNames: ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'],
+        dayNamesShort: ['일','월','화','수','목','금','토'],
+        today: '오늘'
+      };
+    LocaleConfig.defaultLocale = 'kr';
+
+    const onDayPress = day => {
+        console.log(day);
+        setModalVisible(!modalVisible);
+        let currDate = new Date(day.dateString);
+        navigation.replace('Table', { 
+            dateString: day.dateString, 
+            year: day.year, 
+            month: `${day.month < 10 ? 0 : ""}${day.month}`,
+            day: `${day.day < 10 ? 0 : ""}${day.day}`,
+            weekDay: currDate.getDay()
+        });
+    };
 
     return (
         <SafeAreaView style={{ flex: 1}}>
@@ -284,9 +279,18 @@ const TableScreen = ({ navigation, route }) => {
                         >
                             <MaterialCommunityIcons name="less-than" color="#BFBFBF" size={30} />
                         </TouchableOpacity>
-
-                        <Text style={styles.dateStyle}>{route.params.dateString.replace(/-/g,'.')}({weekDays[route.params.weekDay]})</Text>
-
+                        
+                        <TouchableOpacity
+                            onPress={() => {
+                                setModalVisible(!modalVisible);
+                            }}
+                        >
+                            <View style={styles.dateTitle}>
+                                <Text style={styles.dateStyle}>{route.params.dateString.replace(/-/g,'.')}({weekDays[route.params.weekDay]}) </Text>
+                                <AntDesign style={styles.calendarIcon} name="calendar" size={22} color="#838383" />
+                            </View>
+                        </TouchableOpacity>
+                        
                         <TouchableOpacity
                             onPress={() => {
                                 var newDate = new Date(route.params.dateString);
@@ -325,14 +329,129 @@ const TableScreen = ({ navigation, route }) => {
                                 </Table>
                                 <ScrollView horizontal={true}>
                                     <Table borderStyle={{ borderWidth: 1, borderColor: '#838383' }}>
-                                        <Row data={state.tableHead} style={styles.head} textStyle={styles.text} />
-                                        <Rows data={state.tableData} style={styles.row} textStyle={styles.text} />
+                                        <TableWrapper style={{width:700}}>
+                                            <Row data={state.tableHead} style={styles.head} textStyle={styles.text} />
+                                        </TableWrapper>
+                                        <TableWrapper style={{width:700}}>
+                                            <Rows data={state.tableData} style={styles.row} textStyle={styles.text} />
+                                        </TableWrapper>
                                     </Table>
                                 </ScrollView>
                             </View>
                         </ScrollView>
                     </View>
                     
+                    <Modal 
+                        isVisible={modalVisible}
+                        backdropTransitionOutTiming={0}
+                        style={styles.modal}
+                    >
+                        <View style={styles.modalBox}>
+                            <View style={styles.calendarBox}>
+                                <Calendar
+                                    style={styles.calendars}
+                                    onDayPress={onDayPress}
+                                    current={Date()}
+                                    minDate={Date()}
+                                    // onDayLongPress={onDayLongPress}
+                                    hideArrows={false}
+                                    renderArrow={(direction) => {
+                                        if(direction === 'left'){
+                                            return <FontAwesome5 name="less-than" size={24} color="#BFBEBE" />;
+                                        }
+                                        else{
+                                            return <FontAwesome5 name="greater-than" size={24} color="#BFBEBE" />;
+                                        }
+                                    }}
+                                    renderHeader={(date) => {
+                                        return (
+                                            <View style={styles.headerBox}>
+                                                <Text style={styles.header}>{date.getFullYear()}년 {date.getMonth() + 1}월</Text>
+                                            </View>
+                                        );
+                                    }}
+                                    theme={{
+                                        'stylesheet.calendar.header': {
+                                            week: {
+                                                // marginTop: 5,
+                                                flexDirection: 'row',
+                                                justifyContent: 'space-around',
+                                                borderTopWidth: 1,
+                                                borderRightWidth: 1,
+                                                borderLeftWidth: 1,
+                                                borderTopLeftRadius: 10,
+                                                borderTopRightRadius: 10,
+                                                borderColor: '#BCBCBC',
+                                                backgroundColor: '#F7F7F7',
+                                                height: 40,
+                                                alignItems: 'center',
+                                                marginTop: 8,
+                                            },
+                                            dayHeader: {
+                                                // marginTop: 2,
+                                                // marginBottom: 2,
+                                                flex: 1,
+                                                // flexGrow: 1,
+                                                height: 30,
+                                                textAlign: 'center',
+                                                // borderRightWidth: 0.5,
+                                                // borderLeftWidth: 0.5,
+                                                // borderWidth: 0.5,
+                                                borderColor: 'black',
+                                                // paddingBottom: 0,
+                                                paddingTop: 5
+                                            },
+                                        },
+                                        'stylesheet.calendar.main': {
+                                            // container: {
+                                            //     borderWidth: 20,
+                                            //     borderColor: 'red',
+                                            // },
+                                            // week: {
+                                            //     // borderWidth: 5,
+                                            //     // borderColor: 'green',
+                                            //     flexDirection: 'row',
+                                            //     justifyContent: 'space-around'
+                                            // },
+                                            monthView: {
+                                                // backgroundColor: 'orange'
+                                                borderBottomWidth: 1,
+                                                borderLeftWidth: 1,
+                                                borderRightWidth: 1,
+                                                borderBottomLeftRadius: 10,
+                                                borderBottomRightRadius: 10,
+                                                borderColor: '#BCBCBC'
+                                            },
+                                            dayContainer: {
+                                                flex: 1,
+                                                alignItems: 'center',
+                                                // borderLeftWidth: 0.5,
+                                                // borderRightWidth: 0.5,
+                                                // borderBottomWidth: 0.5,
+                                                // borderColor: 'black',
+                                                height: 50,
+                                            },
+                                        }
+                                    }}
+                                />
+                            </View>
+                            
+                            <View style={{ alignItems: 'center'}}>
+                                <TouchableOpacity
+                                    style={styles.closeButton}
+                                    onPress={() => {
+                                        setModalVisible(!modalVisible);
+                                    }}
+                                >
+                                    <Text style={styles.buttonText}>닫기</Text>
+                                </TouchableOpacity>
+                            </View>
+                            
+
+                        </View>
+                    </Modal>
+
+
                 </View>
             </ScrollView>
         </SafeAreaView>
@@ -383,7 +502,8 @@ const styles = StyleSheet.create({
     },
     head: {  
         height: 50,  
-        backgroundColor: '#F6F6F6'  
+        backgroundColor: '#F6F6F6',
+        // width: 700 
     },
     wrapper: { 
         flexDirection: 'row' 
@@ -393,7 +513,7 @@ const styles = StyleSheet.create({
     },
     row: {  
         height: 30,
-        width: 700
+        // width: 700
     },
     text: { 
         textAlign: 'center',
@@ -404,7 +524,53 @@ const styles = StyleSheet.create({
         color: '#545454',
         fontSize: 11
     },
-    
+    dateTitle: {
+        flexDirection: 'row'
+    },
+    calendarIcon: {
+        marginTop: 4.5
+    },
+    headerBox: {
+        // marginBottom:20
+    },
+    header: {
+        fontSize: 16.5,
+    },
+    calendarBox: {
+        // borderWidth: 1,
+        // borderColor: 'black',
+        paddingHorizontal: 20,
+        paddingBottom: 15
+    },
+    calendar: {
+        borderWidth: 1,
+        borderColor: 'black',
+        // margin: 10,
+    },
+    textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center",
+    },
+    modalBox: {
+        borderRadius: 15,
+        backgroundColor: 'white',
+        // height: 270,
+        // width: 300,
+    },
+    closeButton: {
+        backgroundColor: "#262829",
+        borderRadius: 7,
+        marginBottom: 15,
+        paddingVertical: 8,
+        paddingHorizontal: 40,
+        elevation: 2
+    },
+    buttonText: {
+        textAlign: 'center',
+        color: 'white',
+        fontSize: 14,
+    },
 });
 
 export default TableScreen;

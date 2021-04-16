@@ -31,6 +31,8 @@ const ReservationScreen = ({ navigation, route }) => {
 
     const [imgCodes, setImgCodes] = useState([]);
     const [imgs, setImgs] = useState([]);
+    
+    const [apiCalled, setApiCalled] = useState(false);
 
     console.log("Entered ReservationScreen. Params: ");
     // console.log(route.params);
@@ -92,18 +94,6 @@ const ReservationScreen = ({ navigation, route }) => {
             init = timeVals[i];
         }
         return endVals;
-
-        // var init = timeVals[sIndex];
-        // const endVals = [];
-        // for(var i = sIndex + 1; i < timeVals.length; i++){
-        //     if(timeVals[i] - init != 1){
-        //         break;
-        //     }
-        //     endVals.push(timeVals[i]);
-        //     init = timeVals[i];
-        // }
-        // endVals.push(init + 1);
-        // return endVals;
     }
 
     const buildPickerData = (endVals) => {
@@ -125,10 +115,6 @@ const ReservationScreen = ({ navigation, route }) => {
         }
         setEndVals(pickerVals);
         setEndLabels(pickerLabels);
-        // return {
-        //     pVals: pickerVals,
-        //     pLabels: pickerLabels
-        // };
     }
 
     const getRoomInfo = async () => {
@@ -137,14 +123,10 @@ const ReservationScreen = ({ navigation, route }) => {
             console.log("roomCode: " + route.params.roomCode);
             const response = await axios.post('http://112.221.94.101:8980/getRoomInfo', {
                 roomCode: route.params.roomCode
+                // roomCode: '64D1FEC28CFE4A7'
             });
-            console.log(response.data);
+            // console.log(response.data);
             console.log("API call successful!");
-            // setRoomInfo(response.data);
-            // setInfo(response.data.room.info);
-            // setSubInfo(response.data.room.subInfo);
-            // setRoomName(response.data.room.roomName);
-            // setImgCodes([response.data.imgCode1, response.data.imgCode2, response.data.imgCode3, response.data.imgCode4])
             return response.data;
         } catch (err) {
             setErrorMessageA("API 문제발생");
@@ -157,14 +139,11 @@ const ReservationScreen = ({ navigation, route }) => {
         try{
             console.log("Attempting to retreive room image...");
             console.log("imgCode: " + code);
-            const response = await axios.get('http://112.221.94.101:8980/getRoomImg', {
-                params: {
-                    imgCode: code
-                }
+            const response = await axios.post('http://112.221.94.101:8980/getRoomImg', {
+                imgCode: code
             });
             console.log(response.data);
             console.log("API call successful!");
-            // setImgs([...imgs, response.data]);
             return response.data;
         } catch (err) {
             setErrorMessageA("API 문제발생");
@@ -177,25 +156,40 @@ const ReservationScreen = ({ navigation, route }) => {
         const roomInfo = await getRoomInfo();
         const codes = [roomInfo.room.imgCode1, roomInfo.room.imgCode2, roomInfo.room.imgCode3, roomInfo.room.imgCode4];
         const roomImgs = [];
-        // for(var i = 0; i < codes.length; i++){
-        //     roomImgs.push(await getRoomImg(codes[i]));
-        // }
+        // const codes = ["null", "null", "null", "null"];
+        var empty = true;
+        for(var i = 0; i < codes.length; i++){
+            if(codes[i] !== "null"){
+                empty = false;
+                var image = await getRoomImg(codes[i]);
+                if(image.returnCode === "E0000"){
+                    roomImgs.push(image.url);
+                    // roomImgs.push("https://reactnative.dev/img/tiny_logo.png")
+                }
+            }
+        }
+        if(empty){
+            if(imgs.length == 0){
+                setImgs([
+                    require("../../assets/noimage.jpeg")
+                ]);
+            }        
+        }
+        else{
+            setImgs(roomImgs);
+        }
         setRoomInfo(roomInfo);
         setInfo(roomInfo.room.info);
         setSubInfo(roomInfo.room.subInfo);
         setRoomName(roomInfo.room.roomName);
-        setImgs(roomImgs);
+        // setApiCalled(true);
     }
 
     if(endVals.length == 0){
         console.log("Initializing Data..");
-        // var sIn = findSIndex(startTime, route.params.optionVals);
-        // var vInt = valsToDate(route.params.optionVals);
-        // console.log(sIn);
-        // console.log(vInt);
-        buildPickerData(filterEndTime(findSIndex(startTime, route.params.optionVals), valsToDate(route.params.optionVals)));
-        // getRoomInfo();
         apiCalls();
+        buildPickerData(filterEndTime(findSIndex(startTime, route.params.optionVals), valsToDate(route.params.optionVals)));
+        
         return (
             <SafeAreaView style={{flex: 1, justifyContent: 'center'}}>
                 <View style={{ flex: 1, justifyContent: 'center'}}>
@@ -204,21 +198,14 @@ const ReservationScreen = ({ navigation, route }) => {
             </SafeAreaView>
         )
     }
-
+    
     console.log("---------------------------");
-    console.log(roomInfo);
-    console.log(info);
-    console.log(subInfo);
-    console.log(roomName);
+    // console.log(roomInfo);
+    // console.log(info);
+    // console.log(subInfo);
+    // console.log(roomName);
+    console.log(imgs);
     console.log("---------------------------");
-
-
-    // return (
-    //     <SafeAreaView>
-    //         <SliderBox parentWidth={330} sliderBoxHeight={190} images={imgs} disableOnPress={true}/>
-    //     </SafeAreaView>
-    // )
-
 
     const calculatePrice = () => {
         if(route.params.weekDay < 5){
@@ -239,7 +226,7 @@ const ReservationScreen = ({ navigation, route }) => {
                     </View>
                     <View style={{alignItems: 'center', height: 190, marginBottom: 17, marginTop: 7}}>
                         {/* <Image style={styles.imageStyle} source={require("../../assets/office1.png")} /> */}
-                        <SliderBox parentWidth={330} sliderBoxHeight={190} images={images} disableOnPress={true}/>
+                        <SliderBox parentWidth={330} sliderBoxHeight={190} images={imgs} disableOnPress={true}/>
                     </View>
                     <View style={styles.headerBox}>
                         <View style={styles.blueBar}/>

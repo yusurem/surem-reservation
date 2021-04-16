@@ -60,7 +60,7 @@ const MainStack = () => {
 const SecondStack = () => {
   return (
     <Stack.Navigator 
-      initialRouteName='CalendarList'
+      initialRouteName='Table'
       screenOptions={{
         headerShown: false
       }}
@@ -111,6 +111,7 @@ function App() {
     <SafeAreaProvider>
       <NavigationContainer>
         <Tab.Navigator
+          initialRouteName="Home"
           tabBarOptions={{
             style: {
               height: 70,
