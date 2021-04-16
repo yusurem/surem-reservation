@@ -109,62 +109,78 @@ const FourthStack = () => {
   );
 }
 
+const TabNav = () => {
+  return (
+    <Tab.Navigator
+      initialRouteName="Reserve"
+      lazy="true"
+      tabBarOptions={{
+        style: {
+          height: 70,
+          // paddingTop: 10,
+          // marginTop: 20
+        },
+        labelStyle:{
+          marginBottom: 15
+        },
+        activeTintColor: '#474747',
+        inactiveTintColor: '#474747',
+        activeBackgroundColor: '#D9D8D8'
+      }}
+    >
+      <Tab.Screen 
+        name="Home" 
+        component={MainStack} 
+        options={{
+          unmountOnBlur: true,
+          tabBarLabel: '홈',
+          tabBarIcon: () => <Entypo name="home" color="#474747" size={24} style={{alignSelf: 'center', marginLeft: 0.5, marginTop: 15}} />,
+        }}
+      />
+      <Tab.Screen 
+        name="Reserve" 
+        component={SecondStack} 
+        options={{
+          tabBarLabel: '예약하기',
+          tabBarIcon: () => <MaterialCommunityIcons name="calendar-clock" color="#474747" size={24} style={{ marginTop: 15 }}/>,
+        }}
+      />
+      <Tab.Screen 
+        name="ConfirmReserved" 
+        component={ThirdStack} 
+        options={{
+          unmountOnBlur: true,
+          tabBarLabel: '예약확인',
+          tabBarIcon: () => <MaterialCommunityIcons name="checkbox-marked-outline" color="#474747" size={24} style={{ marginTop: 15 }}/>,
+        }}
+      />
+      <Tab.Screen 
+        name="MY" 
+        component={FourthStack} 
+        options={{
+          tabBarLabel: 'MY',
+          tabBarIcon: () => <FontAwesome5 name="user-alt" color="#474747" size={24} style={{ marginTop: 15 }}/>,
+        }}
+      />
+    </Tab.Navigator>
+  )
+}
+
 function App() {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <Tab.Navigator
-          initialRouteName="Home"
-          lazy="true"
-          tabBarOptions={{
-            style: {
-              height: 70,
-              // paddingTop: 10,
-              // marginTop: 20
-            },
-            labelStyle:{
-              marginBottom: 15
-            },
-            activeTintColor: '#474747',
-            inactiveTintColor: '#474747',
-            activeBackgroundColor: '#D9D8D8'
+        <Stack.Navigator 
+          initialRouteName='SignUp'
+          screenOptions={{
+            headerShown: false
           }}
         >
-          <Tab.Screen 
-            name="Home" 
-            component={MainStack} 
-            options={{
-              unmountOnBlur: true,
-              tabBarLabel: '홈',
-              tabBarIcon: () => <Entypo name="home" color="#474747" size={24} style={{alignSelf: 'center', marginLeft: 0.5, marginTop: 15}} />,
-            }}
-          />
-          <Tab.Screen 
-            name="Reserve" 
-            component={SecondStack} 
-            options={{
-              tabBarLabel: '예약하기',
-              tabBarIcon: () => <MaterialCommunityIcons name="calendar-clock" color="#474747" size={24} style={{ marginTop: 15 }}/>,
-            }}
-          />
-          <Tab.Screen 
-            name="ConfirmReserved" 
-            component={ThirdStack} 
-            options={{
-              unmountOnBlur: true,
-              tabBarLabel: '예약확인',
-              tabBarIcon: () => <MaterialCommunityIcons name="checkbox-marked-outline" color="#474747" size={24} style={{ marginTop: 15 }}/>,
-            }}
-          />
-          <Tab.Screen 
-            name="MY" 
-            component={FourthStack} 
-            options={{
-              tabBarLabel: 'MY',
-              tabBarIcon: () => <FontAwesome5 name="user-alt" color="#474747" size={24} style={{ marginTop: 15 }}/>,
-            }}
-          />
-        </Tab.Navigator>
+            <Stack.Screen name="SignUp" component={SignupScreen}/>
+            <Stack.Screen name="Tab" component={TabNav} />
+        </Stack.Navigator>
+        
+        
       </NavigationContainer>
     </SafeAreaProvider>
   );
