@@ -6,6 +6,7 @@ import SignUpButton from '../../button/SignUpButton'
 import AcceptTermsChkbox from '../../components/Checkbox/AcceptTermsChkbox'
 import AuthNumberInput from '../../components/AuthNumberInput'
 import CountDownTimer from '../../components/CountDownTimer'
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import Header from '../../components/Header'
 import * as SQLite from 'expo-sqlite';
@@ -31,6 +32,7 @@ export default function SignUpScreen({ navigation }) {
   const [isCheckAcceptedTerm, setIsCheckAcceptedTerm] = useState(false);
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   const makeId = () => {
     var text = "";
@@ -94,19 +96,20 @@ export default function SignUpScreen({ navigation }) {
   }
 
 
-  const hasUserId = () => {
-    db.transaction((tx)=>{
+  const hasUserId = async () => {
+    await db.transaction((tx)=>{
       tx.executeSql(
         `select * from UserId;`,
         [],
         (tx, results) =>{
           if(results.rows.length > 0){
             navigation.reset({index: 0, routes: [{name: 'Tab'}] })
+          } else if(results.rows.length == 0){
+            setLoading(false)
           }
         }
       )
-    })
-  }
+    })}
 
   const deleteAuthNumbers = () => {
     db.transaction((tx)=>{
@@ -122,16 +125,26 @@ export default function SignUpScreen({ navigation }) {
 
   useEffect(()=>{
     hasUserId();
-  },[]);
+  });
+  if(loading){
 
   return (
-    <View
-    style={{
-        backgroundColor: '#F3F4F8',
-        flex:1,
-        marginTop: StatusBar.currentHeight
-    }}
-    >
+    <SafeAreaView style={{flex: 1, justifyContent: 'center'}}>
+      <View style={{ flex: 1, justifyContent: 'center'}}>
+          <Text style={{ textAlign: 'center' }}>Loading...</Text>
+      </View>
+    </SafeAreaView>
+    );
+  }
+
+    return (
+      <View
+      style={{
+          backgroundColor: '#F3F4F8',
+          flex:1,
+          marginTop: StatusBar.currentHeight
+      }}
+      >
       <Header color="#F3F4F8"></Header>
       <Text></Text>
       <Text style={{ textAlign: 'center', fontSize:20}}>회원가입</Text>
@@ -167,7 +180,7 @@ export default function SignUpScreen({ navigation }) {
         인증번호 발송하기
       </Text> 
       </TouchableOpacity>}
-      { isSentAuth === true ? 
+      { isSentAuth && !isAuth === true ? 
         <CountDownTimer minutes={minutes} seconds={seconds} setMinutes={setMinutes} setSeconds={setSeconds} setIsSentAuth={setIsSentAuth} />:null
       }
       <View height='5%'></View>
@@ -190,8 +203,8 @@ export default function SignUpScreen({ navigation }) {
         }}
       />
       <SignUpButton isAuth={isAuth} isCheckAcceptedTerm={isCheckAcceptedTerm} phoneNum={phoneNum}/>
-    </View>
-  );  
+    </View>  
+    )  
 }
 
 const styles = StyleSheet.create({
