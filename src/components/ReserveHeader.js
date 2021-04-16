@@ -11,11 +11,6 @@ export default class ReserveHeader extends Component{
       <View style={[styles.headerContainer, {backgroundColor: this.props.color}]}>
 
         <Text style={styles.logo}>예약 확인</Text>
-          <TouchableOpacity
-          style={styles.qrBtn}
-          >
-            <Text style={styles.qrBtnText}>이용완료</Text>
-          </TouchableOpacity>
       </View>
     )
   }
