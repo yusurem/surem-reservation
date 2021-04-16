@@ -16,6 +16,7 @@ const MyScreen = ({ navigation, route }) => {
 
     const [usercode, setUsercode] = useState("");
 	const [secretCode, setSecretCode] = useState("");
+    const [couponNum, setCouponNum] = useState(0);
 
     const db = SQLite.openDatabase('db.db');
 
@@ -23,15 +24,15 @@ const MyScreen = ({ navigation, route }) => {
     console.log(route.params);
 
     const getUserId = async () => {
-        console.log("in getuserID");
+        // console.log("in getuserID");
         try{
             await db.transaction(async (tx)=>{
             tx.executeSql(
                 `select * from UserId order by _id desc;`,
                 [],
                 (tx, results) =>{
-                console.log("doing getUserId");
-                console.log('SELECT DDDDD :: ', results)
+                // console.log("doing getUserId");
+                // console.log('SELECT DDDDD :: ', results)
                             setUsercode(results.rows.item(0).usercode)
                             setSecretCode(results.rows.item(0).secretCode)
                 }
@@ -42,9 +43,30 @@ const MyScreen = ({ navigation, route }) => {
         }
     }
 
+    const getMyInfo = async () => {
+        try{
+            console.log("Attempting to get user info...");
+            const response = await axios.post('http://112.221.94.101:8980/myInfo', {
+                usercode: usercode,
+                securityKey: secretCode
+            });
+            console.log(`Got the response!`);
+            console.log(response.data);
+            setCouponNum(response.data.couponCnt);
+            return response.data;
+           
+        } catch (err) {
+            console.log(err);
+            return 'Error';
+        }
+    } 
+
     useEffect(() => {
-        getUserId()
-    },[usercode,secretCode])
+        getUserId();
+        getMyInfo();
+    },[usercode, secretCode, couponNum])
+
+    console.log(couponNum);
 
     return (    
         <SafeAreaView style={{ flex: 1, backgroundColor: '#F3F4F8' }}>
@@ -66,7 +88,7 @@ const MyScreen = ({ navigation, route }) => {
                                 <Text style={styles.infoText}>{usercode.substring(0,3) + "-" + usercode.substring(3,7) + "-" + usercode.substring(7)}</Text>
                             </View>
                             <View style={{ flexDirection: 'row' }}>
-                                <Text style={styles.infoText}>3개</Text>
+                                <Text style={styles.infoText}>{couponNum}개</Text>
                                 <MaterialCommunityIcons style={styles.couponIcon} name="greater-than" size={18} color="#6C6C6C" />
                             </View>
                         </View>
@@ -100,20 +122,47 @@ const MyScreen = ({ navigation, route }) => {
                     <View style={styles.miscBox}>
                         <Text style={styles.version}>버전정보 V 1.0</Text>
                         <Text style={styles.terms}>약관 및 정책</Text>
-                        <View style={styles.subView}>
-                            <Text style={styles.subTerms}>서비스 이용약관</Text>
-                            <MaterialCommunityIcons style={styles.termIcon} name="greater-than" size={18} color="#6C6C6C" />
-                        </View>
-                        <View style={styles.subView}>
-                            <Text style={styles.subTerms}>개인정보 취급 방침</Text>
-                            <MaterialCommunityIcons style={styles.termIcon} name="greater-than" size={18} color="#6C6C6C" />
-                        </View>
-                        <View style={styles.subView}>
-                            <Text style={styles.subTerms}>전자 금융 거래 약관</Text>
-                            <MaterialCommunityIcons style={styles.termIcon} name="greater-than" size={18} color="#6C6C6C" />
-                        </View>
+                        <TouchableOpacity
+                            onPress={() => {
+                                setModalVisible(!modalVisible);
+                            }}
+                        >
+                            <View style={styles.subView}>
+                                <Text style={styles.subTerms}>서비스 이용약관</Text>
+                                <MaterialCommunityIcons style={styles.termIcon} name="greater-than" size={18} color="#6C6C6C" />
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => {
+                                setModalVisible(!modalVisible);
+                            }}
+                        >
+                            <View style={styles.subView}>
+                                <Text style={styles.subTerms}>개인정보 취급 방침</Text>
+                                <MaterialCommunityIcons style={styles.termIcon} name="greater-than" size={18} color="#6C6C6C" />
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => {
+                                setModalVisible(!modalVisible);
+                            }}
+                        >
+                            <View style={styles.subView}>
+                                <Text style={styles.subTerms}>전자 금융 거래 약관</Text>
+                                <MaterialCommunityIcons style={styles.termIcon} name="greater-than" size={18} color="#6C6C6C" />
+                            </View>
+                        </TouchableOpacity>
                     </View>
 
+                    {/* <Modal 
+                        isVisible={modalVisible}
+                        backdropTransitionOutTiming={0}
+                        style={styles.modal}
+                    >
+                        
+                        
+                    </Modal>
+                     */}
                 </View>
             </ScrollView>
         </SafeAreaView> 

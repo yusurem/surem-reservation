@@ -1,3 +1,19 @@
+2021-04-13
+- Meeting notes
+    - Changing the table name that is coming out to only show 두피샵, a, b, click !
+    - 서울, 강변 hard-coding !
+    - First screen that shows has to be the tableScreen !
+        - And then the top month value has to show the calendarList screen !
+
+    - Making the table touchable from  !
+    - Adding an error handler for api calls that restarts the app from then
+    - image !
+        - no image if not found !
+    - Adding the terms to it
+    - Calendar - Modal !
+    - Removing the tab bar initially
+
+
 2021-04-12
 - Add a 추가 예약하기 button on the reserved screen
     - Also try to make it so that when you click back, it doesnt return to the previous screen but resets the 예약하기
