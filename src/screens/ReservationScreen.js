@@ -121,10 +121,11 @@ const ReservationScreen = ({ navigation, route }) => {
         try{
             console.log("Attempting to retreive room information...");
             console.log("roomCode: " + route.params.roomCode);
-            const response = await axios.post('http://112.221.94.101:8980/getRoomInfo', {
+            const response = await axios.post('http://office-api.surem.com/getRoomInfo', {
                 roomCode: route.params.roomCode
                 // roomCode: '64D1FEC28CFE4A7'
             });
+            console.log('ROOM INFO :: ',response.data)
             // console.log(response.data);
             if(response.data.returnCode !== "E0000"){
                 console.log("Error: " + response.data.returnCode);
@@ -143,10 +144,10 @@ const ReservationScreen = ({ navigation, route }) => {
         try{
             console.log("Attempting to retreive room image...");
             console.log("imgCode: " + code);
-            const response = await axios.post('http://112.221.94.101:8980/getRoomImg', {
+            const response = await axios.post('http://office-api.surem.com/getRoomImg', {
                 imgCode: code
             });
-            console.log(response.data);
+            console.log('ROOM IMAGE :: ' ,response.data);
             if(response.data.returnCode !== "E0000"){
                 console.log("Error: " + response.data.returnCode);
             }
