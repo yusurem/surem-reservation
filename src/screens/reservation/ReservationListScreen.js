@@ -129,7 +129,7 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      url: 'http://112.221.94.101:8980/getReservation',
+      url: 'http://office-api.surem.com/getReservation',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -156,7 +156,7 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      url: 'http://112.221.94.101:8980/getRoomInfo',
+      url: 'http://office-api.surem.com/getRoomInfo',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -219,7 +219,7 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      url: 'http://112.221.94.101:8980/cancelReservation',
+      url: 'http://office-api.surem.com/cancelReservation',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -271,7 +271,7 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      url: 'http://112.221.94.101:8980/modifyReservation',
+      url: 'http://office-api.surem.com/modifyReservation',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -332,7 +332,7 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      url: 'http://112.221.94.101:8980/getReservationListForRoom',
+      url: 'http://office-api.surem.com/getReservationListForRoom',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -528,7 +528,7 @@ const styles = StyleSheet.create({
       alignItems:'center'
     }, 
     pickerView:{
-      width:'30%'
+      width:110
     },
     middlePickerView:{
       width:'15%',
