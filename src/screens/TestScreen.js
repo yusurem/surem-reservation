@@ -70,7 +70,7 @@ const TestScreen = () => {
     const testAPI = async () => {
         try{
             console.log("Attempting to send API");
-            const response = await axios.post('http://office-api.surem.com/getEncryptCode', {
+            const response = await axios.post('http://112.221.94.101:8980/getEncryptCode', {
                 'usercode' : 'admin1'
             });
             console.log(`Got the response!`);
@@ -84,7 +84,7 @@ const TestScreen = () => {
     const testAPI2 = async () => {
         try{
             console.log("Attempting to send API");
-            const response = await axios.post('http://office-api.surem.com/getReservation', {
+            const response = await axios.post('http://112.221.94.101:8980/getReservation', {
                 "requestType" : "user",  // user (사용자 별 조회), branch (지점 별 조회)
                 "requestData" : "admin1",
                 "secretCode" : "4HDsKfzSR3eEegv3FiZIA30x+Z6uOccMVlw56N034vNO0FGw7aUqCA0USHdoEK9oL2vlWg=="

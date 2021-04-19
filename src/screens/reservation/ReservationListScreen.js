@@ -129,7 +129,7 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      url: 'http://office-api.surem.com/getReservation',
+      url: 'http://112.221.94.101:8980/getReservation',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -156,7 +156,7 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      url: 'http://office-api.surem.com/getRoomInfo',
+      url: 'http://112.221.94.101:8980/getRoomInfo',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -219,7 +219,7 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      url: 'http://office-api.surem.com/cancelReservation',
+      url: 'http://112.221.94.101:8980/cancelReservation',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -271,7 +271,7 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      url: 'http://office-api.surem.com/modifyReservation',
+      url: 'http://112.221.94.101:8980/modifyReservation',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -332,7 +332,7 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      url: 'http://office-api.surem.com/getReservationListForRoom',
+      url: 'http://112.221.94.101:8980/getReservationListForRoom',
       headers: {
         'Content-Type': 'application/json'
       },

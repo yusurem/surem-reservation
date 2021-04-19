@@ -121,7 +121,7 @@ const ReservationScreen = ({ navigation, route }) => {
         try{
             console.log("Attempting to retreive room information...");
             console.log("roomCode: " + route.params.roomCode);
-            const response = await axios.post('http://office-api.surem.com/getRoomInfo', {
+            const response = await axios.post('http://112.221.94.101:8980/getRoomInfo', {
                 roomCode: route.params.roomCode
                 // roomCode: '64D1FEC28CFE4A7'
             });
@@ -144,7 +144,7 @@ const ReservationScreen = ({ navigation, route }) => {
         try{
             console.log("Attempting to retreive room image...");
             console.log("imgCode: " + code);
-            const response = await axios.post('http://office-api.surem.com/getRoomImg', {
+            const response = await axios.post('http://112.221.94.101:8980/getRoomImg', {
                 imgCode: code
             });
             console.log('ROOM IMAGE :: ' ,response.data);

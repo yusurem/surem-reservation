@@ -46,7 +46,7 @@ const MyScreen = ({ navigation, route }) => {
     const getMyInfo = async () => {
         try{
             console.log("Attempting to get user info...");
-            const response = await axios.post('http://office-api.surem.com/myInfo', {
+            const response = await axios.post('http://112.221.94.101:8980/myInfo', {
                 usercode: usercode,
                 securityKey: secretCode
             });

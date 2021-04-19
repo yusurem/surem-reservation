@@ -73,7 +73,7 @@ const PaymentScreen = ({ navigation, route }) => {
             console.log("secretcode: " + secretCode);
             console.log("startTime" +  `${route.params.year}${route.params.month}${route.params.day}${route.params.startTime}`);
             console.log("endTime" + `${route.params.year}${route.params.month}${route.params.day}${route.params.endTime}`)
-            const response = await axios.post('http://office-api.surem.com/reservation', {
+            const response = await axios.post('http://112.221.94.101:8980/reservation', {
                 'roomCode' : route.params.roomCode,
                 // 'usercode' : "testId1",
                 // "secretCode" : "EI1MLYNV5v0pQLLlYn1hrfL2jITz5M5cArB6pnP84k0uFQLudygVvSlA9ssPlh6SKVsiAg==",
@@ -117,7 +117,7 @@ const PaymentScreen = ({ navigation, route }) => {
         try{
             console.log("Attempting to get QrCode link...");
             // console.log(route.params.qrCode);
-            const response = await axios.post('http://office-api.surem.com/getQrcode', {
+            const response = await axios.post('http://112.221.94.101:8980/getQrcode', {
                 // resrvCode: qr,
                 // resrvCode: "21D7E4B9B8C840F-6dda0e6d111e4f"
                 resrvCode: "techno100010001-V43sA98ETO2F07",
