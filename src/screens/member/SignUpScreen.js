@@ -126,7 +126,7 @@ export default function SignUpScreen({ navigation }) {
 
   useEffect(()=>{
     hasUserId();
-  });
+  },[]);
 
   if(loading){
     return (

@@ -31,15 +31,17 @@ export default function MyReservationRow(props) {
 			<Text style={styles.qrBtnText}>QR 코드</Text>
 		</TouchableOpacity>
 		<View>
-      <Dialog.Container visible={qrVisible}>
-        <Dialog.Button label="Cancel" onPress={handleQrCancel}/>
+		<Modal 
+			isVisible={qrVisible} 
+			onBackdropPress={()=> handleQrCancel()}
+		>
         <View style={styles.qrStyle}>
           <QRCode
             size={140}
             value={props.resrvCode}
           />
         </View>
-      </Dialog.Container>
+      </Modal>
     </View>
 	</View>
   );  
@@ -74,7 +76,14 @@ const styles = StyleSheet.create({
 	},
 	qrStyle:{
 		alignSelf:'center',
-		marginVertical:'15%'
+		alignItems: 'center',
+		alignContent: 'center',
+		justifyContent: 'center',
+		marginVertical:'15%',
+		width:170,
+		height:170,
+		backgroundColor:'#FFFFFF',
+		borderRadius:10
 	}
 });
   

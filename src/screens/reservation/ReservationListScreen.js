@@ -357,6 +357,17 @@ export default function ReservationListScreen({ navigation }) {
     getMyReserveList();
   },[usercode,secretCode]);
 
+  if(reservations.length == 0){
+    return(
+      <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+        <ReserveHeader/>
+        <Text style={{textAlign:'center',textAlignVertical:'center',height:'80%'}}>
+          확인된 예약이 없습니다.
+        </Text>
+      </SafeAreaView>
+    )
+  }
+
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
     <ReserveHeader/>
@@ -369,7 +380,10 @@ export default function ReservationListScreen({ navigation }) {
       }}
     />
     <View>
-      <Modal isVisible={qrVisible} onBackdropPress={()=> handleQrCancel()}>
+      <Modal 
+      isVisible={qrVisible} 
+      onBackdropPress={()=> handleQrCancel()}
+      >
         <View style={styles.qrStyle}>
           <QRCode
             size={140}

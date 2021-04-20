@@ -29,6 +29,7 @@ const saveUserId = (secretcode,phoneNum) => {
 
 export default function SignUpButton(props){
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
 
   const signUp = () => {
     var data = JSON.stringify(
@@ -77,8 +78,9 @@ export default function SignUpButton(props){
             alert("사용자가 없습니다.")
           }else{
             console.log('login Success')
-            //saveUserId(response.data.returnCode, props.phoneNum)
-            //navigation.reset({index: 0, routes: [{name: 'Tab'}] })
+            saveUserId(response.data.returnCode, props.phoneNum)
+            setLoading(false);
+            navigation.reset({index: 0, routes: [{name: 'Tab'}] })
           }
         })
 
@@ -91,6 +93,22 @@ export default function SignUpButton(props){
     });
   }
 
+  const startLoading = () => {
+    setLoading(true);
+    setTimeout(()=>{
+      setLoading(false);
+    },3000)
+  }
+
+  if(loading){
+    return(
+      <Spinner
+        visible={true}
+        textContext={"Loading..."}
+      />
+    )
+  }
+
   return (
     <TouchableOpacity style={styles.button} onPress={()=>{
         console.log(props)
@@ -100,6 +118,7 @@ export default function SignUpButton(props){
           Alert.alert('인증을 진행해주세요');
         }
         if(props.isAuth && props.isCheckAcceptedTerm){
+          startLoading()
           signUp()
         }
       }
