@@ -5,6 +5,7 @@ import { MaterialCommunityIcons, AntDesign, FontAwesome5, Feather } from '@expo/
 import axios from 'axios';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CalendarList, Calendar, LocaleConfig } from 'react-native-calendars';
+import LoadingScreen from './LoadingScreen'
 import Modal from 'react-native-modal';
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -144,11 +145,7 @@ const TableScreen = ({ navigation, route }) => {
          console.log("API call took " + (tt1 - tt0) + " milliseconds.")
 
         return (
-            <SafeAreaView style={{flex: 1, justifyContent: 'center'}}>
-                <View style={{ flex: 1, justifyContent: 'center'}}>
-                    <Text style={{ textAlign: 'center' }}>Loading...</Text>
-                </View>
-            </SafeAreaView>
+            <LoadingScreen/>
         )
     }
     var t0 = performance.now();

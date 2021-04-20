@@ -1,5 +1,5 @@
 import React, { Component,useState } from "react";
-import { Text, StyleSheet, View, TextInput,TouchableOpacity,Image, RefreshControl } from "react-native";
+import { Text, StyleSheet, View, TextInput,TouchableOpacity,Image, RefreshControl, Alert } from "react-native";
 import * as SQLite from 'expo-sqlite';
 
 
@@ -26,6 +26,9 @@ export default class AuthNumberInput extends Component{
             console.log('correct')
             this.props.setIsAuth(true)
             this.setState({isAuth: true})
+          }else{
+            this.state.authNumber = ''
+            Alert.alert('인증번호가 틀렸습니다')
           }
           console.log('SELECT NUMBER :: ')
         }
@@ -42,8 +45,14 @@ export default class AuthNumberInput extends Component{
             placeholder="인증번호 4자리"
             autoCapitalize="none"
             autoCorrect={false}
-            onChangeText={
-              authNumber => this.setState({authNumber})
+            value={this.state.authNumber}
+            onChangeText={(newValue) => {
+                const regex = /^[0-9\b]{0,4}$/;
+                if (regex.test(newValue)) {
+                  console.log(newValue)
+                  this.setState({authNumber : newValue});
+                }
+              }
             }
           />
           <TouchableOpacity style={styles.button}

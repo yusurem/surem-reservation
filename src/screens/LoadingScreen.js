@@ -16,7 +16,10 @@ const LoadingScreen = ({ navigation, route }) => {
 }
 
 const styles = StyleSheet.create({ 
-   
+    logo:{
+        width:'40%',
+        resizeMode:'contain'
+    }
 });
 
 export default LoadingScreen;
