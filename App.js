@@ -90,7 +90,7 @@ const ThirdStack = () => {
     >
       <Stack.Screen name="ReservationListScreen" component={ReservationListScreen}/>
         {/* <Stack.Screen name="VerificationScreen" component={VerificationScreen} options={{ title: '본인인증' }}/> */}
-        <Stack.Screen name="VerificationResult" component={VerificationResult} options={{ title: '본인인증' }}/>
+        {/* <Stack.Screen name="VerificationResult" component={VerificationResult} options={{ title: '본인인증' }}/> */}
         {/* <Stack.Screen name="Verification" component={Verification} options={{ title: '본인인증' }}/> */}
     </Stack.Navigator>
   );
@@ -160,6 +160,7 @@ const TabNav = () => {
         component={FourthStack} 
         options={{
           tabBarLabel: 'MY',
+          // unmountOnBlur: true,
           tabBarIcon: () => <FontAwesome5 name="user-alt" color="#474747" size={24} style={{ marginTop: 15 }}/>,
         }}
       />

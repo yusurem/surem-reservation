@@ -57,6 +57,8 @@ const ReservationScreen = ({ navigation, route }) => {
     const valsToDate = (vals) => {
         const dateVals = [];
         for(let i = 0; i < vals.length; i++){
+            // console.log("hour: " + parseInt(vals[i].substring(0,2)));
+            // console.log("min: " + parseInt(vals[i].charAt(2)));
             dateVals.push({
                 hour: parseInt(vals[i].substring(0,2)),
                 min: parseInt(vals[i].charAt(2)),
@@ -76,22 +78,26 @@ const ReservationScreen = ({ navigation, route }) => {
 
     const filterEndTime = (sIndex, timeVals) => {
         const endVals = [];
+        var flag = true;
         var init = timeVals[sIndex];
         for(var i = sIndex + 1; i < timeVals.length; i++){
             if(timeVals[i].hour == init.hour){
                 if(timeVals[i].min - init.min == 1){
                     endVals.push(timeVals[i]);
+                    flag = false;
                 }
             }
             else if(timeVals[i].hour - init.hour == 1){
                 if(timeVals[i].min == 0 && init.min == 5){
                     endVals.push(timeVals[i]);
+                    flag = false;
                 }
             }
-            else{
+            if(flag){
                 break;
             }
             init = timeVals[i];
+            flag = true;
         }
         return endVals;
     }

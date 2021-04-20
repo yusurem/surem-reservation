@@ -93,6 +93,11 @@ const PaymentScreen = ({ navigation, route }) => {
             // if(eTime[0] == '0'){
             //     eTime = eTime[1];
             // }
+            if(response.data.returnCode.substring(0,5) !== "E0000"){
+                console.log("Error: " + response.data.returnCode);
+                return 'error';
+            }
+
             let rCode = response.data.returnCode.substring(6);
             // TODO: Add Memo from the route.params
             // navigation.navigate('Reserved', {
@@ -201,9 +206,6 @@ const PaymentScreen = ({ navigation, route }) => {
                     <View style={styles.termsStyle}>
                         <Text style={styles.titleStyle}>결제약관</Text>
                         <View style={styles.termBox}>
-                            {/* <ScrollView
-                                // persistentScrollbar={true}
-                            >    */}
                             <ScrollView
                                 // style={{borderWidth: 1, borderColor: 'black'}}
                                 persistentScrollbar={true}
@@ -244,26 +246,26 @@ const PaymentScreen = ({ navigation, route }) => {
                                 if(checked){
                                     // await getUserId();
                                     const res = await makeReservation(sTime, eTime);
-
-                                    if(res.returnCode !== "E0000"){
-                                        console.log("Error: " + res.returnCode);
+                                    console.log(res);
+                                    if(res === 'error'){
                                         navigation.reset({
                                             index: 0, 
                                             routes: [{name: 'CalendarList'}] 
-                                        })
+                                        });
                                     }
-
-                                    console.log(res);
+                                    else{
+                                        navigation.navigate('Reserved', {
+                                            dateString: res.dateString,
+                                            startTime: res.startTime,
+                                            endTime: res.endTime,
+                                            resrvCode: res.resrvCode,
+                                            weekDay: route.params.weekDay,
+                                            roomName: route.params.roomName
+                                        });
+                                    }
                                     // const qr = await getQrCode(res.qrCode);
                                     // console.log(qr);
-                                    navigation.navigate('Reserved', {
-                                        dateString: res.dateString,
-                                        startTime: res.startTime,
-                                        endTime: res.endTime,
-                                        resrvCode: res.resrvCode,
-                                        weekDay: route.params.weekDay,
-                                        roomName: route.params.roomName
-                                    });
+                                    
                                 }
                                 else{
                                     setErrorMessageB("계속 진행하려면 이용 약관을 읽고 동의해야 합니다.");

@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, useWindowDimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, useWindowDimensions, BackHandler, Alert } from 'react-native';
 import { Table, TableWrapper, Row, Rows, Col, Cell } from 'react-native-table-component';
 import { MaterialCommunityIcons, AntDesign, FontAwesome5, Feather } from '@expo/vector-icons';
 import axios from 'axios';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CalendarList, Calendar, LocaleConfig } from 'react-native-calendars';
 import Modal from 'react-native-modal';
+import { useFocusEffect } from '@react-navigation/native';
+
 
 const TableScreen = ({ navigation, route }) => {
     const windowWidth = useWindowDimensions().width;
@@ -18,11 +20,31 @@ const TableScreen = ({ navigation, route }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [roomWidth, setRoomWidth] = useState(windowWidth - 30 - 115 - 5);
 
-
     const weekDays = new Array('일', '월', '화', '수', '목', '금', '토');
 
     console.log("Entered TableScreen. Params: ");
     console.log(route.params);
+
+    useFocusEffect(() => {
+        const backAction = () => {
+            Alert.alert(
+                "잠시만요!",
+                "앱을 종료 하시겠습니다?", 
+                [
+                    {
+                        text: "아니요",
+                        onPress: () => null,
+                        style: "cancel"
+                    },
+                    { text: "예", onPress: () => BackHandler.exitApp() }
+            ]);
+            return true;
+        };
+        
+        const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+        
+        return (() => backHandler.remove());
+    },);
 
     // Object {
     //     "dateString": "2021-04-15",
@@ -274,6 +296,8 @@ const TableScreen = ({ navigation, route }) => {
             weekDay: currDate.getDay()
         });
     };
+
+
 
     return (
         <SafeAreaView style={{ flex: 1}}>

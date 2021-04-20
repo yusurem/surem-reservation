@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableHighlight, TextInput, Image, Button, Alert, TouchableOpacity, ScrollView, } from 'react-native';
+import { View, Text, StyleSheet, TouchableHighlight, TextInput, Image, Button, Alert, TouchableOpacity, ScrollView, Linking } from 'react-native';
 import axios from 'axios';
 import { MaterialCommunityIcons, Feather } from '@expo/vector-icons'; 
 import QRCode from 'react-native-qrcode-svg';
 import Modal from 'react-native-modal';
 import { useEffect } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 
 import * as SQLite from 'expo-sqlite';
 
@@ -17,6 +18,8 @@ const MyScreen = ({ navigation, route }) => {
     const [usercode, setUsercode] = useState("");
 	const [secretCode, setSecretCode] = useState("");
     const [couponNum, setCouponNum] = useState(0);
+
+    const phoneNumber = '15884640';
 
     const db = SQLite.openDatabase('db.db');
 
@@ -46,17 +49,19 @@ const MyScreen = ({ navigation, route }) => {
     const getMyInfo = async () => {
         try{
             console.log("Attempting to get user info...");
+            console.log("usercode: " + usercode);
+            console.log("secretCode: " + secretCode);
             const response = await axios.post('http://112.221.94.101:8980/myInfo', {
                 usercode: usercode,
                 securityKey: secretCode
             });
             console.log(`Got the response!`);
-            if(response.returnCode !== "E0000"){
-                console.log("Error: " + response.returnCode);
+            // console.log(response.data);
+            if(response.data.returnCode !== "E0000"){
+                console.log("Error: " + response.data.returnCode);
                 setCouponNum("N/A");
                 return;
             }
-            console.log(response.data);
             setCouponNum(response.data.couponCnt);
             return response.data;
            
@@ -68,8 +73,16 @@ const MyScreen = ({ navigation, route }) => {
 
     useEffect(() => {
         getUserId();
+        // getMyInfo();
+    },[usercode, secretCode])
+
+    // useEffect(() => {
+    //     getMyInfo();
+    // })
+
+    useFocusEffect(() => {
         getMyInfo();
-    },[usercode, secretCode, couponNum])
+    })
 
     console.log(couponNum);
 
@@ -113,14 +126,41 @@ const MyScreen = ({ navigation, route }) => {
                         <View style={styles.infoValue}>
                             <View style={styles.infoTextBox}>
                                 <View style={{ flexDirection: 'row'}}>
-                                    <Text style={styles.infoText}></Text>
-                                    <MaterialCommunityIcons style={styles.couponIcon} name="greater-than" size={18} color="#6C6C6C" />
+                                    <TouchableOpacity
+                                        style={{ flexDirection: 'row' }}
+                                        onPress={() => {
+
+                                        }}
+                                    >
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <Text style={styles.infoText}></Text>
+                                            <MaterialCommunityIcons style={styles.couponIcon} name="greater-than" size={18} color="#6C6C6C" />
+                                        </View>
+                                    </TouchableOpacity>
                                 </View>
                             </View>
                             <View style={{ flexDirection: 'row'}}>
-                                    <Text style={styles.infoText}></Text>
-                                    <MaterialCommunityIcons style={styles.couponIcon} name="greater-than" size={18} color="#6C6C6C" />
-                            </View>
+                                    <TouchableOpacity
+                                        // style={{ flexDirection: 'row' }}
+                                        onPress={ async () => {
+                                            const url = `tel:${phoneNumber}`;
+                                            const supported = await Linking.canOpenURL(url);
+
+                                            if(supported){
+                                                await Linking.openURL(url);
+                                            }
+                                            else {
+                                                Alert.alert(`Don't know how to open this URL: ${url}`);
+                                            }
+                                        }}
+                                    >
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <Text style={styles.infoText}></Text>
+                                            <MaterialCommunityIcons style={styles.couponIcon} name="greater-than" size={18} color="#6C6C6C" />
+                                            <Text>       </Text>
+                                        </View>
+                                    </TouchableOpacity>          
+                                </View>
                         </View>
                     </View>
 
@@ -329,7 +369,7 @@ const styles = StyleSheet.create({
     modalTermsText: {
         color: 'black',
         fontSize: 14
-    }
+    },
 });
 
 export default MyScreen;

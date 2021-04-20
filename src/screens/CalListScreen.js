@@ -5,9 +5,22 @@ import { CalendarList, Calendar, LocaleConfig } from 'react-native-calendars';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons'; 
 
+import { useFocusEffect } from '@react-navigation/native';
+
 const CalListScreen = ({ navigation }) => {
     const [selectedDate, setSelectedDate] = useState('');
     const [select, setSelect] = useState(false);
+
+    useFocusEffect(() => {
+        const backAction = () => {
+            navigation.navigate("Home");
+            return true;
+        };
+        
+        const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+        
+        return (() => backHandler.remove());
+    },);
     
     LocaleConfig.locales['kr'] = {
         monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
