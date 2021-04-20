@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StatusBar, Text, TouchableOpacity, StyleSheet, Image } from 'react-native'
+import { View, StatusBar, Text, TouchableOpacity, StyleSheet, Image, BackHandler } from 'react-native'
 import Header from '../../components/Header'
 import MyReservationList from '../../components/MyReservationList'
 import MainNotices from '../../components/MainNotices'
@@ -8,10 +8,33 @@ import * as SQLite from 'expo-sqlite';
 import { useNavigation } from '@react-navigation/stack'
 import { NavigationActions } from 'react-navigation';
 import { useEffect } from 'react/cjs/react.development';
+import { useFocusEffect } from '@react-navigation/native';
+
 
 const db = SQLite.openDatabase('db.db');
 
 export default function HomeScreen({navigation}) {
+  
+  useFocusEffect(() => {
+    const backAction = () => {
+        Alert.alert(
+            "잠시만요!",
+            "앱을 종료 하시겠습니다?", 
+            [
+                {
+                    text: "아니요",
+                    onPress: () => null,
+                    style: "cancel"
+                },
+                { text: "예", onPress: () => BackHandler.exitApp() }
+        ]);
+        return true;
+    };
+    
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+    
+    return (() => backHandler.remove());
+  },);  
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
