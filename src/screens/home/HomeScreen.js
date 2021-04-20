@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StatusBar, Text, TouchableOpacity, StyleSheet, Image } from 'react-native'
+import { View, StatusBar, Text, TouchableOpacity, StyleSheet, Image, BackHandler } from 'react-native'
 import Header from '../../components/Header'
 import MyReservationList from '../../components/MyReservationList'
 import MainNotices from '../../components/MainNotices'
