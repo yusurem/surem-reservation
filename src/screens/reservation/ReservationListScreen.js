@@ -41,7 +41,7 @@ const db = SQLite.openDatabase('db.db');
 
 export default function ReservationListScreen({ navigation }) {
   const [selectedId, setSelectedId] = useState(null);
-  const [reservations, setReservations] = useState(null);
+  const [reservations, setReservations] = useState([]);
   const [usercode, setUsercode] = useState(null);
   const [secretCode, setSecretCode] = useState(null);
   const [qrVisible, setQrVisible] = useState(false);
@@ -362,7 +362,7 @@ export default function ReservationListScreen({ navigation }) {
       <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
         <ReserveHeader/>
         <Text style={{textAlign:'center',textAlignVertical:'center',height:'80%'}}>
-          확인된 예약이 없습니다.
+          예약이 없습니다.
         </Text>
       </SafeAreaView>
     )
