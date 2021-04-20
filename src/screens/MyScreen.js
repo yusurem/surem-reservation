@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableHighlight, TextInput, Image, Button, Alert, TouchableOpacity, ScrollView, Linking } from 'react-native';
+import { View, Text, StyleSheet, TouchableHighlight, TextInput, Image, Button, Alert, TouchableOpacity, ScrollView, Linking, BackHandler } from 'react-native';
 import axios from 'axios';
 import { MaterialCommunityIcons, Feather } from '@expo/vector-icons'; 
 import QRCode from 'react-native-qrcode-svg';
@@ -25,6 +25,17 @@ const MyScreen = ({ navigation, route }) => {
 
     console.log("Entered MyScreen. Params: ");
     console.log(route.params);
+
+    useFocusEffect(() => {
+        const backAction = () => {
+            navigation.navigate("Home");
+            return true;
+        };
+        
+        const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+        
+        return (() => backHandler.remove());
+    },);
 
     const getUserId = async () => {
         // console.log("in getuserID");

@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { StyleSheet, View, Text } from 'react-native'
+import { StyleSheet, View, Text, BackHandler } from 'react-native'
 import * as SQLite from 'expo-sqlite';
 import { useEffect } from 'react';
 import axios from 'axios';
@@ -7,6 +7,7 @@ import MyReservationRow from './MyReservationRow';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native'
 import ReservationListScreen from '../screens/reservation/ReservationListScreen'
+import { useFocusEffect } from '@react-navigation/native';
 
 const db = SQLite.openDatabase('db.db');
 
@@ -71,6 +72,17 @@ export default function MyReservationList() {
       console.log(error);
     });
   }
+
+  useFocusEffect(() => {
+    const backAction = () => {
+        navigation.navigate("Home");
+        return true;
+    };
+    
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+    
+    return (() => backHandler.remove());
+  },);
 
 	useEffect(()=>{
     console.log('hdi')

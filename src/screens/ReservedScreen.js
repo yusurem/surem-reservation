@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableHighlight, TextInput, Image, Button, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableHighlight, TextInput, Image, Button, Alert, TouchableOpacity, BackHandler } from 'react-native';
 import axios from 'axios';
 import { Feather } from '@expo/vector-icons'; 
 import QRCode from 'react-native-qrcode-svg';
 import Modal from 'react-native-modal';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
 
 // import { WebView } from 'react-native-webview';
 
@@ -16,6 +17,20 @@ const ReservedScreen = ({ navigation, route }) => {
     console.log(route.params);
 
     const weekDays = new Array('일', '월', '화', '수', '목', '금', '토');
+
+    useFocusEffect(() => {
+        const backAction = () => {
+            navigation.reset({
+                index: 0, 
+                routes: [{name: 'CalendarList'}] 
+            })            
+            return true;
+        };
+        
+        const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+        
+        return (() => backHandler.remove());
+    },);
 
     // TODO: Room information API connect
     return (    
