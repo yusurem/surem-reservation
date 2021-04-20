@@ -198,11 +198,7 @@ const ReservationScreen = ({ navigation, route }) => {
         buildPickerData(filterEndTime(findSIndex(startTime, route.params.optionVals), valsToDate(route.params.optionVals)));
         
         return (
-            <SafeAreaView style={{flex: 1, justifyContent: 'center'}}>
-                <View style={{ flex: 1, justifyContent: 'center'}}>
-                    <Text style={{ textAlign: 'center' }}>Loading...</Text>
-                </View>
-            </SafeAreaView>
+            <LoadingScreen/>
         )
     }
     

@@ -1,12 +1,15 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import {
   TouchableOpacity,
   Text,
   StyleSheet,
+  Alert,
 } from 'react-native';
 import axios from 'axios';
+import LoadingScreen from '../screens/LoadingScreen'
 import * as SQLite from 'expo-sqlite';
+import Spinner from 'react-native-loading-spinner-overlay'
 
 const db = SQLite.openDatabase('db.db');
 
@@ -26,6 +29,7 @@ const saveUserId = (secretcode,phoneNum) => {
 
 export default function SignUpButton(props){
   const navigation = useNavigation();
+
   const signUp = () => {
     var data = JSON.stringify(
       {
@@ -72,8 +76,9 @@ export default function SignUpButton(props){
           if(response.data.returnCode === "E2007"){
             alert("사용자가 없습니다.")
           }else{
-            saveUserId(response.data.returnCode, props.phoneNum)
-            navigation.reset({index: 0, routes: [{name: 'Tab'}] })
+            console.log('login Success')
+            //saveUserId(response.data.returnCode, props.phoneNum)
+            //navigation.reset({index: 0, routes: [{name: 'Tab'}] })
           }
         })
 
@@ -84,11 +89,16 @@ export default function SignUpButton(props){
     .catch(function (error) {
       console.log(error);
     });
-
   }
+
   return (
     <TouchableOpacity style={styles.button} onPress={()=>{
         console.log(props)
+        if(!props.isCheckAcceptedTerm){
+          Alert.alert('이용약관을 체크해주세요')
+        }else if(!props.isAuth){
+          Alert.alert('인증을 진행해주세요');
+        }
         if(props.isAuth && props.isCheckAcceptedTerm){
           signUp()
         }
