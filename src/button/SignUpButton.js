@@ -43,7 +43,7 @@ export default function SignUpButton(props){
 
     var config = {
       method: 'post',
-      url: 'http://112.221.94.101:8980/joinMember',
+      url: 'http://office-api.surem.com/joinMember',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -66,7 +66,7 @@ export default function SignUpButton(props){
     
         var config = {
           method: 'post',
-          url: 'http://112.221.94.101:8980/getEncryptCode',
+          url: 'http://office-api.surem.com/getEncryptCode',
           headers: {
             'Content-Type': 'application/json'
           },

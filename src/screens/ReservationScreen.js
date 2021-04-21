@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, Button, TouchableHighlight, TextInput, Platform
 import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
 import { SliderBox } from 'react-native-image-slider-box';
-
+import LoadingScreen from './LoadingScreen'
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
@@ -127,7 +127,7 @@ const ReservationScreen = ({ navigation, route }) => {
         try{
             console.log("Attempting to retreive room information...");
             console.log("roomCode: " + route.params.roomCode);
-            const response = await axios.post('http://112.221.94.101:8980/getRoomInfo', {
+            const response = await axios.post('http://office-api.surem.com/getRoomInfo', {
                 roomCode: route.params.roomCode
                 // roomCode: '64D1FEC28CFE4A7'
             });
@@ -150,7 +150,7 @@ const ReservationScreen = ({ navigation, route }) => {
         try{
             console.log("Attempting to retreive room image...");
             console.log("imgCode: " + code);
-            const response = await axios.post('http://112.221.94.101:8980/getRoomImg', {
+            const response = await axios.post('http://office-api.surem.com/getRoomImg', {
                 imgCode: code
             });
             console.log('ROOM IMAGE :: ' ,response.data);

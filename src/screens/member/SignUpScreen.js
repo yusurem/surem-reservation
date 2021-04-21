@@ -185,6 +185,8 @@ export default function SignUpScreen({ navigation }) {
           isSentAuth && !isAuth === true ?
           <TouchableOpacity style={styles.reAuthBtn} onPress={()=>{
             setIsSentAuth(false)
+            setMinutes(3)
+            setSeconds(0)
           }
           }>
             <Text style={styles.title}>재인증하기</Text>

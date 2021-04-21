@@ -4,6 +4,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import moment from 'moment';
 import Dialog from 'react-native-dialog';
 import QRCode from 'react-native-qrcode-svg';
+import Modal from 'react-native-modal'
 
 export default function MyReservationRow(props) {
   const [date, setDate] = useState()

@@ -39,7 +39,7 @@ const CouponScreen = ({ navigation, route }) => {
         try{
             console.log("Attempting to make reservation...");
             // console.log(`${route.params.year}${route.params.month}${route.params.day}${route.params.startTime}`);
-            const response = await axios.post('http://112.221.94.101:8980/reservation', {
+            const response = await axios.post('http://office-api.surem.com/reservation', {
                 'roomCode' : route.params.roomCode,
                 'usercode' : 'admin1',
                 "secretCode" : "4HDsKfzSR3eEegv3FiZIA30x+Z6uOccMVlw56N034vNO0FGw7aUqCA0USHdoEK9oL2vlWg==",
@@ -85,7 +85,7 @@ const CouponScreen = ({ navigation, route }) => {
         try{
             console.log("Attempting to get QrCode link...");
             // console.log(route.params.qrCode);
-            const response = await axios.post('http://112.221.94.101:8980/getQrcode', {
+            const response = await axios.post('http://office-api.surem.com/getQrcode', {
                 // resrvCode: qr,
                 // resrvCode: "21D7E4B9B8C840F-6dda0e6d111e4f"
                 resrvCode: "techno100010001-V43sA98ETO2F07",
