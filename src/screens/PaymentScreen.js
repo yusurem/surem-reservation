@@ -1,13 +1,14 @@
 import React, {useState} from 'react';
-import { View, Text, StyleSheet, TouchableHighlight, Image, Alert, TouchableOpacity, ScrollView, NestedScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableHighlight, Image, Alert, TouchableOpacity, ScrollView, NestedScrollView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import axios from 'axios';
 import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';
-import CheckBox from '@react-native-community/checkbox';
 import Modal from 'react-native-modal';
 import * as SQLite from 'expo-sqlite';
+import CheckBox from '@react-native-community/checkbox';
 import { useEffect } from 'react';
+import IosCheckBox from '../components/IosCheckBox';
 
 const PaymentScreen = ({ navigation, route }) => {
     const [errorMessageA, setErrorMessageA] = useState("");
@@ -44,7 +45,7 @@ const PaymentScreen = ({ navigation, route }) => {
                 [],
                 (tx, results) =>{
                 console.log("doing getUserId");
-                console.log('SELECT DDDDD :: ', results)
+                console.log('SELECT  :: ', results)
                             setUsercode(results.rows.item(0).usercode)
                             setSecretCode(results.rows.item(0).secretCode)
                 }
@@ -140,12 +141,18 @@ const PaymentScreen = ({ navigation, route }) => {
         }
     }
 
+    const checkHandler = (newValue) => {
+        setErrorMessageB("");
+        setChecked(newValue);
+        setToggleCheckBox(newValue);
+    }
+
     useEffect(() => {
         getUserId()
     },[usercode,secretCode])
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1 }} edges={['right', 'left', 'top']}>
             <ScrollView>
                 <View style={styles.viewStyle}>
                     <View style={styles.guideStyle}>
@@ -189,7 +196,9 @@ const PaymentScreen = ({ navigation, route }) => {
                             >
                                 <View style={{ flexDirection: 'row' }}>
                                     <Text style={styles.valueStyle}>사용 가능 쿠폰 {'2'}장 </Text>
-                                    <MaterialCommunityIcons name="greater-than" size={18} color="#6C6C6C" />
+                                    <View style={{ justifyContent: 'center' }}>
+                                        <MaterialCommunityIcons name="greater-than" size={18} color="#6C6C6C" />
+                                    </View>
                                 </View>
                             </TouchableOpacity>
                         </View>
@@ -221,16 +230,25 @@ const PaymentScreen = ({ navigation, route }) => {
                                
                         </View>
                         <View style={{ flexDirection: 'row' }}>
-                            <CheckBox
-                                disabled={false}
-                                value={toggleCheckBox}
-                                onValueChange={(newValue) => {
-                                    setErrorMessageB("");
-                                    setChecked(newValue);
-                                    setToggleCheckBox(newValue);
-                                }}
-                            />
-                            <Text style={styles.termsCaption}>이용약관 및 개인정보 처리방침에 동의합니다.</Text>
+                            {Platform.OS === 'android' ? 
+                                <CheckBox
+                                    disabled={false}
+                                    value={toggleCheckBox}
+                                    onValueChange={(newValue) => {
+                                        setErrorMessageB("");
+                                        setChecked(newValue);
+                                        setToggleCheckBox(newValue);
+                                    }}
+                                />
+                            :
+                                <IosCheckBox 
+                                    value={toggleCheckBox}
+                                    onChange={checkHandler}
+                                /> 
+                            }
+                            <View style={{ justifyContent: 'center' }}>
+                                <Text style={styles.termsCaption}>이용약관 및 개인정보 처리방침에 동의합니다.</Text>
+                            </View>
                         </View>
 
                         <View style={styles.errorBox}>
@@ -241,7 +259,7 @@ const PaymentScreen = ({ navigation, route }) => {
                     <View>
                         <Text style={styles.titleStyle}>결제수단 선택</Text>
                         <TouchableOpacity
-                            style={[styles.openButton, checked ? styles.valid : styles.invalid]}
+                            // style={[styles.openButton, checked ? styles.valid : styles.invalid]}
                             onPress={ async () => {
                                 if(checked){
                                     // await getUserId();
@@ -274,7 +292,9 @@ const PaymentScreen = ({ navigation, route }) => {
                                 
                             }}
                         >
-                            <Text style={styles.textStyle}>예약하기</Text>
+                            <View style={[styles.openButton, checked ? styles.valid : styles.invalid]}>
+                                <Text style={styles.textStyle}>예약하기</Text>
+                            </View>
                         </TouchableOpacity>
                     </View>
                 
@@ -392,13 +412,13 @@ const styles = StyleSheet.create({
         width: 200
     }, 
     infoStyle: {
-        paddingBottom: 5
+        marginBottom: 5
     },
     infoRowStyle: {
         flexDirection: 'row',
         paddingLeft: 3,
         justifyContent: 'space-between',
-        paddingBottom: 4
+        marginBottom: 5
     },
     termsStyle: {
         marginTop: 25,
@@ -418,7 +438,7 @@ const styles = StyleSheet.create({
     },
     termsCaption: {
         fontSize: 11,
-        paddingTop: 9,
+        // paddingTop: 9,
         color: '#39393A'
     },
     modal: {
@@ -505,12 +525,12 @@ const styles = StyleSheet.create({
         textAlign: "center",
     },
     openButton: {
-        alignSelf: 'center',
+        // alignSelf: 'center',
         // backgroundColor: "gray",
         borderRadius: 15,
         marginTop: 10,
         paddingVertical: 30,
-        paddingHorizontal: 130,
+        // paddingHorizontal: 130,
         elevation: 2
     },
     errorBox: {

@@ -116,16 +116,14 @@ const TabNav = () => {
       lazy="true"
       tabBarOptions={{
         style: {
-          height: 70,
-          // paddingTop: 10,
-          // marginTop: 20
+          height: (Platform.OS === 'android') ? 70 : 100
         },
         labelStyle:{
           marginBottom: 15
         },
         activeTintColor: '#474747',
         inactiveTintColor: '#474747',
-        activeBackgroundColor: '#D9D8D8'
+        activeBackgroundColor: '#D9D8D8',
       }}
     >
       <Tab.Screen 
@@ -134,7 +132,11 @@ const TabNav = () => {
         options={{
           unmountOnBlur: true,
           tabBarLabel: '홈',
-          tabBarIcon: () => <Entypo name="home" color="#474747" size={24} style={{alignSelf: 'center', marginLeft: 0.5, marginTop: 15}} />,
+          tabBarIcon: () => {
+            return (
+             <Entypo name="home" color="#474747" size={24} style={{alignSelf: 'center', marginLeft: 0.5, marginTop: 15}} />
+            );
+          },
         }}
       />
       <Tab.Screen 

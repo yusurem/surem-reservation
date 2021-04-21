@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableHighlight, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableHighlight, TouchableOpacity, BackHandler } from 'react-native';
 import { CalendarList, Calendar, LocaleConfig } from 'react-native-calendars';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -44,7 +44,7 @@ const CalListScreen = ({ navigation }) => {
     };
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: 'white'}}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'white'}} edges={['right', 'left', 'top']}>
             <View>
                 <View style={styles.calendarBox}>
                     <Calendar

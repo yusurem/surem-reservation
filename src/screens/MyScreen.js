@@ -98,7 +98,7 @@ const MyScreen = ({ navigation, route }) => {
     console.log(couponNum);
 
     return (    
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#F3F4F8' }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#F3F4F8' }} edges={['right', 'left', 'top']}>
             <ScrollView>
                 <View style={styles.viewStyle}>
                     <View style={styles.infoHeader}>
@@ -118,7 +118,9 @@ const MyScreen = ({ navigation, route }) => {
                             </View>
                             <View style={{ flexDirection: 'row' }}>
                                 <Text style={styles.infoText}>{couponNum}개</Text>
-                                <MaterialCommunityIcons style={styles.couponIcon} name="greater-than" size={18} color="#6C6C6C" />
+                                <View style={{ justifyContent: 'center' }}> 
+                                    <MaterialCommunityIcons style={styles.couponIcon} name="greater-than" size={18} color="#6C6C6C" />
+                                </View>
                             </View>
                         </View>
                     </View>
@@ -144,8 +146,8 @@ const MyScreen = ({ navigation, route }) => {
                                         }}
                                     >
                                         <View style={{ flexDirection: 'row' }}>
-                                            <Text style={styles.infoText}></Text>
-                                            <MaterialCommunityIcons style={styles.couponIcon} name="greater-than" size={18} color="#6C6C6C" />
+                                            <Text style={styles.infoText}> </Text>
+                                            <MaterialCommunityIcons style={styles.askIcon} name="greater-than" size={18} color="#6C6C6C" />
                                         </View>
                                     </TouchableOpacity>
                                 </View>
@@ -166,8 +168,8 @@ const MyScreen = ({ navigation, route }) => {
                                         }}
                                     >
                                         <View style={{ flexDirection: 'row' }}>
-                                            <Text style={styles.infoText}></Text>
-                                            <MaterialCommunityIcons style={styles.couponIcon} name="greater-than" size={18} color="#6C6C6C" />
+                                            <Text style={styles.infoText}> </Text>
+                                            <MaterialCommunityIcons style={styles.askIcon} name="greater-than" size={18} color="#6C6C6C" />
                                             <Text>       </Text>
                                         </View>
                                     </TouchableOpacity>          
@@ -301,11 +303,20 @@ const styles = StyleSheet.create({
     },
     infoText: {
         marginVertical: 8,
-        marginLeft: 10
+        marginLeft: 10,
+        // borderWidth: 1,
+        // borderColor: 'red'
     },
     couponIcon: {
         marginVertical: 6,
-        marginTop: 10,
+        marginTop: 7,
+        marginLeft: 10,
+        // borderWidth: 1,
+        // borderColor: 'red'
+    },
+    askIcon : {
+        marginVertical: 6,
+        marginTop: 8,
         marginLeft: 10
     },
     infoTextBox: {

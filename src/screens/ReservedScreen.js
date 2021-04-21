@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableHighlight, TextInput, Image, Button, Alert, TouchableOpacity, BackHandler } from 'react-native';
 import axios from 'axios';
 import { Feather } from '@expo/vector-icons'; 
@@ -21,8 +21,11 @@ const ReservedScreen = ({ navigation, route }) => {
     useFocusEffect(() => {
         const backAction = () => {
             navigation.reset({
-                index: 0, 
-                routes: [{name: 'CalendarList'}] 
+                index: 1, 
+                routes: [
+                    {name: 'Table'},
+                    {name: 'CalendarList'}
+                ] 
             })            
             return true;
         };
@@ -32,9 +35,26 @@ const ReservedScreen = ({ navigation, route }) => {
         return (() => backHandler.remove());
     },);
 
+    useEffect(() => {
+        const unsubscribe = navigation.dangerouslyGetParent().addListener('tabPress', (e) => {
+            // Prevent default behavior
+            e.preventDefault();
+    
+            // Do something manually
+            navigation.reset({
+                index: 0, 
+                routes: [
+                    {name: 'Table'}
+                ] 
+            })  
+        });
+    
+        return unsubscribe;
+    }, [navigation]);
+
     // TODO: Room information API connect
     return (    
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1 }} edges={['right', 'left', 'top']}>
             <View style={styles.viewStyle}>
                 <Feather style={styles.iconStyle} name="check-circle" size={40} color="black" />
                 <Text style={styles.titleStyle}>예약이 완료 되었습니다!</Text>
@@ -54,8 +74,11 @@ const ReservedScreen = ({ navigation, route }) => {
                     onPress={() => {
                         // navigation.navigate("CalendarList");
                         navigation.reset({
-                            index: 0, 
-                            routes: [{name: 'CalendarList'}] 
+                            index: 1, 
+                            routes: [
+                                {name: 'Table'},
+                                {name: 'CalendarList'}
+                            ] 
                         })
                     }}
                 >

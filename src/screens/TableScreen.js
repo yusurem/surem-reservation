@@ -5,10 +5,9 @@ import { MaterialCommunityIcons, AntDesign, FontAwesome5, Feather } from '@expo/
 import axios from 'axios';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CalendarList, Calendar, LocaleConfig } from 'react-native-calendars';
-import LoadingScreen from './LoadingScreen'
+import LoadingScreen from './LoadingScreen';
 import Modal from 'react-native-modal';
 import { useFocusEffect } from '@react-navigation/native';
-
 
 const TableScreen = ({ navigation, route }) => {
     const windowWidth = useWindowDimensions().width;
@@ -30,7 +29,7 @@ const TableScreen = ({ navigation, route }) => {
         const backAction = () => {
             Alert.alert(
                 "잠시만요!",
-                "앱을 종료 하시겠습니다?", 
+                "앱을 종료 하시겠습니까?", 
                 [
                     {
                         text: "아니요",
@@ -131,7 +130,7 @@ const TableScreen = ({ navigation, route }) => {
         }
     }
 
-    console.log(resrvLists)
+    // console.log(resrvLists)
 
     if(resrvLists.length == 0){
         console.log("Initializing Reservation List");
@@ -142,7 +141,7 @@ const TableScreen = ({ navigation, route }) => {
         getReservationList(route.params.dateString.replace(/-/g,""), "surem3");
 
         var tt1 = performance.now()
-         console.log("API call took " + (tt1 - tt0) + " milliseconds.")
+        console.log("API call took " + (tt1 - tt0) + " milliseconds.")
 
         return (
             <LoadingScreen/>
@@ -161,8 +160,6 @@ const TableScreen = ({ navigation, route }) => {
     if(roomCodes.length > 1){
         setRoomWidth(170 * roomCodes.length);
     }
-
-    
 
     const state = {
         tableHead: ['1호실', '2호실', '3호실', '4호실', '5호실'],
@@ -297,7 +294,7 @@ const TableScreen = ({ navigation, route }) => {
 
 
     return (
-        <SafeAreaView style={{ flex: 1}}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }} edges={['right', 'left', 'top']} >
             <ScrollView>
                 <View style={styles.mainBox}>
                     <View style={styles.dateBox}>
@@ -327,7 +324,9 @@ const TableScreen = ({ navigation, route }) => {
                         >
                             <View style={styles.dateTitle}>
                                 <Text style={styles.dateStyle}>{route.params.dateString.replace(/-/g,'.')}({weekDays[route.params.weekDay]}) </Text>
-                                <AntDesign style={styles.calendarIcon} name="calendar" size={22} color="#838383" />
+                                <View style={{ justifyContent: 'center' }}>
+                                    <AntDesign style={styles.calendarIcon} name="calendar" size={22} color="#838383" />
+                                </View>
                             </View>
                         </TouchableOpacity>
                         
@@ -485,13 +484,10 @@ const TableScreen = ({ navigation, route }) => {
                                 >
                                     <Text style={styles.buttonText}>닫기</Text>
                                 </TouchableOpacity>
-                            </View>
-                            
-
+                            </View>   
                         </View>
                     </Modal>
-
-
+                    
                 </View>
             </ScrollView>
         </SafeAreaView>
@@ -502,6 +498,8 @@ const styles = StyleSheet.create({
     mainBox: {
         padding: 15,
         backgroundColor: 'white',
+        // borderWidth: 1,
+        // borderColor: 'red'
     },
     dateBox: {
         flexDirection: 'row', 

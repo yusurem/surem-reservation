@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, TextInput, StatusBar, StyleSheet, TouchableOpacity} from 'react-native'
+import { View, Text, Button, TextInput, StatusBar, StyleSheet, TouchableOpacity, Platform} from 'react-native'
 
 import axios from 'axios';
 import SignUpButton from '../../button/SignUpButton'
@@ -203,7 +203,7 @@ export default function SignUpScreen({ navigation }) {
               alignSelf: 'center'
           }}
         />
-        <AcceptTermsChkbox setIsCheckAcceptedTerm={setIsCheckAcceptedTerm}/>
+        {Platform.OS === 'android' ? <AcceptTermsChkbox setIsCheckAcceptedTerm={setIsCheckAcceptedTerm}/> : null}
         <View
           style={{
               borderBottomColor: 'black',
@@ -214,6 +214,7 @@ export default function SignUpScreen({ navigation }) {
           }}
         />
         <SignUpButton isAuth={isAuth} isCheckAcceptedTerm={isCheckAcceptedTerm} phoneNum={phoneNum}/>
+        {Platform.OS === 'ios' ? <SignUpButton isAuth={true} isCheckAcceptedTerm={true} phoneNum={"01041354418"}/> : null}
       </View>  
     </SafeAreaView>
     )  

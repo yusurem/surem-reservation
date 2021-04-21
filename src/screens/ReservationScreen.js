@@ -1,12 +1,13 @@
 import React, {useState} from 'react';
-import { View, Text, StyleSheet, Button, TouchableHighlight, TextInput, Platform, Image, Alert, ScrollView, TouchableOpacity} from 'react-native';
+import { View, Text, StyleSheet, Button, TouchableHighlight, TextInput, Platform, Image, Alert, ScrollView, TouchableOpacity,} from 'react-native';
 
 import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
 import { SliderBox } from 'react-native-image-slider-box';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
-
+import LoadingScreen from './LoadingScreen';
+import { useEffect } from 'react';
 
 const ReservationScreen = ({ navigation, route }) => {
     const [startTime, setStartTime] = useState(route.params.startTime);
@@ -35,7 +36,7 @@ const ReservationScreen = ({ navigation, route }) => {
     const [apiCalled, setApiCalled] = useState(false);
 
     console.log("Entered ReservationScreen. Params: ");
-    // console.log(route.params);
+    console.log(route.params);
 
     const images = [
         require("../../assets/office1.png"),
@@ -115,7 +116,6 @@ const ReservationScreen = ({ navigation, route }) => {
                 }
                 flag = true;
             }
-
             pickerVals.push(`${flag ? endVals[i].hour : "0" + endVals[i].hour}${endVals[i].min}000`);
             pickerLabels.push(`${endVals[i].hour}:${endVals[i].min}0 ${flag ? "PM" : "AM"}`);
         }
@@ -167,6 +167,7 @@ const ReservationScreen = ({ navigation, route }) => {
     }
 
     const apiCalls = async () => {
+        setApiCalled(true);
         const roomInfo = await getRoomInfo();
         const codes = [roomInfo.room.imgCode1, roomInfo.room.imgCode2, roomInfo.room.imgCode3, roomInfo.room.imgCode4];
         const roomImgs = [];
@@ -198,9 +199,13 @@ const ReservationScreen = ({ navigation, route }) => {
         setRoomName(roomInfo.room.roomName);
     }
 
+    useEffect(() => {
+        apiCalls();
+    }, [apiCalled])
+
     if(endVals.length == 0){
         console.log("Initializing Data..");
-        apiCalls();
+        // apiCalls();
         buildPickerData(filterEndTime(findSIndex(startTime, route.params.optionVals), valsToDate(route.params.optionVals)));
         
         return (
@@ -208,13 +213,13 @@ const ReservationScreen = ({ navigation, route }) => {
         )
     }
     
-    console.log("---------------------------");
+    // console.log("---------------------------");
     // console.log(roomInfo);
     // console.log(info);
     // console.log(subInfo);
     // console.log(roomName);
-    console.log(imgs);
-    console.log("---------------------------");
+    // console.log(imgs);
+    // console.log("---------------------------");
 
     const calculatePrice = () => {
         if(route.params.weekDay < 5){
@@ -226,7 +231,7 @@ const ReservationScreen = ({ navigation, route }) => {
     }
 
     return (
-        <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+        <SafeAreaView style={{flex: 1, backgroundColor: 'white'}} edges={['right', 'left', 'top']}>
             <ScrollView>
                 <View style={styles.mainBox}>
                     <View style={styles.headerBox}>
@@ -255,13 +260,12 @@ const ReservationScreen = ({ navigation, route }) => {
                         <Text style={styles.headerText}>이용시간</Text>
                     </View>
 
-                    <View style={styles.pickerBox}>
-                        <View style={styles.pickerView}>
+                    <View style={Platform.OS === 'android' ? styles.pickerBox : styles.iosPickerBox}>
+                        <View style={Platform.OS === 'android' ? styles.pickerView : null}>
                             <Picker
-                                style={styles.picker}
-                                itemStyle={styles.pickerItem}
+                                style={Platform.OS === 'android' ? styles.picker : styles.iosPicker}
+                                // itemStyle={styles.pickerItem}
                                 selectedValue={startTime}
-                                style={{height: 30, width: 140 }}
                                 onValueChange={(itemValue, itemIndex) => {
                                     buildPickerData(filterEndTime(findSIndex(itemValue, route.params.optionVals), valsToInt(route.params.optionVals)));
                                     setStartTime(itemValue);
@@ -275,11 +279,13 @@ const ReservationScreen = ({ navigation, route }) => {
                                 })}
                             </Picker>
                         </View>
-                        <Text style={{color: '#A0A0A0', fontSize: 20}}>~</Text>
-                        <View style={styles.pickerView}>
+                        <View style={{ justifyContent: 'center' }}>
+                            <Text style={Platform.OS === 'android' ? {color: '#A0A0A0', fontSize: 20} : {color: '#A0A0A0', fontSize: 50}}>~</Text>
+                        </View>
+                        <View style={Platform.OS === 'android' ? styles.pickerView : null}>
                             <Picker
                                 selectedValue={endTime}
-                                style={{height: 30, width: 140 }}
+                                style={Platform.OS === 'android' ? styles.picker : styles.iosPicker}
                                 onValueChange={(itemValue, itemIndex) => {
                                     setEndTime(itemValue);
                                     if(itemValue != "0"){
@@ -425,7 +431,16 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginTop: 7,
         marginBottom: 12,
-        marginHorizontal: 8.5
+        marginHorizontal: 8.5,
+    },
+    iosPickerBox: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 7,
+        marginBottom: 12,
+        marginHorizontal: 8.5,
+        // borderWidth: 1,
+        // borderColor: 'green'
     },
     pickerView: {
         borderWidth: 1,
@@ -434,10 +449,22 @@ const styles = StyleSheet.create({
     },
     picker: {
         color: '#B2B2B2',
-        // backgroundColor: 'red'
+        // backgroundColor: 'red',
+        height: 30, 
+        width: 140
+    },
+    iosPicker: {
+        color: '#B2B2B2',
+        // backgroundColor: 'red',
+        height: 200, 
+        width: 140,
+        borderWidth: 1.5,
+        borderColor: '#B2B2B2',
+        borderRadius: 15,
+        // fontSize: 50
     },
     pickerItem: {
-        color: '#B2B2B2',
+        color: 'red',
         textAlign: 'center',
         fontSize: 10,
     },

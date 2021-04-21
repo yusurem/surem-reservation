@@ -19,7 +19,7 @@ export default function HomeScreen({navigation}) {
     const backAction = () => {
         Alert.alert(
             "잠시만요!",
-            "앱을 종료 하시겠습니다?", 
+            "앱을 종료 하시겠습니까?", 
             [
                 {
                     text: "아니요",
