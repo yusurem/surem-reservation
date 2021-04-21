@@ -10,9 +10,6 @@ export default class Header extends Component{
     return (
       <View style={[styles.headerContainer, {backgroundColor: this.props.color}]}>
         <Image style={styles.logo} source={require("../../assets/logo.png")} />
-        <Image style={styles.menu} source={require("../../assets/userIcon.png")} />
-        <Image style={styles.menu} source={require("../../assets/searchIcon.png")} />
-        <Image style={styles.menu} source={require("../../assets/menuIcon.png")} />
       </View>
     )
   }

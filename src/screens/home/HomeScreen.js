@@ -5,9 +5,6 @@ import MyReservationList from '../../components/MyReservationList'
 import MainNotices from '../../components/MainNotices'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as SQLite from 'expo-sqlite';
-import { useNavigation } from '@react-navigation/stack'
-import { NavigationActions } from 'react-navigation';
-import { useEffect } from 'react/cjs/react.development';
 import { useFocusEffect } from '@react-navigation/native';
 
 
@@ -59,7 +56,6 @@ export default function HomeScreen({navigation}) {
       <MainNotices/>
     </View>
     </SafeAreaView>
-   
   );  
 }
 
