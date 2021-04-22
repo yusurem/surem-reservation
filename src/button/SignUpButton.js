@@ -97,9 +97,9 @@ export default function SignUpButton(props){
 
   const startLoading = () => {
     setLoading(true);
-    setTimeout(()=>{
-      setLoading(false);
-    },3000)
+    setTimeout(async ()=>{
+      await setLoading(false);
+    },10000)
   }
 
   if(loading){

@@ -6,6 +6,10 @@ import android.net.Uri;
 
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.github.wumke.RNExitApp.RNExitAppPackage;
+import com.github.wumke.RNExitApp.RNExitAppPackage;
+import com.github.wumke.RNExitApp.RNExitAppPackage;
+import com.github.wumke.RNExitApp.RNExitAppPackage;
 import org.pgsqlite.SQLitePluginPackage;
 import com.reactnativecommunity.webview.RNCWebViewPackage;
 import com.iamport.IamportPackage;
@@ -46,6 +50,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       List<ReactPackage> packages = new PackageList(this).getPackages();
       packages.add(new ModuleRegistryAdapter(mModuleRegistryProvider));
+      packages.add(new RNExitAppPackage);
       return packages;
     }
 

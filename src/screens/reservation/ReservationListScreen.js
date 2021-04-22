@@ -9,6 +9,8 @@ import moment from 'moment';
 import QRCode from 'react-native-qrcode-svg';
 import { Picker } from '@react-native-picker/picker';
 import Modal from 'react-native-modal'
+import Spinner from 'react-native-loading-spinner-overlay'
+import 'moment/locale/ko';
 
 const Item = ({ item, onClickQrBtn, onClickChangeReserv }) => (
   <View style={styles.item}>
@@ -46,10 +48,8 @@ export default function ReservationListScreen({ navigation }) {
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState();
 
-  const [pickerVals, setPickerVals] = useState([]);
   const [startPickerVals, setStartPickerVals] = useState([]);
   const [endPickerVals, setEndPickerVals] = useState([]);
-  const [validPickerVals, setValidPickerVals] = useState([]);
 
   const [selectedResrvCode, setReservCode] = useState();
   const [selectedRoomCode, setSelectedRoomCode] = useState();
@@ -58,70 +58,12 @@ export default function ReservationListScreen({ navigation }) {
   const [selectedReservEtime, setSelectedReservEtime] = useState();
   const [selectedMemo, onChangeSelectedMemo] = useState();
 
+  const [loading, setLoading] = useState(false);
+
   const [isModalVisible, setModalVisible] = useState(false);
 
   const toggleModal = async () => {
     setModalVisible(!isModalVisible);
-  }
-
-  const buildPickerData = async () => {
-    const pickerVals = [];
-    console.log('STIME ::',selectedReservStime)
-    var date = await moment(selectedReservStime, 'YYYYMMDDHHmmss').format('YYYYMMDD')
-
-    for(var i = 0; i < 24; i++){
-        for(var j=0; j < 59; j=j+10){
-          if(i < 10){
-            if(j < 10){
-              pickerVals.push(date + '0'+i.toString() + '0' + j.toString())
-            }else{
-              pickerVals.push(date + '0'+i.toString() + j.toString())
-            }
-          }else{
-            if(j < 10){
-              pickerVals.push(date + i.toString() + '0' + j.toString())
-            }else{
-              pickerVals.push(date + i.toString() + j.toString())
-            }
-          }
-        }
-    }
-
-    setPickerVals(pickerVals);
-  }
-
-  const buildStartPickerData = (endTime) => {
-    const pickerData = []
-    const findEndIndex = (element) => element === endTime
-    var endIndex = pickerVals.findIndex(findEndIndex)
-    for (var i = endIndex - 1; i >= 0; i--) {
-      if(validPickerVals.includes(pickerVals[i])){
-        pickerData.push(pickerVals[i])
-      }else{
-        break;
-      }
-    }
-    pickerData.reverse()
-    setStartPickerVals(pickerData)
-  }
-
-  const buildEndPickerData = async (startTime) => {
-    const pickerData = []
-    const findStartIndex = (element) => element === startTime
-    var startIndex = pickerVals.findIndex(findStartIndex)
-    console.log('START INDEX ::',startIndex)
-    console.log('PICKER VALS :: ',pickerVals)
-    for (var i = startIndex + 1; i <= pickerVals.length - 1; i++) {
-      if(validPickerVals.includes(pickerVals[i])){
-        pickerData.push(pickerVals[i])
-      }else{
-        break;
-      }
-    }
-    console.log('VALID DATA :: ',validPickerVals)
-    console.log('PICKER DATA :: ',pickerData)
-    
-    setEndPickerVals(pickerData)
   }
 
   const getUserId = async () => {
@@ -151,7 +93,7 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      url: 'http://office-api.surem.com/getReservation',
+      url: 'http://112.221.94.101:8980/getReservation',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -162,6 +104,7 @@ export default function ReservationListScreen({ navigation }) {
       .then(async function (response) {
         if (response.data.returnCode == 'E0000') {
           setReservations(response.data.reservations)
+          setLoading(false)
         }
       })
       .catch(function (error) {
@@ -178,7 +121,7 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      url: 'http://office-api.surem.com/getRoomInfo',
+      url: 'http://112.221.94.101:8980/getRoomInfo',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -212,8 +155,12 @@ export default function ReservationListScreen({ navigation }) {
           setSelectedReservEtime(item.resrvEtime)
           onChangeSelectedMemo(item.resrvNote.replace('null', ''))
           getRoomInfo(item.roomCode)
-          await getValidReserveTime(item.roomCode, item.roomName, item.resrvStime)
-          await buildPickerData();
+          await getValidReserveTime(
+            item.roomCode, 
+            item.roomName,
+            moment(item.resrvStime, 'YYYYMMDDHHmmss').format('YYYYMMDDHHmm'),
+            moment(item.resrvEtime, 'YYYYMMDDHHmmss').format('YYYYMMDDHHmm')
+          )
           toggleModal()
         }}
         roomName={item.roomName}
@@ -241,7 +188,7 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      url: 'http://office-api.surem.com/cancelReservation',
+      url: 'http://112.221.94.101:8980/cancelReservation',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -290,7 +237,7 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      url: 'http://office-api.surem.com/modifyReservation',
+      url: 'http://112.221.94.101:8980/modifyReservation',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -307,21 +254,21 @@ export default function ReservationListScreen({ navigation }) {
         if (response.data.returnCode == 'E0000') {
           Alert.alert("예약 변경을 완료했습니다.")
         } else if (response.data.returnCode == 'E2003') {
-          Alert.alert('올바르지 않은 예약 시간')
+          Alert.alert('올바르지 않은 예약 시간 입니다.')
         } else if (response.data.returnCode == 'E2004') {
-          Alert.alert("이미 예약되어 있는 룸")
+          Alert.alert("이미 예약되어 있는 룸 입니다.")
         } else if (response.data.returnCode == 'E2005') {
-          Alert.alert("변경할 수 없는 예약 시간")
+          Alert.alert("변경할 수 없는 예약 시간 입니다.")
         } else if (response.data.returnCode == 'E2006') {
-          Alert.alert("사용자의 아이디와 예약자 아이디가 다름.")
+          Alert.alert("사용자의 아이디와 예약자 아이디가 다릅니다.")
         } else if (response.data.returnCode == 'E2007') {
-          Alert.alert("아이디가 없음.")
+          Alert.alert("아이디가 없습니다.")
         } else if (response.data.returnCode == 'E2008') {
-          Alert.alert("예약코드에 해당하는 예약 없음")
+          Alert.alert("예약코드에 해당하는 예약이 없습니다.")
         } else if (response.data.returnCode == 'E2009') {
-          Alert.alert("올바르지 않은 사용자 암호화 코드")
+          Alert.alert("올바르지 않은 사용자 암호화 코드 입니다.")
         } else if (response.data.returnCode == 'E2010') {
-          Alert.alert("메모 글자 수 초과")
+          Alert.alert("메모 글자 수가 초과 했습니다.")
         } else {
           Alert.alert("내부 오류 입니다.")
         }
@@ -331,25 +278,24 @@ export default function ReservationListScreen({ navigation }) {
       });
 
     getMyReserveList();
-    buildPickerData();
     toggleModal();
     setStartTime(startTime);
     setEndTime(endTime);
   }
 
-  const getValidReserveTime = async (roomCode, roomName, reserveStime) => {
+  const getValidReserveTime = async (roomCode, roomName, reserveStime, reserveEtime) => {
     console.log('reserveStime :: ',reserveStime)
     var data = JSON.stringify(
       {
         "roomCode": roomCode,
         "roomName": roomName,
-        "resrvCtime": moment(reserveStime, 'YYYYMMDDHHmmss').format('YYYYMMDD')
+        "resrvCtime": moment(reserveStime, 'YYYYMMDDHHmm').format('YYYYMMDD')
       }
     );
 
     var config = {
       method: 'post',
-      url: 'http://office-api.surem.com/getReservationListForRoom',
+      url: 'http://112.221.94.101:8980/getReservationListForRoom',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -360,20 +306,32 @@ export default function ReservationListScreen({ navigation }) {
 
     await axios(config)
       .then(async function (response) {
+        const format = 'YYYYMMDDHHmm';
         const pickerVals = [];
         var index = 0;
-        console.log(response.data)
-        for(const [key, value] of Object.entries(response.data)){
-          if(index > 2){
-            if(value == "true"){
-              pickerVals.push(key)
+        if(response.data.returnCode == 'E0000'){
+          for(const [key, value] of Object.entries(response.data)){
+            if(index > 2){
+              var time = moment(key, format);
+              if(moment().isBefore(time)){
+                if(value == "true"){
+                  pickerVals.push(key)
+                } else {
+                  var beforeTime = moment(reserveStime, format),
+                  afterTime = moment(reserveEtime, format)
+                  setStartTime(reserveStime)
+                  setEndTime(reserveEtime)
+                  if(time.isBetween(beforeTime, afterTime, undefined, '[]')){
+                    pickerVals.push(key)
+                  }
+                }
+              }
             }
+            index++;
           }
-          index++;
         }
         setStartPickerVals(pickerVals)
         setEndPickerVals(pickerVals)
-        setValidPickerVals(pickerVals)
       })
       .catch(function (error) {
         console.log(error);
@@ -381,10 +339,26 @@ export default function ReservationListScreen({ navigation }) {
   };
 
   useEffect(() => {
-    console.log('ddddd')
+    startLoading();
     getUserId();
     getMyReserveList();
   }, [usercode, secretCode]);
+
+  const startLoading = () => {
+    setLoading(true);
+    setTimeout(async ()=>{
+      await setLoading(false);
+    },10000)
+  }
+
+  if(loading){
+    return(
+      <Spinner
+        visible={true}
+        textContext={"Loading..."}
+      />
+    )
+  }
 
   if (reservations.length == 0) {
     return (
@@ -412,6 +386,7 @@ export default function ReservationListScreen({ navigation }) {
         <Modal
           isVisible={qrVisible}
           onBackdropPress={() => handleQrCancel()}
+          onRequestClose={()=> handleQrCancel()}
         >
           <View style={styles.qrStyle}>
             <QRCode
@@ -422,7 +397,11 @@ export default function ReservationListScreen({ navigation }) {
         </Modal>
       </View>
       <View style={{ flex: 1 }}>
-        <Modal isVisible={isModalVisible}>
+        <Modal 
+          isVisible={isModalVisible}
+          onBackdropPress={() => toggleModal()}
+          onRequestClose={()=> toggleModal()}
+        >
           <View style={styles.changeReservModal}>
             <View style={styles.changeReservTitle}>
               <View style={{ alignSelf: 'center', flex: 10 }}>
@@ -443,8 +422,6 @@ export default function ReservationListScreen({ navigation }) {
                   selectedValue={startTime}
                   onValueChange={async (itemValue, itemIndex) => {
                     setStartTime(itemValue)
-                    console.log('START TIME :: ',itemValue)
-                    await buildEndPickerData(itemValue)
                   }}
                   itemStyle={styles.pickerItem}
                 > 
@@ -460,9 +437,7 @@ export default function ReservationListScreen({ navigation }) {
                 <Picker
                   selectedValue={endTime}
                   onValueChange={async (itemValue, itemIndex) => {
-                    console.log(itemValue)
                     setEndTime(itemValue)
-                    await buildStartPickerData(itemValue);
                   }}
                   itemStyle={styles.pickerItem}
                 >

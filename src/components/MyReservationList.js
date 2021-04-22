@@ -55,7 +55,7 @@ export default function MyReservationList() {
     console.log('DATA::',data)
     var config = {
       method: 'post',
-      url: 'http://office-api.surem.com/getReservation',
+      url: 'http://112.221.94.101:8980/getReservation',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -72,17 +72,6 @@ export default function MyReservationList() {
       console.log(error);
     });
   }
-
-  useFocusEffect(() => {
-    const backAction = () => {
-        navigation.navigate("Home");
-        return true;
-    };
-    
-    const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
-    
-    return (() => backHandler.remove());
-  },);
 
 	useEffect(()=>{
     console.log('hdi')

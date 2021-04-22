@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, TextInput, StatusBar, StyleSheet, TouchableOpacity, Platform} from 'react-native'
+import { View, Text, Button, TextInput, StatusBar, StyleSheet, TouchableOpacity, Platform, Alert} from 'react-native'
 
 import axios from 'axios';
 import SignUpButton from '../../button/SignUpButton'
@@ -126,6 +126,7 @@ export default function SignUpScreen({ navigation }) {
 
   useEffect(()=>{
     hasUserId();
+    return(()=>{})
   },[]);
 
   if(loading){
@@ -152,6 +153,8 @@ export default function SignUpScreen({ navigation }) {
             autoCapitalize="none"
             autoCorrect={false}
             value={phoneNum}
+            editable={!isSentAuth}
+            selectTextOnFocus={!isSentAuth}
             onChangeText={(newValue) => {
               const regex = /^[0-9\b]{0,11}$/;
               if (regex.test(newValue)) {
@@ -169,12 +172,17 @@ export default function SignUpScreen({ navigation }) {
               alert('핸드폰 번호를 입력해주세요.')
               return
             }
-            deleteAuthNumbers()
-            saveAuthNumber(authNumberText)
-            selectAuthNumbers()
-            setMinutes(3)
-            setIsSentAuth(true)
-            sendMessage(phoneNum,authNumberText)
+            const regExp = /^01(?:0|1|[6-9])(?:\d{3}|\d{4})\d{4}$/;
+            if(regExp.test(phoneNum)){
+              deleteAuthNumbers()
+              saveAuthNumber(authNumberText)
+              selectAuthNumbers()
+              setMinutes(3)
+              setIsSentAuth(true)
+              sendMessage(phoneNum,authNumberText)
+            }else{
+              Alert.alert('휴대폰 번호를 제대로 입력해주세요.')
+            }
           }}
         >
         <Text style={styles.title}>
