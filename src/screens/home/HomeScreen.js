@@ -10,29 +10,12 @@ import { useFocusEffect } from '@react-navigation/native';
 const db = SQLite.openDatabase('db.db');
 
 export default function HomeScreen({navigation}) {
-<<<<<<< HEAD
-  
-  useFocusEffect(() => {
-    console.log("at least here bro")
-    const backAction = () => {
-        // console.log("backbutton");
-        Alert.alert(
-            "잠시만요!",
-            "앱을 종료 하시겠습니까?", 
-            [
-                {
-                    text: "아니요",
-                    onPress: () => null,
-                    style: "cancel"
-                },
-                { text: "예", onPress: () => BackHandler.exitApp() }
-=======
   useFocusEffect(
     React.useCallback(()=>{
       const backHandler = BackHandler.addEventListener("hardwareBackPress", ()=>{
         Alert.alert(
           "잠시만요!",
-          "어플을 종료 하시겠습니다?", 
+          "어플을 종료 하시겠습니까?", 
           [
             {
               text: "아니요",
@@ -40,7 +23,6 @@ export default function HomeScreen({navigation}) {
               style: "cancel"
             },
             { text: "예", onPress: () => BackHandler.exitApp()}
->>>>>>> 748807c62de59e2a604f2b443b07d3ffd7349923
         ]);
         return true;
       });
