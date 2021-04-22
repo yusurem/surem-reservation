@@ -35,6 +35,7 @@ export default function MyReservationRow(props) {
 		<Modal 
 			isVisible={qrVisible} 
 			onBackdropPress={()=> handleQrCancel()}
+			onRequestClose={()=> handleQrCancel()}
 		>
         <View style={styles.qrStyle}>
           <QRCode

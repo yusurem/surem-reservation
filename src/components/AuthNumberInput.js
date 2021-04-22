@@ -46,6 +46,7 @@ export default class AuthNumberInput extends Component{
             autoCapitalize="none"
             autoCorrect={false}
             value={this.state.authNumber}
+            keyboardType="number-pad"
             onChangeText={(newValue) => {
                 const regex = /^[0-9\b]{0,4}$/;
                 if (regex.test(newValue)) {
