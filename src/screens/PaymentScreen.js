@@ -74,7 +74,8 @@ const PaymentScreen = ({ navigation, route }) => {
             console.log("secretcode: " + secretCode);
             console.log("startTime" +  `${route.params.year}${route.params.month}${route.params.day}${route.params.startTime}`);
             console.log("endTime" + `${route.params.year}${route.params.month}${route.params.day}${route.params.endTime}`)
-            const response = await axios.post('http://office-api.surem.com/reservation', {
+            // const response = await axios.post('http://office-api.surem.com/reservation', {
+            const response = await axios.post('http://112.221.94.101:8980/reservation', {
                 'roomCode' : route.params.roomCode,
                 // 'usercode' : "testId1",
                 // "secretCode" : "EI1MLYNV5v0pQLLlYn1hrfL2jITz5M5cArB6pnP84k0uFQLudygVvSlA9ssPlh6SKVsiAg==",
@@ -259,7 +260,7 @@ const PaymentScreen = ({ navigation, route }) => {
                     <View>
                         <Text style={styles.titleStyle}>결제수단 선택</Text>
                         <TouchableOpacity
-                            // style={[styles.openButton, checked ? styles.valid : styles.invalid]}
+                            style={[styles.openButton, checked ? styles.valid : styles.invalid]}
                             onPress={ async () => {
                                 if(checked){
                                     // await getUserId();
@@ -292,7 +293,7 @@ const PaymentScreen = ({ navigation, route }) => {
                                 
                             }}
                         >
-                            <View style={[styles.openButton, checked ? styles.valid : styles.invalid]}>
+                            <View>
                                 <Text style={styles.textStyle}>예약하기</Text>
                             </View>
                         </TouchableOpacity>
@@ -402,7 +403,7 @@ const styles = StyleSheet.create({
     valueView: {
         // borderWidth: 2,
         // borderColor: 'red',
-        width: 120
+        width: 130
     },
     rowStyle: {
         flexDirection: 'row',
@@ -529,7 +530,7 @@ const styles = StyleSheet.create({
         // backgroundColor: "gray",
         borderRadius: 15,
         marginTop: 10,
-        paddingVertical: 30,
+        paddingVertical: 20,
         // paddingHorizontal: 130,
         elevation: 2
     },

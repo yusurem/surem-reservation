@@ -156,14 +156,20 @@ const MyScreen = ({ navigation, route }) => {
                                     <TouchableOpacity
                                         // style={{ flexDirection: 'row' }}
                                         onPress={ async () => {
-                                            const url = `tel:${phoneNumber}`;
+                                            var url;
+                                            if (Platform.OS === 'android') {
+                                                url = `tel:${phoneNumber}`;
+                                              }
+                                            else  {
+                                                url = `telprompt:${phoneNumber}`;
+                                            }
                                             const supported = await Linking.canOpenURL(url);
 
                                             if(supported){
                                                 await Linking.openURL(url);
                                             }
                                             else {
-                                                Alert.alert(`Don't know how to open this URL: ${url}`);
+                                                Alert.alert(`이 URL을 읽지 못합니다: ${url}`);
                                             }
                                         }}
                                     >
