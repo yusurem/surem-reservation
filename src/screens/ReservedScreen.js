@@ -188,7 +188,8 @@ const styles = StyleSheet.create({
         marginTop: 40,
         paddingVertical: 12,
         paddingHorizontal: 63,
-        elevation: 2
+        elevation: 2,
+        width: 213
     },
     buttonText: {
         color: 'white',
@@ -233,7 +234,8 @@ const styles = StyleSheet.create({
         marginTop: 25,
         paddingVertical: 12,
         paddingHorizontal: 80,
-        elevation: 2
+        elevation: 2,
+        width: 213
     },
 });
 

@@ -62,7 +62,9 @@ const MyScreen = ({ navigation, route }) => {
             console.log("Attempting to get user info...");
             console.log("usercode: " + usercode);
             console.log("secretCode: " + secretCode);
-            const response = await axios.post('http://112.221.94.101:8980/myInfo', {
+            const response = await axios.post('http://office-api.surem.com/myInfo', {
+        
+            // const response = await axios.post('http://112.221.94.101:8980/myInfo', {
                 usercode: usercode,
                 securityKey: secretCode
             });
@@ -84,7 +86,6 @@ const MyScreen = ({ navigation, route }) => {
 
     useEffect(() => {
         getUserId();
-        // getMyInfo();
     },[usercode, secretCode])
 
     // useEffect(() => {

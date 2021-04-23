@@ -5,9 +5,6 @@ import axios from 'axios';
 
 export default function ChangeReservDialog(props) {
 
-	useEffect(()=>{
-  });
-
   return (
     <View style={styles.MyReservationList}>
         <Text style={styles.MyReservationTitle}>MY 예약내역</Text>

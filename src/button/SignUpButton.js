@@ -10,6 +10,7 @@ import axios from 'axios';
 import LoadingScreen from '../screens/LoadingScreen'
 import * as SQLite from 'expo-sqlite';
 import Spinner from 'react-native-loading-spinner-overlay'
+import { Platform } from 'react-native';
 
 const db = SQLite.openDatabase('db.db');
 
@@ -43,8 +44,8 @@ export default function SignUpButton(props){
 
     var config = {
       method: 'post',
-      // url: 'http://office-api.surem.com/joinMember',
-      url: 'http://112.221.94.101:8980/joinMember',
+      url: 'http://office-api.surem.com/joinMember',
+      // url: 'http://112.221.94.101:8980/joinMember',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -56,7 +57,7 @@ export default function SignUpButton(props){
       console.log(JSON.stringify(response.data));
       if(response.data.returnCode === "E0000"){
         saveUserId(response.data.secretCode, props.phoneNum)
-        navigation.reset({index: 0, routes: [{name: 'Home'}] })
+        navigation.reset({index: 0, routes: [{name: 'Tab'}] })
       }
       else if(response.data.returnCode === "E3001"){
         var data = JSON.stringify(
@@ -67,8 +68,8 @@ export default function SignUpButton(props){
     
         var config = {
           method: 'post',
-          // url: 'http://office-api.surem.com/getEncryptCode',
-          url: 'http://112.221.94.101:8980/getEncryptCode',
+          url: 'http://office-api.surem.com/getEncryptCode',
+          // url: 'http://112.221.94.101:8980/getEncryptCode',
           headers: {
             'Content-Type': 'application/json'
           },

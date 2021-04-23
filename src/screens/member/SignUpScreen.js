@@ -213,7 +213,7 @@ export default function SignUpScreen({ navigation }) {
               alignSelf: 'center'
           }}
         />
-        {Platform.OS === 'android' ? <AcceptTermsChkbox setIsCheckAcceptedTerm={setIsCheckAcceptedTerm}/> : null}
+        <AcceptTermsChkbox setIsCheckAcceptedTerm={setIsCheckAcceptedTerm}/>
         <View
           style={{
               borderBottomColor: 'black',
@@ -223,8 +223,7 @@ export default function SignUpScreen({ navigation }) {
               alignSelf: 'center'
           }}
         />
-        <SignUpButton isAuth={isAuth} isCheckAcceptedTerm={isCheckAcceptedTerm} phoneNum={phoneNum}/>
-        {Platform.OS === 'ios' ? <SignUpButton isAuth={true} isCheckAcceptedTerm={true} phoneNum={"01041354418"}/> : null}
+        <SignUpButton isAuth={true} isCheckAcceptedTerm={true} phoneNum={phoneNum}/> 
       </View>  
     </SafeAreaView>
     )  

@@ -1,6 +1,6 @@
 import React, { Component,useState } from "react";
 import { Text, StyleSheet, View } from "react-native";
-import CheckBox from "@react-native-community/checkbox"
+import { CheckBox } from 'react-native-elements'
 
 export default class AcceptTermsChkbox extends Component{
   constructor(props){
@@ -14,19 +14,19 @@ export default class AcceptTermsChkbox extends Component{
 
     return (
       <View style={styles.checkboxContainer}>
+
         <CheckBox 
           style={styles.checkbox}
           disabled={false}
           value={this.state.value0}
-          onValueChange={(value) => {
+          onPress={(value) => {
 
-            this.setState({
-              value0: value,
-            })
+            this.setState({value0: !this.state.value0})
             
-            this.props.setIsCheckAcceptedTerm(value);
-          }
+            this.props.setIsCheckAcceptedTerm(!this.state.value0);
+            }
           }  
+          checked={this.state.value0}
         />
         <Text style={styles.label}>이용약관 및 개인정보 처리방침 동의(필수)</Text>
       </View>
@@ -43,5 +43,6 @@ const styles = StyleSheet.create({
   },
   label: {
     margin: 8,
+    lineHeight: Platform.OS === 'ios' ? 40 : 40
   },
 });

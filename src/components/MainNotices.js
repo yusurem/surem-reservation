@@ -8,10 +8,8 @@ const db = SQLite.openDatabase('db.db');
 
 export default function MainNotices() {
 
-	const [notices, setNotices] = useState();
+const [notices, setNotices] = useState();
 
-	useEffect(()=>{
-  });
 
   return (
     <View style={styles.notices}>

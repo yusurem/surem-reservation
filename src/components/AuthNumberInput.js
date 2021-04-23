@@ -105,6 +105,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#000000',
     height: 50,
+    lineHeight: Platform.OS === 'ios' ? 50 : null,
     width: '100%',
     textAlign: 'center',
     textAlignVertical: 'center',
