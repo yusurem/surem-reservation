@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import { View, Text, StyleSheet, TouchableHighlight, Image, Alert, TouchableOpacity, ScrollView, NestedScrollView, Platform } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableHighlight, Image, Alert, TouchableOpacity, ScrollView, NestedScrollView, Platform, BackHandler } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import axios from 'axios';
@@ -7,8 +7,9 @@ import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 import Modal from 'react-native-modal';
 import * as SQLite from 'expo-sqlite';
 import CheckBox from '@react-native-community/checkbox';
-import { useEffect } from 'react';
 import IosCheckBox from '../components/IosCheckBox';
+import { useFocusEffect } from '@react-navigation/native';
+
 
 const PaymentScreen = ({ navigation, route }) => {
     const [errorMessageA, setErrorMessageA] = useState("");
@@ -22,6 +23,43 @@ const PaymentScreen = ({ navigation, route }) => {
 
     console.log("Entered PaymentScreen. Params: ");
     console.log(route.params);
+
+    const removeSyncTime = async () => {
+        try{
+            console.log("Removing sync time from going back...");
+            const response = await axios.post('http://112.221.94.101:8980/removeSyncTime', {
+                'roomCode' : route.params.roomCode,
+                "resrvStime" : `${route.params.year}${route.params.month}${route.params.day}${route.params.startTime}`,
+                "resrvEtime" : `${route.params.year}${route.params.month}${route.params.day}${route.params.endTime}`,
+            });
+            console.log("Got the response!");
+            console.log(response.data);
+            if(response.data.returnCode === 'E0000'){
+                console.log("Sync succesfully removed.");
+            }
+            else if(response.data.returnCode === "E1001"){
+                console.log("Sync did not exist.");
+            }
+            else {
+                console.log("Parameter error while removing sync.");
+            }
+        } catch (err) {
+            console.log("Error in API call for remove sync.");
+            return 'Error'
+        }
+    }
+
+    useFocusEffect(() => {
+        const backAction = () => {
+            removeSyncTime();
+            // console.log(res);
+            return false;
+        };
+        
+        const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+        
+        return (() => backHandler.remove());
+    });
 
     const db = SQLite.openDatabase('db.db');
 
@@ -264,6 +302,7 @@ const PaymentScreen = ({ navigation, route }) => {
                             onPress={ async () => {
                                 if(checked){
                                     // await getUserId();
+                                    await removeSyncTime();
                                     const res = await makeReservation(sTime, eTime);
                                     console.log(res);
                                     if(res === 'error'){

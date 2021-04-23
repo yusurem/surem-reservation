@@ -1,3 +1,29 @@
+2021-04-22
+- Thins to do:
+    - Add sync function !
+        - sync when you choose time and go ahead !
+            - if not available, doesnt go over !
+        - remove sync whether you actually reserve or cancel !
+            - still add but there will be a timer set
+    - Put 공유하기 a little higher so that there can be more space between
+    - exitApp한다음에
+    - error page
+
+- 2차:
+    - 탈퇴기능
+        - api
+    - 1:1 문의
+        - 
+    - 지점기능
+    - 방 이미지 크게가능
+
+    - 결제기능
+    - 과거 시간 예약불가능 기능
+    - 약관
+
+
+
+
 2021-04-19
 - Things to fix
     - My 내 쿠폰 확인 N/A개 !
@@ -8,7 +34,7 @@
     = 전화문의 추가하겠습니다. ">"는 기획디자인대로 하였습니다. 새로운 디자인을 주시면 반영하겠습니다.
     = 1:1문의는 2차떄 개발하는걸로 결정된것으로 알고있습니다.
 
-    - 예약 후 추가 예약하기 클릭한 뒤 휴대폰 취소버튼 누르면 앱 종료 
+    - 예약 후 추가 예약하기 클릭한 뒤 휴대폰 취소버튼 누르면 앱 종료 !
     (이전화면이나 홈화면 등 앱의 이전화면으로 가는게 정상)
     = 반영하겠습니다.
 

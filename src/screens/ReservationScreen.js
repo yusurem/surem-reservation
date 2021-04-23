@@ -11,7 +11,7 @@ const ReservationScreen = ({ navigation, route }) => {
     const [startTime, setStartTime] = useState(route.params.startTime);
     const [endTime, setEndTime] = useState("0");
     const [memo, setMemo] = useState("");
-    const [errorMessageA, setErrorMessageA] = useState("");
+    const [errorMessageA, setErrorMessageA] = useState(false);
     const [isValid, setIsValid] = useState(false);
     const [roomInfo, setRoomInfo] = useState("Hi");
 
@@ -234,9 +234,38 @@ const ReservationScreen = ({ navigation, route }) => {
         setRoomName(roomInfo.room.roomName);
     }
 
-    // useEffect(() => {
-    //     valsToEndDate(route.params.optionVals);
-    // }, [endDates])
+    const syncTime = async () => {
+        try{
+            console.log("Syncing Time...");
+            // console.log("roomCode: " + route.params.roomCode);
+            console.log("resrvStime: " + `${route.params.year}${route.params.month}${route.params.day}${startTime}`);
+            console.log("resrvEtime: " + `${route.params.year}${route.params.month}${route.params.day}${endTime}`);
+            const response = await axios.post('http://112.221.94.101:8980/syncTime', {
+                'roomCode' : route.params.roomCode,
+                'resrvStime' : `${route.params.year}${route.params.month}${route.params.day}${startTime}`,
+                'resrvEtime' : `${route.params.year}${route.params.month}${route.params.day}${endTime}`,
+                // "roomCode" : "21D7E4B9B8C840F ",
+                // “resrvStime” : “20210407110000”,
+                // “resrvEtime” : “20210407113000”
+            });
+            console.log("Got the response!");
+            console.log(response.data);
+            if(response.data.returnCode == 'E0000'){
+                return "E0000";
+            }
+            else if(response.data.returnCode === 'E1001'){
+                // Alert.alert("이미 예약중인 시간입니다. 다른시간을 선택하시거나 잠시후 다시 시도해주세요.");
+                return "E1001";
+            }
+            else{
+                Alert.alert("알수없는 문제가 생겼습니다, 잠시후 다시 시도해주세요.");
+            }
+        } catch (err) {
+            setErrorMessageA("API 문제발생");
+            console.log(err);
+            return 'Error';
+        }
+    }
 
     useEffect(() => {
         apiCalls();
@@ -354,6 +383,7 @@ const ReservationScreen = ({ navigation, route }) => {
                                         setTotalCost(price);
                                     }
                                     else{
+                                        setErrorMessageA(false);
                                         setIsValid(false);
                                     }
                                 }}>
@@ -400,32 +430,41 @@ const ReservationScreen = ({ navigation, route }) => {
                     </View>
                    
                     <View style={styles.errorBox}>
-                        {errorMessageA ? <Text style={styles.errorMessageA}>이용시간을 다시 입력해주세요.</Text> : null}
+                        {errorMessageA ? <Text style={styles.errorMessageA}>{errorMessageA}</Text> : <Text style={styles.errorMessageA}></Text>}
                     </View>
 
                     <View style={styles.buttonView} >
                         <TouchableOpacity
                             style={[ styles.resrvButton, isValid ? styles.valid : styles.invalid ]}
-                            onPress={() => {
+                            onPress={ async () => {
                                 if(isValid){
                                     setErrorMessageA(false);
 
-                                    navigation.navigate("Payment", {
-                                        startTime: startTime,
-                                        endTime: endTime,
-                                        dateString: route.params.dateString,
-                                        year: route.params.year,
-                                        month: route.params.month,
-                                        day: route.params.day,
-                                        memo: memo,
-                                        weekDay: route.params.weekDay,
-                                        roomCode: route.params.roomCode,
-                                        roomName: roomName,
-                                        totalCost: totalCost
-                                    });
+                                    // const res = await syncTime();
+                                    const res = 'E0000';
+                                    if(res === 'E0000'){
+                                        navigation.navigate("Payment", {
+                                            startTime: startTime,
+                                            endTime: endTime,
+                                            dateString: route.params.dateString,
+                                            year: route.params.year,
+                                            month: route.params.month,
+                                            day: route.params.day,
+                                            memo: memo,
+                                            weekDay: route.params.weekDay,
+                                            roomCode: route.params.roomCode,
+                                            roomName: roomName,
+                                            totalCost: totalCost
+                                        });
+                                    }
+                                    else{
+                                        setErrorMessageA("이미 예약중인 시간입니다. 다른시간을 선택하시거나 잠시후 다시 시도해주세요.");
+                                    }
+
+                                    
                                 }
                                 else{
-                                    setErrorMessageA(true);
+                                    setErrorMessageA("이용시간을 다시 입력해주세요.");
                                 }
                             }}
                         >
@@ -530,7 +569,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-end',
         marginHorizontal: 8.5,
-        marginBottom: 13,
+        marginBottom: 4,
     },
     priceText: {
         color: '#5D5D5D'
@@ -561,9 +600,12 @@ const styles = StyleSheet.create({
     errorBox: {
         alignItems: 'flex-end',
         marginBottom: 3,
-        marginRight: 10
+        marginRight: 0,
+        // borderWidth: 1,
+        // borderColor: 'red'
     },
     errorMessageA : {
+        textAlign: 'center',
         color: 'red',
         fontSize: 12
     }
