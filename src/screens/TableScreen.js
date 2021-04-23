@@ -122,7 +122,7 @@ const TableScreen = ({ navigation, route }) => {
                 resrvCtime: resDate,
                 adminCode: adCode
             });
-            console.log(response.data);
+            // console.log(response.data);
            
             if(response.data.returnCode !== "E0000"){
                 console.log("Error: " + response.data.returnCode);
