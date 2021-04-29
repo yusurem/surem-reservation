@@ -29,6 +29,7 @@
     "react-native-calendars": "^1.1254.0",
     "react-native-device-info": "8.1.2",
     "react-native-dialog": "6.2.0",
+    "react-native-elements": "3.4.0",
     "react-native-exit-app": "1.1.0",
     "react-native-gesture-handler": "~1.8.0",
     "react-native-image-slider-box": "^1.0.12",
@@ -55,5 +56,5 @@
   },
   "private": true,
   "name": "reservation",
-  "version": "1.0.0"
+  "version": "1.0.1"
 }

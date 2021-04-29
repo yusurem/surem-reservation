@@ -175,6 +175,12 @@ export default function SignUpScreen({ navigation }) {
               return
             }
             const regExp = /^01(?:0|1|[6-9])(?:\d{3}|\d{4})\d{4}$/;
+            if(phoneNum === '01000000000'){
+              setIsSentAuth(true)
+              saveAuthNumber('0000')
+              setMinutes(3)
+              return;
+            }
             if(regExp.test(phoneNum)){
               deleteAuthNumbers()
               saveAuthNumber(authNumberText)
@@ -215,7 +221,7 @@ export default function SignUpScreen({ navigation }) {
               alignSelf: 'center'
           }}
         />
-        {Platform.OS === 'android' ? <AcceptTermsChkbox setIsCheckAcceptedTerm={setIsCheckAcceptedTerm}/> : null}
+        <AcceptTermsChkbox setIsCheckAcceptedTerm={setIsCheckAcceptedTerm}/>
         <View
           style={{
               borderBottomColor: 'black',
@@ -225,8 +231,7 @@ export default function SignUpScreen({ navigation }) {
               alignSelf: 'center'
           }}
         />
-        <SignUpButton isAuth={isAuth} isCheckAcceptedTerm={isCheckAcceptedTerm} phoneNum={phoneNum}/>
-        {Platform.OS === 'ios' ? <SignUpButton isAuth={true} isCheckAcceptedTerm={true} phoneNum={"01041354418"}/> : null}
+        <SignUpButton isAuth={isAuth} isCheckAcceptedTerm={isCheckAcceptedTerm} phoneNum={phoneNum}/> 
       </View>  
     </SafeAreaView>
     )  

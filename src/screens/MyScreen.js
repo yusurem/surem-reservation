@@ -67,6 +67,7 @@ const MyScreen = ({ navigation, route }) => {
             console.log("Attempting to get user info...");
             // console.log("usercode: " + usercode);
             // console.log("secretCode: " + secretCode);
+            // const response = await axios.post('http://office-api.surem.com/myInfo', {
             const response = await axios.post('http://112.221.94.101:8980/myInfo', {
                 usercode: usercode,
                 securityKey: secretCode
@@ -138,7 +139,6 @@ const MyScreen = ({ navigation, route }) => {
 
     useEffect(() => {
         getUserId();
-        // getMyInfo();
     },[usercode, secretCode])
 
     // useEffect(() => {
@@ -170,12 +170,19 @@ const MyScreen = ({ navigation, route }) => {
                             <View style={styles.infoTextBox}>
                                 <Text style={styles.infoText}>{usercode.substring(0,3) + "-" + usercode.substring(3,7) + "-" + usercode.substring(7)}</Text>
                             </View>
-                            <View style={{ flexDirection: 'row' }}>
-                                <Text style={styles.infoText}>{couponNum}개</Text>
-                                <View style={{ justifyContent: 'center' }}> 
-                                    <MaterialCommunityIcons style={styles.couponIcon} name="greater-than" size={18} color="#6C6C6C" />
+                            <TouchableOpacity
+                                onPress={() => {
+                                    Alert.alert("쿠폰들");
+                                }}
+                            >
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Text style={styles.infoText}>{couponNum}개</Text>
+                                    <View style={{ justifyContent: 'center' }}> 
+                                        <MaterialCommunityIcons style={styles.couponIcon} name="greater-than" size={18} color="#6C6C6C" />
+                                    </View>
                                 </View>
-                            </View>
+                            </TouchableOpacity>
+                            
                         </View>
                     </View>
 
@@ -488,7 +495,8 @@ const styles = StyleSheet.create({
     },
     modalTermsText: {
         color: 'black',
-        fontSize: 14
+        fontSize: 14,
+        padding: 5,
     },
     modal: {
         alignSelf: 'center'

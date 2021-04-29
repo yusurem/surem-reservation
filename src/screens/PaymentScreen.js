@@ -173,6 +173,7 @@ const PaymentScreen = ({ navigation, route }) => {
             console.log("Attempting to get QrCode link...");
             // console.log(route.params.qrCode);
             const response = await axios.post('http://112.221.94.101:8980/getQrcode', {
+            // const response = await axios.post('http://office-api.surem.com/getQrcode', {
                 // resrvCode: qr,
                 // resrvCode: "21D7E4B9B8C840F-6dda0e6d111e4f"
                 resrvCode: "techno100010001-V43sA98ETO2F07",
@@ -269,7 +270,7 @@ const PaymentScreen = ({ navigation, route }) => {
                                 persistentScrollbar={true}
                                 nestedScrollEnabled={true}
                             >
-                                <Text>{TERMS.FINANCIAL.term}</Text>
+                                <Text style={{ padding: 10 }}>{TERMS.FINANCIAL.term}</Text>
                                 {/* <View style={{ paddingHorizontal: 10 }}>
                                     <Image
                                         style={styles.imageStyle}

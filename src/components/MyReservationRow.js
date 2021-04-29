@@ -20,8 +20,7 @@ export default function MyReservationRow(props) {
 	const handleQrCancel = () => {
 		setQrVisible(false)
 	}
-	useEffect(()=>{
-  });
+	
   return (
 	<View style={styles.row}>
 		<Text style={styles.rowContent}>{moment(props.resrvStime,'YYYYMMDDHHmmss').format('YYYY/MM/DD')} {moment(props.resrvStime,'YYYYMMDDHHmmss').format('HH:mm')} ~ {moment(props.resrvEtime,'YYYYMMDDHHmmss').format('HH:mm')} {props.roomName}</Text>
@@ -39,7 +38,7 @@ export default function MyReservationRow(props) {
 		>
         <View style={styles.qrStyle}>
           <QRCode
-            size={140}
+            size={280}
             value={props.resrvCode}
           />
         </View>
@@ -82,8 +81,8 @@ const styles = StyleSheet.create({
 		alignContent: 'center',
 		justifyContent: 'center',
 		marginVertical:'15%',
-		width:170,
-		height:170,
+		width:300,
+		height:300,
 		backgroundColor:'#FFFFFF',
 		borderRadius:10
 	}

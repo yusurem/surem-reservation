@@ -29,6 +29,7 @@ import LoginMenuScreen from './src/screens/LoginMenuScreen';
 import PaymentScreen from './src/screens/PaymentScreen';
 import ReservationListScreen from './src/screens/reservation/ReservationListScreen';
 import ChooseRegionScreen from './src/screens/reservation/ChooseRegionScreen';
+import NoticeScreen from './src/screens/NoticeScreen';
 import LoadingScreen from './src/screens/LoadingScreen';
 import MyScreen from './src/screens/MyScreen';
 import BranchScreen from './src/screens/BranchScreen';
@@ -55,6 +56,7 @@ const MainStack = () => {
         <Stack.Screen name="FindPassword" component={FindPassword}/>
         <Stack.Screen name="HomeMenu" component={HomeMenuScreen}/>
         <Stack.Screen name="LoginMenu" component={LoginMenuScreen} />
+        <Stack.Screen name="Notices" component={NoticeScreen}/>
       </Stack.Navigator>
   );
 }

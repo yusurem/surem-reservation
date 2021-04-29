@@ -55,6 +55,7 @@ export default function MyReservationList() {
     console.log('DATA::',data)
     var config = {
       method: 'post',
+      //url: 'http://office-api.surem.com/getReservation',
       url: 'http://112.221.94.101:8980/getReservation',
       headers: {
         'Content-Type': 'application/json'
@@ -74,7 +75,6 @@ export default function MyReservationList() {
   }
 
 	useEffect(()=>{
-    console.log('hdi')
     getUserId();
     getMyReserveList();
   },[usercode,secretCode]);
@@ -88,7 +88,7 @@ export default function MyReservationList() {
               return(<MyReservationRow resrvStime={item.resrvStime} resrvEtime={item.resrvEtime} roomName={item.roomName} resrvCode={item.resrvCode} key={index}/>)
           })
         }
-        <TouchableOpacity onPress={()=>{
+        <TouchableOpacity style={{alignSelf:'flex-end', marginRight:'3%'}} hitSlop={{top:-1, bottom:20, left:-300, right:10}} onPress={()=>{
           navigation.navigate('ConfirmReserved')
         }}>
           <Text style={styles.more}>더보기</Text>
@@ -99,18 +99,20 @@ export default function MyReservationList() {
 
 const styles = StyleSheet.create({
     MyReservationList: {
-      width:'90%',height:'30%',backgroundColor:'#4284E4',borderRadius:10,alignSelf:'center'
+      flex: 0.3,
+      width:'90%',
+      backgroundColor:'#4284E4',
+      borderRadius:10,
+      alignSelf:'center'
     },
 		MyReservationTitle: {
 			color:'white',
 			marginLeft:'3%',
 			fontSize:20, 
-			marginTop: '5%',
+			marginTop: '5%'
 		},
     more: {
-      width:'100%',
       marginTop:'1%',
-      marginLeft:'85%',
       marginBottom:'2%',
       color:'white'
     }

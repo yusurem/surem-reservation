@@ -11,6 +11,7 @@ import { Picker } from '@react-native-picker/picker';
 import Modal from 'react-native-modal'
 import Spinner from 'react-native-loading-spinner-overlay'
 import 'moment/locale/ko';
+import { Platform } from 'react-native';
 
 const Item = ({ item, onClickQrBtn, onClickChangeReserv }) => (
   <View style={styles.item}>
@@ -25,13 +26,13 @@ const Item = ({ item, onClickQrBtn, onClickChangeReserv }) => (
         style={styles.qrBtn}
         onPress={onClickQrBtn}
       >
-        <Text style={styles.qrBtnText}>QR코드</Text>
+        <Text style={[styles.qrBtnText, {lineHeight: Platform.OS === 'ios' ? 30 : 30}]}>QR코드</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.qrBtn}
         onPress={onClickChangeReserv}
       >
-        <Text style={styles.qrBtnText}>일정변경</Text>
+        <Text style={[styles.qrBtnText, {lineHeight: Platform.OS === 'ios' ? 30 : 30} ]}>일정변경</Text>
       </TouchableOpacity>
     </View>
   </View>
@@ -93,15 +94,20 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
+      // 개발 서버 
       url: 'http://112.221.94.101:8980/getReservation',
+      // 실 서버
+      // url: 'http://office-api.surem.com/getReservation',
       headers: {
         'Content-Type': 'application/json'
       },
       data: data
     };
 
+    console.log(config)
     axios(config)
       .then(async function (response) {
+        console.log(response.data)
         if (response.data.returnCode == 'E0000') {
           setReservations(response.data.reservations)
           setLoading(false)
@@ -121,6 +127,7 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
+      // url: 'http://office-api.surem.com/getRoomInfo',
       url: 'http://112.221.94.101:8980/getRoomInfo',
       headers: {
         'Content-Type': 'application/json'
@@ -188,6 +195,7 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
+      // url: 'http://office-api.surem.com/cancelReservation',
       url: 'http://112.221.94.101:8980/cancelReservation',
       headers: {
         'Content-Type': 'application/json'
@@ -198,19 +206,19 @@ export default function ReservationListScreen({ navigation }) {
       .then(async function (response) {
 
         if (response.data.returnCode == 'E0000') {
-          Alert.alert("예약을 취소가 완료됬습니다.")
+          setTimeout(()=>Alert.alert("예약을 취소가 완료됬습니다."), 10);
         } else if (response.data.returnCode == 'E2005') {
-          Alert.alert('취소 불가능한 시간 입니다.')
+          setTimeout(()=>{Alert.alert('취소 불가능한 시간 입니다.')},500)
         } else if (response.data.returnCode == 'E2006') {
-          Alert.alert("사용자 아이디와 예약자 아이디가 다릅니다.")
+          setTimeout(()=>{Alert.alert("사용자 아이디와 예약자 아이디가 다릅니다.")},500)
         } else if (response.data.returnCode == 'E2007') {
-          Alert.alert("사용자가 없음.")
+          setTimeout(()=>{Alert.alert("사용자가 없음.")},500)
         } else if (response.data.returnCode == 'E2008') {
-          Alert.alert("예약코드에 해당하는 예약 없음.")
+          setTimeout(()=>{Alert.alert("예약코드에 해당하는 예약 없음.")},500)
         } else if (response.data.returnCode == 'E2009') {
-          Alert.alert("올바르지 않은 사용자 암호화 코드")
+          setTimeout(()=>{Alert.alert("올바르지 않은 사용자 암호화 코드")},500)
         } else {
-          Alert.alert("내부 오류 입니다.")
+          setTimeout(()=>{Alert.alert("내부 오류 입니다.")},500)
         }
       })
       .catch(function (error) {
@@ -238,6 +246,7 @@ export default function ReservationListScreen({ navigation }) {
     var config = {
       method: 'post',
       url: 'http://112.221.94.101:8980/modifyReservation',
+      // url: 'http://office-api.surem.com/modifyReservation',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -252,25 +261,25 @@ export default function ReservationListScreen({ navigation }) {
           response.data.returnCode = response.data.returnCode.split(':')[0]
 
         if (response.data.returnCode == 'E0000') {
-          Alert.alert("예약 변경을 완료했습니다.")
+          setTimeout(()=>{Alert.alert("예약 변경을 완료했습니다.")},500)
         } else if (response.data.returnCode == 'E2003') {
-          Alert.alert('올바르지 않은 예약 시간 입니다.')
+          setTimeout(()=>{Alert.alert('올바르지 않은 예약 시간 입니다.')},500)
         } else if (response.data.returnCode == 'E2004') {
-          Alert.alert("이미 예약되어 있는 룸 입니다.")
+          setTimeout(()=>{Alert.alert("이미 예약되어 있는 룸 입니다.")},500)
         } else if (response.data.returnCode == 'E2005') {
-          Alert.alert("변경할 수 없는 예약 시간 입니다.")
+          setTimeout(()=>{Alert.alert("변경할 수 없는 예약 시간 입니다.")},500)
         } else if (response.data.returnCode == 'E2006') {
-          Alert.alert("사용자의 아이디와 예약자 아이디가 다릅니다.")
+          setTimeout(()=>{Alert.alert("사용자의 아이디와 예약자 아이디가 다릅니다.")},500)
         } else if (response.data.returnCode == 'E2007') {
-          Alert.alert("아이디가 없습니다.")
+          setTimeout(()=>{Alert.alert("아이디가 없습니다.")},500)
         } else if (response.data.returnCode == 'E2008') {
-          Alert.alert("예약코드에 해당하는 예약이 없습니다.")
+          setTimeout(()=>{Alert.alert("예약코드에 해당하는 예약이 없습니다.")},500)
         } else if (response.data.returnCode == 'E2009') {
-          Alert.alert("올바르지 않은 사용자 암호화 코드 입니다.")
+          setTimeout(()=>{Alert.alert("올바르지 않은 사용자 암호화 코드 입니다.")},500)
         } else if (response.data.returnCode == 'E2010') {
-          Alert.alert("메모 글자 수가 초과 했습니다.")
+          setTimeout(()=>{Alert.alert("메모 글자 수가 초과 했습니다.")},500)
         } else {
-          Alert.alert("내부 오류 입니다.")
+          setTimeout(()=>{Alert.alert("내부 오류 입니다.")},500)
         }
       })
       .catch(function (error) {
@@ -295,14 +304,13 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
+      // url: 'http://office-api.surem.com/getReservationListForRoom',
       url: 'http://112.221.94.101:8980/getReservationListForRoom',
       headers: {
         'Content-Type': 'application/json'
       },
       data: data
     };
-
-    console.log(config)
 
     await axios(config)
       .then(async function (response) {
@@ -390,7 +398,7 @@ export default function ReservationListScreen({ navigation }) {
         >
           <View style={styles.qrStyle}>
             <QRCode
-              size={140}
+              size={280}
               value={qrReservCode}
             />
           </View>
@@ -405,7 +413,7 @@ export default function ReservationListScreen({ navigation }) {
           <View style={styles.changeReservModal}>
             <View style={styles.changeReservTitle}>
               <View style={{ alignSelf: 'center', flex: 10 }}>
-                <Text style={{ marginLeft: '12%', fontSize: 20, color: '#FFFFFF', textAlignVertical: 'center', textAlign: 'center', height: '100%', textAlignVertical: 'center' }}>
+                <Text style={[{ marginLeft: '12%', fontSize: 20, color: '#FFFFFF', textAlignVertical: 'center', textAlign: 'center', height: '100%', textAlignVertical: 'center' },{lineHeight: Platform.OS === 'ios' ? 80 : 30}]}>
                   예약 변경하기
               </Text>
               </View>
@@ -416,7 +424,7 @@ export default function ReservationListScreen({ navigation }) {
             <Text style={{ marginTop: 30, textAlign: 'center' }}>{selectedRoomName}</Text>
             <Text style={{ textAlign: 'center' }}>{moment(selectedReservStime, 'YYYYMMDDHHmmss').format('YYYY / MM / DD')}</Text>
             <Text style={{ marginTop: 30, marginLeft: 20 }}>이용 시간</Text>
-            <View style={{ flex: 1, flexDirection: 'row', alignSelf: 'center' }}>
+            <View style={{ flex: 1, flexDirection: 'row', alignSelf: 'center', justifyContent:'space-between', marginBottom: Platform.OS === 'ios'? 30:null}}>
               <View style={styles.pickerView}>
                 <Picker
                   selectedValue={startTime}
@@ -424,6 +432,7 @@ export default function ReservationListScreen({ navigation }) {
                     setStartTime(itemValue)
                   }}
                   itemStyle={styles.pickerItem}
+                  
                 > 
                   {startPickerVals.map((item, index) => {
                     return <Picker.Item color='#A0A0A0' label={moment(item, 'YYYYMMDDHHmmss').format('HH:mm')} value={item} key={index} />
@@ -431,7 +440,7 @@ export default function ReservationListScreen({ navigation }) {
                 </Picker>
               </View>
               <View style={styles.middlePickerView}>
-                <Text style={{ height: '100%', textAlignVertical: 'center' }}>~</Text>
+                <Text style={[{ height: '100%', textAlignVertical: 'center' },{lineHeight: Platform.OS === 'ios' ? 100 : null}]}>~</Text>
               </View>
               <View style={styles.pickerView}>
                 <Picker
@@ -440,6 +449,7 @@ export default function ReservationListScreen({ navigation }) {
                     setEndTime(itemValue)
                   }}
                   itemStyle={styles.pickerItem}
+                  style={{height:50}}
                 >
                   {endPickerVals.map((item, index) => { 
                     return <Picker.Item color='#A0A0A0' label={moment(item, 'YYYYMMDDHHmmss').format('HH:mm')} value={item} key={index} />
@@ -447,12 +457,12 @@ export default function ReservationListScreen({ navigation }) {
                 </Picker>
               </View>
             </View>
-            <View style={{ marginLeft: 20, marginBottom: 20 }}>
+            <View style={{ flex:1,  marginLeft: 20, height:40, width:400}}>
               <Text>메모</Text>
               <TextInput onChangeText={onChangeSelectedMemo} value={selectedMemo}></TextInput>
             </View>
             <View style={{ flex: 1, flexDirection: 'row', alignSelf: 'center' }}>
-              <View style={{ flex: 2, marginLeft: 10, marginRight: 10 }}>
+              <View style={{ flex: Platform.OS === 'ios'? 1:2, marginLeft: 10, marginRight: 10 }}>
                 <Button title="예약 변경" onPress={changeReserv} />
               </View>
               <View style={{ flex: 1, marginRight: 10 }}>
@@ -511,6 +521,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: 70,
     height: 30,
+    justifyContent: 'center',
     marginTop: '10%'
   },
   qrBtnText: {
@@ -518,6 +529,7 @@ const styles = StyleSheet.create({
     width: '100%',
     textAlign: 'center',
     textAlignVertical: 'center',
+    justifyContent:'center',
     height: '100%'
   },
   qrStyle: {
@@ -525,9 +537,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignContent: 'center',
     justifyContent: 'center',
+
     marginVertical: '15%',
-    width: 170,
-    height: 170,
+    width: 300,
+    height: 300,
     backgroundColor: '#FFFFFF',
     borderRadius: 10
   },
@@ -556,7 +569,7 @@ const styles = StyleSheet.create({
   },
   middlePickerView: {
     width: '15%',
-    height: 50,
+    height: Platform.OS === 'ios' ? 100 : 50,
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -564,5 +577,7 @@ const styles = StyleSheet.create({
     color: '#B2B2B2',
     textAlign: 'center',
     fontSize: 10,
+    lineHeight:30,
+    height: Platform.OS === 'ios' ? 100 : null
   }
 });
