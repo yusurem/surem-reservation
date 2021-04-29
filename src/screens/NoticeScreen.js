@@ -5,13 +5,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import * as SQLite from 'expo-sqlite';
 import axios from 'axios';
 import moment from 'moment';
-import QRCode from 'react-native-qrcode-svg';
-import { Picker } from '@react-native-picker/picker';
-import Modal from 'react-native-modal'
 import Spinner from 'react-native-loading-spinner-overlay'
 import 'moment/locale/ko';
 import { Platform } from 'react-native';
-
 
 const Item = ({ item }) => {
   const [isFolder, setIsFolder] = useState(false);
@@ -42,7 +38,6 @@ const Item = ({ item }) => {
 const db = SQLite.openDatabase('db.db');
 
 export default function NoticeScreen({ navigation }) {
-  const [reservations, setReservations] = useState([]);
   const [usercode, setUsercode] = useState(null);
   const [secretCode, setSecretCode] = useState(null);
   const [notices, setNotices] = useState([]);
@@ -93,8 +88,8 @@ export default function NoticeScreen({ navigation }) {
 
     var config = {
         method: 'post',
-        url: 'http://112.221.94.101:8980/notice/0/3',
-        //url: 'http://112.221.94.101:8980/getReservation',
+        //url: 'http://112.221.94.101:8980/notice/0/3',
+        url: 'http://office-api.surem.com/notice/0/200',
         headers: {
             'Content-Type': 'application/json'
         }
@@ -141,7 +136,7 @@ export default function NoticeScreen({ navigation }) {
   if (notices.length == 0) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-        <Text style={{ textAlign: 'center', textAlignVertical: 'center', height: '80%' }}>
+        <Text style={{ textAlign: 'center', textAlignVertical: 'center', height: '80%', lineHeight: 400 }}>
           공지사항이 없습니다.
         </Text>
       </SafeAreaView>
