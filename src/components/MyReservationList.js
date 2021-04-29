@@ -112,8 +112,8 @@ const styles = StyleSheet.create({
 			marginTop: '5%'
 		},
     more: {
-      marginTop:'1%',
-      marginBottom:'2%',
+      marginTop:'0.5%',
+      marginBottom:'3%',
       color:'white'
     }
   });

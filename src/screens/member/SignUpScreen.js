@@ -34,8 +34,6 @@ export default function SignUpScreen({ navigation }) {
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const [loading, setLoading] = useState(true);
-  
-  console.log("Entered SignUp Screen");
 
   const makeId = () => {
     var text = "";
@@ -150,7 +148,16 @@ export default function SignUpScreen({ navigation }) {
         <Text style={{ textAlign: 'center', fontSize:14, marginTop:6}}>회원가입을 위한 정보를 입력해주세요.</Text>
         <Text></Text>
         <TextInput 
-            style={{ textAlign: 'left', borderWidth: 1 , height: 50, width: '70%', alignSelf: 'center', borderRadius:10, backgroundColor:'#FFFFFF'}} 
+            style={{ 
+              textAlign: 'left', 
+              borderWidth: 1 , 
+              height: 50, 
+              width: '70%', 
+              alignSelf: 'center', 
+              borderRadius:10, 
+              backgroundColor:'#FFFFFF',
+              paddingLeft:10 
+            }} 
             placeholder="휴대폰번호"
             autoCapitalize="none"
             autoCorrect={false}

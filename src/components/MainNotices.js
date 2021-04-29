@@ -78,7 +78,7 @@ const navigation = useNavigation();
             if(index < 3)
               return(
 				<View key={index} style={styles.noticeItem}>
-					<Text style={{color:'black',marginLeft:'1%',width:'70%',height:28,textAlignVertical:'center',marginLeft:'5%'}}>{item.noticeNote}</Text>
+					<Text style={{color:'black',marginLeft:'1%',width:'69%',height:28,textAlignVertical:'center',marginLeft:'5%'}}>{item.noticeNote}</Text>
 					<View
 						style={styles.qrBtn}
 					>
@@ -103,9 +103,10 @@ const navigation = useNavigation();
 const styles = StyleSheet.create({
 	more: {
 	  width:'100%',
-	  marginTop:'1%',
 	  marginLeft:'85%',
-	  color:'black'
+	  color:'black',
+	  marginBottom:'2%',
+	  marginTop:'2%'
 	}, 
 	notices: {
 		width:'90%',
@@ -118,7 +119,7 @@ const styles = StyleSheet.create({
 		color:'black',
 		marginTop:'4%',
 		marginBottom:10,
-		marginLeft:'3%',
+		marginLeft:'4%',
 		fontSize:15
 	},
 	noticeList: {

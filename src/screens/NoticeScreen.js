@@ -141,7 +141,7 @@ export default function NoticeScreen({ navigation }) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
         <Text style={{ textAlign: 'center', textAlignVertical: 'center', height: '80%' }}>
-          예약이 없습니다.
+          공지사항이 없습니다.
         </Text>
       </SafeAreaView>
     )

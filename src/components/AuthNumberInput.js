@@ -41,8 +41,18 @@ export default class AuthNumberInput extends Component{
       return (
         <View style={[styles.inputContainer, {backgroundColor: this.props.color}]}>
           <TextInput 
-            style={{ textAlign: 'left', justifyContent: 'center', borderWidth: 1 , height: 50, width: '70%', alignSelf: 'center', borderRadius:10, backgroundColor:'#FFFFFF'}} 
-            placeholder="인증번호 4자리"
+            style={{ 
+              textAlign: 'left', 
+              justifyContent: 'center', 
+              borderWidth: 1 , 
+              height: 50, 
+              width: '70%', 
+              alignSelf: 'center', 
+              borderRadius:10, 
+              backgroundColor:'#FFFFFF',
+              paddingLeft:10 
+            }} 
+            placeholder="  인증번호 4자리"
             autoCapitalize="none"
             autoCorrect={false}
             value={this.state.authNumber}
