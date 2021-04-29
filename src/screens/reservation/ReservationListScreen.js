@@ -206,19 +206,19 @@ export default function ReservationListScreen({ navigation }) {
       .then(async function (response) {
 
         if (response.data.returnCode == 'E0000') {
-          setTimeout(()=>Alert.alert("예약을 취소가 완료됬습니다."), 10);
+          setTimeout(async ()=>Alert.alert("예약을 취소가 완료됬습니다."), 10);
         } else if (response.data.returnCode == 'E2005') {
-          setTimeout(()=>{Alert.alert('취소 불가능한 시간 입니다.')},500)
+          setTimeout(async ()=>{Alert.alert('취소 불가능한 시간 입니다.')},500)
         } else if (response.data.returnCode == 'E2006') {
-          setTimeout(()=>{Alert.alert("사용자 아이디와 예약자 아이디가 다릅니다.")},500)
+          setTimeout(async ()=>{Alert.alert("사용자 아이디와 예약자 아이디가 다릅니다.")},500)
         } else if (response.data.returnCode == 'E2007') {
-          setTimeout(()=>{Alert.alert("사용자가 없음.")},500)
+          setTimeout(async ()=>{Alert.alert("사용자가 없음.")},500)
         } else if (response.data.returnCode == 'E2008') {
-          setTimeout(()=>{Alert.alert("예약코드에 해당하는 예약 없음.")},500)
+          setTimeout(async ()=>{Alert.alert("예약코드에 해당하는 예약 없음.")},500)
         } else if (response.data.returnCode == 'E2009') {
-          setTimeout(()=>{Alert.alert("올바르지 않은 사용자 암호화 코드")},500)
+          setTimeout(async ()=>{Alert.alert("올바르지 않은 사용자 암호화 코드")},500)
         } else {
-          setTimeout(()=>{Alert.alert("내부 오류 입니다.")},500)
+          setTimeout(async ()=>{Alert.alert("내부 오류 입니다.")},500)
         }
       })
       .catch(function (error) {
@@ -261,25 +261,25 @@ export default function ReservationListScreen({ navigation }) {
           response.data.returnCode = response.data.returnCode.split(':')[0]
 
         if (response.data.returnCode == 'E0000') {
-          setTimeout(()=>{Alert.alert("예약 변경을 완료했습니다.")},500)
+          setTimeout(async ()=>{Alert.alert("예약 변경을 완료했습니다.")},500)
         } else if (response.data.returnCode == 'E2003') {
-          setTimeout(()=>{Alert.alert('올바르지 않은 예약 시간 입니다.')},500)
+          setTimeout(async ()=>{Alert.alert('올바르지 않은 예약 시간 입니다.')},500)
         } else if (response.data.returnCode == 'E2004') {
-          setTimeout(()=>{Alert.alert("이미 예약되어 있는 룸 입니다.")},500)
+          setTimeout(async ()=>{Alert.alert("이미 예약되어 있는 룸 입니다.")},500)
         } else if (response.data.returnCode == 'E2005') {
-          setTimeout(()=>{Alert.alert("변경할 수 없는 예약 시간 입니다.")},500)
+          setTimeout(async ()=>{Alert.alert("변경할 수 없는 예약 시간 입니다.")},500)
         } else if (response.data.returnCode == 'E2006') {
-          setTimeout(()=>{Alert.alert("사용자의 아이디와 예약자 아이디가 다릅니다.")},500)
+          setTimeout(async ()=>{Alert.alert("사용자의 아이디와 예약자 아이디가 다릅니다.")},500)
         } else if (response.data.returnCode == 'E2007') {
-          setTimeout(()=>{Alert.alert("아이디가 없습니다.")},500)
+          setTimeout(async ()=>{Alert.alert("아이디가 없습니다.")},500)
         } else if (response.data.returnCode == 'E2008') {
-          setTimeout(()=>{Alert.alert("예약코드에 해당하는 예약이 없습니다.")},500)
+          setTimeout(async ()=>{Alert.alert("예약코드에 해당하는 예약이 없습니다.")},500)
         } else if (response.data.returnCode == 'E2009') {
-          setTimeout(()=>{Alert.alert("올바르지 않은 사용자 암호화 코드 입니다.")},500)
+          setTimeout(async ()=>{Alert.alert("올바르지 않은 사용자 암호화 코드 입니다.")},500)
         } else if (response.data.returnCode == 'E2010') {
-          setTimeout(()=>{Alert.alert("메모 글자 수가 초과 했습니다.")},500)
+          setTimeout(async ()=>{Alert.alert("메모 글자 수가 초과 했습니다.")},500)
         } else {
-          setTimeout(()=>{Alert.alert("내부 오류 입니다.")},500)
+          setTimeout(async ()=>{Alert.alert("내부 오류 입니다.")},500)
         }
       })
       .catch(function (error) {
