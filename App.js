@@ -34,6 +34,7 @@ import LoadingScreen from './src/screens/LoadingScreen';
 import MyScreen from './src/screens/MyScreen';
 import BranchScreen from './src/screens/BranchScreen';
 import InquiryScreen from './src/screens/InquiryScreen';
+import InquireScreen from './src/screens/InquireScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -108,6 +109,7 @@ const FourthStack = () => {
     >
         <Stack.Screen name="My" component={MyScreen} />
         <Stack.Screen name="Inquiry" component={InquiryScreen} />
+        <Stack.Screen name="Inquire" component={InquireScreen} />
     </Stack.Navigator>
   );
 }

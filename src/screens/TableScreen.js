@@ -350,18 +350,35 @@ const TableScreen = ({ navigation, route }) => {
                     <View style={styles.dateBox}>
                         <TouchableOpacity
                             onPress={() => {
+                                var today = new Date();
+                                // var todayInfo = {
+                                //     day: today.getDate(),
+                                //     month: today.getMonth() + 1,
+                                //     weekDay: today.getDay(),
+                                //     year: today.getFullYear()
+                                // }
                                 var newDate = new Date(route.params.dateString);
                                 newDate.setDate(newDate.getDate() - 1);
                                 var month = newDate.getMonth() + 1;
                                 var date = newDate.getDate();
-                                setResrvLists([]);
-                                navigation.navigate('Table', { 
-                                    dateString: `${newDate.getFullYear()}-${month < 10 ? 0 : ""}${newDate.getMonth() + 1}-${date < 10 ? 0 : ""}${newDate.getDate()}`,
-                                    year: newDate.getFullYear(),
-                                    month: `${month < 10 ? 0 : ""}${newDate.getMonth() + 1}`,
-                                    day: `${date < 10 ? 0 : ""}${newDate.getDate()}`,
-                                    weekDay: newDate.getDay()
-                                })
+                                // console.log("comparing date");
+                                // console.log(today);
+                                // console.log(newDate);
+                                // console.log(newDate < today);
+
+                                if(newDate < today){
+                                    Alert.alert("예약할수 없는 날짜입니다.");
+                                }
+                                else{
+                                    setResrvLists([]);
+                                    navigation.navigate('Table', { 
+                                        dateString: `${newDate.getFullYear()}-${month < 10 ? 0 : ""}${newDate.getMonth() + 1}-${date < 10 ? 0 : ""}${newDate.getDate()}`,
+                                        year: newDate.getFullYear(),
+                                        month: `${month < 10 ? 0 : ""}${newDate.getMonth() + 1}`,
+                                        day: `${date < 10 ? 0 : ""}${newDate.getDate()}`,
+                                        weekDay: newDate.getDay()
+                                    })
+                                }
                             }}
                         >
                             <MaterialCommunityIcons name="less-than" color="#BFBFBF" size={30} />
@@ -436,6 +453,8 @@ const TableScreen = ({ navigation, route }) => {
                         isVisible={modalVisible}
                         backdropTransitionOutTiming={0}
                         style={styles.modal}
+                        onBackButtonPress={() => setModalVisible(!modalVisible)}
+                        onBackdropPress={() => setModalVisible(!modalVisible)}
                     >
                         <View style={styles.modalBox}>
                             <View style={styles.calendarBox}>

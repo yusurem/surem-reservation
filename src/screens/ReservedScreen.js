@@ -105,6 +105,8 @@ const ReservedScreen = ({ navigation, route }) => {
                     onSwipeComplete={() => {
                         setModalVisible(!modalVisible);
                     }}
+                    onBackButtonPress={() => setModalVisible(!modalVisible)}
+                    onBackdropPress={() => setModalVisible(!modalVisible)}
                 >
                     <View style={styles.bottomBar}>
                         <View style={{ backgroundColor: '#5d5e61', width: 23, height: 3, alignSelf: 'center', borderRadius: 500, marginBottom: 11 }} />

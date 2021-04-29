@@ -14,7 +14,7 @@ const InquiryScreen = ({ navigation, route }) => {
                 <Text style={styles.headerText}>1:1 문의 내역</Text>
                 <TouchableOpacity
                     onPress={() => {
-
+                        navigation.navigate("Inquire");
                     }}
                     style={styles.askButton}
                 >

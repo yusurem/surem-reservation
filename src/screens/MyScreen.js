@@ -137,6 +137,13 @@ const MyScreen = ({ navigation, route }) => {
         }
     }
 
+    const exitModal = () => {
+        setModalVisible(!modalVisible);
+        setServiceTerm(false);
+        setInfoTerm(false);
+        setFinancialTerm(false);
+    }
+
     useEffect(() => {
         getUserId();
     },[usercode, secretCode])
@@ -312,6 +319,8 @@ const MyScreen = ({ navigation, route }) => {
                         isVisible={modalVisible}
                         backdropTransitionOutTiming={0}
                         style={styles.modal}
+                        onBackButtonPress={exitModal}
+                        onBackdropPress={exitModal}
                     >
                         <View style={styles.modalBox}>
                             <View style={styles.modalHeader}>
@@ -320,12 +329,7 @@ const MyScreen = ({ navigation, route }) => {
                                 </View>
                                 <Text style={styles.modalHeaderText}>이용 약관 및 정책</Text>
                                 <TouchableOpacity
-                                    onPress={() => {
-                                        setServiceTerm(false);
-                                        setInfoTerm(false);
-                                        setFinancialTerm(false);
-                                        setModalVisible(!modalVisible);
-                                    }}
+                                    onPress={(exitModal)}
                                 >
                                     <View style={styles.cancelIcon}>
                                         <Feather name="x" size={35} color="gray" />
