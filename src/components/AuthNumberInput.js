@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     marginRight: '45%'
   },
   button: {
-    height: 55,
+    height: 52,
     width: '25%',
     marginLeft: '5%',
     borderRadius:10,
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#000000',
     height: 50,
-    lineHeight: Platform.OS === 'ios' ? 50 : null,
+    lineHeight: Platform.OS === 'ios' ? 52 : null,
     width: '100%',
     textAlign: 'center',
     textAlignVertical: 'center',
