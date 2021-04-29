@@ -95,18 +95,19 @@ export default function ReservationListScreen({ navigation }) {
     var config = {
       method: 'post',
       // 개발 서버 
-      // url: 'http://112.221.94.101:8980/getReservation',
+      url: 'http://112.221.94.101:8980/getReservation',
       // 실 서버
-      url: 'http://office-api.surem.com/getReservation',
+      // url: 'http://office-api.surem.com/getReservation',
       headers: {
         'Content-Type': 'application/json'
       },
       data: data
     };
 
+    console.log(config)
     axios(config)
       .then(async function (response) {
-        console.log(response)
+        console.log(response.data)
         if (response.data.returnCode == 'E0000') {
           setReservations(response.data.reservations)
           setLoading(false)
@@ -126,8 +127,8 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      url: 'http://office-api.surem.com/getRoomInfo',
-      // url: 'http://112.221.94.101:8980/getRoomInfo',
+      // url: 'http://office-api.surem.com/getRoomInfo',
+      url: 'http://112.221.94.101:8980/getRoomInfo',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -194,8 +195,8 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      url: 'http://office-api.surem.com/cancelReservation',
-      // url: 'http://112.221.94.101:8980/cancelReservation',
+      // url: 'http://office-api.surem.com/cancelReservation',
+      url: 'http://112.221.94.101:8980/cancelReservation',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -244,8 +245,8 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      // url: 'http://112.221.94.101:8980/modifyReservation',
-      url: 'http://office-api.surem.com/modifyReservation',
+      url: 'http://112.221.94.101:8980/modifyReservation',
+      // url: 'http://office-api.surem.com/modifyReservation',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -303,15 +304,13 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      url: 'http://office-api.surem.com/getReservationListForRoom',
-      // url: 'http://112.221.94.101:8980/getReservationListForRoom',
+      // url: 'http://office-api.surem.com/getReservationListForRoom',
+      url: 'http://112.221.94.101:8980/getReservationListForRoom',
       headers: {
         'Content-Type': 'application/json'
       },
       data: data
     };
-
-    console.log(config)
 
     await axios(config)
       .then(async function (response) {
@@ -399,7 +398,7 @@ export default function ReservationListScreen({ navigation }) {
         >
           <View style={styles.qrStyle}>
             <QRCode
-              size={140}
+              size={280}
               value={qrReservCode}
             />
           </View>
@@ -540,8 +539,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
 
     marginVertical: '15%',
-    width: 170,
-    height: 170,
+    width: 300,
+    height: 300,
     backgroundColor: '#FFFFFF',
     borderRadius: 10
   },

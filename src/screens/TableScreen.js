@@ -76,9 +76,9 @@ const TableScreen = ({ navigation, route }) => {
         try{
             console.log("Attempting to retrieve location list...");
             
-            const response = await axios.post('http://office-api.surem.com/getLocationList', {
+            // const response = await axios.post('http://office-api.surem.com/getLocationList', {
 
-            // const response = await axios.post('http://112.221.94.101:8980/getLocationList', {
+            const response = await axios.post('http://112.221.94.101:8980/getLocationList', {
                 location: '서울'
             });
             console.log("API call successful!");
@@ -93,8 +93,8 @@ const TableScreen = ({ navigation, route }) => {
     const getRoomList = async () => {
         try{
             console.log("Attempting to retreive room list...");
-            const response = await axios.post('http://office-api.surem.com/getRoomList', {
-            // const response = await axios.post('http://112.221.94.101:8980/getRoomList', {
+            // const response = await axios.post('http://office-api.surem.com/getRoomList', {
+            const response = await axios.post('http://112.221.94.101:8980/getRoomList', {
 
                 adminPlaceName: '슈어엠',
                 adminCode: "surem3"
@@ -116,8 +116,8 @@ const TableScreen = ({ navigation, route }) => {
             console.log("Attempting to retreive list of available reservation times...");
             console.log("resrvCTime: " + resDate);
             console.log("adminCode: " + adCode);
-            const response = await axios.post('http://office-api.surem.com/getReservationList', {
-            // const response = await axios.post('http://112.221.94.101:8980/getReservationList', {
+            // const response = await axios.post('http://office-api.surem.com/getReservationList', {
+            const response = await axios.post('http://112.221.94.101:8980/getReservationList', {
                 // roomBranch: rmBranch,
                 resrvCtime: resDate,
                 adminCode: adCode
@@ -146,7 +146,7 @@ const TableScreen = ({ navigation, route }) => {
 
         // getLocationList();
         // getRoomList();
-        getReservationList(route.params.dateString.replace(/-/g,""), "surem3");
+        //getReservationList(route.params.dateString.replace(/-/g,""), "surem3");
 
         var tt1 = performance.now()
         console.log("API call took " + (tt1 - tt0) + " milliseconds.")
