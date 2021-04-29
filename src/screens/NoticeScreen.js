@@ -105,6 +105,7 @@ export default function NoticeScreen({ navigation }) {
             console.log(response.data)
             if(response.data.returnCode == 'E0000'){
                 setNotices(response.data.notice)
+                setLoading(false)
                 console.log(notices)
             }
     })
