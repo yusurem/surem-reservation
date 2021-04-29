@@ -1,3 +1,17 @@
+2021-04-28
+- Things to do:
+    - 지점 기능 !
+    - Payment Screen 약관 !
+- Things to ask:
+    - quitMember 리턴되는거 document랑 다름, 문제없죠?
+
+
+2021-04-26
+- Things to do:
+    - MyScreen 약관 !
+    - 탈퇴 버튼
+    - only rerendering the table screen
+
 2021-04-22
 - Thins to do:
     - Add sync function !
@@ -5,23 +19,23 @@
             - if not available, doesnt go over !
         - remove sync whether you actually reserve or cancel !
             - still add but there will be a timer set
-    - Put 공유하기 a little higher so that there can be more space between
-    - exitApp한다음에
+    - Put 공유하기 a little higher so that there can be more space between !
+    - Get rid of white space between ReservedScreen descriptions !
     - error page
+    - 공유하기 - 추가하기
 
 - 2차:
-    - 탈퇴기능
+    - 탈퇴기능 !
         - api
     - 1:1 문의
         - 
-    - 지점기능
+    - 지점기능 !
     - 방 이미지 크게가능
 
-    - 결제기능
+    - 결제기능 
     - 과거 시간 예약불가능 기능
-    - 약관
-
-
+    - 약관 !
+    - exitApp !
 
 
 2021-04-19

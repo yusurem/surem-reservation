@@ -6,6 +6,7 @@ import QRCode from 'react-native-qrcode-svg';
 import Modal from 'react-native-modal';
 import { useEffect } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
+import { TERMS } from '../constants';
 
 import * as SQLite from 'expo-sqlite';
 
@@ -19,12 +20,16 @@ const MyScreen = ({ navigation, route }) => {
 	const [secretCode, setSecretCode] = useState("");
     const [couponNum, setCouponNum] = useState(0);
 
+    const [serviceTerm, setServiceTerm] = useState(false);
+    const [infoTerm, setInfoTerm] = useState(false);
+    const [financialTerm, setFinancialTerm] = useState(false);
+
     const phoneNumber = '15884640';
 
     const db = SQLite.openDatabase('db.db');
 
     console.log("Entered MyScreen. Params: ");
-    console.log(route.params);
+    // console.log(route.params);
 
     useFocusEffect(() => {
         const backAction = () => {
@@ -60,13 +65,13 @@ const MyScreen = ({ navigation, route }) => {
     const getMyInfo = async () => {
         try{
             console.log("Attempting to get user info...");
-            console.log("usercode: " + usercode);
-            console.log("secretCode: " + secretCode);
+            // console.log("usercode: " + usercode);
+            // console.log("secretCode: " + secretCode);
             const response = await axios.post('http://112.221.94.101:8980/myInfo', {
                 usercode: usercode,
                 securityKey: secretCode
             });
-            console.log(`Got the response!`);
+            // console.log(`Got the response!`);
             // console.log(response.data);
             if(response.data.returnCode !== "E0000"){
                 console.log("Error: " + response.data.returnCode);
@@ -80,7 +85,56 @@ const MyScreen = ({ navigation, route }) => {
             console.log(err);
             return 'Error';
         }
-    } 
+    }
+
+    const deleteUserId = async () => {
+        try{
+            await db.transaction((tx)=>{
+                tx.executeSql(
+                    `delete from UserId;`,
+                    [],
+                    (tx, results) =>{
+                        console.log('Deleting Users :: ',results)
+                    },
+                    () => {
+                        // Alert.alert("탈퇴하는데 문제가 생겼습니다, 잠시후 다시 시도해주시거나 고객센터로 문의해주세요.");
+                    }
+                )
+            })
+        } catch (err) {
+            console.log(err)
+            Alert.alert("탈퇴하는데 문제가 생겼습니다, 잠시후 다시 시도해주시거나 고객센터로 문의해주세요.");
+            return "Error"
+        }
+        
+      }
+
+    const quitMember = async () => {
+        try{
+            console.log("Attempting to quit user...");
+            console.log("usercode: " + usercode);
+            console.log("secretCode: " + secretCode);
+            const response = await axios.post('http://112.221.94.101:8980/myInfo', {
+                usercode: usercode,
+                securityKey: secretCode
+            });
+
+            console.log(`Got the response for quit!`);
+            console.log(response.data);
+
+            if(response.data.returnCode !== "E0000"){
+                console.log("Error: " + response.data.returnCode);
+                return response.data.returnCode;
+            }
+
+            return response.data;
+
+        } catch (err) {
+            console.log(err);
+            Alert.alert("탈퇴하는데 문제가 생겼습니다. 잠시후 다시 시도해주세요.");
+            return 'Error';
+        }
+    }
 
     useEffect(() => {
         getUserId();
@@ -95,7 +149,7 @@ const MyScreen = ({ navigation, route }) => {
         getMyInfo();
     })
 
-    console.log(couponNum);
+    // console.log(couponNum);
 
     return (    
         <SafeAreaView style={{ flex: 1, backgroundColor: '#F3F4F8' }} edges={['right', 'left', 'top']}>
@@ -142,7 +196,7 @@ const MyScreen = ({ navigation, route }) => {
                                     <TouchableOpacity
                                         style={{ flexDirection: 'row' }}
                                         onPress={() => {
-
+                                            navigation.navigate("Inquiry");
                                         }}
                                     >
                                         <View style={{ flexDirection: 'row' }}>
@@ -188,8 +242,9 @@ const MyScreen = ({ navigation, route }) => {
                         <Text style={styles.terms}>약관 및 정책</Text>
                         <TouchableOpacity
                             onPress={() => {
-                                // setModalVisible(!modalVisible);
-                                Alert.alert("서비스 이용약관");
+                                setServiceTerm(!serviceTerm);
+                                setModalVisible(!modalVisible);
+                                // Alert.alert("서비스 이용약관");
                             }}
                         >
                             <View style={styles.subView}>
@@ -199,8 +254,9 @@ const MyScreen = ({ navigation, route }) => {
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => {
-                                // setModalVisible(!modalVisible);
-                                Alert.alert("개인정보 취급 방침");
+                                setInfoTerm(!infoTerm);
+                                setModalVisible(!modalVisible);
+                                // Alert.alert("개인정보 취급 방침");
                             }}
                         >
                             <View style={styles.subView}>
@@ -210,8 +266,9 @@ const MyScreen = ({ navigation, route }) => {
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => {
-                                // setModalVisible(!modalVisible);
-                                Alert.alert("전자 금융 거래 약관");
+                                setFinancialTerm(!financialTerm);
+                                setModalVisible(!modalVisible);
+                                // Alert.alert("전자 금융 거래 약관");
                             }}
                         >
                             <View style={styles.subView}>
@@ -221,51 +278,76 @@ const MyScreen = ({ navigation, route }) => {
                         </TouchableOpacity>
                     </View>
 
-                    {/* <Modal 
+                    <TouchableHighlight
+                        style={styles.deleteButton}
+                        onPress={ async () => {
+                            const res = await quitMember();
+                            // erase data from sqlite database
+                            if(res.returnCode === 'E0000'){
+                                await deleteUserId();
+                                navigation.reset({
+                                    index: 0, 
+                                    routes: [
+                                        {name: 'SignUp'}
+                                    ] 
+                                });
+                            }
+                            else{
+                                Alert.alert("탈퇴하는데 문제가 생겼습니다. 잠시후 다시 시도해주세요.");
+                            }
+                            
+                        }}
+                    >
+                        <Text style={styles.buttonText}>탈퇴하기</Text>
+                    </TouchableHighlight>
+                    
+                    <Modal 
                         isVisible={modalVisible}
                         backdropTransitionOutTiming={0}
                         style={styles.modal}
                     >
                         <View style={styles.modalBox}>
                             <View style={styles.modalHeader}>
-                                <View style={{borderWidth: 0, borderColor: 'white'}}>
-                                    <Feather name="x" size={23} color="#EDEDED" />
+                                <View style={styles.cancelIcon}>
+                                    <Feather name="x" size={35} color="#EDEDED" />
                                 </View>
                                 <Text style={styles.modalHeaderText}>이용 약관 및 정책</Text>
                                 <TouchableOpacity
                                     onPress={() => {
+                                        setServiceTerm(false);
+                                        setInfoTerm(false);
+                                        setFinancialTerm(false);
                                         setModalVisible(!modalVisible);
                                     }}
                                 >
-                                    <View style={{borderWidth: 0, borderColor: 'white'}}>
-                                        <Feather name="x" size={23} color="#444444" />
+                                    <View style={styles.cancelIcon}>
+                                        <Feather name="x" size={35} color="gray" />
                                     </View>
                                 </TouchableOpacity>
                             </View>
                             
                             <View style={styles.modalTerms}>
-                                <Text style={styles.modalSubHeader}></Text>
+                                <Text style={styles.modalSubHeader}>
+                                    {serviceTerm ? TERMS.SERVICE.title : null}
+                                    {infoTerm ? TERMS.INFO.title : null}
+                                    {financialTerm ? TERMS.FINANCIAL.title : null}
+                                </Text>
                                 <ScrollView
                                     // style={{borderWidth: 1, borderColor: 'black'}}
                                     persistentScrollbar={true}
                                     nestedScrollEnabled={true}
+                                    style={styles.modalTermView}
                                 >
                                     <Text style={styles.modalTermsText}>
-                                        제1조(목적)
-                                        이 약관은 (주)예스콜닷컴 회사(전자상거래 사업자)가 운영하는 (주)예스콜닷컴 사이버 몰(이하 “몰”이라 한다)에서 제공하는 인터넷 관련 서비스(이하 “서비스”라 한다)를 이용함에 있어 사이버 몰과 이용자의 권리•의무 및 책임사항을 규정함을 목적으로 합니다.
-                                        ※「PC통신, 무선 등을 이용하는 전자상거래에 대해서도 그 성질에 반하지 않는 한 이 약관을 준용합니다.」
-                                        제2조(정의)
-                                        ① “몰”이란 (주)예스콜닷컴 회사가 재화 또는 용역(이하 “재화 등”이라 함)을 이용자에게 제공하기 위하여 컴퓨터 등 정보통신설비를 이용하여 재화 등을 거래할 수 있도록 설정한 가상의 영업장을 말하며, 아울러 사이버몰을 운영하는 사업자의 의미로도 사용합니다.
-                                        ② “이용자”란 “몰”에 접속하여 이 약관에 따라 “몰”이 제공하는 서비스를 받는 회원 및 비회원을 말합니다.
-                                        ③ ‘회원’이라 함은 “몰”에 회원등록을 한 자로서, 계속적으로 “몰”이 제공하는 서비스를 이용할 수 있는 자를 말합니다.
-                                        ④ ‘비회원’이라 함은 회원에 가입하지 않고 “몰”이 제공하는 서비스를 이용하는 자를 말합니다.
-                                        제3조 (약관 등의 명시와 설명 및 개정)
+                                        {serviceTerm ? TERMS.SERVICE.term : null}
+                                        {infoTerm ? TERMS.INFO.term : null}
+                                        {financialTerm ? TERMS.FINANCIAL.term : null}
                                     </Text>
                                 </ScrollView>
                             </View>
                         </View>
-                    </Modal> */}
-                    
+                    </Modal>                    
+
                 </View>
             </ScrollView>
         </SafeAreaView> 
@@ -277,7 +359,7 @@ const styles = StyleSheet.create({
         
     },
     infoHeader: {
-        marginTop: 60,
+        marginTop: 45,
         marginLeft: 20,
     },
     csHeader:{
@@ -367,37 +449,69 @@ const styles = StyleSheet.create({
     },
     modalBox: {
         backgroundColor: '#EDEDED',
-        height: 600,
-        width: 300,
-
+        // height: 500,
+        // width: Platform.OS == 'ios' ? 350 : 280,
+        borderRadius: 15,
+        flex: 1,
+        marginVertical: 75,
+        marginHorizontal: 15,
     },
     modalHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginVertical: 15,
+        marginVertical: 0,
     },
     modalHeaderText: {
-        fontSize: 20,
+        fontSize: 17,
         textAlign: 'center',
-        color: '#444444'
+        color: 'black',
+        marginTop: 18,
     },
     modalTerms: {
-        padding: 15,
-
+        padding: 22,
+        // borderWidth: 1,
+        // borderColor: 'red',
+        flex: 1
     },
     modalSubHeader: {
         color: 'black',
-        fontSize: 16,
+        fontSize: 14,
         marginBottom: 10,
+        fontWeight: 'bold',
+        marginLeft: 3,
     },
     modalTermView: {
         backgroundColor: 'white',
-
+        borderWidth: 2,
+        borderColor: '#DDDDDD',
+        // height: "100%"
     },
     modalTermsText: {
         color: 'black',
         fontSize: 14
     },
+    modal: {
+        alignSelf: 'center'
+    },
+    cancelIcon: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 8,
+        marginRight: 5
+    },
+    deleteButton: {
+        backgroundColor: "#404758",
+        borderRadius: 12,
+        marginVertical: 20,
+        paddingVertical: 12,
+        elevation: 2,
+        flex: 1,
+        marginHorizontal: 25,
+    },
+    buttonText: {
+        color: 'white',
+        textAlign: 'center'
+    }
 });
 
 export default MyScreen;

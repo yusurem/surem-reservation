@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, useWindowDimensions, BackHandler, Alert, Image } from 'react-native';
 import { Table, TableWrapper, Row, Rows, Col, Cell } from 'react-native-table-component';
 import { MaterialCommunityIcons, AntDesign, FontAwesome5, Feather } from '@expo/vector-icons';
@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { CalendarList, Calendar, LocaleConfig } from 'react-native-calendars';
 import LoadingScreen from './LoadingScreen';
 import Modal from 'react-native-modal';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigationState } from '@react-navigation/native';
 
 const TableScreen = ({ navigation, route }) => {
     const windowWidth = useWindowDimensions().width;
@@ -15,10 +15,13 @@ const TableScreen = ({ navigation, route }) => {
     
     const [errorMessageA, setErrorMessageA] = useState("");
     const [resrvLists, setResrvLists] = useState([]);
-    const [locInfo, setLocInfo] = useState("");
     const [roomLists, setRoomLists] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
     const [roomWidth, setRoomWidth] = useState(windowWidth - 30 - 115 - 5);
+
+    const [tableData, setTableData] = useState([]);
+    const [called, setCalled] = useState(false);
+
 
     const weekDays = new Array('일', '월', '화', '수', '목', '금', '토');
 
@@ -36,7 +39,10 @@ const TableScreen = ({ navigation, route }) => {
                         onPress: () => null,
                         style: "cancel"
                     },
-                    { text: "예", onPress: () => BackHandler.exitApp() }
+                    { text: "예", onPress: () => {
+                        setExited(true);
+                        BackHandler.exitApp(); 
+                    }}
             ]);
             return true;
         };
@@ -46,6 +52,33 @@ const TableScreen = ({ navigation, route }) => {
         return (() => backHandler.remove());
     },);
 
+    const fc = () => {
+        
+    }
+
+    useEffect(() => {
+        // setResrvLists([]);
+        const unsubscribe = navigation.dangerouslyGetParent().addListener('tabPress', (e) => {
+            // Prevent default behavior
+            // e.preventDefault(); 
+
+            const navState = navigation.dangerouslyGetState();
+            // console.log(navState);
+
+            // Do something manually
+            if(navState.routes[navState.index].name === 'Table'){
+                navigation.reset({
+                    index: 0, 
+                    routes: [
+                        {name: 'Table'}
+                    ] 
+                });
+            }  
+        });
+        return unsubscribe;
+    });
+
+    
     // Object {
     //     "dateString": "2021-04-15",
     //     "day": "15",
@@ -71,21 +104,17 @@ const TableScreen = ({ navigation, route }) => {
         console.log("INITIAL");
         console.log(route.params);
     }
-    
-    const getLocationList = async () => {
-        try{
-            console.log("Attempting to retrieve location list...");
-            const response = await axios.post('http://112.221.94.101:8980/getLocationList', {
-                location: '서울'
-            });
-            console.log("API call successful!");
-            console.log(response.data);
-            // setLocInfo(response.data);
-        } catch (err) {
-            setErrorMessageA("API 문제발생");
-            console.log(err);
-        }
+
+    if(!("location" in route.params)){
+        route.params["location"] = '서울';
     }
+    if(!("branchCode" in route.params)){
+        route.params["branchCode"] = 'surem3';
+    }
+    if(!("branchName" in route.params)){
+        route.params["branchName"] = '슈어엠';
+    }
+    
 
     const getRoomList = async () => {
         try{
@@ -128,6 +157,11 @@ const TableScreen = ({ navigation, route }) => {
 
             console.log("API call successful!");
             setResrvLists(response.data.roomList);
+
+            if(response.data.roomList.length > 1){
+                setRoomWidth(170 * response.data.roomList.length);
+            }
+            setCalled(true);
         } catch (err) {
             setErrorMessageA("API 문제발생");
             console.log(err);
@@ -135,35 +169,35 @@ const TableScreen = ({ navigation, route }) => {
         }
     }
 
-    // console.log(resrvLists)
 
     if(resrvLists.length == 0){
         console.log("Initializing Reservation List");
         var tt0 = performance.now();
+        console.log("Initial roomWidth: " + roomWidth);
 
-        // getLocationList();
         // getRoomList();
-        getReservationList(route.params.dateString.replace(/-/g,""), "surem3");
+        getReservationList(route.params.dateString.replace(/-/g,""), route.params.branchCode);
 
         var tt1 = performance.now()
         console.log("API call took " + (tt1 - tt0) + " milliseconds.")
+
+        // if(resrvLists.length > 1){
+        //     setRoomWidth(170 * resrvLists.length);
+        // }
 
         return (
             <LoadingScreen/>
         )
     }
+    console.log("Finished Intializing Reservation List");
+    console.log(roomWidth);
     var t0 = performance.now();
-
 
     const roomCodes = [];
     const roomNames = [];
     for(var i = 0; i < resrvLists.length; i++){
         roomCodes.push(resrvLists[i].roomCode);
         roomNames.push(resrvLists[i].roomName);
-    }
-
-    if(roomCodes.length > 1){
-        setRoomWidth(170 * roomCodes.length);
     }
 
     const state = {
@@ -221,7 +255,7 @@ const TableScreen = ({ navigation, route }) => {
     }
 
     // console.log(Object.values(resrvLists[0]).length);
-    const tableData = [];
+    const tableInfo = [];
     for(let i = 2; i < state.minTitle.length + 2; i++){
         const rowData = [];
         for(let j = 0; j < state.tableHead.length; j++){
@@ -256,10 +290,10 @@ const TableScreen = ({ navigation, route }) => {
                 );
             }
         }
-        tableData.push(rowData);
+        tableInfo.push(rowData);
     }
 
-    state.tableData = tableData;
+    state.tableData = tableInfo;
 
     const minArr = [];
     for(var i = 0; i < 6 * 24; i++){
@@ -302,6 +336,17 @@ const TableScreen = ({ navigation, route }) => {
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }} edges={['right', 'left', 'top']} >
             <ScrollView>
                 <View style={styles.mainBox}>
+                    <View style={styles.branchBox}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                navigation.navigate("Branch", route.params);
+                            }}
+                            style={styles.branchButton}
+                        >
+                            <Text style={styles.branchText}>{route.params.location} {route.params.branchName}점</Text> 
+                        </TouchableOpacity>
+                    </View>
+
                     <View style={styles.dateBox}>
                         <TouchableOpacity
                             onPress={() => {
@@ -328,7 +373,9 @@ const TableScreen = ({ navigation, route }) => {
                             }}
                         >
                             <View style={styles.dateTitle}>
-                                <Text style={styles.dateStyle}>{route.params.dateString.replace(/-/g,'.')}({weekDays[route.params.weekDay]}) </Text>
+                                <View style={{ justifyContent: 'center' }}>
+                                    <Text style={styles.dateStyle}>{route.params.dateString.replace(/-/g,'.')}({weekDays[route.params.weekDay]}) </Text>
+                                </View>
                                 <View style={{ justifyContent: 'center' }}>
                                     <AntDesign style={styles.calendarIcon} name="calendar" size={22} color="#838383" />
                                 </View>
@@ -358,7 +405,7 @@ const TableScreen = ({ navigation, route }) => {
                     <View style={styles.tableBox}>
                         <ScrollView>
                             <View style={styles.container}>
-                                <Table  borderStyle={{ borderWidth: 1, borderColor: '#838383'}}>
+                                <Table  borderStyle={{ borderWidth: 1, borderColor: '#616161'}}>
                                     <TableWrapper style={{}}>
                                         <Cell data="" style={{height: 50}}/>
                                         <TableWrapper style={{flexDirection: 'row'}}>
@@ -372,7 +419,7 @@ const TableScreen = ({ navigation, route }) => {
                                     </TableWrapper>
                                 </Table>
                                 <ScrollView horizontal={true}>
-                                    <Table borderStyle={{ borderWidth: 1, borderColor: '#838383' }}>
+                                    <Table borderStyle={{ borderWidth: 1, borderColor: '#616161' }}>
                                         <TableWrapper style={{width: roomWidth}}>
                                             <Row data={state.tableHead} style={styles.head} textStyle={styles.text} />
                                         </TableWrapper>
@@ -514,13 +561,14 @@ const styles = StyleSheet.create({
         marginTop: 12,
         marginBottom: 22,
         // borderWidth: 1,
-        // borderColor: 'black'
+        // borderColor: 'black',
+        alignItems: 'center'
     },
     dateStyle: {
         fontSize: 18,
         color: '#838383',
         fontWeight: 'bold',
-        marginTop: 2.5
+        // marginTop: 2.5
     },
     tableBox: {
         borderWidth: 1,
@@ -568,10 +616,13 @@ const styles = StyleSheet.create({
         fontSize: 11
     },
     dateTitle: {
-        flexDirection: 'row'
+        flexDirection: 'row',
+        // alignItems: 'center',
+        // borderWidth: 1,
+        // borderColor: 'red'
     },
     calendarIcon: {
-        marginTop: 4.5
+        // marginTop: 4.5
     },
     headerBox: {
         // marginBottom:20
@@ -614,6 +665,24 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 14,
     },
+    branchBox: {
+        // borderWidth: 2,
+        // borderColor: 'red',
+        // justifyContent: 'center',
+        alignItems: 'center'
+    },
+    branchButton: {
+        backgroundColor: '#17375E',
+        borderRadius: 20,
+        paddingVertical: 5,
+        paddingHorizontal: 30
+
+    },
+    branchText: {
+        fontWeight: 'bold',
+        color: 'white',
+        fontSize: 16,
+    }
 });
 
 export default TableScreen;

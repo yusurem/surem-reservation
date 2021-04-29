@@ -34,6 +34,8 @@ export default function SignUpScreen({ navigation }) {
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const [loading, setLoading] = useState(true);
+  
+  console.log("Entered SignUp Screen");
 
   const makeId = () => {
     var text = "";

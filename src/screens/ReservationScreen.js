@@ -440,8 +440,8 @@ const ReservationScreen = ({ navigation, route }) => {
                                 if(isValid){
                                     setErrorMessageA(false);
 
-                                    // const res = await syncTime();
-                                    const res = 'E0000';
+                                    const res = await syncTime();
+                                    // const res = 'E0000';
                                     if(res === 'E0000'){
                                         navigation.navigate("Payment", {
                                             startTime: startTime,

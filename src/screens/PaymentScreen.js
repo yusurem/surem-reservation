@@ -9,6 +9,8 @@ import * as SQLite from 'expo-sqlite';
 import CheckBox from '@react-native-community/checkbox';
 import IosCheckBox from '../components/IosCheckBox';
 import { useFocusEffect } from '@react-navigation/native';
+import { TERMS } from '../constants';
+
 
 
 const PaymentScreen = ({ navigation, route }) => {
@@ -49,17 +51,25 @@ const PaymentScreen = ({ navigation, route }) => {
         }
     }
 
+    // useFocusEffect(() => {
+    //     const backAction = () => {
+    //         removeSyncTime();
+    //         // console.log(res);
+    //         return false;
+    //     };
+        
+    //     const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+        
+    //     return (() => backHandler.remove());
+    // });
+
     useFocusEffect(() => {
-        const backAction = () => {
+        const unsubscribe = navigation.addListener('beforeRemove', (e) => {
             removeSyncTime();
-            // console.log(res);
-            return false;
-        };
+        });
         
-        const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
-        
-        return (() => backHandler.remove());
-    });
+        return unsubscribe;
+    },);
 
     const db = SQLite.openDatabase('db.db');
 
@@ -82,8 +92,8 @@ const PaymentScreen = ({ navigation, route }) => {
                 `select * from UserId order by _id desc;`,
                 [],
                 (tx, results) =>{
-                console.log("doing getUserId");
-                console.log('SELECT  :: ', results)
+                // console.log("doing getUserId");
+                // console.log('SELECT  :: ', results)
                             setUsercode(results.rows.item(0).usercode)
                             setSecretCode(results.rows.item(0).secretCode)
                 }
@@ -259,12 +269,13 @@ const PaymentScreen = ({ navigation, route }) => {
                                 persistentScrollbar={true}
                                 nestedScrollEnabled={true}
                             >
-                                <View style={{ paddingHorizontal: 10 }}>
+                                <Text>{TERMS.FINANCIAL.term}</Text>
+                                {/* <View style={{ paddingHorizontal: 10 }}>
                                     <Image
                                         style={styles.imageStyle}
                                         source={require('../../assets/testTerms.jpeg')}
                                     />
-                                </View>
+                                </View> */}
                             </ScrollView>
                                
                         </View>

@@ -69,30 +69,33 @@ const ReservedScreen = ({ navigation, route }) => {
                     />
                 </View>
 
-                <TouchableHighlight
-                    style={styles.reserveButton}
-                    onPress={() => {
-                        // navigation.navigate("CalendarList");
-                        navigation.reset({
-                            index: 1, 
-                            routes: [
-                                {name: 'Table'},
-                                {name: 'CalendarList'}
-                            ] 
-                        })
-                    }}
-                >
-                    <Text style={styles.buttonText}>추가 예약하기</Text>
-                </TouchableHighlight>
+                <View style={styles.buttonView}>
+                    <TouchableHighlight
+                        style={styles.reserveButton}
+                        onPress={() => {
+                            // navigation.navigate("CalendarList");
+                            navigation.reset({
+                                index: 1, 
+                                routes: [
+                                    {name: 'Table'},
+                                    {name: 'CalendarList'}
+                                ] 
+                            })
+                        }}
+                    >
+                        <Text style={styles.buttonText}>추가 예약하기</Text>
+                    </TouchableHighlight>
 
-                <TouchableHighlight
-                    style={styles.shareButton}
-                    onPress={() => {
-                        setModalVisible(!modalVisible);
-                    }}
-                >
-                    <Text style={styles.buttonText}>공유하기</Text>
-                </TouchableHighlight>
+                    <TouchableHighlight
+                        style={styles.shareButton}
+                        onPress={() => {
+                            setModalVisible(!modalVisible);
+                        }}
+                    >
+                        <Text style={styles.buttonText}>공유하기</Text>
+                    </TouchableHighlight>
+                </View>
+                
 
                 <Modal 
                     isVisible={modalVisible}
@@ -163,7 +166,7 @@ const styles = StyleSheet.create({
     },
     textStyle: {
         textAlign: 'center',
-        backgroundColor: 'white',
+        // backgroundColor: 'white',
         borderRadius: 8,
         fontSize: 13,
         marginBottom: 2,
@@ -180,17 +183,18 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
     qrStyle: {
-        marginTop: 40,
+        marginTop: 35,
     },
     reserveButton: {
         backgroundColor: "#262829",
         borderRadius: 7,
-        marginTop: 40,
+        marginTop: 35,
         paddingVertical: 12,
         paddingHorizontal: 63,
         elevation: 2
     },
     buttonText: {
+        textAlign: 'center',
         color: 'white',
         fontSize: 14
     },
@@ -230,11 +234,15 @@ const styles = StyleSheet.create({
     shareButton: {
         backgroundColor: "#262829",
         borderRadius: 7,
-        marginTop: 25,
+        marginTop: 18,
         paddingVertical: 12,
-        paddingHorizontal: 80,
-        elevation: 2
+        // paddingHorizontal: 80,
+        elevation: 2,
     },
+    buttonView: {
+        // borderWidth: 1,
+        // borderColor: 'red',    
+    }
 });
 
 export default ReservedScreen;

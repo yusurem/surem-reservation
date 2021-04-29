@@ -5,7 +5,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-
 import { Entypo, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 
 import HomeScreen from './src/screens/home/HomeScreen';
@@ -31,9 +30,9 @@ import PaymentScreen from './src/screens/PaymentScreen';
 import ReservationListScreen from './src/screens/reservation/ReservationListScreen';
 import ChooseRegionScreen from './src/screens/reservation/ChooseRegionScreen';
 import LoadingScreen from './src/screens/LoadingScreen';
-
 import MyScreen from './src/screens/MyScreen';
-
+import BranchScreen from './src/screens/BranchScreen';
+import InquiryScreen from './src/screens/InquiryScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -68,6 +67,7 @@ const SecondStack = () => {
         headerShown: false
       }}
     >
+        <Stack.Screen name="Branch" component={BranchScreen} />
         <Stack.Screen name="Calendar" component={CalendarScreen} />
         <Stack.Screen name="Reservation" component={ReservationScreen} />
         <Stack.Screen name="Reserved" component={ReservedScreen} options={{ gestureEnabled: false }}/>
@@ -105,6 +105,7 @@ const FourthStack = () => {
       }}
     >
         <Stack.Screen name="My" component={MyScreen} />
+        <Stack.Screen name="Inquiry" component={InquiryScreen} />
     </Stack.Navigator>
   );
 }
@@ -140,10 +141,10 @@ const TabNav = () => {
         }}
       />
       <Tab.Screen 
-        name="Reserve" 
+        name="Reserve"
         component={SecondStack} 
         options={{
-          unmountOnBlur: true,
+          // unmountOnBlur: true,
           tabBarLabel: '예약하기',
           tabBarIcon: () => <MaterialCommunityIcons name="calendar-clock" color="#474747" size={24} style={{ marginTop: 15 }}/>,
         }}
@@ -183,8 +184,6 @@ function App() {
             <Stack.Screen name="SignUp" component={SignupScreen}/>
             <Stack.Screen name="Tab" component={TabNav} />
         </Stack.Navigator>
-        
-        
       </NavigationContainer>
     </SafeAreaProvider>
   );

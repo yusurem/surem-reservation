@@ -27,4 +27,6 @@ target 'reservation' do
 
   pod 'RNExitApp', :path => '../node_modules/react-native-exit-app'
 
+  pod 'react-native-restart', :path => '../node_modules/react-native-restart'
+
 end
