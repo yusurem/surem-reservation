@@ -122,7 +122,7 @@ export default function NoticeScreen({ navigation }) {
     //getMyReserveList();
   }, [usercode, secretCode]);
 
-  const startLoading = () => {
+  const startLoading = async () => {
     setLoading(true);
     setTimeout(async ()=>{
       await setLoading(false);
