@@ -43,8 +43,8 @@ const navigation = useNavigation();
 
 		var config = {
 			method: 'post',
-			url: 'http://office-api.surem.com/notice/0/3',
-			// url: 'http://112.221.94.101:8980/notice/0/3',
+	 		// url: 'http://office-api.surem.com/notice/0/3',
+			url: 'http://112.221.94.101:8980/notice/0/3',
 			//url: 'http://112.221.94.101:8980/getReservation',
 			headers: {
 				'Content-Type': 'application/json'

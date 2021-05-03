@@ -44,8 +44,8 @@ export default function SignUpButton(props){
 
     var config = {
       method: 'post',
-      url: 'http://office-api.surem.com/joinMember',
-      //url: 'http://112.221.94.101:8980/joinMember',
+      // url: 'http://office-api.surem.com/joinMember',
+      url: 'http://112.221.94.101:8980/joinMember',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -68,8 +68,8 @@ export default function SignUpButton(props){
     
         var config = {
           method: 'post',
-          url: 'http://office-api.surem.com/getEncryptCode',
-          //url: 'http://112.221.94.101:8980/getEncryptCode',
+          // url: 'http://office-api.surem.com/getEncryptCode',
+          url: 'http://112.221.94.101:8980/getEncryptCode',
           headers: {
             'Content-Type': 'application/json'
           },

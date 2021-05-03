@@ -8,6 +8,8 @@ import moment from 'moment';
 import Spinner from 'react-native-loading-spinner-overlay'
 import 'moment/locale/ko';
 import { Platform } from 'react-native';
+import { WebView } from 'react-native-webview'
+
 
 const Item = ({ item }) => {
   const [isFolder, setIsFolder] = useState(false);
@@ -17,7 +19,16 @@ const Item = ({ item }) => {
     }>
         <View style={styles.leftSide}>
             <Text style={styles.noticeTime}>{moment(item.noticeTime, 'YYYYMMDDHHmmss').format('YYYY.MM.DD')}</Text>
-            <Text style={styles.noticeContent}>{item.noticeNote}</Text>
+            <Text style={styles.noticeContent}>{item.noticeSubject}</Text>
+            {
+              isFolder === true ? 
+              <WebView 
+                style={{ flex: 1 }}
+                injectedJavaScript={`const meta = document.createElement('meta'); meta.setAttribute('content', 'width=width, initial-scale=15.0, maximum-scale=15.0, user-scalable=20.0'); meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta); `}
+                scalesPageToFit={false}            
+                source={{ html: '<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"></head><body>'+item.noticeNote+'</body></html>' }}
+                /> : null
+            }
         </View>
         <View style={styles.rightSide}>
             <TouchableOpacity style={
@@ -88,10 +99,9 @@ export default function NoticeScreen({ navigation }) {
 
     var config = {
         method: 'post',
-        //url: 'http://112.221.94.101:8980/notice/0/3',
-        url: 'http://office-api.surem.com/notice/0/200',
+        url: 'http://112.221.94.101:8980/notice/0/100',
+        // url: 'http://office-api.surem.com/notice/0/200',
         headers: {
-            'Content-Type': 'application/json'
         }
     };
 
@@ -101,12 +111,13 @@ export default function NoticeScreen({ navigation }) {
             if(response.data.returnCode == 'E0000'){
                 setNotices(response.data.notice)
                 setLoading(false)
-                console.log(notices)
             }
     })
     .catch(function (error) {
         console.log(error);
     });
+
+    console.log(notices)
 
 }
 
@@ -222,7 +233,8 @@ const styles = StyleSheet.create({
     height: Platform.OS === 'ios' ? 100 : null
   },
   showingContent: {
-    height:300
+    flex:1,
+    height:200
   },
   notShowingContent:{
     height:100
