@@ -30,7 +30,9 @@ const MyScreen = ({ navigation, route }) => {
 
     console.log("Entered MyScreen. Params: ");
     // console.log(route.params);
-
+    var td = new Date();
+    console.log(td);
+    
     useFocusEffect(() => {
         const backAction = () => {
             navigation.navigate("Home");
@@ -206,23 +208,27 @@ const MyScreen = ({ navigation, route }) => {
                         </View>
                         <View style={styles.infoValue}>
                             <View style={styles.infoTextBox}>
-                                <View style={{ flexDirection: 'row'}}>
+                                <View style={{ flexDirection: 'row' }}>
                                     <TouchableOpacity
-                                        style={{ flexDirection: 'row' }}
+                                        style={{ flexDirection: 'row' , flex: 1}}
                                         onPress={() => {
-                                            navigation.navigate("Inquiry");
+                                            navigation.navigate("Inquiry", {
+                                                usercode: usercode,
+                                                secretCode: secretCode
+                                            });
                                         }}
                                     >
                                         <View style={{ flexDirection: 'row' }}>
                                             <Text style={styles.infoText}> </Text>
                                             <MaterialCommunityIcons style={styles.askIcon} name="greater-than" size={18} color="#6C6C6C" />
+                                            <View style={{ flex: 1 }}/>
                                         </View>
                                     </TouchableOpacity>
                                 </View>
                             </View>
                             <View style={{ flexDirection: 'row'}}>
                                     <TouchableOpacity
-                                        // style={{ flexDirection: 'row' }}
+                                        style={{ flexDirection: 'row', flex: 1 }}
                                         onPress={ async () => {
                                             var url;
                                             if (Platform.OS === 'android') {
@@ -244,7 +250,7 @@ const MyScreen = ({ navigation, route }) => {
                                         <View style={{ flexDirection: 'row' }}>
                                             <Text style={styles.infoText}> </Text>
                                             <MaterialCommunityIcons style={styles.askIcon} name="greater-than" size={18} color="#6C6C6C" />
-                                            <Text>       </Text>
+                                            <View style={{ flex: 1 }}/>
                                         </View>
                                     </TouchableOpacity>          
                                 </View>

@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { CalendarList, Calendar, LocaleConfig } from 'react-native-calendars';
 import LoadingScreen from './LoadingScreen';
 import Modal from 'react-native-modal';
-import { useFocusEffect, useNavigationState } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 
 const TableScreen = ({ navigation, route }) => {
     const windowWidth = useWindowDimensions().width;
@@ -21,7 +21,6 @@ const TableScreen = ({ navigation, route }) => {
 
     const [tableData, setTableData] = useState([]);
     const [called, setCalled] = useState(false);
-
 
     const weekDays = new Array('일', '월', '화', '수', '목', '금', '토');
 
@@ -330,8 +329,6 @@ const TableScreen = ({ navigation, route }) => {
         });
     };
 
-
-
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }} edges={['right', 'left', 'top']} >
             <ScrollView>
@@ -351,6 +348,7 @@ const TableScreen = ({ navigation, route }) => {
                         <TouchableOpacity
                             onPress={() => {
                                 var today = new Date();
+                                today.setHours(0,0,0,0);
                                 // var todayInfo = {
                                 //     day: today.getDate(),
                                 //     month: today.getMonth() + 1,
@@ -361,10 +359,10 @@ const TableScreen = ({ navigation, route }) => {
                                 newDate.setDate(newDate.getDate() - 1);
                                 var month = newDate.getMonth() + 1;
                                 var date = newDate.getDate();
-                                // console.log("comparing date");
-                                // console.log(today);
-                                // console.log(newDate);
-                                // console.log(newDate < today);
+                                console.log("comparing date");
+                                console.log(today);
+                                console.log(newDate);
+                                console.log(newDate < today);
 
                                 if(newDate < today){
                                     Alert.alert("예약할수 없는 날짜입니다.");
