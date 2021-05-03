@@ -55,8 +55,8 @@ export default function MyReservationList() {
     console.log('DATA::',data)
     var config = {
       method: 'post',
-      //url: 'http://office-api.surem.com/getReservation',
-      url: 'http://112.221.94.101:8980/getReservation',
+      url: 'http://office-api.surem.com/getReservation',
+      //url: 'http://112.221.94.101:8980/getReservation',
       headers: {
         'Content-Type': 'application/json'
       },
