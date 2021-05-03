@@ -9,7 +9,7 @@ const BranchScreen = ({ navigation, route }) => {
     console.log("Entered BranchScreen. Params: ");
     console.log(route.params);
 
-    const locations = ['서울', '대전', '경기', '인천', '강원', '충정', '전라', '경상', '제주'];
+    const locations = ['서울', '경기', '인천', '강원', '대전', '충정', '대구', '부산', '울산', '경상', '광주', '전라', '제주'];
 
     const [selectedItem, setSelectedItem] = useState(locations[0]);
     const [locData, setLocData] = useState([]);

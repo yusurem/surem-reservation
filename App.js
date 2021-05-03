@@ -154,7 +154,7 @@ const TabNav = () => {
         }}
       />
       <Tab.Screen 
-        name="ConfirmReserved" 
+        name=" Reserved" 
         component={ThirdStack} 
         options={{
           unmountOnBlur: true,
