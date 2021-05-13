@@ -6,6 +6,7 @@ import android.net.Uri;
 
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.zoontek.rnlocalize.RNLocalizePackage;
 import com.reactnativerestart.RestartPackage;
 import com.github.wumke.RNExitApp.RNExitAppPackage;
 import com.github.wumke.RNExitApp.RNExitAppPackage;

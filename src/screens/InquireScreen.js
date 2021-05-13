@@ -13,8 +13,9 @@ const InquireScreen = ({ navigation, route }) => {
     const [content, setContent] = useState("");
     const [branch, setBranch] = useState("+ 지점 선택");
     const [modalVisible, setModalVisible] = useState(false);
-    const [adminCode, setAdminCode] = useState('surem3');
+    const [adminCode, setAdminCode] = useState("");
     const [location, setLocation] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
 
     const locations = ['서울', '경기', '인천', '강원', '대전', '충정', '대구', '부산', '울산', '경상', '광주', '전라', '제주'];
 
@@ -57,6 +58,7 @@ const InquireScreen = ({ navigation, route }) => {
     const getLocationList = async (loc) => {
         try{
             console.log("Attempting to retrieve location list...");
+            // const response = await axios.post('http://office-api.surem.com/getLocationList', {
             const response = await axios.post('http://112.221.94.101:8980/getLocationList', {
                 location: loc
             });
@@ -132,6 +134,10 @@ const InquireScreen = ({ navigation, route }) => {
         );
     }
 
+    const isInvalidText = (text) => {
+        return !/[^\s]/.test(text);
+     }
+
     if(initial){
         getLocationList(selectedItem);
     }
@@ -146,7 +152,7 @@ const InquireScreen = ({ navigation, route }) => {
                     }}
                     style={styles.branchButton}
                 >
-                    <Text style={styles.branchButtonText}>{location} {branch}점</Text>
+                    <Text style={styles.branchButtonText}>{location} {branch}{branch === "+ 지점 선택" ? null : "점"}</Text>
                 </TouchableOpacity>
             </View>
             <View style={styles.mainBox}>
@@ -157,7 +163,10 @@ const InquireScreen = ({ navigation, route }) => {
                         autoCapitalize="none"
                         autoCorrect={false}
                         value={title}
-                        onChangeText={(newValue) => setTitle(newValue)}
+                        onChangeText={(newValue) => {
+                            setTitle(newValue);
+                            setErrorMessage("");
+                        }}
                         placeholder={"제목"}
                     />          
                 </View>
@@ -166,22 +175,38 @@ const InquireScreen = ({ navigation, route }) => {
                     autoCapitalize="none"
                     autoCorrect={false}
                     value={content}
-                    onChangeText={(newValue) => setContent(newValue)}
+                    onChangeText={(newValue) => {
+                        setContent(newValue);
+                        setErrorMessage("");
+                    }}
                     placeholder={"내용 입력"}
                     multiline={true}
                 />
             </View>
+            {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : <Text style={styles.errorMessage}></Text>}
+
             <TouchableOpacity
                 onPress={ async () => {
-                    const res = await writeVoc();
-                    if(res === 'E0000'){
-                        navigation.navigate("Inquiry");
+                    if(adminCode === ""){
+                        setErrorMessage("지점을 선택해주세요.");
+                    }
+                    else if(isInvalidText(title)){
+                        setErrorMessage("제목을 입력해주세요.");
+                    }
+                    else if(isInvalidText(content)){
+                        setErrorMessage("문의 내용을 입력해주세요.");
+                    }
+                    else{
+                        setErrorMessage("");
+                        const res = await writeVoc();
+                        if(res === 'E0000'){
+                            navigation.navigate("Inquiry");
+                        }
                     }
                 }}
                 style={styles.inquireButton}
             >
                 <Text style={styles.buttonText}>문의작성</Text>
-
             </TouchableOpacity>
 
             <Modal 
@@ -298,7 +323,7 @@ const styles = StyleSheet.create({
     inquireButton: {
         backgroundColor: '#40465A',
         alignSelf: 'center',
-        marginTop: 25,
+        marginTop: 10,
         paddingHorizontal: 30,
         paddingVertical: Platform.OS == 'android'? 7 : 10,
         borderRadius: 14,
@@ -374,6 +399,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#F3F3F3',
         // alignItems: 'center'
+    },
+    errorMessage: {
+        color: 'red',
+        marginHorizontal: 35,
+        marginTop: 10,
+        alignSelf: "flex-start",
     }
 });
 

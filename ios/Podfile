@@ -25,4 +25,6 @@ target 'reservation' do
   pod 'RNExitApp', :path => '../node_modules/react-native-exit-app'
 
 
+  pod 'RNLocalize', :path => '../node_modules/react-native-localize'
+
 end

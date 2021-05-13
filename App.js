@@ -35,6 +35,7 @@ import MyScreen from './src/screens/MyScreen';
 import BranchScreen from './src/screens/BranchScreen';
 import InquiryScreen from './src/screens/InquiryScreen';
 import InquireScreen from './src/screens/InquireScreen';
+import NewTableScreen from './src/screens/NewTableScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -51,7 +52,7 @@ const MainStack = () => {
         <Stack.Screen name="OldAgenda" component={OldAgenda} />
         <Stack.Screen name="Demo" component={DemoScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Test" component={TestScreen} />
+        {/* <Stack.Screen name="Test" component={TestScreen} /> */}
         <Stack.Screen name="SignUp" component={SignupScreen}/>
         <Stack.Screen name="Loading" component={LoadingScreen}/>
         <Stack.Screen name="FindPassword" component={FindPassword}/>
@@ -110,6 +111,8 @@ const FourthStack = () => {
         <Stack.Screen name="My" component={MyScreen} />
         <Stack.Screen name="Inquiry" component={InquiryScreen} />
         <Stack.Screen name="Inquire" component={InquireScreen} />
+        <Stack.Screen name="NewTable" component={NewTableScreen} />
+        <Stack.Screen name="Test" component={TestScreen} />
     </Stack.Navigator>
   );
 }
