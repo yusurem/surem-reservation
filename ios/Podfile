@@ -29,4 +29,6 @@ target 'reservation' do
 
   pod 'react-native-restart', :path => '../node_modules/react-native-restart'
 
+  pod 'RNLocalize', :path => '../node_modules/react-native-localize'
+
 end

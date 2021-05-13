@@ -8,9 +8,8 @@ import { CalendarList, Calendar, LocaleConfig } from 'react-native-calendars';
 import LoadingScreen from './LoadingScreen';
 import Modal from 'react-native-modal';
 import { useFocusEffect } from '@react-navigation/native';
-import moment from 'moment-timezone';
 
-const TableScreen = ({ navigation, route }) => {
+const NewTableScreen = ({ navigation, route }) => {
     const windowWidth = useWindowDimensions().width;
     const windowHeight = useWindowDimensions().height;
     
@@ -23,7 +22,6 @@ const TableScreen = ({ navigation, route }) => {
     const [tableData, setTableData] = useState([]);
     const [called, setCalled] = useState(false);
 
-    const fullTimeLen = 6 * 24;
     const weekDays = new Array('일', '월', '화', '수', '목', '금', '토');
 
     console.log("Entered TableScreen. Params: ");
@@ -52,10 +50,6 @@ const TableScreen = ({ navigation, route }) => {
         
         return (() => backHandler.remove());
     },);
-
-    const fc = () => {
-        
-    }
 
     useEffect(() => {
         // setResrvLists([]);
@@ -203,10 +197,8 @@ const TableScreen = ({ navigation, route }) => {
 
     const state = {
         tableHead: ['1호실', '2호실', '3호실', '4호실', '5호실'],
-        tableTitle: [
-                        // '0:00 AM', '1:00 AM', '2:00 AM', '3:00 AM', '4:00 AM', '5:00 AM', '6:00 AM', 
-                        // '7:00 AM', 
-                        '8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '13:00 PM', 
+        tableTitle: ['0:00 AM', '1:00 AM', '2:00 AM', '3:00 AM', '4:00 AM', '5:00 AM', '6:00 AM', 
+                        '7:00 AM', '8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '13:00 PM', 
                         '14:00 PM', '15:00 PM', '16:00 PM', '17:00 PM', '18:00 PM', '19:00 PM', '20:00 PM', 
                         '21:00 PM', '22:00 PM', '23:00 PM'],
         tableData: [],
@@ -226,14 +218,14 @@ const TableScreen = ({ navigation, route }) => {
                     '00분', '10분', '20분', '30분', '40분', '50분',
                     '00분', '10분', '20분', '30분', '40분', '50분',
                     '00분', '10분', '20분', '30분', '40분', '50분',
-                    // '00분', '10분', '20분', '30분', '40분', '50분',
-                    // '00분', '10분', '20분', '30분', '40분', '50분',
-                    // '00분', '10분', '20분', '30분', '40분', '50분',
-                    // '00분', '10분', '20분', '30분', '40분', '50분',
-                    // '00분', '10분', '20분', '30분', '40분', '50분',
-                    // '00분', '10분', '20분', '30분', '40분', '50분',
-                    // '00분', '10분', '20분', '30분', '40분', '50분',
-                    // '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
             ]
     };
 
@@ -245,7 +237,7 @@ const TableScreen = ({ navigation, route }) => {
     for(let i = 0; i < state.tableHead.length; i++){
         const options = [];
         const optionVals = [];
-        for(let j = 2; j < fullTimeLen + 2; j++){
+        for(let j = 2; j < state.minTitle.length + 2; j++){
             if(Object.values(resrvLists[i])[j] === 'true'){
                 let hour = Math.floor((j - 2) / 6);
                 let min = (j - 2) % 6;
@@ -259,20 +251,10 @@ const TableScreen = ({ navigation, route }) => {
 
     // console.log(Object.values(resrvLists[0]).length);
     const tableInfo = [];
-    for(let i = (6 * 8) + 2; i < fullTimeLen + 2; i++){
+    for(let i = 2; i < state.minTitle.length + 2; i++){
         const rowData = [];
         for(let j = 0; j < state.tableHead.length; j++){
-            const [key, value] = Object.entries(resrvLists[j])[i];
-            // console.log(key);
-            // var given = moment(key, 'YYYYMMDDHHmm');
-            if(moment(key, 'YYYYMMDDHHmm').isBefore()){
-                rowData.push(
-                    <View style={{ height: 30, justifyContent: 'center', backgroundColor:'#838383'}}>
-                        <Text style={{ textAlign: 'center', color: 'white'}}>예약불가</Text>
-                    </View>
-                );
-            }
-            else if(value === "true"){
+            if(Object.values(resrvLists[j])[i] === "true"){
                 let hour = Math.floor((i - 2) / 6);
                 let min = (i - 2) % 6;
                 let sTime = `${hour > 9 ? hour : "0" + hour}${min}000`;
@@ -431,7 +413,7 @@ const TableScreen = ({ navigation, route }) => {
                         </TouchableOpacity>
                     </View>
                     
-                    <View style={styles.tableBox}>
+                    {/* <View style={styles.tableBox}>
                         <ScrollView>
                             <View style={styles.container}>
                                 <Table  borderStyle={{ borderWidth: 1, borderColor: '#616161'}}>
@@ -459,6 +441,11 @@ const TableScreen = ({ navigation, route }) => {
                                 </ScrollView>
                             </View>
                         </ScrollView>
+                    </View> */}
+
+                    <View style={styles.tableBox}>
+                        
+
                     </View>
                     
                     <Modal 
@@ -716,4 +703,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default TableScreen;
+export default NewTableScreen;

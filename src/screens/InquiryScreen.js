@@ -61,7 +61,7 @@ const InquiryScreen = ({ navigation, route }) => {
         useCallback(() => {
             const getVocList = async () => {
                 try{
-                    console.log("Attempting to get user inquiries...");
+                    console.log("Attempting to get user inquiries in focus effect...");
                     // console.log("usercode: " + usercode);
                     // console.log("secretCode: " + secretCode);
                     // const response = await axios.post('http://office-api.surem.com/getVocList', {

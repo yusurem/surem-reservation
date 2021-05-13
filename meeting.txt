@@ -1,9 +1,42 @@
+2021-05-10
+- Things to do:
+    - 과거 시간 예약 불가능 !
+    - 속도 개선 (테이블) 
+    - 플레이스토어 올리기 
+        - First thing !
+    - 8시부터 예약 보여주기 !
+        - 하드코딩 !
+    - IOS
+        - the status bar does not show
+    - Loading Screen !
+        - Loading screen movement
+        - Changing it to the rotating gear wheel
+
+- 재영씨
+    - 부장님이 올리신 문제점들 해결
+    - 결제기능
+    - 서울 강변역 (업체선택)
+        - 밑에 지점에 따라서 지도를 보여져야한다
+    - 전체적인 스타일링 맞춰야한다
+    - 홈스크린 공지사항 들어가면 박스를 눌러도 보여지는것
+    - 홈에서 예약확인 박스에서 더보기말고 박스만 눌러도 더보기로 넘어가게
+    - 홈 예약확인 스크롤 가능하게
+
+
+
+2021-05-03
+- Things to do:
+    - 과거 시간 예약 불가능
+    - Make it so that in inquiries, if you didn't select a branch, you cant make an inquiry !
+    - Create your own Table library
+    - Recent Branches selected, using sqlite
+
+
 2021-04-29
 - 월요일까지:
-    - 1:1 문의
-    - 과거 시간 예약 불가능
+    - 1:1 문의 !
 - 3차: 
-    - Table 속도 개선
+    - Table 속도 개선 !
 
 
 2021-04-28

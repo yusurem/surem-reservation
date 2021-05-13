@@ -8,6 +8,10 @@ import { useEffect } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { TERMS } from '../constants';
 
+// import * as RNLocalize from 'react-native-localize';
+import moment from 'moment-timezone';
+
+
 import * as SQLite from 'expo-sqlite';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -30,9 +34,7 @@ const MyScreen = ({ navigation, route }) => {
 
     console.log("Entered MyScreen. Params: ");
     // console.log(route.params);
-    var td = new Date();
-    console.log(td);
-    
+
     useFocusEffect(() => {
         const backAction = () => {
             navigation.navigate("Home");
@@ -69,13 +71,13 @@ const MyScreen = ({ navigation, route }) => {
             console.log("Attempting to get user info...");
             // console.log("usercode: " + usercode);
             // console.log("secretCode: " + secretCode);
-            const response = await axios.post('http://office-api.surem.com/myInfo', {
-            // const response = await axios.post('http://112.221.94.101:8980/myInfo', {
+            // const response = await axios.post('http://office-api.surem.com/myInfo', {
+            const response = await axios.post('http://112.221.94.101:8980/myInfo', {
                 usercode: usercode,
                 securityKey: secretCode
             });
             // console.log(`Got the response!`);
-            // console.log(response.data);
+            console.log(response.data);
             if(response.data.returnCode !== "E0000"){
                 console.log("Error: " + response.data.returnCode);
                 setCouponNum("N/A");
@@ -117,7 +119,8 @@ const MyScreen = ({ navigation, route }) => {
             console.log("Attempting to quit user...");
             console.log("usercode: " + usercode);
             console.log("secretCode: " + secretCode);
-            const response = await axios.post('http://112.221.94.101:8980/myInfo', {
+            // const response = await axios.post('http://office-api.surem.com/quitMember', {
+            const response = await axios.post('http://112.221.94.101:8980/quitMember', {
                 usercode: usercode,
                 securityKey: secretCode
             });
@@ -320,6 +323,15 @@ const MyScreen = ({ navigation, route }) => {
                     >
                         <Text style={styles.buttonText}>탈퇴하기</Text>
                     </TouchableHighlight>
+
+                    {/* <TouchableHighlight
+                        style={styles.deleteButton}
+                        onPress={() => {
+                            navigation.navigate("Test");
+                        }}
+                    >
+                        <Text style={styles.buttonText}>테스트</Text>
+                    </TouchableHighlight> */}
                     
                     <Modal 
                         isVisible={modalVisible}

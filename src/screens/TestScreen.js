@@ -1,168 +1,244 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Button, ScrollView } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, useWindowDimensions, BackHandler, Alert, Image, FlatList } from 'react-native';
+import { Table, TableWrapper, Row, Rows, Col, Cell } from 'react-native-table-component';
+import { MaterialCommunityIcons, AntDesign, FontAwesome5, Feather } from '@expo/vector-icons';
 import axios from 'axios';
-import { Table, TableWrapper, Row, Rows, Col } from 'react-native-table-component';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { CalendarList, Calendar, LocaleConfig } from 'react-native-calendars';
+import LoadingScreen from './LoadingScreen';
+import Modal from 'react-native-modal';
+import { useFocusEffect } from '@react-navigation/native';
 
-const USER_CODE = "suremqr";
-const DEPT_CODE = "35--SX-DQ";
-
-const TestScreen = () => {
+const TestScreen = ({ navigation, route }) => {
+    const windowWidth = useWindowDimensions().width;
+    const windowHeight = useWindowDimensions().height;
     
-    // const [timer, setTimer] = useState("5:00");
-    const [verifyNum, setVerifyNum] = useState("");
-    const [minutes, setMinutes] = useState(3);
-    const [seconds, setSeconds] = useState(0);
     const [errorMessageA, setErrorMessageA] = useState("");
-    /*
-    const sendSMS = async () => {
-        try{
-          const response = await axios.post('https://rest.surem.com/sms/v1/json', {
-              headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Accept': 'application/json'
-              },
-              'usercode' : USER_CODE,
-              'deptcode' : DEPT_CODE,
-              'messages' : [
-                // {
-                //   message_id :"1000000",
-                //   to : "01012345678"
-                // },
-                {
-                  'to' : '01041354418',
-                }
-              ],
-              'text' : `나상원님, 안녕하세요. 슈어엠주식회사입니다.\n고객님의 인증번호는 [0000] 입니다.`,
-              'from' : "15884640",
-              // reserved_time : "209912310000"
-          });
-          console.log(`Response from sending SMS: ${response}`);
+    const [resrvLists, setResrvLists] = useState([]);
+    const [roomLists, setRoomLists] = useState("");
+    const [modalVisible, setModalVisible] = useState(false);
+    const [roomWidth, setRoomWidth] = useState(windowWidth - 30 - 115 - 5);
+
+    const [tableData, setTableData] = useState([]);
+    const [called, setCalled] = useState(false);
+
+    const weekDays = new Array('일', '월', '화', '수', '목', '금', '토');
+
+    console.log("Entered TestScreen. Params: ");
+    // console.log(route.params);
+    // Object {
+    //     "dateString": "2021-04-15",
+    //     "day": "15",
+    //     "month": "04",
+    //     "weekDay": 4,
+    //     "year": 2021,
+    // }
     
-        } catch (err) {
-          setErrorMessageA("인증번호 전송중 문제 발생");
-          console.log(err);
+    const state = {
+        tableHead: ['1호실', '2호실', '3호실', '4호실', '5호실'],
+        tableTitle: ['0:00 AM', '1:00 AM', '2:00 AM', '3:00 AM', '4:00 AM', '5:00 AM', '6:00 AM', 
+                        '7:00 AM', '8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '13:00 PM', 
+                        '14:00 PM', '15:00 PM', '16:00 PM', '17:00 PM', '18:00 PM', '19:00 PM', '20:00 PM', 
+                        '21:00 PM', '22:00 PM', '23:00 PM'],
+        tableData: [],
+        minTitle: ['00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+                    '00분', '10분', '20분', '30분', '40분', '50분',
+            ]
+    };
+
+    const dateConfigs = {
+        monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+        monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+        dayNames: ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'],
+        dayNamesShort: ['일','월','화','수','목','금','토'],
+        today: '오늘'
+    }
+
+    const timeConfigs = {
+        hours: ['0:00 AM', '1:00 AM', '2:00 AM', '3:00 AM', '4:00 AM', '5:00 AM', '6:00 AM', 
+                '7:00 AM', '8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '13:00 PM', 
+                '14:00 PM', '15:00 PM', '16:00 PM', '17:00 PM', '18:00 PM', '19:00 PM', '20:00 PM', 
+                '21:00 PM', '22:00 PM', '23:00 PM'],
+        mins: ['00분', '10분', '20분', '30분', '40분', '50분']
+    }
+
+    const mins = ['00분', '10분', '20분', '30분', '40분', '50분'];
+
+    const Min = ({ item, index }) => {
+        return (
+            <View style={{}}>
+                <Text style={[{ borderColor: 'black', borderLeftWidth: 1, padding: 5,  }, index == 5 ? null : {borderBottomWidth: 1}]}>{item}</Text>
+            </View>
+        );
+    }
+
+    const Hour = ({ item, index }) => {
+        return (
+            <View>
+                <Text style={{height: 190, borderWidth: 1, borderColor: 'blue'}}>{item}</Text>
+            </View>
+        )
+    }
+
+    const renderItem = ({ item }) => {
+        return (
+            <View style={styles.itemBox}>
+                <Text style={styles.hourText}>{item}</Text>
+                <View style={{ }}>
+                    {mins.map((item, index) => {
+                        return (<Min item={item} key={index} />)
+                    })}
+                </View>
+            </View>
+        )
+    }
+
+    const titles = ["1호실", "2호실", "3호살"];
+
+    const avail = [];
+    for(var i = 0; i < titles.length; i++){
+        const a = [];
+        a.push(titles[i]);
+        for(var j = 0; j < 115; j++){
+            a.push(0);
         }
+        avail.push(a);
     }
-
-
-    const startTimer = () => {
-        let timeId = setInterval(() => {
-            console.log("setting Interval");
-            console.log(minutes);
-            console.log(seconds);
-            if(seconds > 0){
-                setSeconds(seconds - 1);
-            }
-
-            if(seconds === 0){
-                if(minutes === 0){
-                    clearInterval(timeId);
-                }   
-                else {
-                    setMinutes(minutes - 1);
-                    setSeconds(59);
-                }
-            }
-        }, 1000);
-
-    }
-    */
-    const testAPI = async () => {
-        try{
-            console.log("Attempting to send API");
-            const response = await axios.post('http://112.221.94.101:8s980/getEncryptCode', {
-                'usercode' : 'admin1'
-            });
-            console.log(`Got the response!`);
-            console.log(response)
-        } catch (err) {
-            setErrorMessageA("API 문제발생");
-            console.log(err);
-        }
-    }
-
-    const testAPI2 = async () => {
-        try{
-            console.log("Attempting to send API");
-            const response = await axios.post('http://112.221.94.101:8s980/getReservation', {
-                "requestType" : "user",  // user (사용자 별 조회), branch (지점 별 조회)
-                "requestData" : "admin1",
-                "secretCode" : "4HDsKfzSR3eEegv3FiZIA30x+Z6uOccMVlw56N034vNO0FGw7aUqCA0USHdoEK9oL2vlWg=="
-            });
-            console.log(`Got the response!`);
-            console.log(response);
-        } catch (err) {
-            setErrorMessageA("API 문제발생");
-            console.log(err);
-        }
-    }
-    
 
     return (
-        <View>
-            <Button
-                title="시간 시작" 
-                onPress = {() => {
-                    setErrorMessageA("");
-                    // startTimer();
-                    // sendSMS();
-                    // testAPI();
-                    testAPI2();
-                }}
-            />
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }} edges={['right', 'left', 'top']} >
 
-            <Text></Text>
-            {errorMessageA ? <Text style={{ color: 'red' }}>{errorMessageA}</Text> : null}
-            <Text></Text>
+            <View style={styles.titles}>
+                <View style={styles.aboveTime}>
+                    <Text></Text>
+                </View>
+            </View>
+            <View style={styles.tableBox}>
+                
+                <View style={styles.flatList}>
+                    <FlatList
+                        data={timeConfigs.hours}
+                        keyExtractor={item => item}
+                        renderItem={renderItem}
+                    />
+                </View>
 
-            <Text></Text>
-            <Text>Time Left: {minutes}: {seconds < 10 ? `0${seconds}` : seconds}</Text>
-            <Text></Text>
-            <TextInput 
-                style={{ textAlign: 'center', borderWidth: 1, height: 40, width: 200, alignSelf: 'center' }} 
-                placeholder="인증번호 4자리 입력"
-                autoCapitalize="none"
-                autoCorrect={false}
-                value={verifyNum}
-                onChangeText={(newValue) => setVerifyNum(newValue)}
-            />
-
-        </View>
-
+                <ScrollView
+                    // style={{flexDirection: 'row'}}
+                    // horizontal={true}
+                    nestedScrollEnabled={true}
+                    style={{marginRight: 10, borderWidth: 1, borderColor: 'black'}}
+                >
+                    <ScrollView
+                        nestedScrollEnabled={true}
+                        horizontal={true}
+                    >   
+                        <View>
+                            {timeConfigs.hours.map((item, index) => {
+                                return (<Hour item={item} key={index} />)
+                            })}  
+                        </View>
+                        <View>
+                            {timeConfigs.hours.map((item, index) => {
+                                return (<Hour item={item} key={index} />)
+                            })}  
+                        </View>
+                        <View>
+                            {timeConfigs.hours.map((item, index) => {
+                                return (<Hour item={item} key={index} />)
+                            })}  
+                        </View>
+                        <View>
+                            {timeConfigs.hours.map((item, index) => {
+                                return (<Hour item={item} key={index} />)
+                            })}  
+                        </View>
+                        <View>
+                            {timeConfigs.hours.map((item, index) => {
+                                return (<Hour item={item} key={index} />)
+                            })}  
+                        </View>
+                      
+                    </ScrollView>
+                </ScrollView>
+            </View>
+            
+            
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
-    container: { 
+    tableBox: {
         flexDirection: 'row',
-        padding: 0, 
-        paddingTop: 0,
-        paddingLeft: 20, 
-        backgroundColor: '#fff' 
+        marginLeft: 10,
+        marginBottom: 10,
+        flex: 1
     },
-    colHead: {
-        width: 90,
+    flatList: {
+        // borderWidth: 1,
+        borderColor: 'black',
+        alignSelf: 'flex-start',
+        justifyContent: 'flex-start',
+        // marginLeft: 10,
+        // flex: 1,
+        // marginBottom: 10,
+        borderBottomWidth: 1,
     },
-    head: {  
-        height: 60,  
-        backgroundColor: '#f1f8ff'  
+    itemBox: {
+        // padding: 10,
+        // borderWidth: 1,
+        // borderColor: 'red',
+        width: 130,
+        // paddingVertical: 10,
+        borderLeftWidth: 1,
+        borderBottomWidth: 1,
+        borderRightWidth: 1,
+        borderColor: 'black',
+        flexDirection: 'row',
+        alignItems: 'center',
     },
-    wrapper: { 
-        flexDirection: 'row' 
+    titles: {
+        flexDirection: 'row',
+        marginLeft: 10,
+        // marginTop: 10
     },
-    title: { 
-        backgroundColor: '#f6f8fa' 
-    },
-    row: {  
+    aboveTime: {
+        // padding: 10,
+        borderWidth: 1,
+        borderColor: 'green',
+        width: 130,
         height: 60,
-        width: 400
+        borderTopLeftRadius: 10,
     },
-    text: { 
-        textAlign: 'center' 
-    },
-    dateStyle: {
+    hourText: {
+        // marginLeft: 10,
         textAlign: 'center',
-        backgroundColor: '#fff'
+        flex: 1,
+        // borderWidth: 1,
+        // borderColor: 'orange',
     }
 });
 
