@@ -152,6 +152,9 @@ export default function ReservationListScreen({ navigation }) {
       <Item
         item={item}
         onClickQrBtn={() => {
+          setSelectedRoomName(item.roomName)
+          setSelectedReservStime(item.resrvStime)
+          setSelectedReservEtime(item.resrvEtime)
           clickQrCode(item.resrvCode)
         }}
         onClickChangeReserv={async () => {
@@ -350,6 +353,7 @@ export default function ReservationListScreen({ navigation }) {
     startLoading();
     getUserId();
     getMyReserveList();
+    return () => {}
   }, [usercode, secretCode]);
 
   const startLoading = async () => {
@@ -397,6 +401,9 @@ export default function ReservationListScreen({ navigation }) {
           onRequestClose={()=> handleQrCancel()}
         >
           <View style={styles.qrStyle}>
+            <Text>
+              {}
+            </Text>
             <QRCode
               size={280}
               value={qrReservCode}
