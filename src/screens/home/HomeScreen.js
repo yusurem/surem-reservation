@@ -1,11 +1,14 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, BackHandler, Alert } from 'react-native'
+import { View, ScrollView, Text, TouchableOpacity, StyleSheet, Image, BackHandler, Alert } from 'react-native'
 import Header from '../../components/Header'
 import MyReservationList from '../../components/MyReservationList'
 import MainNotices from '../../components/MainNotices'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as SQLite from 'expo-sqlite';
+import FirstMainBanner from '../../components/FirstMainBanner';
+import SecondMainBanner from '../../components/SecondMainBanner';
 import { useFocusEffect } from '@react-navigation/native';
+import MainInformationUse from '../../components/MainInformationUse';
 
 const db = SQLite.openDatabase('db.db');
 
@@ -31,7 +34,7 @@ export default function HomeScreen({navigation}) {
   );
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
-      <View style={{flex:1}}>
+      <ScrollView style={{flex: 1}}>
       <Header color="#FFFFFF"></Header>
       <TouchableOpacity style={styles.reserveRoomBtn}
         onPress={()=>{
@@ -50,7 +53,11 @@ export default function HomeScreen({navigation}) {
       <MyReservationList/>
       <Text/>
       <MainNotices/>
-    </View>
+      <FirstMainBanner/>
+      <SecondMainBanner/>
+      <MainInformationUse/>
+
+    </ScrollView>
     </SafeAreaView>
   );  
 }
@@ -60,7 +67,6 @@ const styles = StyleSheet.create({
   headerContainer: {
     height: 60,
     width: '100%',
-    flexDirection: 'row',
     alignItems: 'center'
   },
   label: {    
@@ -74,10 +80,10 @@ const styles = StyleSheet.create({
     backgroundColor:'#A2AFDC',
     borderRadius:10,
     alignSelf:'center',
-    flex:0.2,
+    height:120
   },
   reserveRoomBtnView: {
-    flex:1,
+    flex:0,
     flexDirection:'row',
     height:'100%'
   },

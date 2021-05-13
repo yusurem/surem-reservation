@@ -55,8 +55,8 @@ export default function MyReservationList() {
     console.log('DATA::',data)
     var config = {
       method: 'post',
-      // url: 'http://office-api.surem.com/getReservation',
-      url: 'http://112.221.94.101:8980/getReservation',
+      url: 'http://office-api.surem.com/getReservation',
+      // url: 'http://112.221.94.101:8980/getReservation',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -88,8 +88,9 @@ export default function MyReservationList() {
               return(<MyReservationRow resrvStime={item.resrvStime} resrvEtime={item.resrvEtime} roomName={item.roomName} resrvCode={item.resrvCode} key={index}/>)
           })
         }
-        <TouchableOpacity style={{alignSelf:'flex-end', marginRight:'3%'}} hitSlop={{top:-1, bottom:20, left:-300, right:10}} onPress={()=>{
-          navigation.navigate('ConfirmReserved')
+        <TouchableOpacity style={{alignSelf:'flex-end',flex:0, marginRight:'3%'}} hitSlop={{top:-1, bottom:20, left:-300, right:10}} 
+        onPress={()=>{
+          navigation.navigate('Reserved')
         }}>
           <Text style={styles.more}>더보기</Text>
         </TouchableOpacity>
@@ -99,22 +100,25 @@ export default function MyReservationList() {
 
 const styles = StyleSheet.create({
     MyReservationList: {
-      flex: 0.3,
       width:'90%',
+      flex:0,
       backgroundColor:'#4284E4',
       borderRadius:10,
-      alignSelf:'center'
+      alignSelf:'center',
     },
 		MyReservationTitle: {
+      flex:0,
+      height:'auto',
 			color:'white',
-			marginLeft:'3%',
-			fontSize:20, 
-			marginTop: '5%'
+      marginTop:'4%',
+      marginBottom:10,
+      marginLeft:'4%',
+      fontSize:15
 		},
     more: {
-      marginTop:'0.5%',
-      marginBottom:'3%',
-      color:'white'
+      color:'white',
+      marginTop:'3%',
+      marginBottom:'5%'
     }
   });
   

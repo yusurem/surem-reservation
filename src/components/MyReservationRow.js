@@ -51,10 +51,10 @@ export default function MyReservationRow(props) {
 const styles = StyleSheet.create({
 	row: {
 		width:'100%',
-		flex:1,
+		flex:0,
 		flexDirection:'row',
-		marginTop:'0.5%',
-		marginBottom:'0.5%',
+		marginTop:'1%',
+		marginBottom:'1%',
 		justifyContent: 'space-between'
 	},
 	rowContent: {

@@ -26,8 +26,8 @@ const InquiryScreen = ({ navigation, route }) => {
             console.log("Attempting to get user inquiries...");
             // console.log("usercode: " + usercode);
             // console.log("secretCode: " + secretCode);
-            // const response = await axios.post('http://office-api.surem.com/getVocList', {
-            const response = await axios.post('http://112.221.94.101:8980/getVocList', {
+            const response = await axios.post('http://office-api.surem.com/getVocList', {
+            // const response = await axios.post('http://112.221.94.101:8980/getVocList', {
                 usercode: route.params.usercode,
                 securityKey: route.params.secretCode
             });
@@ -64,8 +64,8 @@ const InquiryScreen = ({ navigation, route }) => {
                     console.log("Attempting to get user inquiries...");
                     // console.log("usercode: " + usercode);
                     // console.log("secretCode: " + secretCode);
-                    // const response = await axios.post('http://office-api.surem.com/getVocList', {
-                    const response = await axios.post('http://112.221.94.101:8980/getVocList', {
+                    const response = await axios.post('http://office-api.surem.com/getVocList', {
+                    // const response = await axios.post('http://112.221.94.101:8980/getVocList', {
                         usercode: route.params.usercode,
                         securityKey: route.params.secretCode
                     });

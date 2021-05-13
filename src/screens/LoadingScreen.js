@@ -10,6 +10,7 @@ const LoadingScreen = ({ navigation, route }) => {
         <SafeAreaView style={{ flex: 1, backgroundColor: '#F3F4F8' }}>
             <View style={{justifyContent:'center', height:'100%', width:'100%', alignItems:'center'}}>
                 <Image style={styles.logo} source={require("../../assets/LoadingIcon.png")} />
+                <Text>Loading</Text>
             </View>
         </SafeAreaView> 
     );

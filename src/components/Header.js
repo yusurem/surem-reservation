@@ -19,13 +19,14 @@ const styles = StyleSheet.create({
   headerContainer: {
     height: 60,
     width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   label: {    
     margin: 8,
   },
   logo: {
-    marginRight: '45%'
+    resizeMode:'center'
+  },
+  menu: {
   }
 });

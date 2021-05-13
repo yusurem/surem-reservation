@@ -95,9 +95,9 @@ export default function ReservationListScreen({ navigation }) {
     var config = {
       method: 'post',
       // 개발 서버 
-      url: 'http://112.221.94.101:8980/getReservation',
+      // url: 'http://112.221.94.101:8980/getReservation',
       // 실 서버
-      // url: 'http://office-api.surem.com/getReservation',
+      url: 'http://office-api.surem.com/getReservation',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -127,8 +127,8 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      // url: 'http://office-api.surem.com/getRoomInfo',
-      url: 'http://112.221.94.101:8980/getRoomInfo',
+      url: 'http://office-api.surem.com/getRoomInfo',
+      // url: 'http://112.221.94.101:8980/getRoomInfo',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -198,8 +198,8 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      // url: 'http://office-api.surem.com/cancelReservation',
-      url: 'http://112.221.94.101:8980/cancelReservation',
+      url: 'http://office-api.surem.com/cancelReservation',
+      // url: 'http://112.221.94.101:8980/cancelReservation',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -248,8 +248,8 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      url: 'http://112.221.94.101:8980/modifyReservation',
-      // url: 'http://office-api.surem.com/modifyReservation',
+      // url: 'http://112.221.94.101:8980/modifyReservation',
+      url: 'http://office-api.surem.com/modifyReservation',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -307,8 +307,8 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      // url: 'http://office-api.surem.com/getReservationListForRoom',
-      url: 'http://112.221.94.101:8980/getReservationListForRoom',
+      url: 'http://office-api.surem.com/getReservationListForRoom',
+      // url: 'http://112.221.94.101:8980/getReservationListForRoom',
       headers: {
         'Content-Type': 'application/json'
       },

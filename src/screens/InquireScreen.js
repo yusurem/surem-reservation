@@ -30,8 +30,8 @@ const InquireScreen = ({ navigation, route }) => {
             console.log("Attempting to submit inquiry...");
             // console.log("usercode: " + usercode);
             // console.log("secretCode: " + secretCode);
-            // const response = await axios.post('http://office-api.surem.com/writeVoc', {
-            const response = await axios.post('http://112.221.94.101:8980/writeVoc', {
+            const response = await axios.post('http://office-api.surem.com/writeVoc', {
+            // const response = await axios.post('http://112.221.94.101:8980/writeVoc', {
                 usercode: route.params.usercode,
                 secretCode: route.params.secretCode,
                 vocSubject: title,
