@@ -16,21 +16,13 @@ export default function MainInformationUse() {
                     <View 
                         style={styles.bar}
                     />
-
                 </View>
                 <Text style={styles.titleFont}>
                     앱설치
                 </Text>
-            </View>
-            <View style={styles.element}> 
-                <View style={styles.numberBox}>
-                    <Image source={require("../../assets/number3.png")} />
-                    <View 
-                        style={styles.bar}
-                    />
-                </View>
-                <Text style={styles.titleFont}>
-                    회원가입
+                <Text style={styles.contents}>
+                    홈페이지 접속 혹은 앱스토어에서 
+                    오피스쉐어를 검색해 앱을 설치해주세요.
                 </Text>
             </View>
             <View style={styles.element}> 
@@ -43,11 +35,46 @@ export default function MainInformationUse() {
                 <Text style={styles.titleFont}>
                     회의실 예약
                 </Text>
+                <Text style={styles.contents}>
+                    원하는 회의실을 선택 후,  
+                </Text>
+                <Text style={styles.contents}>
+                    시간을 설정해 간편하게 예약합니다.
+                </Text>
+            </View>
+            <View style={styles.element}>
+                <View style={styles.numberBox}>
+                <Image source={require("../../assets/number5.png")} />
+                <View 
+                    style={styles.bar}
+                />
+                </View>
+                <Text style={styles.titleFont}>
+                    회원실 이용
+                </Text>
+                <Text style={styles.contents}>
+                    예약한 회의실을 편리하게 이용합니다.
+                </Text>
             </View>
         </View>
         <View style={styles.rightSide}>
-        <View style={styles.element}> 
-            <View style={styles.numberBox}>
+            <View style={styles.element}> 
+                
+                <View style={styles.numberBox}>
+                    <Image source={require("../../assets/number2.png")} />
+                    <View 
+                        style={styles.bar}
+                    />
+                </View>
+                <Text style={styles.titleFont}>
+                    회원가입
+                </Text>
+                <Text style={styles.contents}>
+                    간편가입을 이용하여 회원가입을 완료합니다.
+                </Text>
+            </View>
+            <View style={styles.element}> 
+                <View style={styles.numberBox}>
                     <Image source={require("../../assets/number4.png")} />
                     <View 
                         style={styles.bar}
@@ -56,19 +83,12 @@ export default function MainInformationUse() {
                 <Text style={styles.titleFont}>
                     회의실 결제
                 </Text>
-            </View>
-            <View style={styles.element}> 
-                <View style={styles.numberBox}>
-
-                    <Image source={require("../../assets/number5.png")} />
-                    <View 
-                        style={styles.bar}
-                    />
-                </View>
-                <Text style={styles.titleFont}>
-                    회원실 이용
+                <Text style={styles.contents}>
+                    예약확인이 완료 되면,
                 </Text>
-
+                <Text style={styles.contents}>
+                    회의실 이용요금을 결제합니다.
+                </Text>
             </View>
         </View>
 	</View>
@@ -78,19 +98,23 @@ export default function MainInformationUse() {
 const styles = StyleSheet.create({
 	container : {
         flex: 1,
-        flexDirection: 'row'
+        width:'90%',
+        flexDirection: 'row',
+        alignSelf:'center'
     },
     leftSide : {
-        flex: 1
+        flex: 1,
+        marginRight:5
     },
     rightSide : {
-        flex: 1
+        flex: 1,
+        justifyContent:'flex-start'
     },
     numberFont : {
         fontSize: 20,
         textDecorationColor: 'blue',
         textDecorationLine: 'underline',
-        textShadowColor:'blue'
+        textShadowColor:'blue',
     },
     bar:{
         flex:1,
@@ -100,14 +124,20 @@ const styles = StyleSheet.create({
     },
     titleFont:{
         fontSize: 15,
-        fontWeight: 'bold' 
+        fontWeight: 'bold',
+        fontFamily:'NanumSquareRegular',
+        marginBottom:5
     },
     element:{
-        marginLeft:10
+        height:150
     },
     numberBox:{
-        flex: 1, flexDirection: 'row', alignItems: 'flex-end',
-        marginBottom:10
+        flex: 0, 
+        flexDirection: 'row', 
+        marginBottom: 10
+    },
+    contents:{
+        fontFamily:'NanumSquareRegular'
     }
 });
   

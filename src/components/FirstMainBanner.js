@@ -1,22 +1,24 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { StyleSheet, View, Text, Image } from 'react-native'
-import * as SQLite from 'expo-sqlite';
-import { useEffect } from 'react';
-import axios from 'axios';
-import moment from 'moment';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useNavigation } from '@react-navigation/native'
-
-const db = SQLite.openDatabase('db.db');
 
 export default function FirstMainBanner() {
   return (
 	<View style={styles.banner}>
-		<View>
-			<Text style={styles.noticeTitle}>이제 회의실 예약도</Text>
-			<Text style={styles.noticeTitle}>간편한 오피스쉐어 APP으로!</Text>
+		<View stlye={{flex:1}}>
+			<View style={{flex:1,marginLeft:'5%',justifyContent:'center',marginTop:'5%'}}>	
+				<Text style={styles.noticeTitle}>이제 회의실 예약도</Text>
+				<Text style={styles.noticeTitle}>간편한 오피스쉐어 APP으로!</Text>
+			</View>
 		</View>
-		<Image source={require("../../assets/number4.png")} />
+		<View style={{flex:1,height:'80%',alignSelf:'center'}}>
+			<Image style={{
+				flex: 1,
+				resizeMode:'contain',
+				width:null,
+				height:null
+			}} source={require("../../assets/firstBanner.png")} />
+
+		</View>
 	</View>
   );  
 }
@@ -27,15 +29,19 @@ const styles = StyleSheet.create({
 		backgroundColor:'#ECEFF4',
 		borderRadius:10,
 		alignSelf:'center',
-		marginBottom:'5%',
-		flex:0
+		marginBottom:10,
+		flex:3,
+		height:110,
+		flexDirection:'row'
 	},
 	noticeTitle: {
 		color:'black',
-		marginTop:'4%',
-		marginBottom:10,
-		marginLeft:'4%',
-		fontSize:15
+		fontSize:15,
+		textAlignVertical:'center',
+		marginLeft:'5%',
+		marginBottom:5,
+		fontFamily:'NanumSquareRegular',
+		textAlignVertical:'center'
 	},
 	noticeList: {
 		width:'100%',

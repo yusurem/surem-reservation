@@ -9,7 +9,7 @@ export default class Header extends Component{
   render(){
     return (
       <View style={[styles.headerContainer, {backgroundColor: this.props.color}]}>
-        <Image style={styles.logo} source={require("../../assets/logo.png")} />
+        <Image style={styles.logo} source={require("../../assets/logo_02.png")} />
       </View>
     )
   }
@@ -17,16 +17,21 @@ export default class Header extends Component{
 
 const styles = StyleSheet.create({
   headerContainer: {
-    height: 60,
+    height: 70,
+    flex:1,
     width: '100%',
     alignItems: 'center',
+    alignSelf:'center',
   },
   label: {    
     margin: 8,
   },
   logo: {
-    resizeMode:'center'
+    flex:1,
+    resizeMode:'center',
+    marginTop:'5%'
   },
   menu: {
+    resizeMode:'center',
   }
 });

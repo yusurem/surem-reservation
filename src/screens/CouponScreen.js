@@ -6,6 +6,7 @@ import axios from 'axios';
 import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 import CheckBox from '@react-native-community/checkbox';
 import Modal from 'react-native-modal';
+import { URL } from '../constants';
 
 const CouponScreen = ({ navigation, route }) => {
     const [errorMessageA, setErrorMessageA] = useState("");
@@ -39,7 +40,7 @@ const CouponScreen = ({ navigation, route }) => {
         try{
             console.log("Attempting to make reservation...");
             // console.log(`${route.params.year}${route.params.month}${route.params.day}${route.params.startTime}`);
-            const response = await axios.post('http://office-api.surem.com/reservation', {
+            const response = await axios.post(URL+'/reservation', {
             // const response = await axios.post('http://112.221.94.101:8980/reservation', {
                 'roomCode' : route.params.roomCode,
                 'usercode' : 'admin1',
@@ -86,7 +87,7 @@ const CouponScreen = ({ navigation, route }) => {
         try{
             console.log("Attempting to get QrCode link...");
             // console.log(route.params.qrCode);
-            const response = await axios.post('http://office-api.surem.com/getQrcode', {
+            const response = await axios.post(URL+'/getQrcode', {
             // const response = await axios.post('http://112.221.94.101:8980/reservation', {
                 // resrvCode: qr,
                 // resrvCode: "21D7E4B9B8C840F-6dda0e6d111e4f"

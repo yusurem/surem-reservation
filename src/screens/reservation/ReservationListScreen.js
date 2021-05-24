@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Alert, SliderComponent, Button, TextInput, Touchable, Image } from 'react-native'
+import { StyleSheet, View, Text, TouchableOpacity, Alert, SliderComponent, Button, TextInput, Touchable, Image, BackHandler } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ReserveHeader from '../../components/ReserveHeader';
@@ -9,9 +9,12 @@ import moment from 'moment';
 import QRCode from 'react-native-qrcode-svg';
 import { Picker } from '@react-native-picker/picker';
 import Modal from 'react-native-modal'
-import Spinner from 'react-native-loading-spinner-overlay'
+import LoadingScreen from '../LoadingScreen';
 import 'moment/locale/ko';
 import { Platform } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import { URL } from '../../constants';
+
 
 const Item = ({ item, onClickQrBtn, onClickChangeReserv }) => (
   <View style={styles.item}>
@@ -67,6 +70,17 @@ export default function ReservationListScreen({ navigation }) {
     setModalVisible(!isModalVisible);
   }
 
+  useFocusEffect(() => {
+    const backAction = () => {
+        navigation.navigate("Home");
+        return true;
+    };
+    
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+    
+    return (() => backHandler.remove());
+  },);
+
   const getUserId = async () => {
     try {
       await db.transaction(async (tx) => {
@@ -97,7 +111,7 @@ export default function ReservationListScreen({ navigation }) {
       // 개발 서버 
       // url: 'http://112.221.94.101:8980/getReservation',
       // 실 서버
-      url: 'http://office-api.surem.com/getReservation',
+      url: URL + '/getReservation',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -127,7 +141,7 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      url: 'http://office-api.surem.com/getRoomInfo',
+      url: URL + '/getRoomInfo',
       // url: 'http://112.221.94.101:8980/getRoomInfo',
       headers: {
         'Content-Type': 'application/json'
@@ -198,8 +212,7 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      url: 'http://office-api.surem.com/cancelReservation',
-      // url: 'http://112.221.94.101:8980/cancelReservation',
+      url: URL + '/cancelReservation',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -249,7 +262,7 @@ export default function ReservationListScreen({ navigation }) {
     var config = {
       method: 'post',
       // url: 'http://112.221.94.101:8980/modifyReservation',
-      url: 'http://office-api.surem.com/modifyReservation',
+      url: URL + '/modifyReservation',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -307,7 +320,7 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      url: 'http://office-api.surem.com/getReservationListForRoom',
+      url: URL + '/getReservationListForRoom',
       // url: 'http://112.221.94.101:8980/getReservationListForRoom',
       headers: {
         'Content-Type': 'application/json'
@@ -365,10 +378,7 @@ export default function ReservationListScreen({ navigation }) {
 
   if(loading){
     return(
-      <Spinner
-        visible={true}
-        textContext={"Loading..."}
-      />
+      <LoadingScreen/>
     )
   }
 
@@ -401,9 +411,6 @@ export default function ReservationListScreen({ navigation }) {
           onRequestClose={()=> handleQrCancel()}
         >
           <View style={styles.qrStyle}>
-            <Text>
-              {}
-            </Text>
             <QRCode
               size={280}
               value={qrReservCode}

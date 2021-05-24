@@ -4,6 +4,7 @@ import axios from 'axios';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { set } from 'react-native-reanimated';
+import { URL } from '../constants';
 
 const BranchScreen = ({ navigation, route }) => {
     console.log("Entered BranchScreen. Params: ");
@@ -18,8 +19,8 @@ const BranchScreen = ({ navigation, route }) => {
     const getLocationList = async (loc) => {
         try{
             console.log("Attempting to retrieve location list...");
-            // const response = await axios.post('http://office-api.surem.com/getLocationList', {
-            const response = await axios.post('http://112.221.94.101:8980/getLocationList', {
+            const response = await axios.post(URL+'/getLocationList', {
+            //const response = await axios.post('http://112.221.94.101:8980/getLocationList', {
                 location: loc
             });
             console.log("LocationList API call successful!");

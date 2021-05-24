@@ -8,6 +8,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native'
 import ReservationListScreen from '../screens/reservation/ReservationListScreen'
 import { useFocusEffect } from '@react-navigation/native';
+import { URL } from '../constants';
 
 const db = SQLite.openDatabase('db.db');
 
@@ -55,7 +56,7 @@ export default function MyReservationList() {
     console.log('DATA::',data)
     var config = {
       method: 'post',
-      url: 'http://office-api.surem.com/getReservation',
+      url: URL + '/getReservation',
       // url: 'http://112.221.94.101:8980/getReservation',
       headers: {
         'Content-Type': 'application/json'
@@ -88,7 +89,7 @@ export default function MyReservationList() {
               return(<MyReservationRow resrvStime={item.resrvStime} resrvEtime={item.resrvEtime} roomName={item.roomName} resrvCode={item.resrvCode} key={index}/>)
           })
         }
-        <TouchableOpacity style={{alignSelf:'flex-end',flex:0, marginRight:'3%'}} hitSlop={{top:-1, bottom:20, left:-300, right:10}} 
+        <TouchableOpacity style={{alignSelf:'flex-end',flex:0, marginRight:10}} hitSlop={{top:-1, bottom:20, left:-300, right:10}} 
         onPress={()=>{
           navigation.navigate('Reserved')
         }}>
@@ -105,6 +106,7 @@ const styles = StyleSheet.create({
       backgroundColor:'#4284E4',
       borderRadius:10,
       alignSelf:'center',
+      marginBottom:10
     },
 		MyReservationTitle: {
       flex:0,
@@ -113,12 +115,14 @@ const styles = StyleSheet.create({
       marginTop:'4%',
       marginBottom:10,
       marginLeft:'4%',
-      fontSize:15
+      fontSize:15,
+      fontFamily:'NanumSquareRegular'
 		},
     more: {
       color:'white',
       marginTop:'3%',
-      marginBottom:'5%'
+      marginBottom:'5%',
+      fontFamily:'NanumSquareRegular'
     }
   });
   

@@ -9,8 +9,7 @@ import {
 import axios from 'axios';
 import LoadingScreen from '../screens/LoadingScreen'
 import * as SQLite from 'expo-sqlite';
-import Spinner from 'react-native-loading-spinner-overlay'
-import { Platform } from 'react-native';
+import { URL } from '../constants';
 
 const db = SQLite.openDatabase('db.db');
 
@@ -44,7 +43,7 @@ export default function SignUpButton(props){
 
     var config = {
       method: 'post',
-      url: 'http://office-api.surem.com/joinMember',
+      url: URL + '/joinMember',
       // url: 'http://112.221.94.101:8980/joinMember',
       headers: {
         'Content-Type': 'application/json'
@@ -68,7 +67,7 @@ export default function SignUpButton(props){
     
         var config = {
           method: 'post',
-          url: 'http://office-api.surem.com/getEncryptCode',
+          url: URL + '/getEncryptCode',
           // url: 'http://112.221.94.101:8980/getEncryptCode',
           headers: {
             'Content-Type': 'application/json'
@@ -105,10 +104,7 @@ export default function SignUpButton(props){
 
   if(loading){
     return(
-      <Spinner
-        visible={true}
-        textContext={"Loading..."}
-      />
+      <LoadingScreen/>
     )
   }
 

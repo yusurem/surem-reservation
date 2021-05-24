@@ -5,11 +5,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import * as SQLite from 'expo-sqlite';
 import axios from 'axios';
 import moment from 'moment';
-import Spinner from 'react-native-loading-spinner-overlay'
 import 'moment/locale/ko';
 import { Platform } from 'react-native';
-import { WebView } from 'react-native-webview'
-
+import { WebView } from 'react-native-webview' 
+import LoadingScreen from './LoadingScreen'
+import { URL } from '../constants';
 
 const Item = ({ item }) => {
   const [isFolder, setIsFolder] = useState(false);
@@ -100,7 +100,7 @@ export default function NoticeScreen({ navigation }) {
     var config = {
         method: 'post',
         // url: 'http://112.221.94.101:8980/notice/0/100',
-        url: 'http://office-api.surem.com/notice/0/200',
+        url: URL + '/notice/0/200',
         headers: {
         }
     };
@@ -137,10 +137,7 @@ export default function NoticeScreen({ navigation }) {
 
   if(loading){
     return(
-      <Spinner
-        visible={true}
-        textContext={"Loading..."}
-      />
+      <LoadingScreen/>
     )
   }
 

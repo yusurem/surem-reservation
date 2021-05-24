@@ -6,8 +6,7 @@ import QRCode from 'react-native-qrcode-svg';
 import Modal from 'react-native-modal';
 import { useEffect } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { TERMS } from '../constants';
-
+import { TERMS,URL } from '../constants';
 // import * as RNLocalize from 'react-native-localize';
 import moment from 'moment-timezone';
 
@@ -71,7 +70,7 @@ const MyScreen = ({ navigation, route }) => {
             console.log("Attempting to get user info...");
             // console.log("usercode: " + usercode);
             // console.log("secretCode: " + secretCode);
-            const response = await axios.post('http://office-api.surem.com/myInfo', {
+            const response = await axios.post(URL+'/myInfo', {
             // const response = await axios.post('http://112.221.94.101:8980/myInfo', {
                 usercode: usercode,
                 securityKey: secretCode
@@ -119,8 +118,7 @@ const MyScreen = ({ navigation, route }) => {
             console.log("Attempting to quit user...");
             console.log("usercode: " + usercode);
             console.log("secretCode: " + secretCode);
-            // const response = await axios.post('http://office-api.surem.com/quitMember', {
-            const response = await axios.post('http://112.221.94.101:8980/quitMember', {
+            const response = await axios.post(URL + '/quitMember', {
                 usercode: usercode,
                 securityKey: secretCode
             });
@@ -388,18 +386,18 @@ const styles = StyleSheet.create({
         
     },
     infoHeader: {
-        marginTop: 45,
+        marginTop: 30,
         marginLeft: 20,
     },
     csHeader:{
-        marginTop: 40,
+        marginTop: 30,
         marginLeft: 20,
     },
     headerText: {
         fontSize: 17,
     },
     infoBox: {
-        marginTop: 17,
+        marginTop: 12,
         marginHorizontal: 25,
         borderRadius: 10,
         flexDirection: 'row',
@@ -407,7 +405,7 @@ const styles = StyleSheet.create({
         borderColor: '#B6B6B6'
     },
     infoTitle: {
-        flex: 1,
+        flex: 0.8,
         backgroundColor: '#F5F5F5',
         borderTopLeftRadius: 10,
         borderBottomLeftRadius: 10
@@ -441,7 +439,7 @@ const styles = StyleSheet.create({
         borderColor: '#B6B6B6'
     },
     csBox: {
-        marginTop: 17,
+        marginTop: 12,
         marginHorizontal: 25,
         borderRadius: 10,
         flexDirection: 'row',
@@ -449,7 +447,7 @@ const styles = StyleSheet.create({
         borderColor: '#B6B6B6'
     },
     miscBox: {
-        marginTop: 50,
+        marginTop: 40,
         marginHorizontal: 25,
         borderWidth: 1,
         borderColor: '#B6B6B6',
