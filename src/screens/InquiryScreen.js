@@ -6,6 +6,7 @@ import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Collapse, CollapseHeader, CollapseBody } from 'accordion-collapse-react-native';
 import Collapsible from 'react-native-collapsible';
+import { URL } from '../constants';
 
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -26,8 +27,8 @@ const InquiryScreen = ({ navigation, route }) => {
             console.log("Attempting to get user inquiries...");
             // console.log("usercode: " + usercode);
             // console.log("secretCode: " + secretCode);
-            // const response = await axios.post('http://office-api.surem.com/getVocList', {
-            const response = await axios.post('http://112.221.94.101:8980/getVocList', {
+            const response = await axios.post(URL+'/getVocList', {
+            // const response = await axios.post('http://112.221.94.101:8980/getVocList', {
                 usercode: route.params.usercode,
                 securityKey: route.params.secretCode
             });
@@ -64,8 +65,8 @@ const InquiryScreen = ({ navigation, route }) => {
                     console.log("Attempting to get user inquiries in focus effect...");
                     // console.log("usercode: " + usercode);
                     // console.log("secretCode: " + secretCode);
-                    // const response = await axios.post('http://office-api.surem.com/getVocList', {
-                    const response = await axios.post('http://112.221.94.101:8980/getVocList', {
+                    const response = await axios.post(URL+'/getVocList', {
+                    // const response = await axios.post('http://112.221.94.101:8980/getVocList', {
                         usercode: route.params.usercode,
                         securityKey: route.params.secretCode
                     });

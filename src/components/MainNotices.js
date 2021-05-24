@@ -6,6 +6,7 @@ import axios from 'axios';
 import moment from 'moment';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native'
+import { URL } from '../constants';
 
 const db = SQLite.openDatabase('db.db');
 
@@ -43,9 +44,8 @@ const navigation = useNavigation();
 
 		var config = {
 			method: 'post',
-	 		// url: 'http://office-api.surem.com/notice/0/3',
-			url: 'http://112.221.94.101:8980/notice/0/3',
-			//url: 'http://112.221.94.101:8980/getReservation',
+	 		url: URL+'/notice/0/3',
+			// url: 'http://112.221.94.101:8980/notice/0/3',
 			headers: {
 				'Content-Type': 'application/json'
 			}
@@ -71,7 +71,10 @@ const navigation = useNavigation();
 	}, [usercode, secretCode])
 
   return (
-	<View style={styles.notices}>
+	<TouchableOpacity style={styles.notices}
+		onPress={()=>{
+			navigation.navigate('Notices');
+		}}>
 			<Text style={styles.noticeTitle}>공지사항</Text>
 			<View style={styles.noticeList}>
 				{
@@ -79,7 +82,7 @@ const navigation = useNavigation();
             if(index < 3)
               return(
 				<View key={index} style={styles.noticeItem}>
-					<Text style={{color:'black',marginLeft:'1%',width:'69%',height:28,textAlignVertical:'center',marginLeft:'5%'}}>{item.noticeNote}</Text>
+					<Text style={{color:'black',marginLeft:'1%',width:'65%',height:28,textAlignVertical:'center',marginLeft:'5%',fontFamily:'NanumSquareRegular'}}>{item.noticeSubject}</Text>
 					<View
 						style={styles.qrBtn}
 					>
@@ -89,7 +92,7 @@ const navigation = useNavigation();
 			)
           })
         }
-				<TouchableOpacity style={{alignSelf:'flex-end', marginRight:'3%'}} 
+				<TouchableOpacity style={{alignSelf:'flex-end', marginRight:10, marginBottom:'1%'}} 
 				hitSlop={{top:-1, bottom:20, left:-300, right:10}} 
 				onPress={()=>{
 					navigation.navigate('Notices');
@@ -97,7 +100,7 @@ const navigation = useNavigation();
 					<Text style={styles.more}>더보기</Text>
 				</TouchableOpacity>
 			</View>
-	</View>
+	</TouchableOpacity>
   );  
 }
 
@@ -107,14 +110,16 @@ const styles = StyleSheet.create({
 	  marginLeft:'85%',
 	  color:'black',
 	  marginBottom:'2%',
-	  marginTop:'2%'
+	  marginTop:'4%',
+	  fontFamily:'NanumSquareRegular'
 	}, 
 	notices: {
 		width:'90%',
 		backgroundColor:'#ECEFF4',
 		borderRadius:10,
-		flex:0.3,
-		alignSelf:'center'
+		flex:0,
+		alignSelf:'center',
+		marginBottom:10
 	},
 	noticeTitle: {
 		color:'black',
@@ -126,24 +131,29 @@ const styles = StyleSheet.create({
 	noticeList: {
 		width:'100%',
 		flexDirection:'column',
-		flex:1
+		flex:0
 	},
 	noticeItem: {
-		flex:0.32,
-		flexDirection:'row'
+		flex:0,
+		marginBottom:'1%',
+		flexDirection:'row',
+		marginRight:5
 	},
 	qrBtn: {
 		borderRadius: 10,
 		borderColor: '#DCDFE4',
 		backgroundColor: '#ECF0F3',
 		borderWidth: 1,
-		width: 80,
+		width: 100,
 		height: 28,
+		marginRight:10,
 		justifyContent: 'center',
-		alignItems:'flex-end'
+		alignItems:'flex-end',
+		fontFamily:'NanumSquareRegular'
 	},
 	qrBtnText: {
-		color: '#AEB1B5',
+		fontFamily:'NanumSquareRegular',
+		color: 'black',
 		width: '100%',
 		height: '100%',
 		textAlign: 'center',

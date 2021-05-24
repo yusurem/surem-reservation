@@ -7,6 +7,7 @@ import { SliderBox } from 'react-native-image-slider-box';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LoadingScreen from './LoadingScreen';
 import Modal from 'react-native-modal';
+import { URL } from '../constants';
 
 const ReservationScreen = ({ navigation, route }) => {
     const windowWidth = useWindowDimensions().width;
@@ -43,13 +44,6 @@ const ReservationScreen = ({ navigation, route }) => {
 
     console.log("Entered ReservationScreen. Params: ");
     // console.log(route.params);
-
-    const images = [
-        require("../../assets/office1.png"),
-        require("../../assets/office2.png"),
-        require("../../assets/office3.png"),
-        require("../../assets/office4.png")
-    ];
 
     const valsToInt = (vals) => {
         var temp;
@@ -170,8 +164,8 @@ const ReservationScreen = ({ navigation, route }) => {
             console.log("Attempting to retreive room information...");
             console.log("roomCode: " + route.params.roomCode);
             
-            // const response = await axios.post('http://office-api.surem.com/getRoomInfo', {
-            const response = await axios.post('http://112.221.94.101:8980/getRoomInfo', {
+            const response = await axios.post(URL + '/getRoomInfo', {
+            // const response = await axios.post('http://112.221.94.101:8980/getRoomInfo', {
                 roomCode: route.params.roomCode
                 // roomCode: '64D1FEC28CFE4A7'
             });
@@ -195,8 +189,8 @@ const ReservationScreen = ({ navigation, route }) => {
             console.log("Attempting to retreive room image...");
             console.log("imgCode: " + code);
             
-            // const response = await axios.post('http://office-api.surem.com/getRoomImg', {
-            const response = await axios.post('http://112.221.94.101:8980/getRoomImg', {
+            const response = await axios.post(URL + '/getRoomImg', {
+            // const response = await axios.post('http://112.221.94.101:8980/getRoomImg', {
                 imgCode: code
             });
             console.log('ROOM IMAGE :: ' ,response.data);
@@ -278,6 +272,7 @@ const ReservationScreen = ({ navigation, route }) => {
             return 'Error';
         }
     }
+    
 
     useEffect(() => {
         apiCalls();
@@ -295,10 +290,6 @@ const ReservationScreen = ({ navigation, route }) => {
     }
     
     console.log("---------------------------");
-    // console.log(roomInfo);
-    // console.log(info);
-    // console.log(subInfo);
-    // console.log(roomName);
     console.log(imgs);
     console.log("---------------------------");
 
@@ -597,11 +588,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12
     },
     description: {
-        marginLeft: 18,
+        marginLeft: 9,
         marginBottom: 9
     },
     descriptionText: {
-        fontSize: 11,
+        fontSize: 14,
         color: '#39393A',
     },
     pickerBox: {
@@ -626,7 +617,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
     },
     picker: {
-        color: '#B2B2B2',
+        color: 'black',
         // backgroundColor: 'red',
         height: 30, 
         width: 140

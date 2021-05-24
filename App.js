@@ -1,8 +1,9 @@
 import React from 'react';
-import { Image, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import * as Font from 'expo-font'
 
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Entypo, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
@@ -13,9 +14,6 @@ import CalendarScreen from './src/screens/CalendarScreen';
 import ReservationScreen from './src/screens/ReservationScreen';
 import DatePicker from './src/screens/DatePicker';
 import ReservedScreen from './src/screens/ReservedScreen';
-// import VerificationScreen from './src/screens/VerificationScreen';
-import VerificationResult from './src/screens/VerificationResult';
-// import Verification from './src/screens/Verification';
 import AgendaScreen from './src/screens/AgendaScreen';
 import CalListScreen from './src/screens/CalListScreen';
 import OldAgenda from './src/screens/OldAgenda';
@@ -28,7 +26,6 @@ import FindPassword from './src/screens/member/FindPasswordScreen'
 import LoginMenuScreen from './src/screens/LoginMenuScreen';
 import PaymentScreen from './src/screens/PaymentScreen';
 import ReservationListScreen from './src/screens/reservation/ReservationListScreen';
-import ChooseRegionScreen from './src/screens/reservation/ChooseRegionScreen';
 import NoticeScreen from './src/screens/NoticeScreen';
 import LoadingScreen from './src/screens/LoadingScreen';
 import MyScreen from './src/screens/MyScreen';
@@ -36,6 +33,9 @@ import BranchScreen from './src/screens/BranchScreen';
 import InquiryScreen from './src/screens/InquiryScreen';
 import InquireScreen from './src/screens/InquireScreen';
 import NewTableScreen from './src/screens/NewTableScreen';
+import InitialScreen from './src/screens/InitialScreen';
+
+Font.loadAsync({'NanumSquareRegular':require('./assets/fonts/NanumSquareRegular.ttf')})
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -157,7 +157,7 @@ const TabNav = () => {
         }}
       />
       <Tab.Screen 
-        name=" Reserved" 
+        name="Reserved" 
         component={ThirdStack} 
         options={{
           unmountOnBlur: true,
@@ -183,11 +183,12 @@ function App() {
     <SafeAreaProvider>
       <NavigationContainer>
         <Stack.Navigator 
-          initialRouteName='SignUp'
+          initialRouteName='Initial'
           screenOptions={{
             headerShown: false
           }}
         >
+            <Stack.Screen name="Initial" component={InitialScreen}/>
             <Stack.Screen name="SignUp" component={SignupScreen}/>
             <Stack.Screen name="Tab" component={TabNav} />
         </Stack.Navigator>

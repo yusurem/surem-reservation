@@ -117,7 +117,7 @@ const CalListScreen = ({ navigation }) => {
                         current={currentDate}
                         hideArrows={true}
                         renderHeader={(date) => {
-                            return <View><Text>Hi</Text></View>;
+                            return <View><Text>Hi</Text></View>
                         }}
                     />
                 </View>

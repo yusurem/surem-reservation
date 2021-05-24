@@ -9,7 +9,7 @@ import LoadingScreen from './LoadingScreen';
 import Modal from 'react-native-modal';
 import { useFocusEffect } from '@react-navigation/native';
 import moment from 'moment-timezone';
-import { set } from 'react-native-reanimated';
+import { URL } from '../constants';
 
 const TableScreen = ({ navigation, route }) => {
     const windowWidth = useWindowDimensions().width;
@@ -107,9 +107,8 @@ const TableScreen = ({ navigation, route }) => {
     const getRoomList = async () => {
         try{
             console.log("Attempting to retreive room list...");
-            // const response = await axios.post('http://office-api.surem.com/getRoomList', {
-            const response = await axios.post('http://112.221.94.101:8980/getRoomList', {
-
+            const response = await axios.post(URL + '/getRoomList', {
+            // const response = await axios.post('http://112.221.94.101:8980/getRoomList', {
                 adminPlaceName: '슈어엠',
                 adminCode: "surem3"
             });
@@ -130,8 +129,8 @@ const TableScreen = ({ navigation, route }) => {
             console.log("Attempting to retreive list of available reservation times...");
             console.log("resrvCTime: " + resDate);
             console.log("adminCode: " + adCode);
-            // const response = await axios.post('http://office-api.surem.com/getReservationList', {
-            const response = await axios.post('http://112.221.94.101:8980/getReservationList', {
+            const response = await axios.post(URL + '/getReservationList', {
+            // const response = await axios.post('http://112.221.94.101:8980/getReservationList', {
                 // roomBranch: rmBranch,
                 resrvCtime: resDate,
                 adminCode: adCode
@@ -322,6 +321,8 @@ const TableScreen = ({ navigation, route }) => {
         setModalVisible(!modalVisible);
         let currDate = new Date(day.dateString);
         navigation.replace('Table', { 
+            branchCode: route.params["branchCode"],
+            branchName: route.params["branchName"],
             dateString: day.dateString, 
             year: day.year, 
             month: `${day.month < 10 ? 0 : ""}${day.month}`,
@@ -405,7 +406,7 @@ const TableScreen = ({ navigation, route }) => {
                                 var month = newDate.getMonth() + 1;
                                 var date = newDate.getDate();
                                 setResrvLists([]);
-                                navigation.navigate('Table', { 
+                                navigation.navigate('Table', {
                                     dateString: `${newDate.getFullYear()}-${month < 10 ? 0 : ""}${newDate.getMonth() + 1}-${date < 10 ? 0 : ""}${newDate.getDate()}`,
                                     year: newDate.getFullYear(),
                                     month: `${month < 10 ? 0 : ""}${newDate.getMonth() + 1}`,
@@ -589,10 +590,12 @@ const styles = StyleSheet.create({
         // marginTop: 2.5
     },
     tableBox: {
+        overflow: 'hidden',
         borderWidth: 1,
-        borderRightWidth: 2,
+        borderRightWidth: 1,
         borderColor: '#838383',
-        // borderRadius: 5
+
+        borderRadius: 15
     },
     container: { 
         flexDirection: 'row',

@@ -5,11 +5,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import * as SQLite from 'expo-sqlite';
 import axios from 'axios';
 import moment from 'moment';
-import Spinner from 'react-native-loading-spinner-overlay'
 import 'moment/locale/ko';
 import { Platform } from 'react-native';
-import { WebView } from 'react-native-webview'
-
+import { WebView } from 'react-native-webview' 
+import LoadingScreen from './LoadingScreen'
+import { URL } from '../constants';
 
 const Item = ({ item }) => {
   const [isFolder, setIsFolder] = useState(false);
@@ -23,8 +23,8 @@ const Item = ({ item }) => {
             {
               isFolder === true ? 
               <WebView 
-                style={{ flex: 1 }}
-                injectedJavaScript={`const meta = document.createElement('meta'); meta.setAttribute('content', 'width=width, initial-scale=15.0, maximum-scale=15.0, user-scalable=20.0'); meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta); `}
+                style={{ width: 1000 }}
+                injectedJavaScript={`const meta = document.createElement('meta'); meta.setAttribute('content', 'width=width, initial-scale=1.0, maximum-scale=1.0, user-scalable=1.0'); meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta); `}
                 scalesPageToFit={false}            
                 source={{ html: '<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"></head><body>'+item.noticeNote+'</body></html>' }}
                 /> : null
@@ -99,8 +99,8 @@ export default function NoticeScreen({ navigation }) {
 
     var config = {
         method: 'post',
-        url: 'http://112.221.94.101:8980/notice/0/100',
-        // url: 'http://office-api.surem.com/notice/0/200',
+        // url: 'http://112.221.94.101:8980/notice/0/100',
+        url: URL + '/notice/0/200',
         headers: {
         }
     };
@@ -137,10 +137,7 @@ export default function NoticeScreen({ navigation }) {
 
   if(loading){
     return(
-      <Spinner
-        visible={true}
-        textContext={"Loading..."}
-      />
+      <LoadingScreen/>
     )
   }
 
@@ -156,15 +153,17 @@ export default function NoticeScreen({ navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+      <View style={{flex:1}}>
       <Text style={{marginLeft:'5%',marginTop:'8%',marginBottom:'5%', fontSize:18}}>공지사항</Text>
       <FlatList
         data={notices}
         renderItem={renderItem}
-        style={{ width: '100%' }}
+        style={{ width: '100%', flexGrow:0}}
         keyExtractor={(item, index) => {
           return index.toString();
         }}
       />
+      </View>
     </SafeAreaView>
   );
 }
@@ -180,12 +179,11 @@ const styles = StyleSheet.create({
     borderTopColor: '#EDEDED',
     borderRightColor: '#EDEDED',
     borderBottomColor: '#EDEDED',
-    flex: 1,
     flexDirection: 'row'
   },
   leftSide: {
     height: '100%',
-    flex: 3,
+    flex: 1,
   },
   rightSide: {
     height: '100%',
@@ -194,7 +192,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end'
   },
   contentContainerStyle: {
-    flexGrow: 1,
     justifyContent: 'center'
   },
   itemText: {
@@ -203,7 +200,8 @@ const styles = StyleSheet.create({
   noticeContent: {
     marginLeft: '5%',
     marginTop: '2%',
-    marginBottom: '2%'
+    marginBottom: '2%',
+    width:'100%'
   },
   noticeTime: {
     marginLeft: '5%',
@@ -233,10 +231,11 @@ const styles = StyleSheet.create({
     height: Platform.OS === 'ios' ? 100 : null
   },
   showingContent: {
-    flex:1,
-    height:200
+    flex:2,
+    height:300
   },
   notShowingContent:{
+    flex:1,
     height:100
   }
 });

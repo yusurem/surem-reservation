@@ -21,13 +21,9 @@ target 'reservation' do
   #  post_install do |installer|
   #    flipper_post_install(installer)
   #  end
-  pod 'IamportReactNative', :path => '../node_modules/iamport-react-native'
-
-  pod 'react-native-sqlite-storage', :path => '../node_modules/react-native-sqlite-storage'
-
+  pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
   pod 'RNExitApp', :path => '../node_modules/react-native-exit-app'
 
-  pod 'react-native-restart', :path => '../node_modules/react-native-restart'
 
   pod 'RNLocalize', :path => '../node_modules/react-native-localize'
 

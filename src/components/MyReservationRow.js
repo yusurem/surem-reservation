@@ -51,29 +51,34 @@ export default function MyReservationRow(props) {
 const styles = StyleSheet.create({
 	row: {
 		width:'100%',
-		flex:1,
+		flex:0,
 		flexDirection:'row',
-		marginTop:'0.5%',
-		marginBottom:'0.5%',
+		marginTop:'1%',
+		marginBottom:'1%',
 		justifyContent: 'space-between'
 	},
 	rowContent: {
 		color:'white',
 		marginLeft:'4%',
-		width:'73%'
+		width:'73%',
+		fontFamily:'NanumSquareRegular'
 	},
 	qrBtn:{
 		borderRadius:7,
 		borderColor:'white',
 		borderWidth: 1,
 		width:'20%',
-		height:20,
+		height:25,
+		marginRight:10
 	}, 
 	qrBtnText:{
 		flex:1,
 		color:'white',
 		width:'100%',
 		textAlign:'center',
+		fontFamily:'NanumSquareRegular',
+		alignSelf:'center',
+		textAlignVertical:'center'
 	},
 	qrStyle:{
 		alignSelf:'center',

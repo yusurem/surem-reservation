@@ -5,6 +5,7 @@ import Modal from 'react-native-modal';
 import { Feather } from '@expo/vector-icons'; 
 
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { URL } from '../constants';
 
 const InquireScreen = ({ navigation, route }) => {
     const windowWidth = useWindowDimensions().width;
@@ -31,8 +32,8 @@ const InquireScreen = ({ navigation, route }) => {
             console.log("Attempting to submit inquiry...");
             // console.log("usercode: " + usercode);
             // console.log("secretCode: " + secretCode);
-            // const response = await axios.post('http://office-api.surem.com/writeVoc', {
-            const response = await axios.post('http://112.221.94.101:8980/writeVoc', {
+            const response = await axios.post(URL+'/writeVoc', {
+            // const response = await axios.post('http://112.221.94.101:8980/writeVoc', {
                 usercode: route.params.usercode,
                 secretCode: route.params.secretCode,
                 vocSubject: title,
@@ -58,8 +59,7 @@ const InquireScreen = ({ navigation, route }) => {
     const getLocationList = async (loc) => {
         try{
             console.log("Attempting to retrieve location list...");
-            // const response = await axios.post('http://office-api.surem.com/getLocationList', {
-            const response = await axios.post('http://112.221.94.101:8980/getLocationList', {
+            const response = await axios.post(URL+'/getLocationList', {
                 location: loc
             });
             console.log("LocationList API call successful!");

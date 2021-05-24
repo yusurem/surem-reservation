@@ -427,3 +427,5 @@ export const TERMS = {
         ,
     }
 }
+
+export const URL = 'http://office-api.surem.com'

@@ -8,6 +8,7 @@ import { CalendarList, Calendar, LocaleConfig } from 'react-native-calendars';
 import LoadingScreen from './LoadingScreen';
 import Modal from 'react-native-modal';
 import { useFocusEffect } from '@react-navigation/native';
+import { URL } from '../constants';
 
 const NewTableScreen = ({ navigation, route }) => {
     const windowWidth = useWindowDimensions().width;
@@ -114,8 +115,7 @@ const NewTableScreen = ({ navigation, route }) => {
     const getRoomList = async () => {
         try{
             console.log("Attempting to retreive room list...");
-            // const response = await axios.post('http://office-api.surem.com/getRoomList', {
-            const response = await axios.post('http://112.221.94.101:8980/getRoomList', {
+            const response = await axios.post(URL + '/getRoomList', {
 
                 adminPlaceName: '슈어엠',
                 adminCode: "surem3"
@@ -137,8 +137,7 @@ const NewTableScreen = ({ navigation, route }) => {
             console.log("Attempting to retreive list of available reservation times...");
             console.log("resrvCTime: " + resDate);
             console.log("adminCode: " + adCode);
-            // const response = await axios.post('http://office-api.surem.com/getReservationList', {
-            const response = await axios.post('http://112.221.94.101:8980/getReservationList', {
+            const response = await axios.post(URL + '/getReservationList', {
                 // roomBranch: rmBranch,
                 resrvCtime: resDate,
                 adminCode: adCode
