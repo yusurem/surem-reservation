@@ -1,3 +1,31 @@
+2021-05-17
+- Things to do:
+    - Came out in Meeting
+        - IOS icon이 안됨
+        - 속도개선
+        - 결제 기능
+        - 뒤로가기
+            - 결정됨
+        - Table when the tab is refreshed, the table is shown for a movement
+        - 
+    - 속도개선
+        - made the table successfully but it still isn't the best. a little faster than the previous one but prett slow still
+        - Made an inquiry
+    - 쿠폰기획
+        - 쿠폰 고르는 화면
+        - 내 쿠폰 확인
+    - 결제
+        - 결제가 어떻게되는건지
+    - 공유하기
+    - 지점 최근식
+    - ReservationScreen 사진들 view
+        - 갈아 엎기
+        - Making the photo be magnified on tap
+    - 테이블창에서 지점 선택기능
+    - 로그아웃?
+    - 푸쉬 알림 설정
+    - 
+
 2021-05-10
 - Things to do:
     - 과거 시간 예약 불가능 !

@@ -9,6 +9,7 @@ import LoadingScreen from './LoadingScreen';
 import Modal from 'react-native-modal';
 import { useFocusEffect } from '@react-navigation/native';
 import moment from 'moment-timezone';
+import { set } from 'react-native-reanimated';
 
 const TableScreen = ({ navigation, route }) => {
     const windowWidth = useWindowDimensions().width;
@@ -22,6 +23,7 @@ const TableScreen = ({ navigation, route }) => {
 
     const [tableData, setTableData] = useState([]);
     const [called, setCalled] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
 
     const fullTimeLen = 6 * 24;
     const weekDays = new Array('일', '월', '화', '수', '목', '금', '토');
@@ -31,20 +33,7 @@ const TableScreen = ({ navigation, route }) => {
 
     useFocusEffect(() => {
         const backAction = () => {
-            Alert.alert(
-                "잠시만요!",
-                "앱을 종료 하시겠습니까?", 
-                [
-                    {
-                        text: "아니요",
-                        onPress: () => null,
-                        style: "cancel"
-                    },
-                    { text: "예", onPress: () => {
-                        setExited(true);
-                        BackHandler.exitApp(); 
-                    }}
-            ]);
+            navigation.navigate("Home");
             return true;
         };
         
@@ -53,9 +42,6 @@ const TableScreen = ({ navigation, route }) => {
         return (() => backHandler.remove());
     },);
 
-    const fc = () => {
-        
-    }
 
     useEffect(() => {
         // setResrvLists([]);
@@ -68,6 +54,7 @@ const TableScreen = ({ navigation, route }) => {
 
             // Do something manually
             if(navState.routes[navState.index].name === 'Table'){
+                setRefreshing(true);
                 navigation.reset({
                     index: 0, 
                     routes: [
@@ -171,7 +158,7 @@ const TableScreen = ({ navigation, route }) => {
     }
 
 
-    if(resrvLists.length == 0){
+    if(resrvLists.length == 0 || refreshing === true){
         console.log("Initializing Reservation List");
         var tt0 = performance.now();
         console.log("Initial roomWidth: " + roomWidth);
@@ -327,7 +314,7 @@ const TableScreen = ({ navigation, route }) => {
         dayNames: ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'],
         dayNamesShort: ['일','월','화','수','목','금','토'],
         today: '오늘'
-      };
+    };
     LocaleConfig.defaultLocale = 'kr';
 
     const onDayPress = day => {

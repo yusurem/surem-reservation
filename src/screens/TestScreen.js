@@ -43,23 +43,10 @@ const TestScreen = ({ navigation, route }) => {
     //     "weekDay": 4,
     //     "year": 2021,
     // }
-
+    
     useFocusEffect(() => {
         const backAction = () => {
-            Alert.alert(
-                "잠시만요!",
-                "앱을 종료 하시겠습니까?", 
-                [
-                    {
-                        text: "아니요",
-                        onPress: () => null,
-                        style: "cancel"
-                    },
-                    { text: "예", onPress: () => {
-                        setExited(true);
-                        BackHandler.exitApp(); 
-                    }}
-            ]);
+            navigation.navigate("Home");
             return true;
         };
         
@@ -109,7 +96,7 @@ const TestScreen = ({ navigation, route }) => {
     }
 
     if(!("location" in route.params)){
-        route.params["location"] = '서울';s
+        route.params["location"] = '서울';
     }
     if(!("branchCode" in route.params)){
         route.params["branchCode"] = 'surem3';
@@ -212,13 +199,26 @@ const TestScreen = ({ navigation, route }) => {
         roomCodes.push(resrvLists[i].roomCode);
         roomNames.push(resrvLists[i].roomName);
     }
-
     // console.log(roomData);
     // console.log(roomCodes);
     // console.log(roomNames);
 
-    var count = 0;
-
+    const optionsList = [];
+    const optionValList = [];
+    for(let i = 0; i < roomNames.length; i++){
+        const options = [];
+        const optionVals = [];
+        for(let j = 2; j < (6 * 24) + 2; j++){
+            if(Object.values(resrvLists[i])[j] === 'true'){
+                let hour = Math.floor((j - 2) / 6);
+                let min = (j - 2) % 6;
+                options.push(`${hour}:${min}0 ${hour > 11 ? "PM" : "AM"}`);
+                optionVals.push(`${hour > 9 ? hour : "0" + hour}${min}000`);
+            }
+        }
+        optionsList.push(options);
+        optionValList.push(optionVals);
+    }
 
     const TableCol = ({ item, ind, start }) => {
         return (
@@ -226,12 +226,12 @@ const TestScreen = ({ navigation, route }) => {
                 {item.map((item, index) => {
                     if(item === "pastTime"){
                         return (
-                            <NotAvail item={item} ind={index} key={index}/>
+                            <NotAvail item={item} ind={index} key={index} />
                         );
                     }
                     else if(item === "true"){
                         return (
-                            <Avail item={item} ind={index} key={index} />
+                            <Avail item={item} ind={index} key={index} rmCode={roomCodes[ind]} ops={optionsList[ind]} opVals={optionValList[ind]}/>
                         )
                     }
                     else{
@@ -256,7 +256,7 @@ const TestScreen = ({ navigation, route }) => {
         );
     }
 
-    const Avail = ({ item, index }) => {
+    const Avail = ({ item, index, rmCode, ops, opVals}) => {
         return (
             <TouchableOpacity  
                 onPress={() => navigation.navigate("Reservation", { 
@@ -266,9 +266,9 @@ const TestScreen = ({ navigation, route }) => {
                     month: route.params.month,
                     day: route.params.day,
                     weekDay: route.params.weekDay,
-                    roomCode: roomCodes[j],
-                    options: optionsList[j],
-                    optionVals: optionValList[j],
+                    roomCode: rmCode,
+                    options: ops,
+                    optionVals: opVals,
                 })}
             >
                 <View style={{ height: MIN_H, backgroundColor: '#F6F6F6', justifyContent: 'center', borderBottomWidth: 1, borderColor: 'black', borderRightWidth: 1 }}>
@@ -451,7 +451,11 @@ const TestScreen = ({ navigation, route }) => {
                             {roomData.map((item, index) => {
                                 return (
                                     <View key={index}>
-                                        <View style={[styles.titles, index == (roomData.length - 1) ? null : { borderRightWidth: 1 }]}>
+                                        <View style={[
+                                                        styles.titles, 
+                                                        index == (roomData.length - 1) ? null : { borderRightWidth: 1 },
+                                                        roomData.length == 1 ? { width: windowWidth - 20 - HOUR_W } : { width: TITLE_W }
+                                                    ]}>
                                             <Text style={styles.titleText}>{roomNames[index]}</Text>
                                         </View>
                                         <TableCol item={item} ind={index} key={index}/>
@@ -653,7 +657,7 @@ const styles = StyleSheet.create({
     },
     titles: {
         // flexDirection: 'row',
-        width: TITLE_W,
+        // width: TITLE_W,
         height: TITLE_H,
         borderBottomWidth: 1,
         borderColor: 'black',

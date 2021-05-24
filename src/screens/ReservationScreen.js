@@ -1,13 +1,17 @@
 import React, {useState, useEffect} from 'react';
-import { View, Text, StyleSheet, Button, TouchableHighlight, TextInput, Platform, Image, Alert, ScrollView, TouchableOpacity,} from 'react-native';
+import { View, Text, StyleSheet, Button, useWindowDimensions, TextInput, Platform, Image, Alert, ScrollView, TouchableOpacity,} from 'react-native';
 
 import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
 import { SliderBox } from 'react-native-image-slider-box';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LoadingScreen from './LoadingScreen';
+import Modal from 'react-native-modal';
 
 const ReservationScreen = ({ navigation, route }) => {
+    const windowWidth = useWindowDimensions().width;
+    const windowHeight = useWindowDimensions().height;
+
     const [startTime, setStartTime] = useState(route.params.startTime);
     const [endTime, setEndTime] = useState("0");
     const [memo, setMemo] = useState("");
@@ -33,6 +37,9 @@ const ReservationScreen = ({ navigation, route }) => {
     const [imgs, setImgs] = useState([]);
     
     const [apiCalled, setApiCalled] = useState(false);
+
+    const [modalVisible, setModalVisible] = useState(false);
+    const [imgNum, setImgNum] = useState(0);
 
     console.log("Entered ReservationScreen. Params: ");
     // console.log(route.params);
@@ -211,7 +218,7 @@ const ReservationScreen = ({ navigation, route }) => {
         const codes = [roomInfo.room.imgCode1, roomInfo.room.imgCode2, roomInfo.room.imgCode3, roomInfo.room.imgCode4];
         const roomImgs = [];
         // const codes = ["null", "null", "null", "null"];
-        var empty = true;
+        // var empty = true;
         for(var i = 0; i < codes.length; i++){
             if(codes[i] !== "null"){
                 empty = false;
@@ -222,16 +229,17 @@ const ReservationScreen = ({ navigation, route }) => {
                 }
             }
         }
-        if(empty){
-            if(imgs.length == 0){
-                setImgs([
-                    require("../../assets/noimage.jpeg")
-                ]);
-            }        
-        }
-        else{
-            setImgs(roomImgs);
-        }
+        // if(empty){
+        //     if(imgs.length == 0){
+        //         setImgs([
+        //             require("../../assets/noimage.jpeg")
+        //         ]);
+        //     }        
+        // }
+        // else{
+        //     setImgs(roomImgs);
+        // }
+        setImgs(roomImgs);
         setRoomInfo(roomInfo);
         setInfo(roomInfo.room.info);
         setSubInfo(roomInfo.room.subInfo);
@@ -311,9 +319,71 @@ const ReservationScreen = ({ navigation, route }) => {
                         <View style={styles.blueBar}/>
                         <Text style={styles.headerText}>{roomName}</Text>
                     </View>
-                    <View style={{alignItems: 'center', height: 190, marginBottom: 17, marginTop: 7}}>
-                        <SliderBox parentWidth={330} sliderBoxHeight={190} images={imgs} disableOnPress={true}/>
+                    <View style={{alignItems: 'center', marginBottom: 17, marginTop: 7}}>
+                        <TouchableOpacity
+                            style={{ width: windowWidth - 40, height: 210, borderWidth: 0, borderColor: 'red' }}
+                            onPress={() => {
+                                setImgNum(0);
+                                setModalVisible(!modalVisible);
+                            }}
+                        >
+                            <Image 
+                                style={{ resizeMode: 'stretch', flex: 1, width: null, height: null, borderRadius: 10 }}
+                                source={imgs.length == 0 ? require("../../assets/noimage.jpeg") : { uri: imgs[0] }}
+                            />
+                        </TouchableOpacity>
+
+                        <View style={{ flexDirection: 'row', marginHorizontal: 8, marginTop: 5 }}>
+                            <TouchableOpacity
+                                style={{ width: (windowWidth - 50) / 3.0, height: 70, borderWidth: 0, borderColor: 'blue', marginRight: 5, }}
+                                onPress={() => {
+                                    if(imgs.length > 1){
+                                        setImgNum(1);
+                                        setModalVisible(!modalVisible);
+                                    }
+                                }}
+                            >
+                                <Image
+                                    style={{ resizeMode: 'stretch', flex: 1, width: null, height: null, borderRadius: 10 }}
+                                    source={imgs.length < 2 ? require("../../assets/noimage.jpeg") : { uri: imgs[1] }}
+                                />
+                            </TouchableOpacity>
+                            
+                            <TouchableOpacity
+                                style={{ width: (windowWidth - 50) / 3.0, height: 70, borderWidth: 0, borderColor: 'blue', marginRight: 5  }}
+                                onPress={() => {
+                                    if(imgs.length > 2){
+                                        setImgNum(2);
+                                        setModalVisible(!modalVisible);
+                                    }
+                                }}
+                            >
+                                <Image
+                                    style={{ resizeMode: 'stretch', flex: 1, width: null, height: null, borderRadius: 10 }}
+                                    source={imgs.length < 3 ? require("../../assets/noimage.jpeg") : { uri: imgs[2] }}
+                                />
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                style={{ width: (windowWidth - 50) / 3.0, height: 70, borderWidth: 0, borderColor: 'blue'  }}
+                                onPress={() => {
+                                    if(imgs.length > 3){
+                                        setImgNum(3);
+                                        setModalVisible(!modalVisible);
+                                    }
+                                }}
+                            >
+                                <Image
+                                    style={{ resizeMode: 'stretch', flex: 1, width: null, height: null, borderRadius: 10 }}
+                                    source={imgs.length < 4 ? require("../../assets/noimage.jpeg") : { uri: imgs[3] }}
+                                />
+                            </TouchableOpacity>    
+                        </View>
+
+                        {/* <SliderBox parentWidth={330} sliderBoxHeight={190} images={imgs} disableOnPress={true}/> */}
+
                     </View>
+
                     <View style={styles.headerBox}>
                         <View style={styles.blueBar}/>
                         <Text style={styles.headerText}>시설안내</Text>
@@ -476,6 +546,27 @@ const ReservationScreen = ({ navigation, route }) => {
                         </TouchableOpacity>
                     </View>
                 </View>
+
+                <Modal
+                    isVisible={modalVisible}
+                    style={{alignSelf: 'center'}}
+                >   
+                    <View style={{ backgroundColor: 'white', alignItems: 'center', height: windowHeight - 200, width: windowWidth - 100, borderRadius: 10}}>
+                        <Image
+                            style={{ resizeMode: 'stretch', flex: 1, height: windowHeight - 250, width : windowWidth - 150 }}
+                            source={{uri: imgs[imgNum]}}
+                        />
+                        
+                        <TouchableOpacity
+                            style={{ backgroundColor: 'gray', paddingHorizontal: 40, paddingVertical: 10, borderRadius: 10, marginBottom: 20 }}
+                            onPress={() => {
+                                setModalVisible(false);
+                            }}
+                        >
+                            <Text style={{color: 'white', fontWeight: 'bold', fontSize: 16}}>닫기</Text>
+                        </TouchableOpacity>
+                    </View>
+                </Modal>
 
             </ScrollView>
         </SafeAreaView>
