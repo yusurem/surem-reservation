@@ -77,7 +77,9 @@ export default function MyReservationList() {
 
 	useEffect(()=>{
     getUserId();
-    getMyReserveList();
+    if(usercode != null && secretCode != null){
+      getMyReserveList();
+    }
   },[usercode,secretCode]);
 
   return (
