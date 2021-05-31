@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, Button, useWindowDimensions, TextInput, Platfor
 
 import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
-import { SliderBox } from 'react-native-image-slider-box';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LoadingScreen from './LoadingScreen';
 import Modal from 'react-native-modal';
@@ -214,8 +213,7 @@ const ReservationScreen = ({ navigation, route }) => {
         const roomInfo = await getRoomInfo();
         const codes = [roomInfo.room.imgCode1, roomInfo.room.imgCode2, roomInfo.room.imgCode3, roomInfo.room.imgCode4];
         const roomImgs = [];
-        // const codes = ["null", "null", "null", "null"];
-        // var empty = true;
+
         for(var i = 0; i < codes.length; i++){
             if(codes[i] !== "null"){
                 empty = false;
@@ -249,7 +247,7 @@ const ReservationScreen = ({ navigation, route }) => {
             // console.log("roomCode: " + route.params.roomCode);
             console.log("resrvStime: " + `${route.params.year}${route.params.month}${route.params.day}${startTime}`);
             console.log("resrvEtime: " + `${route.params.year}${route.params.month}${route.params.day}${endTime}`);
-            const response = await axios.post('http://112.221.94.101:8980/syncTime', {
+            const response = await axios.post(URL + '/syncTime', {
                 'roomCode' : route.params.roomCode,
                 'resrvStime' : `${route.params.year}${route.params.month}${route.params.day}${startTime}`,
                 'resrvEtime' : `${route.params.year}${route.params.month}${route.params.day}${endTime}`,

@@ -108,9 +108,6 @@ export default function ReservationListScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      // 개발 서버 
-      // url: 'http://112.221.94.101:8980/getReservation',
-      // 실 서버
       url: URL + '/getReservation',
       headers: {
         'Content-Type': 'application/json'
@@ -121,7 +118,7 @@ export default function ReservationListScreen({ navigation }) {
     console.log(config)
     axios(config)
       .then(async function (response) {
-        console.log(response.data)
+        console.log('RESERVATIONS :: ',response.data)
         if (response.data.returnCode == 'E0000') {
           setReservations(response.data.reservations)
           setLoading(false)
@@ -321,7 +318,6 @@ export default function ReservationListScreen({ navigation }) {
     var config = {
       method: 'post',
       url: URL + '/getReservationListForRoom',
-      // url: 'http://112.221.94.101:8980/getReservationListForRoom',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -365,7 +361,9 @@ export default function ReservationListScreen({ navigation }) {
   useEffect(() => {
     startLoading();
     getUserId();
-    getMyReserveList();
+    if(usercode != null && secretCode != null){
+      getMyReserveList();
+    }
     return () => {}
   }, [usercode, secretCode]);
 
@@ -411,6 +409,9 @@ export default function ReservationListScreen({ navigation }) {
           onRequestClose={()=> handleQrCancel()}
         >
           <View style={styles.qrStyle}>
+            <Text style={{ marginTop: 5, textAlign: 'center' }}>{selectedRoomName}</Text>
+            <Text style={{ textAlign: 'center' }}>날짜 : {moment(selectedReservStime, 'YYYYMMDDHHmmss').format('YYYY / MM / DD')}</Text>
+            <Text style={{ textAlign: 'center' ,marginBottom:10 }}>시간 : {moment(selectedReservStime, 'YYYYMMDDHHmmss').format('HH:mm')} ~ {moment(selectedReservEtime, 'YYYYMMDDHHmmss').format('HH:mm')}</Text>
             <QRCode
               size={280}
               value={qrReservCode}
@@ -554,7 +555,7 @@ const styles = StyleSheet.create({
 
     marginVertical: '15%',
     width: 300,
-    height: 300,
+    height: 370,
     backgroundColor: '#FFFFFF',
     borderRadius: 10
   },

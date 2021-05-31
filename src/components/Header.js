@@ -1,18 +1,12 @@
 import React, { Component,useState } from "react";
-import { Text, StyleSheet, View, Image } from "react-native";
+import { Text, StyleSheet, View, Image, TouchableOpacity } from "react-native";
 
-export default class Header extends Component{
-  constructor(props){
-    super(props);
-  }
-
-  render(){
-    return (
-      <View style={[styles.headerContainer, {backgroundColor: this.props.color}]}>
-        <Image style={styles.logo} source={require("../../assets/logo_02.png")} />
-      </View>
-    )
-  }
+const Header = ({ navigation, route }) => {
+  return (
+    <View style={[styles.headerContainer]}>
+      <Image style={styles.logo} source={require("../../assets/logo_02.png")} />
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -33,5 +27,25 @@ const styles = StyleSheet.create({
   },
   menu: {
     resizeMode:'center',
+  },
+  branchBox: {
+    // borderWidth: 2,
+    // borderColor: 'red',
+    // justifyContent: 'center',
+    alignItems: 'center'
+  },
+  branchButton: {
+      backgroundColor: '#17375E',
+      borderRadius: 20,
+      paddingVertical: 5,
+      paddingHorizontal: 30
+
+  },
+  branchText: {
+      fontWeight: 'bold',
+      color: 'white',
+      fontSize: 16,
   }
 });
+
+export default Header;

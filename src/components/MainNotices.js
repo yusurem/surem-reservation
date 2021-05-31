@@ -67,7 +67,9 @@ const navigation = useNavigation();
 
 	useEffect(()=>{
 		getUserId()
-		getMainNotices()
+		if(usercode != null && secretCode != null){
+			getMainNotices()
+		}
 	}, [usercode, secretCode])
 
   return (

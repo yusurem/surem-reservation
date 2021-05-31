@@ -102,12 +102,6 @@ export default function SignUpButton(props){
     },10000)
   }
 
-  if(loading){
-    return(
-      <LoadingScreen/>
-    )
-  }
-
   return (
     <TouchableOpacity style={styles.button} onPress={()=>{
         console.log(props)

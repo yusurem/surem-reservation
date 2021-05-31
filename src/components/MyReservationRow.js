@@ -37,6 +37,10 @@ export default function MyReservationRow(props) {
 			onRequestClose={()=> handleQrCancel()}
 		>
         <View style={styles.qrStyle}>
+		  <Text style={{ marginTop: 5, textAlign: 'center' }}>{props.roomName}</Text>
+		  <Text style={{ textAlign: 'center' }}>날짜 : {moment(props.resrvStime, 'YYYYMMDDHHmmss').format('YYYY / MM / DD')}</Text>
+		  <Text style={{ textAlign: 'center' ,marginBottom:10 }}>시간 : {moment(props.resrvStime, 'YYYYMMDDHHmmss').format('HH:mm')} ~ {moment(props.resrvStime, 'YYYYMMDDHHmmss').format('HH:mm')}</Text>
+           
           <QRCode
             size={280}
             value={props.resrvCode}
@@ -87,7 +91,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		marginVertical:'15%',
 		width:300,
-		height:300,
+		height: 370,
 		backgroundColor:'#FFFFFF',
 		borderRadius:10
 	}

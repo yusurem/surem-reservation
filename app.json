@@ -2,11 +2,11 @@
   "expo": {
     "name": "오피스쉐어",
     "slug": "reservation",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/initial.jpeg",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -18,18 +18,21 @@
     ],
     "ios": {
       "bundleIdentifier": "com.surem.reservation",
-      "buildNumber": "1.0.4",
-      "supportsTablet": true
+      "buildNumber": "1.0.5",
+      "supportsTablet": true,
+      "config":{
+        "googleMapsApiKey": "AIzaSyDUqTjbGHxDv_SIMKHkQWlKPEiNx5COpJ4"
+      }
     },
     "android": {
       "package": "com.surem.reservation",
       "versionCode": 2,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/LoadingIcon.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#FFFFFF"
       },
       "config":{
-        "googleMaps":{
+        "googleMaps": {
           "apiKey":"AIzaSyCKHowsJqjfMJg76y2iM5SlQ4aQ-MNu3Zk"
         }
       }
