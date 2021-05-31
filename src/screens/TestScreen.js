@@ -149,6 +149,212 @@ const TestScreen = ({ navigation, route }) => {
         )
     }
 
+    // if(modalVisible){
+    //     return (
+    //         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }} edges={['right', 'left', 'top']} >
+    //             <View style={styles.branchBox}>
+    //                 <TouchableOpacity
+    //                     onPress={() => {
+    //                         navigation.navigate("Branch", route.params);
+    //                     }}
+    //                     style={styles.branchButton}
+    //                 >
+    //                     <Text style={styles.branchText}>{route.params.location} {route.params.branchName}점</Text> 
+    //                 </TouchableOpacity>
+    //             </View>
+    
+    //             <View style={styles.dateBox}>
+    //                 <TouchableOpacity
+    //                     onPress={() => {
+    //                         var today = new Date();
+    //                         today.setHours(0,0,0,0);
+    //                         var newDate = new Date(route.params.dateString);
+    //                         newDate.setDate(newDate.getDate() - 1);
+    //                         var month = newDate.getMonth() + 1;
+    //                         var date = newDate.getDate();
+    //                         if(newDate < today){
+    //                             Alert.alert("예약할수 없는 날짜입니다.");
+    //                         }
+    //                         else{
+    //                             setResrvLists([]);
+    //                             navigation.navigate('Test', { 
+    //                                 dateString: `${newDate.getFullYear()}-${month < 10 ? 0 : ""}${newDate.getMonth() + 1}-${date < 10 ? 0 : ""}${newDate.getDate()}`,
+    //                                 year: newDate.getFullYear(),
+    //                                 month: `${month < 10 ? 0 : ""}${newDate.getMonth() + 1}`,
+    //                                 day: `${date < 10 ? 0 : ""}${newDate.getDate()}`,
+    //                                 weekDay: newDate.getDay()
+    //                             })
+    //                         }
+    //                     }}
+    //                 >
+    //                     <MaterialCommunityIcons name="less-than" color="#BFBFBF" size={30} />
+    //                 </TouchableOpacity>
+                        
+    //                 <TouchableOpacity
+    //                     onPress={() => {
+    //                         setModalVisible(!modalVisible);
+    //                     }}
+    //                 >
+    //                     <View style={styles.dateTitle}>
+    //                         <View style={{ justifyContent: 'center' }}>
+    //                             <Text style={styles.dateStyle}>{route.params.dateString.replace(/-/g,'.')}({weekDays[route.params.weekDay]}) </Text>
+    //                         </View>
+    //                         <View style={{ justifyContent: 'center' }}>
+    //                             <AntDesign style={styles.calendarIcon} name="calendar" size={20} color="#838383" />
+    //                         </View>
+    //                     </View>
+    //                 </TouchableOpacity>
+                    
+    //                 <TouchableOpacity
+    //                     onPress={() => {
+    //                         var newDate = new Date(route.params.dateString);
+    //                         newDate.setDate(newDate.getDate() + 1);
+    //                         var month = newDate.getMonth() + 1;
+    //                         var date = newDate.getDate();
+    //                         setResrvLists([]);
+    //                         navigation.navigate('Test', { 
+    //                             dateString: `${newDate.getFullYear()}-${month < 10 ? 0 : ""}${newDate.getMonth() + 1}-${date < 10 ? 0 : ""}${newDate.getDate()}`,
+    //                             year: newDate.getFullYear(),
+    //                             month: `${month < 10 ? 0 : ""}${newDate.getMonth() + 1}`,
+    //                             day: `${date < 10 ? 0 : ""}${newDate.getDate()}`,
+    //                             weekDay: newDate.getDay()
+    //                         })
+    //                     }}
+    //                 >
+    //                     <MaterialCommunityIcons name="greater-than" color="#BFBFBF" size={30} />
+    //                 </TouchableOpacity>
+    //             </View>
+                               
+    //             {/* { This is where the table begins } */}
+    
+    //             <View style={styles.tableBox}>
+    //                 <ScrollView
+    //                     nestedScrollEnabled={true}
+    //                     style={{ borderWidth: 0, borderColor: 'black' }}
+    //                 >
+    //                 </ScrollView>
+    //             </View>
+    
+    //             <Modal 
+    //                 isVisible={modalVisible}
+    //                 backdropTransitionOutTiming={0}
+    //                 style={styles.modal}
+    //                 onBackButtonPress={() => setModalVisible(!modalVisible)}
+    //                 onBackdropPress={() => setModalVisible(!modalVisible)}
+    //                 hideModalContentWhileAnimating={true}
+    //                 backdropTransitionInTiming={0}
+    //                 onModalWillHide={() => {
+
+    //                 }}
+    //             >
+    //                 <View style={styles.modalBox}>
+    //                     <View style={styles.calendarBox}>
+    //                         <Calendar
+    //                             style={styles.calendars}
+    //                             onDayPress={onDayPress}
+    //                             current={Date()}
+    //                             minDate={Date()}
+    //                             // onDayLongPress={onDayLongPress}
+    //                             hideArrows={false}
+    //                             renderArrow={(direction) => {
+    //                                 if(direction === 'left'){
+    //                                     return <FontAwesome5 name="less-than" size={24} color="#BFBEBE" />;
+    //                                 }
+    //                                 else{
+    //                                     return <FontAwesome5 name="greater-than" size={24} color="#BFBEBE" />;
+    //                                 }
+    //                             }}
+    //                             renderHeader={(date) => {
+    //                                 return (
+    //                                     <View style={styles.headerBox}>
+    //                                         <Text style={styles.header}>{date.getFullYear()}년 {date.getMonth() + 1}월</Text>
+    //                                     </View>
+    //                                 );
+    //                             }}
+    //                             theme={{
+    //                                 'stylesheet.calendar.header': {
+    //                                     week: {
+    //                                         // marginTop: 5,
+    //                                         flexDirection: 'row',
+    //                                         justifyContent: 'space-around',
+    //                                         borderTopWidth: 1,
+    //                                         borderRightWidth: 1,
+    //                                         borderLeftWidth: 1,
+    //                                         borderTopLeftRadius: 10,
+    //                                         borderTopRightRadius: 10,
+    //                                         borderColor: '#BCBCBC',
+    //                                         backgroundColor: '#F7F7F7',
+    //                                         height: 40,
+    //                                         alignItems: 'center',
+    //                                         marginTop: 8,
+    //                                     },
+    //                                     dayHeader: {
+    //                                         // marginTop: 2,
+    //                                         // marginBottom: 2,
+    //                                         flex: 1,
+    //                                         // flexGrow: 1,
+    //                                         height: 30,
+    //                                         textAlign: 'center',
+    //                                         // borderRightWidth: 0.5,
+    //                                         // borderLeftWidth: 0.5,
+    //                                         // borderWidth: 0.5,
+    //                                         borderColor: 'black',
+    //                                         // paddingBottom: 0,
+    //                                         paddingTop: 5
+    //                                     },
+    //                                 },
+    //                                 'stylesheet.calendar.main': {
+    //                                     // container: {
+    //                                     //     borderWidth: 20,
+    //                                     //     borderColor: 'red',
+    //                                     // },
+    //                                     // week: {
+    //                                     //     // borderWidth: 5,
+    //                                     //     // borderColor: 'green',
+    //                                     //     flexDirection: 'row',
+    //                                     //     justifyContent: 'space-around'
+    //                                     // },
+    //                                     monthView: {
+    //                                         // backgroundColor: 'orange'
+    //                                         borderBottomWidth: 1,
+    //                                         borderLeftWidth: 1,
+    //                                         borderRightWidth: 1,
+    //                                         borderBottomLeftRadius: 10,
+    //                                         borderBottomRightRadius: 10,
+    //                                         borderColor: '#BCBCBC'
+    //                                     },
+    //                                     dayContainer: {
+    //                                         flex: 1,
+    //                                         alignItems: 'center',
+    //                                         // borderLeftWidth: 0.5,
+    //                                         // borderRightWidth: 0.5,
+    //                                         // borderBottomWidth: 0.5,
+    //                                         // borderColor: 'black',
+    //                                         height: 50,
+    //                                     },
+    //                                 }
+    //                             }}
+    //                         />
+    //                     </View>
+                        
+    //                     <View style={{ alignItems: 'center'}}>
+    //                         <TouchableOpacity
+    //                             style={styles.closeButton}
+    //                             onPress={() => {
+    //                                 setModalVisible(!modalVisible);
+    //                             }}
+    //                         >
+    //                             <Text style={styles.buttonText}>닫기</Text>
+    //                         </TouchableOpacity>
+    //                     </View>   
+    //                 </View>
+    //             </Modal>
+        
+        
+    //         </SafeAreaView>
+    //     );
+    // }
+
     console.log("-----TABLE :: [...Finished Intializing Reservation List]");
 
     LocaleConfig.locales['kr'] = {
@@ -223,7 +429,33 @@ const TestScreen = ({ navigation, route }) => {
     const TableCol = ({ item, ind, start }) => {
         return (
             <View>
-                {item.map((item, index) => {
+                <FlatList
+                    scrollEnabled={false}
+                    keyExtractor={(item, index) => item + index}
+                    data={item}
+                    renderItem={({ item, index }) => {
+                        if(item === "pastTime"){
+                            return (
+                                <NotAvail item={item} ind={index} key={index} />
+                            );
+                        }
+                        else if(item === "true"){
+                            return (
+                                <Avail item={item} ind={index} key={index} rmCode={roomCodes[ind]} ops={optionsList[ind]} opVals={optionValList[ind]}/>
+                            )
+                        }
+                        else{
+                            // continue until last false (count++)
+                            // and then do a mapping of range(count)
+                            // if odd, in middle one, if even, in between middle two
+                            // equation for middle : len / 2 & len / 2 -n1
+                            return (
+                                <Booked item={item} ind={index} key={index} />
+                            )
+                        }     
+                    }}
+                />
+                {/* {item.map((item, index) => {
                     if(item === "pastTime"){
                         return (
                             <NotAvail item={item} ind={index} key={index} />
@@ -243,7 +475,7 @@ const TestScreen = ({ navigation, route }) => {
                             <Booked item={item} ind={index} key={index} />
                         )
                     }      
-                })}
+                })} */}
             </View>
         );
     }
@@ -317,6 +549,32 @@ const TestScreen = ({ navigation, route }) => {
                         <Text style={styles.hourText}>{item}</Text>
                     </View>
                     <View style={{ }}>
+                        {/* <View style={[{ borderColor: 'black', borderLeftWidth: 1, height: MIN_H, justifyContent: 'center', paddingHorizontal: 5 }, {borderBottomWidth: 1}]}>
+                            <Text style={{}}>{1}</Text>
+                        </View>
+                        <View style={[{ borderColor: 'black', borderLeftWidth: 1, height: MIN_H, justifyContent: 'center', paddingHorizontal: 5 }, {borderBottomWidth: 1}]}>
+                            <Text style={{}}>{1}</Text>
+                        </View>
+                        <View style={[{ borderColor: 'black', borderLeftWidth: 1, height: MIN_H, justifyContent: 'center', paddingHorizontal: 5 }, {borderBottomWidth: 1}]}>
+                            <Text style={{}}>{1}</Text>
+                        </View>
+                        <View style={[{ borderColor: 'black', borderLeftWidth: 1, height: MIN_H, justifyContent: 'center', paddingHorizontal: 5 }, {borderBottomWidth: 1}]}>
+                            <Text style={{}}>{1}</Text>
+                        </View>
+                        <View style={[{ borderColor: 'black', borderLeftWidth: 1, height: MIN_H, justifyContent: 'center', paddingHorizontal: 5 }, {borderBottomWidth: 1}]}>
+                            <Text style={{}}>{1}</Text>
+                        </View>
+                        <View style={[{ borderColor: 'black', borderLeftWidth: 1, height: MIN_H, justifyContent: 'center', paddingHorizontal: 5 }, {borderBottomWidth: 1}]}>
+                            <Text style={{}}>{1}</Text>
+                        </View> */}
+                        {/* <FlatList
+                            scrollEnabled={false}
+                            keyExtractor={(item) => item}
+                            data={mins}
+                            renderItem={({ item, index }) => {
+                                return (<Min item={item} key={index} ind={index} />)
+                            }}
+                        /> */}
                         {mins.map((item, index) => {
                             // console.log(index);
                             return (<Min item={item} key={index} ind={index} />)
@@ -433,6 +691,15 @@ const TestScreen = ({ navigation, route }) => {
             {/* { This is where the table begins } */}
 
             <View style={styles.tableBox}>
+                {/* <FlatList
+                    scrollEnabled={false}
+                    removeClippedSubviews={true} 
+                    keyExtractor={(item, index) => item + index}
+                    data={hours}
+                    renderItem={({ item, index }) => {
+                        return (<RenderItem item={item} key={index} ind={index}/>)
+                    }}
+                /> */}
                 
                 <ScrollView
                     nestedScrollEnabled={true}
@@ -440,6 +707,15 @@ const TestScreen = ({ navigation, route }) => {
                 >
                     <View style={{ flexDirection: 'row' }}>
                         <View>
+                            {/* <FlatList
+                                // initialNumToRender={1}
+                                scrollEnabled={false}
+                                keyExtractor={(item, index) => item + index}
+                                data={hours}
+                                renderItem={({ item, index }) => {
+                                    return (<RenderItem item={item} key={index} ind={index}/>)
+                                }}
+                            /> */}
                             {hours.map((item, index) => {
                                 return (<RenderItem item={item} key={index} ind={index}/>)
                             })}
@@ -448,6 +724,48 @@ const TestScreen = ({ navigation, route }) => {
                             nestedScrollEnabled={true}
                             horizontal={true}
                         >   
+                            {/* {roomData.map((item, index) => {
+                                return (
+                                    <View key={index}>
+                                        <View style={[
+                                            styles.titles, 
+                                            index == (roomData.length - 1) ? null : { borderRightWidth: 1 },
+                                            roomData.length == 1 ? { width: windowWidth - 20 - HOUR_W } : { width: TITLE_W }
+                                        ]}>
+                                            <Text style={styles.titleText}>{roomNames[index]}</Text>
+                                        </View>
+                                        <FlatList
+                                            // initialNumToRender={1}
+                                            scrollEnabled={false}
+                                            keyExtractor={(item, index) => item + index}
+                                            data={item}
+                                            renderItem={({ item, index }) => {
+                                                if(item === "pastTime"){
+                                                    return (
+                                                        <NotAvail item={item} ind={index} key={index} />
+                                                    );
+                                                }
+                                                else if(item === "true"){
+                                                    return (
+                                                        <Avail item={item} ind={index} key={index} rmCode={roomCodes[index]} ops={optionsList[index]} opVals={optionValList[index]}/>
+                                                    )
+                                                }
+                                                else{
+                                                    // continue until last false (count++)
+                                                    // and then do a mapping of range(count)
+                                                    // if odd, in middle one, if even, in between middle two
+                                                    // equation for middle : len / 2 & len / 2 -n1
+                                                    return (
+                                                        <Booked item={item} ind={index} key={index} />
+                                                    )
+                                                }  
+                                            }}
+                                        />
+                                    </View>
+                                   
+                                )
+                            })} */}
+                            
                             {roomData.map((item, index) => {
                                 return (
                                     <View key={index}>
@@ -464,9 +782,8 @@ const TestScreen = ({ navigation, route }) => {
                             })}
                         </ScrollView>
                     </View>
-                    
                 </ScrollView>
-            </View>
+            </View>    
 
             <Modal 
                 isVisible={modalVisible}
@@ -474,6 +791,10 @@ const TestScreen = ({ navigation, route }) => {
                 style={styles.modal}
                 onBackButtonPress={() => setModalVisible(!modalVisible)}
                 onBackdropPress={() => setModalVisible(!modalVisible)}
+                hideModalContentWhileAnimating={true}
+                // animationOut={'fadeOut'}
+                backdropTransitionInTiming={0}
+                useNativeDriver={true}
             >
                 <View style={styles.modalBox}>
                     <View style={styles.calendarBox}>
@@ -578,7 +899,6 @@ const TestScreen = ({ navigation, route }) => {
                 </View>
             </Modal>
     
-    
         </SafeAreaView>
     );
 }
@@ -631,6 +951,7 @@ const styles = StyleSheet.create({
         // borderWidth: 1,
         // borderColor: "purple",
         borderRadius: 10,
+        overflow: 'hidden'
     },
     flatList: {
         // borderWidth: 1,

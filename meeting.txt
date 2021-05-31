@@ -1,3 +1,25 @@
+2021-05-24
+- Things to do:
+    - 결제 기능 ~
+    - Images
+        - Reservation images change to switching in between, and theres an arrow !
+        - Make the images come out not distorted !
+    - Finish the new table, or stick with the old one ~
+        - fixed pop up problem !
+        - made it slightly faster !
+        - have to do optionsVals
+        - color styling finalizing
+    - Adding a pop-up to before we deactivate !
+    - Making branch the initial screen when entered
+    - Storing chosen branch in sql and getting it from initially
+- Things left:
+    - Organizing
+        - I want to organize the entire system for once
+    - 쿠폰
+    - 공유하기
+    - 최근 지점 선택
+    - 푸쉬 알림
+
 2021-05-17
 - Things to do:
     - Came out in Meeting

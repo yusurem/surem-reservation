@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableHighlight, TouchableOpacity, BackHandl
 import axios from 'axios';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { set } from 'react-native-reanimated';
+import * as SQLite from 'expo-sqlite';
 import { URL } from '../constants';
 
 const BranchScreen = ({ navigation, route }) => {
@@ -15,11 +15,58 @@ const BranchScreen = ({ navigation, route }) => {
     const [selectedItem, setSelectedItem] = useState(locations[0]);
     const [locData, setLocData] = useState([]);
     const [initial, setInitial] = useState(true);
+    const [curr, setCurr] = useState(null);
+    const [recA, setRecA] = useState(null);
+    const [recB, setRecB] = useState(null);
+
+    const db = SQLite.openDatabase("db.db");
+
+    db.transaction((tx) => {
+        tx.executeSql('CREATE TABLE IF NOT EXISTS Branch (id INTEGER PRIMARY KEY, current TEXT, recentA TEXT, recentB TEXT);')
+    })
+
+    const getBranch = async () => {
+        try{
+            await db.transaction( 
+                async (tx) => {
+                    tx.executeSql("select * from Branch order by id desc;"),
+                    [],
+                    (tx, results) => {
+                        // do set current, recentA, recentB
+                        // ex. set(results.row.item(0).current)
+                    },
+                    (tx, error) => {
+                        console.log(error);
+                    }
+                }
+            )
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    const saveBranch = (current, recentA, recentB) => {
+        db.transcation(
+            (tx) => {
+                tx.executeSql("INSERT INTO Branch(current, recentA, recentB) Values(?,?)", [current, recentA, recentB],
+                    (tx, results) => {
+                        console.log(results);
+                    },
+                    (txt, error) => {
+                        console.log(error);
+                    }
+                )
+            },
+        )
+    }
+
+
+
 
     const getLocationList = async (loc) => {
         try{
             console.log("Attempting to retrieve location list...");
-            const response = await axios.post(URL+'/getLocationList', {
+            const response = await axios.post(URL + '/getLocationList', {
             //const response = await axios.post('http://112.221.94.101:8980/getLocationList', {
                 location: loc
             });

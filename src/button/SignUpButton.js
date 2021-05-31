@@ -65,26 +65,26 @@ export default function SignUpButton(props){
           }
         );
     
-        var config = {
-          method: 'post',
-          url: URL + '/getEncryptCode',
-          // url: 'http://112.221.94.101:8980/getEncryptCode',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-            data : data
-        };
-        axios(config).then(function (response){
-          console.log(JSON.stringify(response.data));
-          if(response.data.returnCode === "E2007"){
-            alert("사용자가 없습니다.")
-          }else{
-            console.log('login Success')
-            saveUserId(response.data.returnCode, props.phoneNum)
-            setLoading(false);
-            navigation.reset({index: 0, routes: [{name: 'Tab'}] })
-          }
-        })
+    var config = {
+      method: 'post',
+      url: URL + '/getEncryptCode',
+      // url: 'http://112.221.94.101:8980/getEncryptCode',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+        data : data
+    };
+    axios(config).then(function (response){
+      console.log(JSON.stringify(response.data));
+      if(response.data.returnCode === "E2007"){
+        alert("사용자가 없습니다.")
+      }else{
+        console.log('login Success')
+        saveUserId(response.data.returnCode, props.phoneNum)
+        setLoading(false);
+        navigation.reset({index: 0, routes: [{name: 'Tab'}] })
+      }
+    })
 
       }else{
         alert(JSON.stringify(response.data))

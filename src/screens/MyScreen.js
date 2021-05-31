@@ -302,21 +302,34 @@ const MyScreen = ({ navigation, route }) => {
                     <TouchableHighlight
                         style={styles.deleteButton}
                         onPress={ async () => {
-                            const res = await quitMember();
-                            // erase data from sqlite database
-                            if(res.returnCode === 'E0000'){
-                                await deleteUserId();
-                                navigation.reset({
-                                    index: 0, 
-                                    routes: [
-                                        {name: 'SignUp'}
-                                    ] 
-                                });
-                            }
-                            else{
-                                Alert.alert("탈퇴하는데 문제가 생겼습니다. 잠시후 다시 시도해주세요.");
-                            }
-                            
+                            Alert.alert(
+                                "잠시만요!",
+                                "정말로 탈퇴하시겠습니까?", 
+                                [
+                                  {
+                                    text: "아니요",
+                                    onPress: () => null,
+                                    style: "cancel"
+                                  },
+                                  { text: "예", 
+                                    onPress: async () => {
+                                        const res = await quitMember();
+                                        // erase data from sqlite database
+                                        if(res.returnCode === 'E0000'){
+                                            await deleteUserId();
+                                            navigation.reset({
+                                                index: 0, 
+                                                routes: [
+                                                    {name: 'SignUp'}
+                                                ] 
+                                            });
+                                        }
+                                        else{
+                                            Alert.alert("탈퇴하는데 문제가 생겼습니다. 잠시후 다시 시도해주세요.");
+                                        }
+                                    }
+                                  }
+                            ]);
                         }}
                     >
                         <Text style={styles.buttonText}>탈퇴하기</Text>
@@ -374,7 +387,6 @@ const MyScreen = ({ navigation, route }) => {
                             </View>
                         </View>
                     </Modal>                    
-
                 </View>
             </ScrollView>
         </SafeAreaView> 

@@ -8,6 +8,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import LoadingScreen from './LoadingScreen';
 import Modal from 'react-native-modal';
 import { URL } from '../constants';
+import { FontAwesome5 } from '@expo/vector-icons'; 
+
 
 const ReservationScreen = ({ navigation, route }) => {
     const windowWidth = useWindowDimensions().width;
@@ -34,13 +36,14 @@ const ReservationScreen = ({ navigation, route }) => {
     const [endLabels, setEndLabels] = useState([]);
     const [endVals, setEndVals] = useState([]);
 
-    const [imgCodes, setImgCodes] = useState([]);
     const [imgs, setImgs] = useState([]);
     
     const [apiCalled, setApiCalled] = useState(false);
 
     const [modalVisible, setModalVisible] = useState(false);
     const [imgNum, setImgNum] = useState(0);
+    const [imgH, setImgH] = useState(0);
+    // const [imgW, setImgW] = useState(0);
 
     console.log("Entered ReservationScreen. Params: ");
     // console.log(route.params);
@@ -305,6 +308,24 @@ const ReservationScreen = ({ navigation, route }) => {
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: 'white'}} edges={['right', 'left', 'top']}>
             <ScrollView>
+                <TouchableOpacity
+                    style={{ backgroundColor: 'white', paddingHorizontal: 6, paddingVertical: 3, position: 'absolute', top: 120, left: 20, zIndex: 1, justifyContent: 'center' }}
+                    onPress={() => {
+                        // shift the imgs array by 1 to the left
+                    }}
+                >
+                    <FontAwesome5 name="less-than" size={22} color="black" />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={{ backgroundColor: 'white', paddingHorizontal: 6, paddingVertical: 3, position: 'absolute', top: 120, right: 20, zIndex: 1, justifyContent: 'center', alignSelf: 'flex-end' }}
+                    onPress={() => {
+                        // shift the imgs array by 1 to the right
+                    }}
+                >
+                    <FontAwesome5 name="greater-than" size={22} color="black" />
+                </TouchableOpacity>
+
                 <View style={styles.mainBox}>
                     <View style={styles.headerBox}>
                         <View style={styles.blueBar}/>
@@ -314,12 +335,17 @@ const ReservationScreen = ({ navigation, route }) => {
                         <TouchableOpacity
                             style={{ width: windowWidth - 40, height: 210, borderWidth: 0, borderColor: 'red' }}
                             onPress={() => {
-                                setImgNum(0);
-                                setModalVisible(!modalVisible);
+                                if(imgs.length != 0){
+                                    setImgNum(0);
+                                    Image.getSize(imgs[0], (width, height) => {
+                                        setImgH(((windowWidth - 100) / width ) * height)
+                                    })
+                                    setModalVisible(!modalVisible);
+                                }
                             }}
                         >
                             <Image 
-                                style={{ resizeMode: 'stretch', flex: 1, width: null, height: null, borderRadius: 10 }}
+                                style={{ resizeMode: 'cover', flex: 1, width: null, height: null, borderRadius: 10 }}
                                 source={imgs.length == 0 ? require("../../assets/noimage.jpeg") : { uri: imgs[0] }}
                             />
                         </TouchableOpacity>
@@ -330,12 +356,15 @@ const ReservationScreen = ({ navigation, route }) => {
                                 onPress={() => {
                                     if(imgs.length > 1){
                                         setImgNum(1);
+                                        Image.getSize(imgs[1], (width, height) => {
+                                            setImgH(((windowWidth - 100) / width ) * height)
+                                        })
                                         setModalVisible(!modalVisible);
                                     }
                                 }}
                             >
                                 <Image
-                                    style={{ resizeMode: 'stretch', flex: 1, width: null, height: null, borderRadius: 10 }}
+                                    style={{ resizeMode: 'cover', flex: 1, width: null, height: null, borderRadius: 10 }}
                                     source={imgs.length < 2 ? require("../../assets/noimage.jpeg") : { uri: imgs[1] }}
                                 />
                             </TouchableOpacity>
@@ -345,12 +374,15 @@ const ReservationScreen = ({ navigation, route }) => {
                                 onPress={() => {
                                     if(imgs.length > 2){
                                         setImgNum(2);
+                                        Image.getSize(imgs[2], (width, height) => {
+                                            setImgH(((windowWidth - 100) / width ) * height)
+                                        })
                                         setModalVisible(!modalVisible);
                                     }
                                 }}
                             >
                                 <Image
-                                    style={{ resizeMode: 'stretch', flex: 1, width: null, height: null, borderRadius: 10 }}
+                                    style={{ resizeMode: 'cover', flex: 1, width: null, height: null, borderRadius: 10 }}
                                     source={imgs.length < 3 ? require("../../assets/noimage.jpeg") : { uri: imgs[2] }}
                                 />
                             </TouchableOpacity>
@@ -360,12 +392,15 @@ const ReservationScreen = ({ navigation, route }) => {
                                 onPress={() => {
                                     if(imgs.length > 3){
                                         setImgNum(3);
+                                        Image.getSize(imgs[3], (width, height) => {
+                                            setImgH(((windowWidth - 100) / width ) * height)
+                                        })
                                         setModalVisible(!modalVisible);
                                     }
                                 }}
                             >
                                 <Image
-                                    style={{ resizeMode: 'stretch', flex: 1, width: null, height: null, borderRadius: 10 }}
+                                    style={{ resizeMode: 'cover', flex: 1, width: null, height: null, borderRadius: 10 }}
                                     source={imgs.length < 4 ? require("../../assets/noimage.jpeg") : { uri: imgs[3] }}
                                 />
                             </TouchableOpacity>    
@@ -524,9 +559,7 @@ const ReservationScreen = ({ navigation, route }) => {
                                     }
                                     else{
                                         setErrorMessageA("이미 예약중인 시간입니다. 다른시간을 선택하시거나 잠시후 다시 시도해주세요.");
-                                    }
-
-                                    
+                                    }   
                                 }
                                 else{
                                     setErrorMessageA("이용시간을 다시 입력해주세요.");
@@ -541,10 +574,14 @@ const ReservationScreen = ({ navigation, route }) => {
                 <Modal
                     isVisible={modalVisible}
                     style={{alignSelf: 'center'}}
+                    backdropTransitionOutTiming={0}
+                    backdropTransitionInTiming={0}
+                    onBackButtonPress={() => setModalVisible(!modalVisible)}
+                    onBackdropPress={() => setModalVisible(!modalVisible)}
                 >   
-                    <View style={{ backgroundColor: 'white', alignItems: 'center', height: windowHeight - 200, width: windowWidth - 100, borderRadius: 10}}>
+                    <View style={{ backgroundColor: 'white', alignItems: 'center', height: imgH + 50, width: windowWidth - 50, borderRadius: 10}}>
                         <Image
-                            style={{ resizeMode: 'stretch', flex: 1, height: windowHeight - 250, width : windowWidth - 150 }}
+                            style={{ resizeMode: 'stretch', flex: 1, height: imgH, width : windowWidth - 100 }}
                             source={{uri: imgs[imgNum]}}
                         />
                         
