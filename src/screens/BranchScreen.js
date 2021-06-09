@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableHighlight, TouchableOpacity, BackHandler, FlatList, Alert } from 'react-native';
 import axios from 'axios';
 
@@ -9,46 +9,73 @@ import { URL } from '../constants';
 const BranchScreen = ({ navigation, route }) => {
     console.log("Entered BranchScreen. Params: ");
     console.log(route.params);
+    
+    if(route.params === undefined){
+        var currDate = new Date();
+        var currInfo = {
+            day: currDate.getDate(),
+            month: currDate.getMonth() + 1,
+            weekDay: currDate.getDay(),
+            year: currDate.getFullYear()
+        }
+        route.params = {
+            dateString: `${currInfo.year}-${currInfo.month > 9 ? currInfo.month : "0" + currInfo.month}-${currInfo.day > 9 ? currInfo.day : "0" + currInfo.day}`,
+            day: `${currInfo.day > 9 ? currInfo.day : "0" + currInfo.day}`,
+            month: `${currInfo.month > 9 ? currInfo.month : "0" + currInfo.month}`,
+            weekDay: currInfo.weekDay,
+            year: currInfo.year
+        }
+        console.log("INITIAL");
+        console.log(route.params);
+    }
 
     const locations = ['서울', '경기', '인천', '강원', '대전', '충정', '대구', '부산', '울산', '경상', '광주', '전라', '제주'];
 
     const [selectedItem, setSelectedItem] = useState(locations[0]);
     const [locData, setLocData] = useState([]);
     const [initial, setInitial] = useState(true);
+
+    const [recents, setRecents] = useState([]);
+
     const [curr, setCurr] = useState(null);
     const [recA, setRecA] = useState(null);
     const [recB, setRecB] = useState(null);
 
     const db = SQLite.openDatabase("db.db");
 
+    // db.transaction((tx) => {
+    //     tx.executeSql('DROP TABLE IF EXISTS Branches;');
+    // })
+
     db.transaction((tx) => {
-        tx.executeSql('CREATE TABLE IF NOT EXISTS Branch (id INTEGER PRIMARY KEY, current TEXT, recentA TEXT, recentB TEXT);')
+        tx.executeSql('CREATE TABLE IF NOT EXISTS Branches (_id INTEGER PRIMARY KEY, location TEXT, branchCode TEXT, branchName TEXT);')
     })
 
-    const getBranch = async () => {
-        try{
-            await db.transaction( 
-                async (tx) => {
-                    tx.executeSql("select * from Branch order by id desc;"),
+    const getBranch = () => {
+        console.log("retrieving...");
+        db.transaction(
+            (tx) => {
+                tx.executeSql('select * from Branches order by _id asc;',
                     [],
                     (tx, results) => {
-                        // do set current, recentA, recentB
+                        // do set current, recentA, recentB 
                         // ex. set(results.row.item(0).current)
+                        // console.log(results);
+                        setRecents(results.rows._array);
                     },
                     (tx, error) => {
                         console.log(error);
                     }
-                }
-            )
-        } catch (err) {
-            console.log(err);
-        }
+                );
+            }
+        )
     }
 
-    const saveBranch = (current, recentA, recentB) => {
-        db.transcation(
-            (tx) => {
-                tx.executeSql("INSERT INTO Branch(current, recentA, recentB) Values(?,?)", [current, recentA, recentB],
+    const saveBranch = async (location, branchCode, branchName) => {
+        console.log("inserting...");
+        db.transaction(
+            async (tx) => {
+                await tx.executeSql("INSERT INTO Branches (location, branchCode, branchName) VALUES(?,?,?);", [location, branchCode, branchName],
                     (tx, results) => {
                         console.log(results);
                     },
@@ -60,8 +87,31 @@ const BranchScreen = ({ navigation, route }) => {
         )
     }
 
+    const deleteBranch = (_id) => {
+        console.log("deleting...");
+        db.transaction(
+            (tx) => {
+                tx.executeSql(`DELETE FROM Branches WHERE _id = ?;`, [_id],
+                    (tx, results) => {
+                        // console.log(results);
+                    },
+                    (txt, error) => {
+                        console.log(error);
+                    }
+                )
+            },
+        )
+    }
 
+    useEffect(() => {
+        getBranch();
+    }, [curr])
 
+    // saveBranch('hi1', 'hey1', 'hello1');
+    // saveBranch('hi2', 'hey2', 'hello2');
+    // saveBranch('hi3', 'hey3', 'hello3');
+    // getBranch();
+    console.log(recents);
 
     const getLocationList = async (loc) => {
         try{
@@ -136,6 +186,24 @@ const BranchScreen = ({ navigation, route }) => {
                     route.params["location"] = selectedItem;
                     route.params["branchCode"] = item.adminCode;
                     route.params["branchName"] = item.adminPlaceName;
+                    
+                    var deleted = false;
+                    for(var i = 0; i < recents.length; i++){
+                        if(recents[i].branchCode === item.adminCode){
+                            deleteBranch(recents[i]._id);
+                            deleted = true;
+                        }
+                    }
+                    if(recents.length > 2){
+                        if(!deleted){
+                            deleteBranch(recents[0]._id);
+                        }
+                    }
+
+                    saveBranch(selectedItem, item.adminCode, item.adminPlaceName);
+
+                    
+                    console.log("Showing th table for: " + route.params.branchName);
                     navigation.replace("Table", route.params)
                 }}
             />

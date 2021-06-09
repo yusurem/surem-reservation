@@ -8,7 +8,7 @@ const LoadingScreen = ({ navigation, route }) => {
 
     return (    
         <SafeAreaView style={{ flex: 1, backgroundColor: '#F3F4F8' }}>
-            <View style={{justifyContent:'center', height:'100%', width:'100%', alignItems:'center'}}>
+            <View style={{ justifyContent:'center', height:'100%', width:'100%', alignItems:'center' }}>
                 {/* <Image style={styles.logo} source={require("../../assets/LoadingIcon.png")} /> */}
                 <ActivityIndicator size="large" color="gray"/>
                 <Text style={styles.loadingText}>로딩중</Text>

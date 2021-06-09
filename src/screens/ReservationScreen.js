@@ -9,7 +9,6 @@ import Modal from 'react-native-modal';
 import { URL } from '../constants';
 import { FontAwesome5 } from '@expo/vector-icons'; 
 
-
 const ReservationScreen = ({ navigation, route }) => {
     const windowWidth = useWindowDimensions().width;
     const windowHeight = useWindowDimensions().height;
@@ -42,10 +41,41 @@ const ReservationScreen = ({ navigation, route }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [imgNum, setImgNum] = useState(0);
     const [imgH, setImgH] = useState(0);
+
     // const [imgW, setImgW] = useState(0);
+
+    const test = [
+        require("../../assets/test/1.png"),
+        require("../../assets/test/2.png"),
+        require("../../assets/test/3.png"),
+        require("../../assets/test/4.png")
+    ]
 
     console.log("Entered ReservationScreen. Params: ");
     // console.log(route.params);
+    // return (
+    //     <View></View>
+    // );
+
+    const rotateLeft = () => {
+        // bcda
+        if(imgs.length < 2){
+            return;
+        }
+        var clone = [...imgs];
+        var temp = clone.shift();
+        setImgs([...clone, temp]);
+    }
+    
+    const rotateRight = () => {
+        // dabc
+        if(imgs.length < 2){
+            return;
+        }
+        var clone = [...imgs];
+        var temp = clone.pop();
+        setImgs([temp, ...clone]);
+    }
 
     const valsToInt = (vals) => {
         var temp;
@@ -146,7 +176,7 @@ const ReservationScreen = ({ navigation, route }) => {
         const pickerLabels = [];
         var flag = false;
         for(var i = 0; i < endVals.length; i++){
-            if(endVals[i].hour > 9){
+            if(endVals[i].hour > 11){
                 if(endVals[i].hour == 23 && endVals[i].min == 5){
                     pickerVals.push("000000");
                     pickerLabels.push('24:00 AM');
@@ -154,7 +184,7 @@ const ReservationScreen = ({ navigation, route }) => {
                 }
                 flag = true;
             }
-            pickerVals.push(`${flag ? endVals[i].hour : "0" + endVals[i].hour}${endVals[i].min}000`);
+            pickerVals.push(`${endVals[i].hour > 9 ? endVals[i].hour : "0" + endVals[i].hour}${endVals[i].min}000`);
             pickerLabels.push(`${endVals[i].hour}:${endVals[i].min}0 ${flag ? "PM" : "AM"}`);
         }
         setEndVals(pickerVals);
@@ -166,13 +196,13 @@ const ReservationScreen = ({ navigation, route }) => {
             console.log("Attempting to retreive room information...");
             console.log("roomCode: " + route.params.roomCode);
             
-            const response = await axios.post(URL + '/getRoomInfo', {
+            const response = await axios.post( URL + '/getRoomInfo', {
             // const response = await axios.post('http://112.221.94.101:8980/getRoomInfo', {
                 roomCode: route.params.roomCode
                 // roomCode: '64D1FEC28CFE4A7'
             });
             // console.log('ROOM INFO : ' + response.data)
-            // console.log(response.data);
+            console.log(response.data);
             if(response.data.returnCode !== "E0000"){
                 console.log("Error: " + response.data.returnCode);
                 navigation.navigate("Table");
@@ -209,14 +239,13 @@ const ReservationScreen = ({ navigation, route }) => {
     }
 
     const apiCalls = async () => {
-        setApiCalled(true);
         const roomInfo = await getRoomInfo();
         const codes = [roomInfo.room.imgCode1, roomInfo.room.imgCode2, roomInfo.room.imgCode3, roomInfo.room.imgCode4];
         const roomImgs = [];
 
         for(var i = 0; i < codes.length; i++){
             if(codes[i] !== "null"){
-                empty = false;
+                // empty = false;
                 var image = await getRoomImg(codes[i]);
                 if(image.returnCode === "E0000"){
                     roomImgs.push(image.url);
@@ -236,9 +265,10 @@ const ReservationScreen = ({ navigation, route }) => {
         // }
         setImgs(roomImgs);
         setRoomInfo(roomInfo);
-        setInfo(roomInfo.room.info);
-        setSubInfo(roomInfo.room.subInfo);
-        setRoomName(roomInfo.room.roomName);
+        // setInfo(roomInfo.room.info);
+        // setSubInfo(roomInfo.room.subInfo);
+        // setRoomName(roomInfo.room.roomName);
+        setApiCalled(true);
     }
 
     const syncTime = async () => {
@@ -277,7 +307,7 @@ const ReservationScreen = ({ navigation, route }) => {
 
     useEffect(() => {
         apiCalls();
-    }, [apiCalled])
+    }, [route.params.roomCode])
 
     if(endVals.length == 0){
         console.log("Initializing Data..");
@@ -290,9 +320,9 @@ const ReservationScreen = ({ navigation, route }) => {
         )
     }
     
-    console.log("---------------------------");
-    console.log(imgs);
-    console.log("---------------------------");
+    // console.log("---------------------------");
+    // console.log(endVals);
+    // console.log("---------------------------");
 
     const calculatePrice = () => {
         if(route.params.weekDay < 5){
@@ -303,6 +333,17 @@ const ReservationScreen = ({ navigation, route }) => {
         }
     }
 
+    if(!apiCalled){
+        return (
+            <LoadingScreen />
+        );
+    }
+
+    // if(apiCalled){
+    //     console.log("----------------------------")
+    //     console.log(roomInfo.room.weekPrice);
+    // }
+
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: 'white'}} edges={['right', 'left', 'top']}>
             <ScrollView>
@@ -310,6 +351,7 @@ const ReservationScreen = ({ navigation, route }) => {
                     style={{ backgroundColor: 'white', paddingHorizontal: 6, paddingVertical: 3, position: 'absolute', top: 120, left: 20, zIndex: 1, justifyContent: 'center' }}
                     onPress={() => {
                         // shift the imgs array by 1 to the left
+                        rotateRight();
                     }}
                 >
                     <FontAwesome5 name="less-than" size={22} color="black" />
@@ -319,6 +361,7 @@ const ReservationScreen = ({ navigation, route }) => {
                     style={{ backgroundColor: 'white', paddingHorizontal: 6, paddingVertical: 3, position: 'absolute', top: 120, right: 20, zIndex: 1, justifyContent: 'center', alignSelf: 'flex-end' }}
                     onPress={() => {
                         // shift the imgs array by 1 to the right
+                        rotateLeft();
                     }}
                 >
                     <FontAwesome5 name="greater-than" size={22} color="black" />
@@ -327,7 +370,7 @@ const ReservationScreen = ({ navigation, route }) => {
                 <View style={styles.mainBox}>
                     <View style={styles.headerBox}>
                         <View style={styles.blueBar}/>
-                        <Text style={styles.headerText}>{roomName}</Text>
+                        <Text style={styles.headerText}>{roomInfo.room.roomName}</Text>
                     </View>
                     <View style={{alignItems: 'center', marginBottom: 17, marginTop: 7}}>
                         <TouchableOpacity
@@ -344,6 +387,7 @@ const ReservationScreen = ({ navigation, route }) => {
                         >
                             <Image 
                                 style={{ resizeMode: 'cover', flex: 1, width: null, height: null, borderRadius: 10 }}
+                                // source={ test[0] }
                                 source={imgs.length == 0 ? require("../../assets/noimage.jpeg") : { uri: imgs[0] }}
                             />
                         </TouchableOpacity>
@@ -363,6 +407,7 @@ const ReservationScreen = ({ navigation, route }) => {
                             >
                                 <Image
                                     style={{ resizeMode: 'cover', flex: 1, width: null, height: null, borderRadius: 10 }}
+                                    // source={ test[1] }
                                     source={imgs.length < 2 ? require("../../assets/noimage.jpeg") : { uri: imgs[1] }}
                                 />
                             </TouchableOpacity>
@@ -381,6 +426,7 @@ const ReservationScreen = ({ navigation, route }) => {
                             >
                                 <Image
                                     style={{ resizeMode: 'cover', flex: 1, width: null, height: null, borderRadius: 10 }}
+                                    // source={ test[2] }
                                     source={imgs.length < 3 ? require("../../assets/noimage.jpeg") : { uri: imgs[2] }}
                                 />
                             </TouchableOpacity>
@@ -399,6 +445,7 @@ const ReservationScreen = ({ navigation, route }) => {
                             >
                                 <Image
                                     style={{ resizeMode: 'cover', flex: 1, width: null, height: null, borderRadius: 10 }}
+                                    // source={ test[3] }
                                     source={imgs.length < 4 ? require("../../assets/noimage.jpeg") : { uri: imgs[3] }}
                                 />
                             </TouchableOpacity>    
@@ -413,14 +460,14 @@ const ReservationScreen = ({ navigation, route }) => {
                         <Text style={styles.headerText}>시설안내</Text>
                     </View>
                     <View style={styles.description}>
-                        <Text style={styles.descriptionText}>{info}</Text>
+                        <Text style={styles.descriptionText}>{roomInfo.room.info}</Text>
                     </View>
                     <View style={styles.headerBox}>
                         <View style={styles.blueBar}/>
                         <Text style={styles.headerText}>부가서비스</Text>
                     </View>
                     <View style={styles.description}>
-                        <Text style={styles.descriptionText}>{subInfo}</Text>
+                        <Text style={styles.descriptionText}>{roomInfo.room.subInfo}</Text>
                     </View>
                     <View style={styles.headerBox}>
                         <View style={styles.blueBar}/>
@@ -473,12 +520,19 @@ const ReservationScreen = ({ navigation, route }) => {
                                         setHours(hours);
                                         setMins(minutes);
 
-                                        var price = (minutes / 10) * parseInt(roomInfo.room.weekPrice);
-                                        price += hours * 6 * parseInt(roomInfo.room.weekPrice);
-                                        price = price.toLocaleString();
+                                        var price;
+                                        if(route.params.weekDay === 0 || route.params.weekDay === 6){
+                                            price = parseInt(roomInfo.room.holidayPrice); 
+                                        }
+                                        else{
+                                            price = parseInt(roomInfo.room.weekPrice);
+                                        }
 
-                                        console.log(price);
-                                        setTotalCost(price);
+                                        var cost = ((minutes / 10) + (hours * 6)) * price;
+                                        cost = cost.toLocaleString();
+
+                                        // console.log(cost);
+                                        setTotalCost(cost);
                                     }
                                     else{
                                         setErrorMessageA(false);
@@ -577,7 +631,7 @@ const ReservationScreen = ({ navigation, route }) => {
                     onBackButtonPress={() => setModalVisible(!modalVisible)}
                     onBackdropPress={() => setModalVisible(!modalVisible)}
                 >   
-                    <View style={{ backgroundColor: 'white', alignItems: 'center', height: imgH + 50, width: windowWidth - 50, borderRadius: 10}}>
+                    <View style={{ backgroundColor: 'white', alignItems: 'center', height: imgH > 0 ? imgH + 50 : 80, width: windowWidth - 50, borderRadius: 10}}>
                         <Image
                             style={{ resizeMode: 'stretch', flex: 1, height: imgH, width : windowWidth - 100 }}
                             source={{uri: imgs[imgNum]}}

@@ -75,10 +75,10 @@ const ReservedScreen = ({ navigation, route }) => {
                         onPress={() => {
                             // navigation.navigate("CalendarList");
                             navigation.reset({
-                                index: 1, 
+                                index: 0, 
                                 routes: [
                                     {name: 'Table'},
-                                    {name: 'CalendarList'}
+                                    // {name: 'CalendarList'}
                                 ] 
                             })
                         }}

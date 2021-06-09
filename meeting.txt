@@ -1,3 +1,34 @@
+2021-06-09
+- Problems to report
+    - remember to automatically call removeSync after a certain amount of time
+
+2021-06-08
+- Things to do:
+    - When you cancel the reseravtion right after qr code is shown, and click reserve again, the qr screen is shown again.
+
+2021-05-31
+- Things to do: 
+    - 결제 기능
+    - Images
+        - Switching using the arrows !
+
+    - TableScreen
+        - When tab pressed multiple times in a row, multiple calls are made !
+    
+    - New Table Screen
+        - Finish the option value and related errors !
+
+    - Coupon
+        - Apply it
+    
+    - 지점
+        - Adding on tablescreen
+        - Recents
+        - First page when first login
+    
+    - 공유하기
+    - 알림
+
 2021-05-24
 - Things to do:
     - 결제 기능 ~

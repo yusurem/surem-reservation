@@ -82,7 +82,12 @@ export default function SignUpButton(props){
         console.log('login Success')
         saveUserId(response.data.returnCode, props.phoneNum)
         setLoading(false);
-        navigation.reset({index: 0, routes: [{name: 'Tab'}] })
+        // navigation.reset({index: 0, routes: [{name: 'Tab'}] })
+        navigation.navigate('Tab', {
+          screen: 'Reserve', params: {
+              screen: 'Branch'
+          }
+      });
       }
     })
 

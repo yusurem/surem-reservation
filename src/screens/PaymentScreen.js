@@ -241,11 +241,39 @@ const PaymentScreen = ({ navigation, route }) => {
                             <Text style={styles.subTitleStyle}>쿠폰</Text>
                             <TouchableOpacity
                                 onPress={() => {
-                                    setModalVisible(!modalVisible);
+                                    // Object {
+                                    //     "dateString": "2021-06-09",
+                                    //     "day": "09",
+                                    //     "endTime": "162000",
+                                    //     "memo": "",
+                                    //     "month": "06",
+                                    //     "roomCode": "1F16051D73AA4A3",
+                                    //     "roomName": "회의실",
+                                    //     "startTime": "161000",
+                                    //     "totalCost": "500",
+                                    //     "weekDay": 3,
+                                    //     "year": 2021,
+                                    // }
+                                    // setModalVisible(!modalVisible);
+                                    navigation.navigate("Coupon", {
+                                        dateString: route.params.dateString,
+                                        day: route.params.day,
+                                        endTime: route.params.endTime,
+                                        memo: route.params.memo,
+                                        month: route.params.month,
+                                        roomCode: route.params.roomCode,
+                                        roomName: route.params.roomName,
+                                        startTime: route.params.startTime,
+                                        totalCost: route.params.totalCost,
+                                        weekDay: route.params.weekDay,
+                                        year: route.params.yeat,
+                                        userCode: usercode,
+                                        secretCode: secretCode,
+                                    })
                                 }}
                             >
                                 <View style={{ flexDirection: 'row' }}>
-                                    <Text style={styles.valueStyle}>사용 가능 쿠폰 {'2'}장 </Text>
+                                    <Text style={styles.valueStyle}>{route.params.discount === undefined ? '사용 가능한 쿠폰들' : route.params.discount}</Text>
                                     <View style={{ justifyContent: 'center' }}>
                                         <MaterialCommunityIcons name="greater-than" size={18} color="#6C6C6C" />
                                     </View>
@@ -340,8 +368,6 @@ const PaymentScreen = ({ navigation, route }) => {
                                 else{
                                     setErrorMessageB("계속 진행하려면 이용 약관을 읽고 동의해야 합니다.");
                                 }
-
-                                
                             }}
                         >
                             <View>
@@ -349,73 +375,6 @@ const PaymentScreen = ({ navigation, route }) => {
                             </View>
                         </TouchableOpacity>
                     </View>
-                
-                    <Modal 
-                        isVisible={modalVisible}
-                        backdropTransitionOutTiming={0}
-                        style={styles.modal}
-                    >
-                        <View style={styles.modalBox}>
-                            <View style={styles.modalBar}>
-                                <View style={styles.barSides}></View>
-                                <View style={{justifyContent: 'center'}}>
-                                    <Text style={styles.barText}>보유쿠폰</Text>
-                                </View>
-                                <View style={styles.barSides}>
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            setModalVisible(!modalVisible);
-                                        }}
-                                    >
-                                        <View style={{borderWidth: 0, borderColor: 'white'}}>
-                                            <Feather name="x" size={23} color="white" />
-                                        </View>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-
-                            <View style={styles.couponView}>
-                                <View style={styles.couponBox}>
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            
-                                        }}
-                                    >
-                                        <View style={styles.coupon}>
-                                            <Text style={styles.couponText}>Welcome 쿠폰 20%할인 (최대5천원)</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        onPress={() => {
-
-                                        }}
-                                    >
-                                        <View style={styles.coupon}>
-                                            <Text style={styles.couponText}>단골 쿠폰 2,000원 할인</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        onPress={() => {
-
-                                        }}
-                                    >
-                                        <View style={styles.coupon}>
-                                            <Text style={styles.couponText}>Time 쿠폰 오전 2,000원 할인</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            setModalVisible(!modalVisible);
-                                        }}
-                                    >
-                                        <View style={styles.applyButton}>
-                                            <Text style={styles.applyText}>적용하기</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        </View>
-                    </Modal>
                 </View>
             </ScrollView>
 
