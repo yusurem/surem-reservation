@@ -1,3 +1,14 @@
+2021-06-13
+- Done as of now
+    - Coupons EVERYTHING OMG
+- Have to do
+    - 결제 native code linking
+    - 예약완료후 tabPress showing qr code problem after switching to different tab
+    - MYScreen 쿠폰 갯수 N/A 처음에 보이는거
+- 1:1 문의
+    - E1001이 리턴되는데 사용자 문의가없다합니다
+    - 처음엔 당연히 없지않을까요?    
+
 2021-06-09
 - Problems to report
     - remember to automatically call removeSync after a certain amount of time

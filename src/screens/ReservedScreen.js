@@ -21,10 +21,9 @@ const ReservedScreen = ({ navigation, route }) => {
     useFocusEffect(() => {
         const backAction = () => {
             navigation.reset({
-                index: 1, 
+                index: 0, 
                 routes: [
                     {name: 'Table'},
-                    {name: 'CalendarList'}
                 ] 
             })            
             return true;
@@ -38,7 +37,7 @@ const ReservedScreen = ({ navigation, route }) => {
     useEffect(() => {
         const unsubscribe = navigation.dangerouslyGetParent().addListener('tabPress', (e) => {
             // Prevent default behavior
-            e.preventDefault();
+            // e.preventDefault();
     
             // Do something manually
             navigation.reset({
@@ -51,6 +50,14 @@ const ReservedScreen = ({ navigation, route }) => {
     
         return unsubscribe;
     }, [navigation]);
+
+    // useFocusEffect(() => {
+    //     const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+    //         removeSyncTime();
+    //     });
+        
+    //     return unsubscribe;
+    // },);
 
     // TODO: Room information API connect
     return (    

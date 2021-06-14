@@ -11,8 +11,6 @@ import IosCheckBox from '../components/IosCheckBox';
 import { useFocusEffect } from '@react-navigation/native';
 import { TERMS,URL } from '../constants';
 
-
-
 const PaymentScreen = ({ navigation, route }) => {
     const [errorMessageA, setErrorMessageA] = useState("");
     const [errorMessageB, setErrorMessageB] = useState("");
@@ -234,7 +232,7 @@ const PaymentScreen = ({ navigation, route }) => {
                         <View style={styles.infoRowStyle}>
                             <Text style={styles.subTitleStyle}>이용 금액</Text>
                             <View style={{marginRight: 4}}>
-                                <Text style={styles.valueStyle}>{route.params.totalCost}원</Text>
+                                <Text style={styles.valueStyle}>{route.params.totalCost.toLocaleString()}원</Text>
                             </View>
                         </View>
                         <View style={styles.infoRowStyle}>
@@ -266,14 +264,17 @@ const PaymentScreen = ({ navigation, route }) => {
                                         startTime: route.params.startTime,
                                         totalCost: route.params.totalCost,
                                         weekDay: route.params.weekDay,
-                                        year: route.params.yeat,
+                                        year: route.params.year,
                                         userCode: usercode,
                                         secretCode: secretCode,
+                                        couponIdx: route.params.couponIdx,
+                                        discount: route.params.discount,
+                                        couponCode: route.params.couponCode,
                                     })
                                 }}
                             >
                                 <View style={{ flexDirection: 'row' }}>
-                                    <Text style={styles.valueStyle}>{route.params.discount === undefined ? '사용 가능한 쿠폰들' : route.params.discount}</Text>
+                                    <Text style={styles.valueStyle}>{route.params.discount === undefined ? '사용 가능한 쿠폰들' : '-' + route.params.discount + '원'} </Text>
                                     <View style={{ justifyContent: 'center' }}>
                                         <MaterialCommunityIcons name="greater-than" size={18} color="#6C6C6C" />
                                     </View>
@@ -286,7 +287,7 @@ const PaymentScreen = ({ navigation, route }) => {
                     <View style={styles.infoRowStyle}>
                             <Text style={styles.subTitleStyle}>결제 금액 (vat포함)</Text>
                             <View style={{marginRight: 4}}>
-                                <Text style={styles.valueStyle}>{route.params.totalCost}원</Text>
+                                <Text style={styles.valueStyle}>{(route.params.totalCost - (route.params.discount === undefined ? 0 : route.params.discount)).toLocaleString()}원</Text>
                             </View>
                     </View>
                     

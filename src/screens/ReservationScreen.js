@@ -242,27 +242,32 @@ const ReservationScreen = ({ navigation, route }) => {
         const roomInfo = await getRoomInfo();
         const codes = [roomInfo.room.imgCode1, roomInfo.room.imgCode2, roomInfo.room.imgCode3, roomInfo.room.imgCode4];
         const roomImgs = [];
-
         for(var i = 0; i < codes.length; i++){
             if(codes[i] !== "null"){
-                // empty = false;
                 var image = await getRoomImg(codes[i]);
+                var valid = false;
                 if(image.returnCode === "E0000"){
-                    roomImgs.push(image.url);
+                    await new Promise((resolve, reject) => {
+                        Image.getSize(image.url, (width, height) => {
+                            console.log(height);
+                            console.log(width);
+                            if(width !== 0 && height !== 0){
+                                valid = true;   
+                                resolve();
+                            }
+                        }, (error) => {
+                            console.log("invalid image url");
+                            resolve();
+                        })
+                    });
+
+                    if(valid){
+                        roomImgs.push(image.url);
+                    }
                     // roomImgs.push("https://reactnative.dev/img/tiny_logo.png")
                 }
             }
         }
-        // if(empty){
-        //     if(imgs.length == 0){
-        //         setImgs([
-        //             require("../../assets/noimage.jpeg")
-        //         ]);
-        //     }        
-        // }
-        // else{
-        //     setImgs(roomImgs);
-        // }
         setImgs(roomImgs);
         setRoomInfo(roomInfo);
         // setInfo(roomInfo.room.info);
@@ -529,7 +534,7 @@ const ReservationScreen = ({ navigation, route }) => {
                                         }
 
                                         var cost = ((minutes / 10) + (hours * 6)) * price;
-                                        cost = cost.toLocaleString();
+                                        // cost = cost.toLocaleString();
 
                                         // console.log(cost);
                                         setTotalCost(cost);
@@ -575,7 +580,7 @@ const ReservationScreen = ({ navigation, route }) => {
                         </View>
                         <Text style={styles.priceText}> 분   </Text>
                         <View>
-                            <Text style={styles.priceText}>     {totalCost}     </Text>
+                            <Text style={styles.priceText}>     {totalCost.toLocaleString()}     </Text>
                             <View style={{ borderBottomColor: '#5D5D5D', borderBottomWidth: 1 }}/>
                         </View>
                         <Text style={styles.priceText}>원</Text>
