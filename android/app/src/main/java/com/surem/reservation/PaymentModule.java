@@ -31,6 +31,5 @@ public class PaymentModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void loadWeb(String url){
-	    webView.loadUrl("www.google.com");
     }
 }
