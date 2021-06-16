@@ -542,7 +542,6 @@ const TableScreen = ({ navigation, route }) => {
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }} edges={['right', 'left', 'top']} >
-            
             <View style={styles.branchBox}>
                 <View style={styles.branchHolder}>
                     <Text style={styles.branchHolderText}>+ 지점 선택</Text>
@@ -777,7 +776,8 @@ const styles = StyleSheet.create({
         // alignItems: 'center'
         flexDirection: 'row',
         justifyContent: "space-between",
-        alignItems: 'center'
+        alignItems: 'center',
+        marginTop: 10
     },
     branchButton: {
         backgroundColor: '#17375E',

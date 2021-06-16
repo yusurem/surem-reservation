@@ -10,7 +10,6 @@ import { TERMS,URL } from '../constants';
 // import * as RNLocalize from 'react-native-localize';
 import moment from 'moment-timezone';
 
-
 import * as SQLite from 'expo-sqlite';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -344,14 +343,14 @@ const MyScreen = ({ navigation, route }) => {
                             <Text style={styles.buttonText}>탈퇴하기</Text>
                         </TouchableHighlight>
 
-                        {/* <TouchableHighlight
+                        <TouchableHighlight
                             style={styles.deleteButton}
                             onPress={() => {
                                 navigation.navigate("Test");
                             }}
                         >
                             <Text style={styles.buttonText}>테스트</Text>
-                        </TouchableHighlight> */}
+                        </TouchableHighlight>
                         
                         <Modal 
                             isVisible={modalVisible}

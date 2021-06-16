@@ -5,6 +5,7 @@
     - 결제 native code linking
     - 예약완료후 tabPress showing qr code problem after switching to different tab
     - MYScreen 쿠폰 갯수 N/A 처음에 보이는거
+    - Have to check if the time has passed or not in each time so that even if the phone is left open and time passes, the reservation won't happen anymore
 - 1:1 문의
     - E1001이 리턴되는데 사용자 문의가없다합니다
     - 처음엔 당연히 없지않을까요?    

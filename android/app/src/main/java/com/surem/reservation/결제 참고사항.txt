@@ -1,0 +1,12 @@
+APP 결제시 결제요청 폼에 다음 필드를 추가해 주어야 합니다.
+
+필드ID : allat_app_scheme 
+전달값 : 아이폰에서 연결시 APP의 App Scheme명
+         안드로이드에서 연결시 "ANDROID" 문자열
+         APP이 아닌 웹에서 연결시 빈문자열(내용없음)
+
+브자우져의 User-Agent 값을 확인하여 해당값을 채워주시면 됩니다.
+
+ISP의 결과반환 문제로 인해 해당 필드(allat_app_scheme)를 전달받아
+웹과 APP을 구분하여 ISP 결과반환을 처리합니다.
+ 
