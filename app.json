@@ -2,7 +2,7 @@
   "expo": {
     "name": "오피스쉐어",
     "slug": "reservation",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -26,7 +26,7 @@
     },
     "android": {
       "package": "com.surem.reservation",
-      "versionCode": 2,
+      "versionCode": 5,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#FFFFFF"

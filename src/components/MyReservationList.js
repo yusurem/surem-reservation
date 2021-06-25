@@ -4,10 +4,8 @@ import * as SQLite from 'expo-sqlite';
 import { useEffect } from 'react';
 import axios from 'axios';
 import MyReservationRow from './MyReservationRow';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native'
-import ReservationListScreen from '../screens/reservation/ReservationListScreen'
-import { useFocusEffect } from '@react-navigation/native';
 import { URL } from '../constants';
 
 const db = SQLite.openDatabase('db.db');
@@ -83,21 +81,20 @@ export default function MyReservationList() {
   },[usercode,secretCode]);
 
   return (
-    <View style={styles.MyReservationList}>
-        <Text style={styles.MyReservationTitle}>MY 예약내역</Text>
-        {
-          myReservList.map((item,index)=>{
-            if(index < 3)
-              return(<MyReservationRow resrvStime={item.resrvStime} resrvEtime={item.resrvEtime} roomName={item.roomName} resrvCode={item.resrvCode} key={index}/>)
-          })
-        }
-        <TouchableOpacity style={{alignSelf:'flex-end',flex:0, marginRight:10}} hitSlop={{top:-1, bottom:20, left:-300, right:10}} 
-        onPress={()=>{
-          navigation.navigate('Reserved')
-        }}>
-          <Text style={styles.more}>더보기</Text>
-        </TouchableOpacity>
+    <TouchableOpacity style={styles.MyReservationList} onPress={()=>{
+        navigation.navigate('Reserved')
+      }}>
+      <Text style={styles.MyReservationTitle}>MY 예약내역</Text>
+      {
+        myReservList.map((item,index)=>{
+          if(index < 3)
+            return(<MyReservationRow resrvStime={item.resrvStime} resrvEtime={item.resrvEtime} roomName={item.roomName} resrvCode={item.resrvCode} key={index}/>)
+        })
+      }
+      <View style={{alignSelf:'flex-end',flex:0, marginRight:10}} >
+        <Text style={styles.more}>더보기</Text>
       </View>
+    </TouchableOpacity>
   );  
 }
 

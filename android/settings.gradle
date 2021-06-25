@@ -1,14 +1,16 @@
-rootProject.name = 'reservation'
+rootProject.name = '오피스쉐어'
+include ':react-native-permissions'
+project(':react-native-permissions').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-permissions/android')
+include ':surem-sim-data'
+project(':surem-sim-data').projectDir = new File(rootProject.projectDir, '../node_modules/surem-sim-data/android')
+include ':react-native-sms-retriever'
+project(':react-native-sms-retriever').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-sms-retriever/android')
+include ':react-native-device-info'
+project(':react-native-device-info').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-device-info/android')
 include ':react-native-localize'
 project(':react-native-localize').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-localize/android')
 include ':react-native-restart'
 project(':react-native-restart').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-restart/android')
-include ':react-native-exit-app'
-project(':react-native-exit-app').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-exit-app/android')
-include ':react-native-exit-app'
-project(':react-native-exit-app').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-exit-app/android')
-include ':react-native-exit-app'
-project(':react-native-exit-app').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-exit-app/android')
 include ':react-native-exit-app'
 project(':react-native-exit-app').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-exit-app/android')
 include ':react-native-sqlite-storage'
@@ -21,7 +23,7 @@ project(':iamport-react-native').projectDir = new File(rootProject.projectDir, '
 apply from: '../node_modules/react-native-unimodules/gradle.groovy'
 includeUnimodulesProjects()
 
-apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle");
+apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle")
 applyNativeModulesSettingsGradle(settings)
 
 include ':app'

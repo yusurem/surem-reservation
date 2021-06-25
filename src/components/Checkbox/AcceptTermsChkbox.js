@@ -23,7 +23,7 @@ export default class AcceptTermsChkbox extends Component{
 
             this.setState({value0: !this.state.value0})
             
-            this.props.setIsCheckAcceptedTerm(!this.state.value0);
+            this.props.setModalVisible(!this.state.value0);
             }
           }  
           checked={this.state.value0}

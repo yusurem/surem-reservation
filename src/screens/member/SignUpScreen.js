@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, TextInput, StatusBar, StyleSheet, TouchableOpacity, Platform, Alert} from 'react-native'
+import { View, Text, Button, TextInput, StatusBar, StyleSheet, TouchableOpacity, Platform, Alert, ScrollView} from 'react-native'
+import { MaterialCommunityIcons, Feather } from '@expo/vector-icons'; 
 
 import axios from 'axios';
 import SignUpButton from '../../button/SignUpButton'
@@ -7,10 +8,14 @@ import AcceptTermsChkbox from '../../components/Checkbox/AcceptTermsChkbox'
 import AuthNumberInput from '../../components/AuthNumberInput'
 import CountDownTimer from '../../components/CountDownTimer'
 import LoadingScreen from '../LoadingScreen'
-
 import { SafeAreaView } from 'react-native-safe-area-context';
+import SuremSimData from 'surem-sim-data';
+import {PERMISSIONS, RESULTS, request} from 'react-native-permissions';
+import Modal from 'react-native-modal';
+import { CheckBox } from 'react-native-elements'
 
 import * as SQLite from 'expo-sqlite';
+import { TERMS } from '../../constants';
 
 const USER_CODE = "suremqr";
 const DEPT_CODE = "35--SX-DQ";
@@ -27,6 +32,7 @@ db.transaction(tx=>{
 
 export default function SignUpScreen({ navigation }) {
   const navigationOptions = { header: null}
+  const [name, setName] = useState("");
   const [phoneNum, setPhoneNum] = useState("");
   const [isSentAuth, setIsSentAuth] = useState(false);
   const [isAuth, setIsAuth] = useState(false);
@@ -34,6 +40,23 @@ export default function SignUpScreen({ navigation }) {
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const exitModal = () => {
+    setModalVisible(!modalVisible);
+  }
+  const [permissionState, setPermissionState] = useState(false);
+  const askPermission = async () => {
+    try{
+      const result = await request(PERMISSIONS.ANDROID.READ_PHONE_STATE)
+      if(result === RESULTS.GRANTED){
+        setPermissionState(true);
+      }else if(result === RESULTS.DENIED){
+        setPermissionState(true)
+      }
+    }catch (error) {
+      console.log('askPermission', error);
+    }
+  }
 
   const makeId = () => {
     var text = "";
@@ -124,10 +147,21 @@ export default function SignUpScreen({ navigation }) {
     })
   }
 
+  const getPhoneNumber = async () => {
+    setPhoneNum(await SuremSimData.getPhoneNumber())
+    console.log('Hello',phoneNum)
+  }
+
   useEffect(()=>{
+    askPermission();
+    if(permissionState){
+      if(phoneNum == ""){
+        getPhoneNumber();
+      }
+    }
     hasUserId();
     return(()=>{})
-  },[]);
+  },[permissionState]);
 
   if(loading){
     return (
@@ -137,6 +171,7 @@ export default function SignUpScreen({ navigation }) {
 
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+        
         <View
         style={{
             backgroundColor: '#F3F4F8',
@@ -156,6 +191,25 @@ export default function SignUpScreen({ navigation }) {
               alignSelf: 'center', 
               borderRadius:10, 
               backgroundColor:'#FFFFFF',
+              paddingLeft:10,
+              paddingBottom:10,
+              marginBottom:'1%'
+            }} 
+            placeholder="이름"
+            value={name}
+            autoCapitalize="none"
+            onChangeText={(newValue) => {
+              setName(newValue)
+            }}/>
+        <TextInput 
+            style={{ 
+              textAlign: 'left', 
+              borderWidth: 1 , 
+              height: 50, 
+              width: '70%', 
+              alignSelf: 'center', 
+              borderRadius:10, 
+              backgroundColor:'#FFFFFF',
               paddingLeft:10 
             }} 
             placeholder="휴대폰번호"
@@ -166,9 +220,14 @@ export default function SignUpScreen({ navigation }) {
             selectTextOnFocus={!isSentAuth}
             onChangeText={(newValue) => {
               const regex = /^[0-9\b]{0,11}$/;
-              if (regex.test(newValue)) {
-                setPhoneNum(newValue);
+              if(newValue.length > 10){
+                if (regex.test(newValue)) {
+                  setPhoneNum(newValue);
+                }
+              }else{
+                setPhoneNum(newValue)
               }
+              
             }}
             keyboardType="number-pad"
         />
@@ -177,10 +236,24 @@ export default function SignUpScreen({ navigation }) {
           <AuthNumberInput setIsAuth={setIsAuth}/> : 
           <TouchableOpacity style={styles.button} onPress={ () => {
             var authNumberText = makeId()
+            const regName = /^[가-힣|a-z|A-Z]+$/;
+
+            if(name === ""){
+              alert('이름을 입력해주세요.')
+              return;
+            }
+            console.log(name)
+
+            if(!regName.test(name)){
+              alert('이름을 제대로 입력해주세요.')
+              return;
+            }
+
             if(phoneNum === ""){
               alert('핸드폰 번호를 입력해주세요.')
-              return
+              return;
             }
+
             const regExp = /^01(?:0|1|[6-9])(?:\d{3}|\d{4})\d{4}$/;
             if(phoneNum === '01000000000'){
               setIsSentAuth(true)
@@ -228,7 +301,23 @@ export default function SignUpScreen({ navigation }) {
               alignSelf: 'center'
           }}
         />
-        <AcceptTermsChkbox setIsCheckAcceptedTerm={setIsCheckAcceptedTerm}/>
+        <View style={styles.checkboxContainer}>
+          <CheckBox 
+            style={styles.checkbox}
+            disabled={false}
+            value={isCheckAcceptedTerm}
+            onPress={(value) => {
+                setModalVisible(!isCheckAcceptedTerm);
+                console.log(isCheckAcceptedTerm)
+                if(isCheckAcceptedTerm){
+                  setIsCheckAcceptedTerm(!isCheckAcceptedTerm)
+                }
+              }
+            }  
+            checked={isCheckAcceptedTerm}
+          />
+          <Text style={styles.label}>이용약관 및 개인정보 처리방침 동의(필수)</Text>
+        </View>
         <View
           style={{
               borderBottomColor: 'black',
@@ -238,8 +327,60 @@ export default function SignUpScreen({ navigation }) {
               alignSelf: 'center'
           }}
         />
-        <SignUpButton isAuth={isAuth} isCheckAcceptedTerm={isCheckAcceptedTerm} phoneNum={phoneNum}/> 
-      </View>  
+        <SignUpButton isAuth={isAuth} isCheckAcceptedTerm={isCheckAcceptedTerm} phoneNum={phoneNum} name={name}/>
+        <Modal 
+          isVisible={modalVisible}
+          backdropTransitionOutTiming={0}
+          style={styles.modal}
+          onBackButtonPress={exitModal}
+          onBackdropPress={exitModal}
+        >
+            <View style={styles.modalBox}>
+                <View style={styles.modalHeader}>
+                    <View style={styles.cancelIcon}>
+                        <Feather name="x" size={35} color="#EDEDED" />
+                    </View>
+                    <Text style={styles.modalHeaderText}>이용 약관 및 정책</Text>
+                    <TouchableOpacity
+                        onPress={(exitModal)}
+                    >
+                        <View style={styles.cancelIcon}>
+                            <Feather name="x" size={35} color="gray" />
+                        </View>
+                    </TouchableOpacity>
+                </View>
+                
+                <View style={styles.modalTerms}>
+                    <Text style={styles.modalSubHeader}>
+                        이용 약관 및 동의 사항
+                    </Text>
+                    <ScrollView
+                        // style={{borderWidth: 1, borderColor: 'black'}}
+                        persistentScrollbar={true}
+                        nestedScrollEnabled={true}
+                        style={styles.modalTermView}
+                    >
+                        <Text style={styles.modalTermsText}>
+                            { TERMS.SERVICE.term }
+                            { TERMS.INFO.term }
+                            { TERMS.FINANCIAL.term}
+                        </Text>
+                        
+                    </ScrollView>
+
+                    <TouchableOpacity
+                        style={styles.acceptBtn}
+                        onPress={() => {
+                            setModalVisible(!modalVisible);
+                            setIsCheckAcceptedTerm(!isCheckAcceptedTerm);
+                          }}
+                        >
+                        <Text style={styles.buttonText}>동의하기</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </Modal>
+      </View> 
     </SafeAreaView>
     )  
 }
@@ -267,5 +408,76 @@ const styles = StyleSheet.create({
     backgroundColor: '#404757',
     borderRadius:10,
     alignSelf:'center'
-  }
+  },
+  modalBox: {
+    backgroundColor: '#EDEDED',
+    // height: 500,
+    // width: Platform.OS == 'ios' ? 350 : 280,
+    borderRadius: 15,
+    flex: 1,
+    marginVertical: 75,
+    marginHorizontal: 15,
+  },
+  modalHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginVertical: 0,
+  },
+  modalHeaderText: {
+      fontSize: 17,
+      textAlign: 'center',
+      color: 'black',
+      marginTop: 18,
+  },
+  modalTerms: {
+      padding: 22,
+      // borderWidth: 1,
+      // borderColor: 'red',
+      flex: 1
+  },
+  modalSubHeader: {
+      color: 'black',
+      fontSize: 14,
+      marginBottom: 10,
+      fontWeight: 'bold',
+      marginLeft: 3,
+  },
+  modalTermView: {
+      backgroundColor: 'white',
+      borderWidth: 2,
+      borderColor: '#DDDDDD',
+      // height: "100%"
+  },
+  modalTermsText: {
+      color: 'black',
+      fontSize: 14,
+      padding: 5,
+  },
+  modal: {
+      alignSelf: 'center'
+  },
+  acceptBtn: {
+    backgroundColor: "#404758",
+    borderRadius: 12,
+    marginVertical: 30,
+    paddingVertical: 15,
+    elevation: 2,
+    flex: 1,
+    marginHorizontal: 25,
+    justifyContent: 'center'
+  },
+  buttonText: {
+      color: 'white',
+      textAlign: 'center',
+  },
+  checkboxContainer: {
+    flexDirection: "row",
+    alignSelf:'center'
+  },
+  checkbox: {
+  },
+  label: {
+    margin: 8,
+    lineHeight: Platform.OS === 'ios' ? 40 : 40
+  },
 });

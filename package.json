@@ -28,10 +28,9 @@
     "moment-timezone": "0.5.33",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "react-native": "0.63.4",
+    "react-native": "~0.63.4",
     "react-native-calendars": "^1.1254.0",
     "react-native-collapsible": "^1.6.0",
-    "react-native-device-info": "8.1.2",
     "react-native-dialog": "6.2.0",
     "react-native-elements": "3.4.0",
     "react-native-exit-app": "1.1.0",
@@ -41,10 +40,13 @@
     "react-native-maps": "0.27.1",
     "react-native-modal": "^11.7.0",
     "react-native-paper": "^4.7.1",
+    "react-native-permissions": "3.0.4",
     "react-native-qrcode-svg": "^6.1.1",
     "react-native-reanimated": "~1.13.0",
     "react-native-safe-area-context": "3.1.9",
     "react-native-screens": "~2.15.2",
+    "react-native-sim-data": "3.0.0",
+    "react-native-sms-retriever": "1.1.1",
     "react-native-svg": "^12.1.0",
     "react-native-table-component": "^1.2.1",
     "react-native-unimodules": "~0.12.0",
@@ -52,7 +54,8 @@
     "react-native-webview": "11.0.0",
     "react-native-windows": "^0.63.18",
     "react-navigation": "^4.4.3",
-    "react-navigation-stack": "^2.10.2"
+    "react-navigation-stack": "^2.10.2",
+    "surem-sim-data": "0.1.0"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
@@ -62,5 +65,5 @@
   },
   "private": true,
   "name": "OfficeShare",
-  "version":  "1.0.5"
+  "version": "1.0.5"
 }

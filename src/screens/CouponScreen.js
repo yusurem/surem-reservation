@@ -1,343 +1,356 @@
-import React, {useState} from 'react';
-import { View, Text, StyleSheet, TouchableHighlight, Image, Alert, TouchableOpacity, ScrollView, NestedScrollView } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { View, Text, StyleSheet, useWindowDimensions, Platform, Alert, TouchableOpacity, ScrollView, FlatList, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import axios from 'axios';
-import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';
+import { MaterialIcons, Octicons, FontAwesome5 } from '@expo/vector-icons'; 
 import CheckBox from '@react-native-community/checkbox';
 import Modal from 'react-native-modal';
 import { URL } from '../constants';
+import moment from 'moment-timezone';
 
 const CouponScreen = ({ navigation, route }) => {
-    const [errorMessageA, setErrorMessageA] = useState("");
-    const [modalVisible, setModalVisible] = useState(false);
+    const windowWidth = useWindowDimensions().width;
+    // const windowHeight = useWindowDimensions().height;
 
-    console.log("Entered PaymentScreen. Params: ");
+    const [errorMessageA, setErrorMessageA] = useState("");
+    const [couponList, setCouponList] = useState([]);
+    const [numValid, setNumValid] = useState(0);
+    // const [validCoupons, setValidCoupons] = useState([]);
+    // const [invalidCoupons, setInvalidCoupons] = useState([]);
+    const [selectedIndex, setSelectedIndex] = useState(route.params.couponIdx !== undefined ? route.params.couponIdx : null);
+    const [discount, setDiscount] = useState(route.params.discount !== undefined ? route.params.discount : 0);
+    const [couponCode, setCouponCode] = useState(route.params.couponCode !== undefined ? route.params.couponCode : "");
+    const [couponIdx, setCouponIdx] = useState(route.params.couponIdx !== undefined ? route.params.couponIdx : "");
+
+    console.log("Entered CouponScreen. Params: ");
     console.log(route.params);
 
-    const weekDays = new Array('일', '월', '화', '수', '목', '금', '토');
-
-    var sTime = route.params.startTime.substring(0,2);
-    if(sTime[0] == '0'){
-        sTime = sTime[1];
-    }
-    var eTime = route.params.endTime.substring(0,2);
-    if(eTime[0] == '0'){
-        eTime = eTime[1];
-    }
-
-    // 1. 룸 예약
-    // url : http://공용개발:8989/reservation
-    // method : post
-    // parameter type : json
-    // {
-    //     "roomCode" : "techno100010001", // 룸 코드
-    //     "usercode" : "tester", // 사용자 ID
-    //     "resrvStime" : "20210202120000", // 예약 시작 시간. yyyyMMddHHmmss
-    //     "resrvEtime" : "20210202140000" // 예약 종료 시간. yyyyMMddHHmmss
-    // }
-    const makeReservation = async (start, end) => {
+    const getCouponList = async () => {
         try{
-            console.log("Attempting to make reservation...");
-            // console.log(`${route.params.year}${route.params.month}${route.params.day}${route.params.startTime}`);
-            const response = await axios.post(URL+'/reservation', {
-            // const response = await axios.post('http://112.221.94.101:8980/reservation', {
-                'roomCode' : route.params.roomCode,
-                'usercode' : 'admin1',
-                "secretCode" : "4HDsKfzSR3eEegv3FiZIA30x+Z6uOccMVlw56N034vNO0FGw7aUqCA0USHdoEK9oL2vlWg==",
-                "resrvStime" : `${route.params.year}${route.params.month}${route.params.day}${route.params.startTime}`,
-                "resrvEtime" : `${route.params.year}${route.params.month}${route.params.day}${route.params.endTime}`
+            console.log("Attempting to retreive list of coupons...");
+            console.log("usercode: " + route.params.userCode);
+            console.log("securityKey: " + route.params.secretCode);
+            const response = await axios.post( URL + '/getCouponList', {
+                usercode: route.params.userCode,
+                securityKey: route.params.secretCode
             });
-            console.log(`Got the response!`);
             console.log(response.data);
-            // let sTime = route.params.startTime.substring(0,2);
-            // if(sTime[0] == '0'){
-            //     sTime = sTime[1];
-            // }
-            // let eTime = route.params.endTime.substring(0,2);
-            // if(eTime[0] == '0'){
-            //     eTime = eTime[1];
-            // }
-            let rCode = response.data.returnCode.substring(6);
-            // TODO: Add Memo from the route.params
-            // navigation.navigate('Reserved', {
-            //     dateString: route.params.dateString,
-            //     startTime: `${sTime}:00 ${sTime > 11 ? "PM" : "AM"}`,
-            //     endTime: `${eTime}:00 ${eTime > 11 ? "PM" : "AM"}`,
-            //     qrCode: code
-            // });
-            return {
-                dateString: route.params.dateString,
-                startTime: `${sTime}:00 ${sTime > 11 ? "PM" : "AM"}`,
-                endTime: `${eTime}:00 ${eTime > 11 ? "PM" : "AM"}`,
-                resrvCode: rCode
-            };
+           
+            if(response.data.returnCode !== "E0000"){
+                console.log("Error: " + response.data.returnCode);
+                // add an alert for error in retrieving coupons
+                return 'Error';
+            }
+            console.log("Coupon list API call successful!");
+            // setCouponList(response.data.coupons);
+            sortCoupons(response.data.coupons);
         } catch (err) {
             setErrorMessageA("API 문제발생");
-            console.log(err);
-        }
-    }
-
-    // TODO: get the price from API
-    const getPrice = async () => {
-
-    }
-
-    const getQrCode = async (qr) => {
-        try{
-            console.log("Attempting to get QrCode link...");
-            // console.log(route.params.qrCode);
-            const response = await axios.post(URL+'/getQrcode', {
-            // const response = await axios.post('http://112.221.94.101:8980/reservation', {
-                // resrvCode: qr,
-                // resrvCode: "21D7E4B9B8C840F-6dda0e6d111e4f"
-                resrvCode: "techno100010001-V43sA98ETO2F07",
-                usercode: "1234",
-                secretCode: "anything"
-            });
-            console.log(`Got the response!`);
-            // console.log(response.data);
-            // console.log(typeof(response.data));
-            return response.data;
-           
-        } catch (err) {
             console.log(err);
             return 'Error';
         }
     }
 
-    const couponStyle = (selected, available) => {
+    useEffect(() => {
+        getCouponList();
+    },[route.params.userCode]);
 
+    const sortCoupons = (coupons) => {
+        // [status] Y- useable, N- halted, D- deleted, U- used
+        const avails = [];
+        const unavails = [];
+        for(var i = 0; i < coupons.length; i++){
+            // Check Status if it is Y
+            if(coupons[i].status !== 'Y'){
+                // console.log("status not Y");
+                unavails.push(coupons[i]);
+                continue;
+            }
+            // Check if Time Range Match
+            if(coupons[i].startTime !== "null"){
+                var start = moment(coupons[i].startTime, 'hhmmss');
+                var end = moment(coupons[i].endTime, 'hhmmss');
+                var now = moment(); 
+                if(!now.isBetween(start, end)){
+                    // console.log("time wrong");
+                    unavails.push(coupons[i]);
+                    continue;
+                }
+            }
+
+            // Check if 지점 is right
+            if(coupons[i].adminCode !== route.params.adminCode){
+                unavails.push(coupons[i]);
+                continue;
+            }
+
+            // MinPrice
+            if(coupons[i].minPrice !== "null"){
+                if(route.params.totalCost < parseInt(coupons[i].minPrice)){
+                    // console.log("price too low");
+                    unavails.push(coupons[i]);
+                    continue;
+                }
+            }
+            else{
+                if(coupons[i].couponType === 'P'){
+                    if(route.params.totalCost < parseInt(coupons[i].couponDCPrice)){
+                        // console.log("price too low P");
+                        unavails.push(coupons[i]);
+                        continue;
+                    }
+                }
+            }
+
+            //check adminCode to see if it matches and if not take it out of avaialble couposn
+            avails.push(coupons[i]);
+        }
+        setCouponList([...avails, ...unavails]);
+        setNumValid(avails.length);
+        // setValidCoupons(avails);
+        // setInvalidCoupons(unavails);
+    }
+
+    const CouponItem = ({ item, onPress, bdColor }) => {
+        return (
+            <TouchableOpacity
+                style={[styles.coupon, { borderColor: bdColor }]}
+                onPress={onPress}
+            >
+                <Text style={[styles.couponText]}>{item.couponName}</Text>
+                <Text style={styles.couponDate}>{item.endDay} 까지</Text>
+            </TouchableOpacity>
+        );
+    }
+
+    const NACoupon = ({ item }) => {
+        return (
+            <View style={styles.naCoupon}>
+                <Text style={styles.couponText}>{item.couponName}</Text>
+                <Text style={styles.couponDate}>{item.endDay} 까지</Text>
+            </View>
+        );
+    }
+
+    const renderCoupons = ({ item, index }) => {
+        const borderColor = item.idx === selectedIndex ? "#0070C0" : '#C9C9C9';
+
+        return (
+            index < numValid ? 
+                <CouponItem 
+                    item={item} 
+                    bdColor={borderColor}
+                    onPress={() => {
+                        if(item.idx === selectedIndex){
+                            setSelectedIndex(null);
+                            setDiscount(0);
+                            setCouponIdx("");
+                            setCouponCode("");
+                        }
+                        else{
+                            setSelectedIndex(item.idx);
+                            // [CouponType] F- free, P- price, R- rate
+                            if(item.couponType === 'P'){
+                                setDiscount(parseInt(item.couponDCPrice));
+                                setCouponIdx(item.idx);
+                                setCouponCode(item.couponCode);
+                            }
+                            else if(item.couponType === 'R'){
+                                setDiscount((parseInt(item.couponDCRate) / 100) * route.params.totalCost);
+                                setCouponIdx(item.idx);
+                                setCouponCode(item.couponCode);
+                            }
+                            else if(item.couponType === 'F'){
+                                setDiscount(route.params.totalCost);
+                                setCouponIdx(item.idx);
+                                setCouponCode(item.couponCode);
+                            }
+                        }
+                    }}
+                />
+                :
+                <NACoupon item={item} />
+        );
     }
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <ScrollView>
-                <View style={styles.modalBox}>
-                    <View style={styles.modalBar}>
-                        <View style={styles.barSides}></View>
-                        <View style={{justifyContent: 'center'}}>
-                            <Text style={styles.barText}>보유쿠폰</Text>
-                        </View>
-                        <View style={styles.barSides}>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    navigation.goBack();
-                                }}
-                            >
-                                <View style={{borderWidth: 0, borderColor: 'white'}}>
-                                    <Feather name="x" size={23} color="white" />
-                                </View>
-                            </TouchableOpacity>
-                        </View>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#EDEDED' }} edges={['right', 'left', 'top']} >
+            <View>
+                <View style={styles.barBox}>
+                    <View style={[styles.barIcon, { marginLeft: 10 }]}>
                     </View>
-
-                    <View style={styles.couponView}>
-                        <View style={styles.couponBox}>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    
-                                }}
-                            >
-                                <View style={styles.coupon}>
-                                    <Text style={styles.couponText}>Welcome 쿠폰 20%할인 (최대5천원)</Text>
-                                </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={() => {
-
-                                }}
-                            >
-                                <View style={styles.coupon}>
-                                    <Text style={styles.couponText}>단골 쿠폰 2,000원 할인</Text>
-                                </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={() => {
-
-                                }}
-                            >
-                                <View style={styles.coupon}>
-                                    <Text style={styles.couponText}>Time 쿠폰 오전 2,000원 할인</Text>
-                                </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    setModalVisible(!modalVisible);
-                                }}
-                            >
-                                <View style={styles.applyButton}>
-                                    <Text style={styles.applyText}>적용하기</Text>
-                                </View>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
+                    <Text style={styles.barText}>보유쿠폰</Text>
+                    <TouchableOpacity
+                        style={[styles.barIcon, { marginRight: 10 }]}
+                        onPress={() => {
+                            navigation.navigate("Payment");
+                        }}
+                    >
+                        <MaterialIcons name="cancel" size={24} color="white" />
+                    </TouchableOpacity>
                 </View>
-            </ScrollView>
+            </View>
+
+            <View style={styles.priceBox}>
+                <View style={{ width: windowWidth * 0.25 }}>
+                    <Text style={[styles.costText, { fontSize: 13 }]}>이용금액</Text>
+                    <Text style={[styles.costText, { fontSize: 19 }]}>{route.params.totalCost.toLocaleString()}원</Text>
+                </View>
+
+                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={[styles.costText, { fontSize: 13 }]}></Text>
+                    <FontAwesome5 name="minus" size={19} color="black" />
+                </View>
+
+                <View style={{ width: windowWidth * 0.25 }}>
+                    <Text style={[styles.discountText, { fontSize: 13 }]}>할인금액</Text>
+                    <Text style={[styles.discountText, { fontSize: 19 }]}>{discount.toLocaleString()}원</Text>
+                </View>
+
+                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={[styles.costText, { fontSize: 13 }]}></Text>
+                    <FontAwesome5 name="equals" size={19} color="black" />
+                </View>
+
+                <View style={{ width: windowWidth * 0.25 }}>
+                    <Text style={[styles.costText, { fontSize: 13 }]}>결제금액</Text>
+                    <Text style={[styles.costText, { fontSize: 19 }]}>{parseInt(route.params.totalCost) - discount > 0 ?  
+                                                                Math.floor(parseInt(route.params.totalCost) - discount).toLocaleString()
+                                                                :
+                                                                0 }원</Text>
+                </View>
+            </View>
+
+            <View style={styles.couponBox}>
+                {couponList.length === 0 ?
+                    <View style={{ marginBottom: 20 }}>
+                        <ActivityIndicator size="large" color="gray"/>
+                    </View>
+                    :
+                    <FlatList
+                        // data={validCoupons}
+                        data={couponList}
+                        keyExtractor={(item, index) => item.idx}
+                        renderItem={renderCoupons}
+                        extraData={selectedIndex}
+                        // scrollEnabled={false}
+                    />
+                }
+            </View>
+            <TouchableOpacity
+                    style={styles.applyButton}
+                    onPress={() => {
+                        navigation.navigate("Payment", {
+                            dateString: route.params.dateString,
+                            day: route.params.day,
+                            endTime: route.params.endTime,
+                            memo: route.params.memo,
+                            month: route.params.month,
+                            roomCode: route.params.roomCode,
+                            roomName: route.params.roomName,
+                            startTime: route.params.startTime,
+                            totalCost: route.params.totalCost,
+                            weekDay: route.params.weekDay,
+                            year: route.params.year,
+                            discount: discount === 0? undefined : discount,
+                            couponIdx: selectedIndex,
+                            couponCode: couponCode,
+                        });
+                    }}
+                >
+                    <Text style={styles.applyButtonText}>적용하기</Text>
+            </TouchableOpacity>
         </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-    viewStyle:{
-        paddingVertical: 20,
-        paddingHorizontal: 18,
-        backgroundColor: '#f3f4f8',
-        flexGrow: 1
-    },
-    guideStyle: {
-        paddingBottom: 30
-    },
-    titleStyle: {
-        fontSize: 14,
-        color: '#39393A',
-        marginLeft: 1
-    },
-    subTitleStyle: {
-        fontSize: 13,
-        color: '#39393A'
-    },
-    line: {
-        borderBottomColor: '#C2C3C5', 
-        borderBottomWidth: 1, 
-        marginVertical: 8
-    },
-    valueStyle: {
-        color: '#6C6C6C',
-        fontSize: 13
-    },
-    valueView: {
-        width: 95
-    },
-    rowStyle: {
+    barBox: {
         flexDirection: 'row',
-        paddingLeft: 3,
-        paddingBottom: 4,
+        alignItems: 'center',
         justifyContent: 'space-between',
-        width: 175
-    }, 
-    infoStyle: {
-        paddingBottom: 5
-    },
-    infoRowStyle: {
-        flexDirection: 'row',
-        paddingLeft: 3,
-        justifyContent: 'space-between',
-        paddingBottom: 4
-    },
-    termsStyle: {
-        marginVertical: 30
-    },
-    termBox : {
-        backgroundColor: 'white',
-        borderRadius: 5,
-        height: 130,
-        marginTop: 6
-    },
-    imageStyle: {
-        width: '100%',
-        height: 160,
-        // aspectRatio: 1,
-        resizeMode: 'contain'
-    },
-    termsCaption: {
-        fontSize: 11,
-        paddingTop: 9,
-        color: '#39393A'
-    },
-    modal: {
-        alignSelf: 'center'
-    },
-    modalBox:{
-        borderRadius: 15,
-        backgroundColor: '#EDEDED',
-        height: 270,
-        width: 300,
-    },
-    modalBar: {
         backgroundColor: '#4682D8',
-        height: 45,
-        borderTopLeftRadius: 15,
-        borderTopRightRadius: 15,
-        flexDirection: 'row',
-        justifyContent: 'space-between'
+        paddingVertical: 10,
     },
     barText: {
-        fontSize: 14,
-        color: 'white'
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold'
     },
-    barSides: {
-        width: 30,
-        paddingTop: 9,
-        borderWidth: 0,
-        paddingLeft: 1,
-        borderColor: 'white'
+    barIcon: {
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        width: 30, 
+        // borderWidth: 1, 
+        // borderColor: 'red'
     },
-    couponView: {
-        // borderWidth: 2, 
-        // borderColor: 'black', 
-        flex: 1, 
-        justifyContent: 'center'
+    priceBox: {
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginHorizontal: 20,
+        marginTop: 40,
+        // borderWidth: 1,
+        // borderColor: 'red'
+    },
+    costText: {
+        // marginBottom: 5,
+        marginHorizontal: 5,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    discountText: {
+        // marginBottom: 5,
+        marginHorizontal: 5,
+        color: '#E64343',
+        fontWeight: 'bold',
+        textAlign: 'center'
     },
     couponBox: {
-        // marginVertical: 18,
-        marginHorizontal: 30,
-        // justifyContent: 'space-between',
-        // borderWidth: 2,
-        // borderColor: 'black'
+        justifyContent: 'center',
+        // alignItems: 'center',
+        marginVertical: 40,
+        marginHorizontal: 20
     },
-    coupon:{
-        borderWidth: 1,
-        borderColor: 'black',
-        paddingVertical: 11,
-        paddingHorizontal: 10,
+    coupon: {
         borderRadius: 12,
-        marginBottom: 12,
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+        borderWidth: 2,
+        // borderColor: 'gray',
+        paddingVertical: 20,
+        marginBottom: 10
+    },
+    naCoupon: {
+        borderRadius: 12,
+        backgroundColor: '#F2F2F2',
+        borderWidth: 2,
+        borderColor: '#CBCBCB',
+        paddingVertical: 20,
+        marginBottom: 10
     },
     couponText: {
-        textAlign: 'center',
-        fontSize: 11,
+        // textAlign: 'center'
+        marginLeft: 20,
+        color: '#5F5F5F',
+        marginBottom: 5,
+    },
+    couponDate: {
+        marginLeft: 20,
+        color: '#A3A3A3',
     },
     applyButton: {
-        borderWidth: 1,
-        borderColor: 'black',
-        paddingVertical: 10,
-        paddingHorizontal: 10,
         borderRadius: 12,
-        // marginBottom: 5,
-        backgroundColor: 'black'
+        backgroundColor: '#333333',
+        paddingVertical: 15,
+        marginHorizontal: 55,
+        // marginVertical: 10,
     },
-    applyText: {
-        textAlign: 'center',
+    applyButtonText: {
         color: 'white',
-        fontSize: 12
-    },
-    couponUnavail: {
-
-    },
-    couponSelect: {
-        color: 'blue'
-    },
-    couponUnselect: {
-
-    },
-
-    textStyle: {
-        color: "white",
-        fontWeight: "bold",
-        textAlign: "center",
-    },
-    openButton: {
-        alignSelf: 'center',
-        backgroundColor: "gray",
-        borderRadius: 15,
-        marginTop: 10,
-        paddingVertical: 30,
-        paddingHorizontal: 130,
-        elevation: 2
+        textAlign: 'center'
     },
 });
 
 
-export default PaymentScreen;
+export default CouponScreen;

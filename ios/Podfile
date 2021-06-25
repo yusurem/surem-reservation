@@ -25,4 +25,6 @@ target 'reservation' do
   pod 'RNExitApp', :path => '../node_modules/react-native-exit-app'
 
 
+  pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
+
 end

@@ -34,6 +34,8 @@ import InquiryScreen from './src/screens/InquiryScreen';
 import InquireScreen from './src/screens/InquireScreen';
 import NewTableScreen from './src/screens/NewTableScreen';
 import InitialScreen from './src/screens/InitialScreen';
+import OldTableScreen from './src/screens/OldTableScreen';
+import CouponScreen from './src/screens/CouponScreen';
 
 Font.loadAsync({'NanumSquareRegular':require('./assets/fonts/NanumSquareRegular.ttf')})
 
@@ -80,6 +82,7 @@ const SecondStack = () => {
         <Stack.Screen name="CalendarList" component={CalListScreen} />
         <Stack.Screen name="Table" component={TableScreen} />
         <Stack.Screen name="Payment" component={PaymentScreen} />
+        <Stack.Screen name="Coupon" component={CouponScreen} />
     </Stack.Navigator>
   );
 }
@@ -112,7 +115,6 @@ const FourthStack = () => {
         <Stack.Screen name="Inquiry" component={InquiryScreen} />
         <Stack.Screen name="Inquire" component={InquireScreen} />
         <Stack.Screen name="NewTable" component={NewTableScreen} />
-        <Stack.Screen name="Test" component={TestScreen} />
     </Stack.Navigator>
   );
 }

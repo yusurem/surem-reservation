@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableHighlight, Image, Alert, TouchableOpacity, ScrollView, NestedScrollView, Platform, BackHandler } from 'react-native';
+import { View, Text, StyleSheet, TouchableHighlight, Image, Alert, TouchableOpacity, ScrollView, NestedScrollView, Platform, NativeModules } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import axios from 'axios';
@@ -9,11 +9,11 @@ import * as SQLite from 'expo-sqlite';
 import CheckBox from '@react-native-community/checkbox';
 import IosCheckBox from '../components/IosCheckBox';
 import { useFocusEffect } from '@react-navigation/native';
-import { TERMS,URL } from '../constants';
-
-
+import { TERMS,URL, APP_VERSION } from '../constants';
 
 const PaymentScreen = ({ navigation, route }) => {
+    const { PaymentModule } = NativeModules;
+
     const [errorMessageA, setErrorMessageA] = useState("");
     const [errorMessageB, setErrorMessageB] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
@@ -105,95 +105,163 @@ const PaymentScreen = ({ navigation, route }) => {
     }
 
     // 1. 룸 예약
-    // url : http://공용개발:8989/reservation
-    // method : post
-    // parameter type : json
-    // {
-    //     "roomCode" : "techno100010001", // 룸 코드
-    //     "usercode" : "tester", // 사용자 ID
-    //     "resrvStime" : "20210202120000", // 예약 시작 시간. yyyyMMddHHmmss
-    //     "resrvEtime" : "20210202140000" // 예약 종료 시간. yyyyMMddHHmmss
-    // }
-    const makeReservation = async (start, end) => {
+    const makeReservation = async (payCode) => {
         try{
             console.log("Attempting to make reservation...");
-            // console.log(`${route.params.year}${route.params.month}${route.params.day}${route.params.startTime}`);
-            console.log("usercode: " + usercode);
-            console.log("secretcode: " + secretCode);
-            console.log("startTime" +  `${route.params.year}${route.params.month}${route.params.day}${route.params.startTime}`);
-            console.log("endTime" + `${route.params.year}${route.params.month}${route.params.day}${route.params.endTime}`)
             const response = await axios.post(URL + '/reservation', {
-            // const response = await axios.post('http://112.221.94.101:8980/reservation', {
                 'roomCode' : route.params.roomCode,
-                // 'usercode' : "testId1",
-                // "secretCode" : "EI1MLYNV5v0pQLLlYn1hrfL2jITz5M5cArB6pnP84k0uFQLudygVvSlA9ssPlh6SKVsiAg==",
                 'usercode' : usercode,
                 'secretCode' : secretCode,
+                'payCode' : payCode,
                 "resrvStime" : `${route.params.year}${route.params.month}${route.params.day}${route.params.startTime}`,
                 "resrvEtime" : `${route.params.year}${route.params.month}${route.params.day}${route.params.endTime}`,
-                "resrvNote": route.params.memo
+                "resrvNote": route.params.memo,
+                "useCoupon": route.params.couponIdx === undefined ? 'N' : 'Y',
+                "couponIdx": route.params.couponIdx,
+                "appVersion": APP_VERSION,
+                "os": Platform.OS,
             });
             console.log(`Got the response!`);
             console.log(response.data);
-            // let sTime = route.params.startTime.substring(0,2);
-            // if(sTime[0] == '0'){
-            //     sTime = sTime[1];
-            // }
-            // let eTime = route.params.endTime.substring(0,2);
-            // if(eTime[0] == '0'){
-            //     eTime = eTime[1];
-            // }
+
             if(response.data.returnCode.substring(0,5) !== "E0000"){
                 console.log("Error: " + response.data.returnCode);
                 return 'error';
             }
 
             let rCode = response.data.returnCode.substring(6);
-            // TODO: Add Memo from the route.params
-            // navigation.navigate('Reserved', {
+
+            return rCode;
+
+            // return {
             //     dateString: route.params.dateString,
-            //     startTime: `${sTime}:00 ${sTime > 11 ? "PM" : "AM"}`,
-            //     endTime: `${eTime}:00 ${eTime > 11 ? "PM" : "AM"}`,
-            //     qrCode: code
-            // });
-            return {
-                dateString: route.params.dateString,
-                startTime: `${sTime}:${route.params.startTime.charAt(2)}0 ${sTime > 11 ? "PM" : "AM"}`,
-                endTime: `${eTime}:${route.params.endTime.charAt(2)}0 ${eTime > 11 ? "PM" : "AM"}`,
-                resrvCode: rCode
-            };
+            //     startTime: `${sTime}:${route.params.startTime.charAt(2)}0 ${sTime > 11 ? "PM" : "AM"}`,
+            //     endTime: `${eTime}:${route.params.endTime.charAt(2)}0 ${eTime > 11 ? "PM" : "AM"}`,
+            //     resrvCode: rCode
+            // };
         } catch (err) {
             setErrorMessageA("API 문제발생");
             console.log(err);
         }
     }
 
-    const getQrCode = async (qr) => {
+    const startPayment = async () => {
         try{
-            console.log("Attempting to get QrCode link...");
-            // console.log(route.params.qrCode);
-            // const response = await axios.post('http://112.221.94.101:8980/getQrcode', {
-            const response = await axios.post(URL + '/getQrcode', {
-                // resrvCode: qr,
-                // resrvCode: "21D7E4B9B8C840F-6dda0e6d111e4f"
-                resrvCode: "techno100010001-V43sA98ETO2F07",
-                usercode: "1234",
-                secretCode: "anything"
-            });
-            console.log(`Got the response!`);
-            // console.log(response.data);
-            // console.log(typeof(response.data));
-            return response.data;
-           
-        } catch (err) {
-            console.log(err);
-            return 'Error';
+            const params = {
+                userCode: usercode,
+                // secretCode: secretCode,
+                resrvStime: `${route.params.year}${route.params.month}${route.params.day}${route.params.startTime}`,
+                // resrvEtime: `${route.params.year}${route.params.month}${route.params.day}${route.params.endTime}`,
+                payAmount: route.params.totalCost.toString(),
+                adminCode: route.params.adminCode,
+                roomCode: route.params.roomCode,
+                roomName: route.params.roomName,
+                userName: "test",
+                totalTime: route.params.totalTime.toString(),
+                couponCode: route.params.couponCode === undefined ? null : route.params.couponCode,
+                couponIdx: route.params.couponIdx === undefined ? null : route.params.couponIdx,
+                // resrvNote: route.params.memo,
+                useCoupon: route.params.couponIdx === undefined ? 'N' : 'Y',
+                // appVersion: APP_VERSION,
+                // os: Platform.OS,
+                // resrvCode: resResult.resrvCode,
+            }
+            console.log("[PaymentScreen]: Params for payment native module: ");
+            console.log(params);
+            const response = await PaymentModule.startPayment(params);
+            console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+            console.log(response);
+            console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+
+            if(response.result === "success"){
+                const res = await makeReservation(response.payCode);
+                if(res === 'error'){
+                    "예약오류",
+                    "예약도중 서버 오류가 일어났습니다. 결제 취소됬습니다. 잠시후 다시 예약해주세요.",
+                    [{
+                        text: "처음으로 돌아가기",
+                        onPress: () => {
+                            navigation.reset({
+                                index: 0,
+                                routes: [
+                                    {name: 'Table'}
+                                ]
+                    })}}]
+                }
+                else{
+                    navigation.navigate('Reserved', {
+                        dateString: route.params.dateString,
+                        startTime: `${sTime}:${route.params.startTime.charAt(2)}0 ${sTime > 11 ? "PM" : "AM"}`,
+                        endTime: `${eTime}:${route.params.endTime.charAt(2)}0 ${eTime > 11 ? "PM" : "AM"}`,
+                        resrvCode: res,
+                        weekDay: route.params.weekDay,
+                        roomName: route.params.roomName
+                    });
+                }
+            }
+            
+        } catch (e){
+            console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            console.log(e);
+            console.log(e.message === "E1:payCancel");
+            if(e.message === "E1:payCancel"){
+                Alert.alert(
+                    "결제 진행을 취소하셔습니다.",
+                    "[결제하기] 버튼으로 결제 진행을 다시 시작해주세요.",
+                    [
+                        { text: "확인" },
+                        {
+                            text: "처음으로 돌아가기",
+                            onPress: () => { 
+                                navigation.reset({
+                                    index: 0, 
+                                    routes: [
+                                        {name: 'Table'}
+                                    ] 
+                            }); }
+                        }
+                    ]
+                )
+            }
+            else if(e.message === "E2:userFail"){
+                Alert.alert(
+                    "결제가 실패했습니다",
+                    "잠시후 다시 예약해주세요.",
+                    [
+                        {
+                            text: "처음으로 돌아가기",
+                            onPress: () => { 
+                                navigation.reset({
+                                    index: 0, 
+                                    routes: [
+                                        {name: 'Table'}
+                                    ] 
+                                }); 
+                }}]);
+            }
+            else{
+                Alert.alert(
+                    "결제오류",
+                    "결제도중 알수없는 오류가 일어났습니다. 잠시후 다시 예약해주세요. 같은 오류 반복시 전화문의해주세요.",
+                    [
+                        {
+                            text: "처음으로 돌아가기",
+                            onPress: () => { 
+                                navigation.reset({
+                                    index: 0, 
+                                    routes: [
+                                        {name: 'Table'}
+                                    ] 
+                                }); 
+                }}]);
+            }
         }
     }
 
+
     const checkHandler = (newValue) => {
         setErrorMessageB("");
-        setChecked(newValue);
+        setChecked(newValue);YEAR
         setToggleCheckBox(newValue);
     }
 
@@ -234,18 +302,50 @@ const PaymentScreen = ({ navigation, route }) => {
                         <View style={styles.infoRowStyle}>
                             <Text style={styles.subTitleStyle}>이용 금액</Text>
                             <View style={{marginRight: 4}}>
-                                <Text style={styles.valueStyle}>{route.params.totalCost}원</Text>
+                                <Text style={styles.valueStyle}>{route.params.totalCost.toLocaleString()}원</Text>
                             </View>
                         </View>
                         <View style={styles.infoRowStyle}>
                             <Text style={styles.subTitleStyle}>쿠폰</Text>
                             <TouchableOpacity
                                 onPress={() => {
-                                    setModalVisible(!modalVisible);
+                                    // Object {
+                                    //     "dateString": "2021-06-09",
+                                    //     "day": "09",
+                                    //     "endTime": "162000",
+                                    //     "memo": "",
+                                    //     "month": "06",
+                                    //     "roomCode": "1F16051D73AA4A3",
+                                    //     "roomName": "회의실",
+                                    //     "startTime": "161000",
+                                    //     "totalCost": "500",
+                                    //     "weekDay": 3,
+                                    //     "year": 2021,
+                                    // }
+                                    // setModalVisible(!modalVisible);
+                                    navigation.navigate("Coupon", {
+                                        dateString: route.params.dateString,
+                                        day: route.params.day,
+                                        endTime: route.params.endTime,
+                                        memo: route.params.memo,
+                                        month: route.params.month,
+                                        roomCode: route.params.roomCode,
+                                        roomName: route.params.roomName,
+                                        startTime: route.params.startTime,
+                                        totalCost: route.params.totalCost,
+                                        weekDay: route.params.weekDay,
+                                        year: route.params.year,
+                                        userCode: usercode,
+                                        secretCode: secretCode,
+                                        couponIdx: route.params.couponIdx,
+                                        discount: route.params.discount,
+                                        couponCode: route.params.couponCode,
+                                        adminCode: route.params.adminCode,
+                                    })
                                 }}
                             >
                                 <View style={{ flexDirection: 'row' }}>
-                                    <Text style={styles.valueStyle}>사용 가능 쿠폰 {'2'}장 </Text>
+                                    <Text style={styles.valueStyle}>{route.params.discount === undefined ? '사용 가능한 쿠폰들' : '-' + route.params.discount + '원'} </Text>
                                     <View style={{ justifyContent: 'center' }}>
                                         <MaterialCommunityIcons name="greater-than" size={18} color="#6C6C6C" />
                                     </View>
@@ -258,7 +358,7 @@ const PaymentScreen = ({ navigation, route }) => {
                     <View style={styles.infoRowStyle}>
                             <Text style={styles.subTitleStyle}>결제 금액 (vat포함)</Text>
                             <View style={{marginRight: 4}}>
-                                <Text style={styles.valueStyle}>{route.params.totalCost}원</Text>
+                                <Text style={styles.valueStyle}>{(route.params.totalCost - (route.params.discount === undefined ? 0 : route.params.discount)).toLocaleString()}원</Text>
                             </View>
                     </View>
                     
@@ -315,107 +415,33 @@ const PaymentScreen = ({ navigation, route }) => {
                                 if(checked){
                                     // await getUserId();
                                     await removeSyncTime();
-                                    const res = await makeReservation(sTime, eTime);
-                                    console.log(res);
-                                    if(res === 'error'){
-                                        navigation.reset({
-                                            index: 0, 
-                                            routes: [{name: 'CalendarList'}] 
-                                        });
-                                    }
-                                    else{
-                                        navigation.navigate('Reserved', {
-                                            dateString: res.dateString,
-                                            startTime: res.startTime,
-                                            endTime: res.endTime,
-                                            resrvCode: res.resrvCode,
-                                            weekDay: route.params.weekDay,
-                                            roomName: route.params.roomName
-                                        });
-                                    }
+                                    // const res = await makeReservation(sTime, eTime);
+                                    // console.log(res);
+                                    // if(res === 'error'){
+                                    //     navigation.reset({
+                                    //         index: 0, 
+                                    //         routes: [{name: 'CalendarList'}] 
+                                    //     });
+                                    // }
+                                    // else{
+                                    //     startPayment(res);
+                                    // }
                                     // const qr = await getQrCode(res.qrCode);
                                     // console.log(qr);
+
+                                    startPayment();
                                     
                                 }
                                 else{
                                     setErrorMessageB("계속 진행하려면 이용 약관을 읽고 동의해야 합니다.");
                                 }
-
-                                
                             }}
                         >
                             <View>
-                                <Text style={styles.textStyle}>예약하기</Text>
+                                <Text style={styles.textStyle}>결제하기</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
-                
-                    <Modal 
-                        isVisible={modalVisible}
-                        backdropTransitionOutTiming={0}
-                        style={styles.modal}
-                    >
-                        <View style={styles.modalBox}>
-                            <View style={styles.modalBar}>
-                                <View style={styles.barSides}></View>
-                                <View style={{justifyContent: 'center'}}>
-                                    <Text style={styles.barText}>보유쿠폰</Text>
-                                </View>
-                                <View style={styles.barSides}>
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            setModalVisible(!modalVisible);
-                                        }}
-                                    >
-                                        <View style={{borderWidth: 0, borderColor: 'white'}}>
-                                            <Feather name="x" size={23} color="white" />
-                                        </View>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-
-                            <View style={styles.couponView}>
-                                <View style={styles.couponBox}>
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            
-                                        }}
-                                    >
-                                        <View style={styles.coupon}>
-                                            <Text style={styles.couponText}>Welcome 쿠폰 20%할인 (최대5천원)</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        onPress={() => {
-
-                                        }}
-                                    >
-                                        <View style={styles.coupon}>
-                                            <Text style={styles.couponText}>단골 쿠폰 2,000원 할인</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        onPress={() => {
-
-                                        }}
-                                    >
-                                        <View style={styles.coupon}>
-                                            <Text style={styles.couponText}>Time 쿠폰 오전 2,000원 할인</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            setModalVisible(!modalVisible);
-                                        }}
-                                    >
-                                        <View style={styles.applyButton}>
-                                            <Text style={styles.applyText}>적용하기</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        </View>
-                    </Modal>
                 </View>
             </ScrollView>
 

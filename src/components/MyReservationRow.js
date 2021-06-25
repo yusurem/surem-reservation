@@ -39,7 +39,7 @@ export default function MyReservationRow(props) {
         <View style={styles.qrStyle}>
 		  <Text style={{ marginTop: 5, textAlign: 'center' }}>{props.roomName}</Text>
 		  <Text style={{ textAlign: 'center' }}>날짜 : {moment(props.resrvStime, 'YYYYMMDDHHmmss').format('YYYY / MM / DD')}</Text>
-		  <Text style={{ textAlign: 'center' ,marginBottom:10 }}>시간 : {moment(props.resrvStime, 'YYYYMMDDHHmmss').format('HH:mm')} ~ {moment(props.resrvStime, 'YYYYMMDDHHmmss').format('HH:mm')}</Text>
+		  <Text style={{ textAlign: 'center' ,marginBottom:10 }}>시간 : {moment(props.resrvStime, 'YYYYMMDDHHmmss').format('HH:mm')} ~ {moment(props.resrvEtime, 'YYYYMMDDHHmmss').format('HH:mm')}</Text>
            
           <QRCode
             size={280}

@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text } from 'react-native'
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import * as SQLite from 'expo-sqlite';
 import { useEffect } from 'react';
 import axios from 'axios';
 import moment from 'moment';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native'
 import { URL } from '../constants';
 
@@ -17,22 +16,22 @@ const [usercode, setUsercode] = useState();
 const [secretCode, setSecretCode] = useState();
 const navigation = useNavigation();
 
-  const getUserId = async () => {
-    try{
-      await db.transaction((tx)=>{
-        tx.executeSql(
-          `select * from UserId order by _id desc;`,
-          [],
-          (tx, results) =>{
-            setUsercode(results.rows.item(0).usercode)
-            setSecretCode(results.rows.item(0).secretCode)
-          }
-        )
-      })
-    } catch (err){
-      console.log(err);
+    const getUserId = async () => {
+		try{
+		await db.transaction((tx)=>{
+			tx.executeSql(
+			`select * from UserId order by _id desc;`,
+			[],
+			(tx, results) =>{
+				setUsercode(results.rows.item(0).usercode)
+				setSecretCode(results.rows.item(0).secretCode)
+			}
+			)
+		})
+		} catch (err){
+		console.log(err);
+		}
     }
-  }
 
 	const getMainNotices = async () => {
 		var data = JSON.stringify(
@@ -44,7 +43,7 @@ const navigation = useNavigation();
 
 		var config = {
 			method: 'post',
-	 		url: URL+'/notice/0/3',
+			url: URL+'/notice/0/3',
 			// url: 'http://112.221.94.101:8980/notice/0/3',
 			headers: {
 				'Content-Type': 'application/json'
@@ -70,7 +69,7 @@ const navigation = useNavigation();
 		if(usercode != null && secretCode != null){
 			getMainNotices()
 		}
-	}, [usercode, secretCode])
+}, [usercode, secretCode])
 
   return (
 	<TouchableOpacity style={styles.notices}
@@ -95,7 +94,6 @@ const navigation = useNavigation();
           })
         }
 				<TouchableOpacity style={{alignSelf:'flex-end', marginRight:10, marginBottom:'1%'}} 
-				hitSlop={{top:-1, bottom:20, left:-300, right:10}} 
 				onPress={()=>{
 					navigation.navigate('Notices');
 				}}>

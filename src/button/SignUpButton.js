@@ -36,10 +36,12 @@ export default function SignUpButton(props){
       {
         "usercode":props.phoneNum,
         "userpass":props.phoneNum,
-        "username":'test',
+        "username":props.name,
         "userCallphone":props.phoneNum
       }
     );
+
+    console.log('SignUp :: ',data)
 
     var config = {
       method: 'post',
@@ -82,7 +84,17 @@ export default function SignUpButton(props){
         console.log('login Success')
         saveUserId(response.data.returnCode, props.phoneNum)
         setLoading(false);
-        navigation.reset({index: 0, routes: [{name: 'Tab'}] })
+        //navigation.reset({index: 0, routes: [{name: 'Tab'}] })
+        navigation.reset({
+          index: 0,
+          actions: [
+            navigation.navigate('Tab', {
+              screen: 'Reserve', params: {
+                  screen: 'Branch'
+              }
+            })
+          ]
+        })
       }
     })
 

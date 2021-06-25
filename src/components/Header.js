@@ -1,10 +1,14 @@
-import React, { Component,useState } from "react";
+import React, { Component, useState, useEffect } from "react";
 import { Text, StyleSheet, View, Image, TouchableOpacity } from "react-native";
+import * as SQLite from 'expo-sqlite';
+
+
 
 const Header = ({ navigation, route }) => {
+
   return (
     <View style={[styles.headerContainer]}>
-      <Image style={styles.logo} source={require("../../assets/logo_02.png")} />
+      <Image style={styles.logo} source={require("../../assets/logo_02.png")}/>
     </View>
   )
 }

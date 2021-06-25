@@ -219,7 +219,7 @@ export default function ReservationListScreen({ navigation }) {
       .then(async function (response) {
 
         if (response.data.returnCode == 'E0000') {
-          setTimeout(async ()=>Alert.alert("예약을 취소가 완료됬습니다."), 10);
+          setTimeout(async ()=>Alert.alert("예약이 취소되었습니다."), 10);
         } else if (response.data.returnCode == 'E2005') {
           setTimeout(async ()=>{Alert.alert('취소 불가능한 시간 입니다.')},500)
         } else if (response.data.returnCode == 'E2006') {

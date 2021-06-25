@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableHighlight, TouchableOpacity, BackHandler, FlatList, Alert, ScrollView, useWindowDimensions} from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, BackHandler, FlatList, Alert, ScrollView, useWindowDimensions} from 'react-native';
 import axios from 'axios';
 import { FontAwesome, Ionicons } from '@expo/vector-icons'; 
 
@@ -11,52 +11,49 @@ import { URL } from '../constants';
 import { useFocusEffect } from '@react-navigation/native';
 
 const InquiryScreen = ({ navigation, route }) => {
-    let id = 0;
-
     const [inquiryList, setInquiryList] = useState([]);
     const [initial, setInitial] = useState(true);
     const [isOpen, setIsOpen] = useState("");
 
     console.log("Entered InquiryScreen. Params: ");
     console.log(route.params);
-    
 
     
-    const getVocList = async () => {
-        try{
-            console.log("Attempting to get user inquiries...");
-            // console.log("usercode: " + usercode);
-            // console.log("secretCode: " + secretCode);
-            const response = await axios.post(URL+'/getVocList', {
-            // const response = await axios.post('http://112.221.94.101:8980/getVocList', {
-                usercode: route.params.usercode,
-                securityKey: route.params.secretCode
-            });
-            console.log(`Got the response!`);
-            console.log(response.data);
-            if(response.data.returnCode !== "E0000"){
-                console.log("Error: " + response.data.returnCode);
-                Alert.alert("문의내역을 가져오는데 오류가 일어났습니다. 잠시후 다시 시도해주세요.");
-                return 'Error';
-            }
-            setInquiryList(response.data.list)
-            setInitial(false);
-            return response.data.returnCode;
-        } catch (err) {
-            console.log(err);
-            return 'Error';
-        }
-    }
+    // const getVocList = async () => {
+    //     try{
+    //         console.log("Attempting to get user inquiries...");
+    //         // console.log("usercode: " + usercode);
+    //         // console.log("secretCode: " + secretCode);
+    //         const response = await axios.post(URL+'/getVocList', {
+    //         // const response = await axios.post('http://112.221.94.101:8980/getVocList', {
+    //             usercode: route.params.usercode,
+    //             securityKey: route.params.secretCode
+    //         });
+    //         console.log(`Got the response!`);
+    //         console.log(response.data);
+    //         if(response.data.returnCode !== "E0000"){
+    //             console.log("Error: " + response.data.returnCode);
+    //             Alert.alert("문의내역을 가져오는데 오류가 일어났습니다. 잠시후 다시 시도해주세요.");
+    //             return 'Error';
+    //         }
+    //         setInquiryList(response.data.list)
+    //         setInitial(false);
+    //         return response.data.returnCode;
+    //     } catch (err) {
+    //         console.log(err);
+    //         return 'Error';
+    //     }
+    // }
 
-    const renderItem = ({ item }) => {
-        return (
-            <Item
-                item={item}
-                onPress={ () => {
-                }}
-            />
-        );
-    }
+    // const renderItem = ({ item }) => {
+    //     return (
+    //         <Item
+    //             item={item}
+    //             onPress={ () => {
+    //             }}
+    //         />
+    //     );
+    // }
 
     useFocusEffect(
         useCallback(() => {
@@ -92,7 +89,7 @@ const InquiryScreen = ({ navigation, route }) => {
                 setInitial(true);
             }
 
-        }, [id])
+        }, [route.params.usercode])
     );
 
     // if(initial){
@@ -115,72 +112,78 @@ const InquiryScreen = ({ navigation, route }) => {
                     <Text style={styles.askText}>문의작성</Text>
                 </TouchableOpacity>
             </View>
-            <View style={[styles.mainBox, { justifyContent: inquiryList.length == 0 ? 'center' : 'flex-start' }]}>
-                <ScrollView>
-                    {inquiryList.length == 0 ? 
-                        <Text style={{ marginBottom: 40, alignSelf: 'center'}}>문의내역이 없습니다.</Text>
-                        :
-                        // <FlatList
-                        //     data={inquiryList}
-                        //     renderItem={renderItem}
-                        //     keyExtractor={item => item.idx}
-                        //     extraData={isOpen}
-                        // />
-                        inquiryList.map((item, index) => {
-                            return (
-                                <View key={index} style={styles.itemOuter}>
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            if(isOpen === ""){
-                                                setIsOpen(item.idx);
-                                                return;
-                                            }
-                                            else{
-                                                setIsOpen("");
-                                                return;
-                                            }
-                                        }}
-                                    >
-                                        <View style={[styles.itemBox]}>
-                                            <Text style={styles.itemDate}>{item.time.substring(0,4)}.{item.time.substring(4,6)}.{item.time.substring(6,8)}</Text>
-                                            <View style={styles.itemData}>
-                                                <Text style={styles.itemSubject}>{item.subject}</Text>
-                                                <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                                                    <Text style={[styles.itemStatus, item.adminChk === 'O' ? styles.answered : styles.unAnswered]}>{item.adminChk === 'O' ? "답변 완료" : "답변 대기"}  </Text>
-                                                        {isOpen ?
-                                                            <Ionicons style={styles.caretIcon} name="ios-caret-up-circle-outline" size={24} color={item.adminChk === 'O' ? '#4982CF' : 'black'} />
-                                                            :
-                                                            <Ionicons style={styles.caretIcon} name="ios-caret-down-circle-outline" size={24} color={item.adminChk === 'O' ? '#4982CF' : 'black'} />
-                                                        }
+            <View style={[styles.mainBox, { justifyContent: (initial == true || inquiryList.length == 0) ? 'center' : 'flex-start' }]}>
+                {initial === true ? 
+                    <View style={{ }}>
+                        <ActivityIndicator size="large" color="gray"/>
+                    </View>
+                    :
+                    <ScrollView>
+                        {inquiryList.length == 0 ? 
+                            <Text style={{ marginBottom: 40, alignSelf: 'center'}}>문의내역이 없습니다.</Text>
+                            :
+                            // <FlatList
+                            //     data={inquiryList}
+                            //     renderItem={renderItem}
+                            //     keyExtractor={item => item.idx}
+                            //     extraData={isOpen}
+                            // />
+                            inquiryList.map((item, index) => {
+                                return (
+                                    <View key={index} style={styles.itemOuter}>
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                if(isOpen === ""){
+                                                    setIsOpen(item.idx);
+                                                    return;
+                                                }
+                                                else{
+                                                    setIsOpen("");
+                                                    return;
+                                                }
+                                            }}
+                                        >
+                                            <View style={[styles.itemBox]}>
+                                                <Text style={styles.itemDate}>{item.time.substring(0,4)}.{item.time.substring(4,6)}.{item.time.substring(6,8)}</Text>
+                                                <View style={styles.itemData}>
+                                                    <Text style={styles.itemSubject}>{item.subject}</Text>
+                                                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                                                        <Text style={[styles.itemStatus, item.adminChk === 'O' ? styles.answered : styles.unAnswered]}>{item.adminChk === 'O' ? "답변 완료" : "답변 대기"}  </Text>
+                                                            {isOpen ?
+                                                                <Ionicons style={styles.caretIcon} name="ios-caret-up-circle-outline" size={24} color={item.adminChk === 'O' ? '#4982CF' : 'black'} />
+                                                                :
+                                                                <Ionicons style={styles.caretIcon} name="ios-caret-down-circle-outline" size={24} color={item.adminChk === 'O' ? '#4982CF' : 'black'} />
+                                                            }
+                                                    </View>
                                                 </View>
                                             </View>
-                                        </View>
 
-                                        <Collapsible
-                                            collapsed={isOpen !== item.idx}
-                                        > 
-                                            <View style={styles.itemBody}>
-                                                <Text style={styles.itemBodyText}>{item.note}</Text>
-                                                {item.adminChk === 'O' ?
-                                                    (<View style={{}}>
-                                                        <Text style={styles.answerLabel}>답변: </Text>
-                                                        <Text style={styles.answerText}>이것이 답변입니다!</Text>
-                                                    </View>)
-                                                    :
-                                                    null
-                                                }
+                                            <Collapsible
+                                                collapsed={isOpen !== item.idx}
+                                            > 
+                                                <View style={styles.itemBody}>
+                                                    <Text style={styles.itemBodyText}>{item.note}</Text>
+                                                    {item.adminChk === 'O' ?
+                                                        (<View style={{}}>
+                                                            <Text style={styles.answerLabel}>답변: </Text>
+                                                            <Text style={styles.answerText}>이것이 답변입니다!</Text>
+                                                        </View>)
+                                                        :
+                                                        null
+                                                    }
+                                                </View>
+                                            </Collapsible>
+
+                                            <View style={styles.itemEnd}>
+                                                <Text></Text>
                                             </View>
-                                        </Collapsible>
-
-                                        <View style={styles.itemEnd}>
-                                            <Text></Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                </View>
-                            )
-                        })
-                    }
-                </ScrollView>
+                                        </TouchableOpacity>
+                                    </View>
+                                )
+                            })
+                        }
+                    </ScrollView>
+                }    
             </View>
         </SafeAreaView>
     );

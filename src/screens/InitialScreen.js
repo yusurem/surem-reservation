@@ -25,7 +25,16 @@ export default function InitialScreen({ navigation }) {
         (tx, results) =>{
           console.log(results)
           if(results.rows.length > 0){
-            navigation.reset({index: 0, routes: [{name: 'SignUp'}] })
+            navigation.reset({
+              index: 0,
+              actions: [
+                navigation.navigate('Tab', {
+                  screen: 'Reserve', params: {
+                      screen: 'Branch'
+                  }
+                })
+              ]
+            })
           } else if(results.rows.length == 0){
             setLoading(false)
           }
