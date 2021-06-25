@@ -406,6 +406,7 @@ const TableScreen = ({ navigation, route }) => {
                         roomCode: rmCode,
                         options: ops,
                         optionVals: opVals,
+                        adminCode: route.params.branchCode
                     })
                 }}
             >

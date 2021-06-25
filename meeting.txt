@@ -1,3 +1,15 @@
+2021-06-24
+- Things to do:
+    - Catching cancelling mid-Payment and doing the appropriate alert !
+    - Catching error from payment and handling it !
+    - Catching error from reservation and handling it !
+    - Setting up the logic for calling reservation with payCode parameter after payment was made successfully !
+    - Filtering valid coupons by adminCode !
+    - Fixing how coupons are shown
+    - Cleaning up the source code and files
+    - Push notification
+    - 공유하기
+
 2021-06-13
 - Done as of now
     - Coupons EVERYTHING OMG

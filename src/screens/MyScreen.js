@@ -6,7 +6,7 @@ import QRCode from 'react-native-qrcode-svg';
 import Modal from 'react-native-modal';
 import { useEffect } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { TERMS,URL } from '../constants';
+import { TERMS, URL, APP_VERSION } from '../constants';
 // import * as RNLocalize from 'react-native-localize';
 import moment from 'moment-timezone';
 
@@ -267,7 +267,7 @@ const MyScreen = ({ navigation, route }) => {
                         </View>
 
                         <View style={styles.miscBox}>
-                            <Text style={styles.version}>버전정보 V 1.0</Text>
+                            <Text style={styles.version}>버전정보 V {APP_VERSION}</Text>
                             <Text style={styles.terms}>약관 및 정책</Text>
                             <TouchableOpacity
                                 onPress={() => {

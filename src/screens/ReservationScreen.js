@@ -611,7 +611,9 @@ const ReservationScreen = ({ navigation, route }) => {
                                             weekDay: route.params.weekDay,
                                             roomCode: route.params.roomCode,
                                             roomName: roomName,
-                                            totalCost: totalCost
+                                            totalCost: totalCost,
+                                            adminCode: route.params.adminCode,
+                                            totalTime: mins + (hours * 6),
                                         });
                                     }
                                     else{

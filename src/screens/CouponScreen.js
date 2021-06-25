@@ -79,6 +79,12 @@ const CouponScreen = ({ navigation, route }) => {
                 }
             }
 
+            // Check if 지점 is right
+            if(coupons[i].adminCode !== route.params.adminCode){
+                unavails.push(coupons[i]);
+                continue;
+            }
+
             // MinPrice
             if(coupons[i].minPrice !== "null"){
                 if(route.params.totalCost < parseInt(coupons[i].minPrice)){
@@ -87,7 +93,6 @@ const CouponScreen = ({ navigation, route }) => {
                     continue;
                 }
             }
-
             else{
                 if(coupons[i].couponType === 'P'){
                     if(route.params.totalCost < parseInt(coupons[i].couponDCPrice)){
@@ -97,6 +102,8 @@ const CouponScreen = ({ navigation, route }) => {
                     }
                 }
             }
+
+            //check adminCode to see if it matches and if not take it out of avaialble couposn
             avails.push(coupons[i]);
         }
         setCouponList([...avails, ...unavails]);

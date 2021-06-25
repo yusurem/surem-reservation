@@ -63,8 +63,31 @@ const TestScreen = ({ navigation, route }) => {
                     // flex: 1,
                     marginHorizontal: 25,
                 }}
-                onPress={() => {
-                    PaymentModule.testAllat('TestPhrase2');
+                onPress={ async () => {
+                    try{
+                        const params = {
+                            userCode: "01012345678",
+                            orderNo: "0",
+                            resrvStime: "20210623173000",
+                            payAmount: "1000",
+                            adminCode: "surem3",
+                            roomCode: "EEEEE",
+                            roomName: "두피샵",
+                            userName: "test",
+                            totalTime: "120",
+                            couponCode: "78",
+                            couponIdx: "2",
+                            resrvCode: "FFFFF"
+                        }
+                        const response = await PaymentModule.startPayment(params);
+                        console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+                        console.log(response);
+                        console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+                    } catch(e) {
+                        console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        console.log("THIS IS ERROR: " + e);
+                    }
+                    // PaymentModule.loadWeb();
                 }}
             >
                 <Text style={styles.buttonText}>시험 콜 2</Text>

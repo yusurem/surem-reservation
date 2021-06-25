@@ -430,3 +430,5 @@ export const TERMS = {
 
 export const URL = 'https://office-api.surem.com'
 // export const URL = 'http://112.221.94.101:8980'
+
+export const APP_VERSION = "1.0.6.1";

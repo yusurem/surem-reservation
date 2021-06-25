@@ -80,4 +80,6 @@ buck-out/
 .expo/*
 web-build/
 
+android/java_pid81780.hprof
+
 # @end expo-cli
