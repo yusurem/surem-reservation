@@ -6,6 +6,8 @@
     - Setting up the logic for calling reservation with payCode parameter after payment was made successfully !
     - Filtering valid coupons by adminCode !
     - Fixing how coupons are shown
+    - Coupon list in MyScreen
+    - Empty inquiry list bug fix
     - Cleaning up the source code and files
     - Push notification
     - 공유하기
