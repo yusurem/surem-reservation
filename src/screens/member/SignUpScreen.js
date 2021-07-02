@@ -404,7 +404,7 @@ export default function SignUpScreen({ navigation }) {
                         style={styles.acceptBtn}
                         onPress={() => {
                             setModalVisible(!modalVisible);
-                            setIsCheckAcceptedTerm(!isCheckAcceptedTerm);
+                            setIsCheckAcceptedTerm(true);
                           }}
                         >
                         <Text style={styles.buttonText}>동의하기</Text>
