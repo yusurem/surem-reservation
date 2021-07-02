@@ -195,15 +195,18 @@ const PaymentScreen = ({ navigation, route }) => {
                 }
                 else{
                     navigation.reset({
-                        index: 0,
-                        routes: [{name: 'Reserved', params: {
-                            dateString: route.params.dateString,
-                            startTime: `${sTime}:${route.params.startTime.charAt(2)}0 ${sTime > 11 ? "PM" : "AM"}`,
-                            endTime: `${eTime}:${route.params.endTime.charAt(2)}0 ${eTime > 11 ? "PM" : "AM"}`,
-                            resrvCode: res,
-                            weekDay: route.params.weekDay,
-                            roomName: route.params.roomName
-                        }}],
+                        index: 1,
+                        routes: [
+                            {name: "Table"},
+                            {name: 'Reserved', params: {
+                                dateString: route.params.dateString,
+                                startTime: `${sTime}:${route.params.startTime.charAt(2)}0 ${sTime > 11 ? "PM" : "AM"}`,
+                                endTime: `${eTime}:${route.params.endTime.charAt(2)}0 ${eTime > 11 ? "PM" : "AM"}`,
+                                resrvCode: res,
+                                weekDay: route.params.weekDay,
+                                roomName: route.params.roomName
+                            }}
+                        ],
                     });
                     // navigation.navigate('Reserved', {
                     //     dateString: route.params.dateString,

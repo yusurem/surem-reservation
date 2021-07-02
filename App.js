@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as Font from 'expo-font'
 
+import SplashScreen from 'react-native-splash-screen';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Entypo, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 
@@ -183,6 +184,13 @@ const TabNav = () => {
 }
 
 function App() {
+  useEffect(() => {
+    // console.log("OMPOEINUTPOEUT");
+    // console.log(typeof(SplashScreen));
+    setTimeout(() => SplashScreen.hide() , 50);
+    // SplashScreen.hide();
+  }, [Stack])
+
   return (
     <SafeAreaProvider>
       <NavigationContainer>

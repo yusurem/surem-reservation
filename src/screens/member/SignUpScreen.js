@@ -15,7 +15,7 @@ import Modal from 'react-native-modal';
 // import { CheckBox } from 'react-native-elements';
 
 import CheckBox from '@react-native-community/checkbox';
-import IosCheckBox from '../components/IosCheckBox';
+import IosCheckBox from '../../components/IosCheckBox';
 
 import * as SQLite from 'expo-sqlite';
 import { TERMS } from '../../constants';

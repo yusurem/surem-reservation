@@ -34,22 +34,22 @@ const ReservedScreen = ({ navigation, route }) => {
         return (() => backHandler.remove());
     },);
 
-    useEffect(() => {
-        const unsubscribe = navigation.dangerouslyGetParent().addListener('tabPress', (e) => {
-            // Prevent default behavior
-            // e.preventDefault();
+    // useEffect(() => {
+    //     const unsubscribe = navigation.dangerouslyGetParent().addListener('tabPress', (e) => {
+    //         // Prevent default behavior
+    //         // e.preventDefault();
     
-            // Do something manually
-            navigation.reset({
-                index: 0, 
-                routes: [
-                    {name: 'Table'}
-                ] 
-            })  
-        });
+    //         // Do something manually
+    //         navigation.reset({
+    //             index: 0, 
+    //             routes: [
+    //                 {name: 'Table'}
+    //             ] 
+    //         })  
+    //     });
     
-        return unsubscribe;
-    }, [navigation]);
+    //     return unsubscribe;
+    // }, [navigation]);
 
     // useFocusEffect(() => {
     //     const unsubscribe = navigation.addListener('beforeRemove', (e) => {

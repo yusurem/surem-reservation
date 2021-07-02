@@ -21,6 +21,8 @@
     - Coupon 날짜 문제 if null 기한 없음 ! ?
     - Recent Branches list is not stored upon exiting the application !
     - Upon exiting the application with back button, a loading screen goes on forever !
+    - Splash Screen fix
+    - Little white screen in between splash screen and app
     - Push notification
         - Setup !
         - Sending
