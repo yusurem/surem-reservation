@@ -168,7 +168,7 @@ export default function SignUpScreen({ navigation }) {
     askPermission();
     if(permissionState){
       if(phoneNum == ""){
-        // getPhoneNumber();
+        getPhoneNumber();
       }
     }
     hasUserId();
