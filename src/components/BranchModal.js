@@ -15,8 +15,8 @@ import { CalendarList, Calendar, LocaleConfig } from 'react-native-calendars';
 import { MaterialCommunityIcons, AntDesign, FontAwesome5, Feather } from '@expo/vector-icons';
 
 
-const BranchModal = ({ modalVisible, setModalVisible, handleBranch }) => {
-    console.log("Opened BranchModal. Modal Visiblity: ");
+const BranchModal = ({ modalVisible, setModalVisible, handleBranch, db }) => {
+    console.log("########\n[BranchModal]\n########\nModal Visiblity: " + modalVisible);
     // console.log(modalVisible);
     // console.log(setModalVisible);
 
@@ -33,18 +33,18 @@ const BranchModal = ({ modalVisible, setModalVisible, handleBranch }) => {
 
     const [curr, setCurr] = useState(null);
    
-    const db = SQLite.openDatabase("db.db");
+    // const db = SQLite.openDatabase("db.db");
 
     // db.transaction((tx) => {
     //     tx.executeSql('DROP TABLE IF EXISTS Branches;');
     // })
 
-    db.transaction((tx) => {
-        tx.executeSql('CREATE TABLE IF NOT EXISTS Branches (_id INTEGER PRIMARY KEY, location TEXT, branchCode TEXT, branchName TEXT);')
-    })
+    // db.transaction((tx) => {
+    //     tx.executeSql('CREATE TABLE IF NOT EXISTS Branches (_id INTEGER PRIMARY KEY, location TEXT, branchCode TEXT, branchName TEXT);')
+    // })
 
     const getBranch = () => {
-        console.log("retrieving...");
+        console.log("[BranchModal]:: Retrieving from SQlite...");
         db.transaction(
             (tx) => {
                 tx.executeSql('select * from Branches order by _id asc;',
@@ -52,8 +52,17 @@ const BranchModal = ({ modalVisible, setModalVisible, handleBranch }) => {
                     (tx, results) => {
                         // do set current, recentA, recentB 
                         // ex. set(results.row.item(0).current)
-                        // console.log(results);
-                        setRecents(results.rows._array);
+                        console.log("[BranchModal]:: Successfully retrieved.");
+                        console.log(results);
+                        if(results.rows._array.length === 2){
+                            setRecents([results.rows._array[1], results.rows._array[0]]);
+                        }
+                        else if(results.rows._array.length === 3){
+                            setRecents([results.rows._array[2], results.rows._array[1], results.rows._array[0]]);
+                        }
+                        else {
+                            setRecents(results.rows._array);
+                        }
                     },
                     (tx, error) => {
                         console.log(error);
@@ -64,11 +73,12 @@ const BranchModal = ({ modalVisible, setModalVisible, handleBranch }) => {
     }
 
     const saveBranch = (location, branchCode, branchName) => {
-        console.log("inserting...");
+        console.log("[BranchModal]:: Inserting into SQlite...");
         db.transaction(
             (tx) => {
                 tx.executeSql("INSERT INTO Branches (location, branchCode, branchName) VALUES(?,?,?);", [location, branchCode, branchName],
                     (tx, results) => {
+                        console.log("[BranchModal]:: Successfully inserted.");
                         console.log(results);
                     },
                     (txt, error) => {
@@ -80,11 +90,12 @@ const BranchModal = ({ modalVisible, setModalVisible, handleBranch }) => {
     }
 
     const deleteBranch = (_id) => {
-        console.log("deleting...");
+        console.log("[BranchModal]:: Deleting from SQlite...");
         db.transaction(
             (tx) => {
                 tx.executeSql(`DELETE FROM Branches WHERE _id = ?;`, [_id],
                     (tx, results) => {
+                        console.log("[BranchModal]:: Successfully deleted.");
                         console.log(results);
                     },
                     (txt, error) => {
@@ -101,20 +112,20 @@ const BranchModal = ({ modalVisible, setModalVisible, handleBranch }) => {
 
     const getLocationList = async (loc) => {
         try{
-            console.log("Attempting to retrieve location list...");
+            console.log("[BranchModal]:: Attempting to retrieve location list...");
             const response = await axios.post(URL + '/getLocationList', {
             //const response = await axios.post('http://112.221.94.101:8980/getLocationList', {
                 location: loc
             });
-            console.log("LocationList API call successful!");
-            console.log(response.data);
+            console.log("[BranchModal]:: LocationList API call successful!");
+            // console.log(response.data);
             if(response.data.returnCode === 'E1001'){
                 console.log("Room does not exist");
                 setLocData([]);
                 return "None";
             }
             if(response.data.returnCode !== 'E0000'){
-                console.log("Error: " + response.data.returnCode);
+                console.log("[BranchModal]:: Error: " + response.data.returnCode);
                 Alert.alert("서버 에러가 일어났습니다. 잠시후 다시 시도해주세요.");
                 return "Error";
             }
@@ -169,7 +180,7 @@ const BranchModal = ({ modalVisible, setModalVisible, handleBranch }) => {
             <BranchItem
                 item={item.adminPlaceName}
                 onPress={() => {
-                    handleBranch(selectedItem, item.adminCode, item.adminPlaceName, recents);
+                    handleBranch(selectedItem, item.adminCode, item.adminPlaceName, recents.reverse());
                 }}
             />
         );
@@ -178,25 +189,8 @@ const BranchModal = ({ modalVisible, setModalVisible, handleBranch }) => {
     if(initial){
         getBranch();
         getLocationList(selectedItem);
-        // return (
-        //     <View>
-        //         <LoadingScreen/>
-        //     </View>
-        // );
     }
 
-    const onDayPress = day => {
-        console.log(day);
-        setModalVisible(!modalVisible);
-        let currDate = new Date(day.dateString);
-        navigation.replace('Table', { 
-            dateString: day.dateString, 
-            year: day.year, 
-            month: `${day.month < 10 ? 0 : ""}${day.month}`,
-            day: `${day.day < 10 ? 0 : ""}${day.day}`,
-            weekDay: currDate.getDay()
-        });
-    };
 
     return (
         <Modal
@@ -230,35 +224,40 @@ const BranchModal = ({ modalVisible, setModalVisible, handleBranch }) => {
                         <View style={styles.recentList}>
                             <TouchableOpacity
                                 onPress={() => {
-                                    if(recents.length > 2){
-                                        handleBranch(recents[2].location, recents[2].branchCode, recents[2].branchName, recents);
+                                    if(recents.length > 0){
+                                        handleBranch(recents[0].location, recents[0].branchCode, recents[0].branchName, recents.reverse());
                                     }
                                 }}
                                 style={styles.recent}
                             >
-                                <Text style={styles.recentText}>{recents.length > 2 ? recents[2].branchName : "--"}</Text>
+                                {/* <Text style={styles.recentText}>{recents[2] === null ? "--" : recents[2].branchName}</Text> */}
+                                <Text style={styles.recentText}>{recents.length > 0 ? recents[0].branchName : "--"}</Text>
+
                             </TouchableOpacity>
 
                             <TouchableOpacity
                                 onPress={() => {
                                     if(recents.length > 1){
-                                        handleBranch(recents[1].location, recents[1].branchCode, recents[1].branchName, recents);
+                                        handleBranch(recents[1].location, recents[1].branchCode, recents[1].branchName, recents.reverse());
                                     }
                                 }}
                                 style={[styles.recent, { marginHorizontal: 5 }]}
                             >
+                                {/* <Text style={styles.recentText}>{recents[1] === null ? "--" : recents[1].branchName}</Text> */}
                                 <Text style={styles.recentText}>{recents.length > 1 ? recents[1].branchName : "--"}</Text>
+
                             </TouchableOpacity>
 
                             <TouchableOpacity
                                 onPress={() => {
-                                    if(recents.length > 0){
-                                        handleBranch(recents[0].location, recents[0].branchCode, recents[0].branchName, recents);
+                                    if(recents.length > 2){
+                                        handleBranch(recents[2].location, recents[2].branchCode, recents[2].branchName, recents.reverse());
                                     }
                                 }}
                                 style={styles.recent}
                             >
-                                <Text style={styles.recentText}>{recents.length > 0 ? recents[0].branchName : "--"}</Text>
+                                {/* <Text style={styles.recentText}>{recents[0] === null ? "--" : recents[1].branchName}</Text> */}
+                                <Text style={styles.recentText}>{recents.length > 2 ? recents[2].branchName : "--"}</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -287,46 +286,8 @@ const BranchModal = ({ modalVisible, setModalVisible, handleBranch }) => {
                             
                         </View>
                     </View>
-
-
                 </View>
             }
-            
-
-
-            {/* <View style={{ flex: 1 }}>
-                <View style={styles.headerBox}>
-                    <Text style={styles.headerText}>지점 선택</Text>
-                </View>
-                <View />
-                <View style={styles.mainBox}>
-                    <View style={{ flex: 1, flexDirection: 'row' }}>
-                        <View style={styles.locationBox}>
-                            <FlatList
-                                data={locations}
-                                renderItem={renderLocation}
-                                keyExtractor={item => item}
-                                extraData={selectedItem}
-                            />
-                        </View>
-                        <View style={styles.branches}>
-                            {locData.length != 0 ?
-                                <FlatList
-                                    data={locData}
-                                    renderItem={renderBranch}
-                                    keyExtractor={item => item.adminCode}
-                                    extraData={locData}
-                                />
-                                :
-                                <Text style={{ textAlign: 'center' }}>지점이 없습니다.</Text>
-                            }
-                            
-                        </View>
-                    </View>
-                    
-                </View>
-            </View>   */}
-
         </Modal>
     );
 }

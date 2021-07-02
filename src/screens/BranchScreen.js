@@ -52,7 +52,7 @@ const BranchScreen = ({ navigation, route }) => {
     })
 
     const getBranch = () => {
-        console.log("retrieving...");
+        console.log("Xretrieving...");
         db.transaction(
             (tx) => {
                 tx.executeSql('select * from Branches order by _id asc;',
@@ -203,7 +203,7 @@ const BranchScreen = ({ navigation, route }) => {
                     saveBranch(selectedItem, item.adminCode, item.adminPlaceName);
 
                     
-                    console.log("Showing th table for: " + route.params.branchName);
+                    console.log("Showing the table for: " + route.params.branchName);
                     navigation.replace("Table", route.params)
                 }}
             />

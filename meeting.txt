@@ -5,12 +5,30 @@
     - Catching error from reservation and handling it !
     - Setting up the logic for calling reservation with payCode parameter after payment was made successfully !
     - Filtering valid coupons by adminCode !
-    - Fixing how coupons are shown
-    - Coupon list in MyScreen
-    - Empty inquiry list bug fix
-    - Cleaning up the source code and files
+    - Fixing how coupons are shown !
+    - Coupon list in MyScreen !
+    - Empty inquiry list bug fix !
+    - Going to branch screen on initial changed to table !
+    - adding weekday, weekend, everyday filtering logic on coupon filtering !
+    - adding a loading overlay after paying before moving to reservedScreen !
+    - Coupon description fix to show min Price !
+    - Change coupon filtering for minPrice to be always useable if its not defined !
+    - Fix 24:00 reseravtion cost calculation error !
+        - When reserving, does it have to be sent as 000000 or 240000 !
+        !! Solved it but have to test it !
+    - Fix 23:50 not showing up on the reservation picker !
+    - Image floods on the top when clicked !
+    - Coupon 날짜 문제 if null 기한 없음 ! ?
+    - Recent Branches list is not stored upon exiting the application !
+    - Upon exiting the application with back button, a loading screen goes on forever !
     - Push notification
+        - Setup !
+        - Sending
+        - Receiving
     - 공유하기
+    - MYScreen 쿠폰 갯수 N/A 처음에 보이는거
+    - Have to check if the time has passed or not in each time so that even if the phone is left open and time passes, the reservation won't happen anymore
+    - Cleaning up the source code and files
 
 2021-06-13
 - Done as of now
@@ -19,7 +37,7 @@
     - 결제 native code linking
     - 예약완료후 tabPress showing qr code problem after switching to different tab
     - MYScreen 쿠폰 갯수 N/A 처음에 보이는거
-    - Have to check if the time has passed or not in each time so that even if the phone is left open and time passes, the reservation won't happen anymore
+    - Have to check if the time has passed or not in each time so that even if the phone is left open and time passes, the reservation won't happen anymore ?
 - 1:1 문의
     - E1001이 리턴되는데 사용자 문의가없다합니다
     - 처음엔 당연히 없지않을까요?    

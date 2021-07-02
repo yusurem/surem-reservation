@@ -145,6 +145,9 @@ const ReservationScreen = ({ navigation, route }) => {
 
     const filterEndTime = (sIndex, startVal, timeVals) => {
         console.log("filterEndTime");
+        console.log(sIndex);
+        console.log(startVal);
+        console.log(timeVals);
         const endVals = [];
         var flag = true;
         var init = startVal;
@@ -177,11 +180,6 @@ const ReservationScreen = ({ navigation, route }) => {
         var flag = false;
         for(var i = 0; i < endVals.length; i++){
             if(endVals[i].hour > 11){
-                if(endVals[i].hour == 23 && endVals[i].min == 5){
-                    pickerVals.push("000000");
-                    pickerLabels.push('24:00 AM');
-                    break;
-                }
                 flag = true;
             }
             pickerVals.push(`${endVals[i].hour > 9 ? endVals[i].hour : "0" + endVals[i].hour}${endVals[i].min}000`);
@@ -353,7 +351,7 @@ const ReservationScreen = ({ navigation, route }) => {
         <SafeAreaView style={{flex: 1, backgroundColor: 'white'}} edges={['right', 'left', 'top']}>
             <ScrollView>
                 <TouchableOpacity
-                    style={{ backgroundColor: 'white', paddingHorizontal: 6, paddingVertical: 3, position: 'absolute', top: 120, left: 20, zIndex: 1, justifyContent: 'center' }}
+                    style={{ backgroundColor: 'white', paddingHorizontal: 6, paddingVertical: 3, position: 'absolute', top: 127, left: 30, zIndex: 1, justifyContent: 'center', borderRadius: 10, }}
                     onPress={() => {
                         // shift the imgs array by 1 to the left
                         rotateRight();
@@ -363,7 +361,7 @@ const ReservationScreen = ({ navigation, route }) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    style={{ backgroundColor: 'white', paddingHorizontal: 6, paddingVertical: 3, position: 'absolute', top: 120, right: 20, zIndex: 1, justifyContent: 'center', alignSelf: 'flex-end' }}
+                    style={{ backgroundColor: 'white', paddingHorizontal: 6, paddingVertical: 3, position: 'absolute', top: 127, right: 30, zIndex: 1, justifyContent: 'center', alignSelf: 'flex-end', borderRadius: 10 }}
                     onPress={() => {
                         // shift the imgs array by 1 to the right
                         rotateLeft();
@@ -386,6 +384,7 @@ const ReservationScreen = ({ navigation, route }) => {
                                     Image.getSize(imgs[0], (width, height) => {
                                         setImgH(((windowWidth - 100) / width ) * height)
                                     })
+                                    console.log("[IMGH]: " + imgH);
                                     setModalVisible(!modalVisible);
                                 }
                             }}
@@ -516,7 +515,12 @@ const ReservationScreen = ({ navigation, route }) => {
                                         setIsValid(true);
 
                                         var startDate = new Date(0, 0, 0, parseInt(startTime.substring(0,2)), parseInt(startTime.charAt(2)) * 10, 0);
+                                        // have to have an if case for 24:00 cuz it seems to recognize it as the start of the day making it 00
                                         var endDate = new Date(0, 0, 0, parseInt(itemValue.substring(0,2)), parseInt(itemValue.charAt(2)) * 10, 0);
+
+                                        console.log("[Calculating Cost]== startDate " + itemValue);
+                                        console.log("[Calculating Cost]== endDate " + endDate);
+
                                         var diff = endDate.getTime() - startDate.getTime();
                                         var hours = Math.floor(diff / 1000 / 60 / 60);
                                         diff -= hours * 1000 * 60 * 60;
@@ -613,7 +617,7 @@ const ReservationScreen = ({ navigation, route }) => {
                                             roomName: roomName,
                                             totalCost: totalCost,
                                             adminCode: route.params.adminCode,
-                                            totalTime: mins + (hours * 6),
+                                            totalTime: (mins + (hours * 6)) * 10,
                                         });
                                     }
                                     else{
@@ -632,25 +636,26 @@ const ReservationScreen = ({ navigation, route }) => {
 
                 <Modal
                     isVisible={modalVisible}
-                    style={{alignSelf: 'center'}}
+                    style={{alignSelf: 'center', margin: 0}}
                     backdropTransitionOutTiming={0}
                     backdropTransitionInTiming={0}
                     onBackButtonPress={() => setModalVisible(!modalVisible)}
                     onBackdropPress={() => setModalVisible(!modalVisible)}
                 >   
-                    <View style={{ backgroundColor: 'white', alignItems: 'center', height: imgH > 0 ? imgH + 50 : 80, width: windowWidth - 50, borderRadius: 10}}>
-                        <Image
-                            style={{ resizeMode: 'stretch', flex: 1, height: imgH, width : windowWidth - 100 }}
-                            source={{uri: imgs[imgNum]}}
-                        />
-                        
+                    <View style={{ backgroundColor: 'white', alignItems: 'center', justifyContent: 'center', borderRadius: 10  }}>
+                        <View style={{ backgroundColor: 'white', alignItems: 'center', height: imgH > 0 ? imgH + 50 : 80, width: windowWidth - 50, borderRadius: 10 }}>
+                            <Image
+                                style={{ resizeMode: 'center', flex: 1, width : windowWidth - 100 }}
+                                source={{uri: imgs[imgNum]}}
+                            />
+                        </View>
                         <TouchableOpacity
-                            style={{ backgroundColor: 'gray', paddingHorizontal: 40, paddingVertical: 10, borderRadius: 10, marginBottom: 20 }}
-                            onPress={() => {
-                                setModalVisible(false);
-                            }}
-                        >
-                            <Text style={{color: 'white', fontWeight: 'bold', fontSize: 16}}>닫기</Text>
+                                style={{ backgroundColor: 'gray', paddingHorizontal: 40, paddingVertical: 10, borderRadius: 10, marginBottom: 20 }}
+                                onPress={() => {
+                                    setModalVisible(false);
+                                }}
+                            >
+                                <Text style={{color: 'white', fontWeight: 'bold', fontSize: 16}}>닫기</Text>
                         </TouchableOpacity>
                     </View>
                 </Modal>

@@ -17,8 +17,14 @@ const TITLE_W = 170;
 const MIN_H = 30;
 const HOUR_W = 130;
 
+const db = SQLite.openDatabase("db.db");
+
+db.transaction((tx) => {
+    tx.executeSql('CREATE TABLE IF NOT EXISTS Branches (_id INTEGER PRIMARY KEY, location TEXT, branchCode TEXT, branchName TEXT);')
+})
+
 const TableScreen = ({ navigation, route }) => {
-    const db = SQLite.openDatabase("db.db");
+
     // var exists = false;
     // db.transaction(
     //     (tx) => {
@@ -58,8 +64,8 @@ const TableScreen = ({ navigation, route }) => {
     const weekDays = new Array('일', '월', '화', '수', '목', '금', '토');
 
 
-    console.log("Entered TableScreen. Params: ");
-    console.log(route.params);
+    console.log("################\n Entered [TableScreen].\n ################\n Params: ");
+    // console.log(route.params);
     // Object {
     //     "dateString": "2021-04-15",
     //     "day": "15",
@@ -106,27 +112,8 @@ const TableScreen = ({ navigation, route }) => {
     //     getBranch();
     // }, [weekDays])
 
-    if(route.params === undefined){
-        var currDate = new Date();
-        var currInfo = {
-            day: currDate.getDate(),
-            month: currDate.getMonth() + 1,
-            weekDay: currDate.getDay(),
-            year: currDate.getFullYear()
-        }
-        route.params = {
-            dateString: `${currInfo.year}-${currInfo.month > 9 ? currInfo.month : "0" + currInfo.month}-${currInfo.day > 9 ? currInfo.day : "0" + currInfo.day}`,
-            day: `${currInfo.day > 9 ? currInfo.day : "0" + currInfo.day}`,
-            month: `${currInfo.month > 9 ? currInfo.month : "0" + currInfo.month}`,
-            weekDay: currInfo.weekDay,
-            year: currInfo.year
-        }
-        // console.log("INITIAL");
-        // console.log(route.params);
-    }
-
     const getBranch = () => {
-        console.log("retrieving...");
+        console.log("[TableScreen]:: Retrieving from SQlite...");
         db.transaction(
             (tx) => {
                 tx.executeSql('select * from Branches order by _id asc;',
@@ -134,7 +121,8 @@ const TableScreen = ({ navigation, route }) => {
                     (tx, results) => {
                         // do set current, recentA, recentB 
                         // ex. set(results.row.item(0).current)
-                        // console.log(results);
+                        console.log("[TableScreen]:: Successfully retrieved.");
+                        console.log(results);
                         setCurrBranch(results.rows._array[results.rows._array.length - 1]);
                     },
                     (tx, error) => {
@@ -153,23 +141,23 @@ const TableScreen = ({ navigation, route }) => {
 
     const getReservationList = async (resDate, adCode) => {
         try{
-            console.log("Attempting to retreive list of available reservation times...");
-            console.log("resrvCTime: " + resDate);
-            console.log("adminCode: " + adCode);
+            console.log("[TableScreen]:: Attempting to retreive list of available reservation times...");
+            // console.log("resrvCTime: " + resDate);
+            // console.log("adminCode: " + adCode);
             const response = await axios.post(URL + '/getReservationList', {
                 resrvCtime: resDate,
                 adminCode: adCode,
                 // adminCode: 'surem3'
 
             });
-            console.log(response.data);
+            // console.log(response.data);
            
             if(response.data.returnCode !== "E0000"){
-                console.log("Error: " + response.data.returnCode);
+                console.log("[TableScreen]:: Error: " + response.data.returnCode);
                 navigation.navigate("Home");
             }
 
-            console.log(" reservation List API call successful!");
+            console.log("[TableScreen]:: Reservation List API call successful!");
             setResrvLists(response.data.roomList);
             setCalled(true);
             // setRefreshing(false);
@@ -178,6 +166,25 @@ const TableScreen = ({ navigation, route }) => {
             console.log(err);
             return 'Error';
         }
+    }
+
+    if(route.params === undefined){
+        var currDate = new Date();
+        var currInfo = {
+            day: currDate.getDate(),
+            month: currDate.getMonth() + 1,
+            weekDay: currDate.getDay(),
+            year: currDate.getFullYear()
+        }
+        route.params = {
+            dateString: `${currInfo.year}-${currInfo.month > 9 ? currInfo.month : "0" + currInfo.month}-${currInfo.day > 9 ? currInfo.day : "0" + currInfo.day}`,
+            day: `${currInfo.day > 9 ? currInfo.day : "0" + currInfo.day}`,
+            month: `${currInfo.month > 9 ? currInfo.month : "0" + currInfo.month}`,
+            weekDay: currInfo.weekDay,
+            year: currInfo.year
+        }
+        // console.log("INITIAL");
+        // console.log(route.params);
     }
    
     if(currBranch === null){
@@ -191,7 +198,7 @@ const TableScreen = ({ navigation, route }) => {
     // console.log(currBranch);
 
     if(resrvLists.length == 0){
-        console.log("-----TABLE :: [Initializing Reservation List...]");
+        console.log("[TableScreen]:: INITIALIZING Reservation List...");
         if(!('location' in route.params)){
             route.params["location"] = currBranch.location;
             route.params["branchCode"] = currBranch.branchCode;
@@ -207,7 +214,7 @@ const TableScreen = ({ navigation, route }) => {
         )
     }
 
-    console.log("-----TABLE :: [...Finished Intializing Reservation List]");
+    console.log("[TableScreen]:: FINISHED Intializing Reservation List");
 
     LocaleConfig.locales['kr'] = {
         monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
@@ -474,7 +481,7 @@ const TableScreen = ({ navigation, route }) => {
     }
 
     const onDayPress = day => {
-        console.log(day);
+        // console.log(day);
         setModalVisible(!modalVisible);
         let currDate = new Date(day.dateString);
         navigation.replace('Table', { 
@@ -487,11 +494,12 @@ const TableScreen = ({ navigation, route }) => {
     };
 
     const saveBranch = (location, branchCode, branchName) => {
-        console.log("inserting...");
+        console.log("[TableScreen]:: Inserting into SQlite...");
         db.transaction(
             (tx) => {
                 tx.executeSql("INSERT INTO Branches (location, branchCode, branchName) VALUES(?,?,?);", [location, branchCode, branchName],
                     (tx, results) => {
+                        console.log("[TableScreen]:: Successfully inserted.");
                         console.log(results);
                     },
                     (txt, error) => {
@@ -502,12 +510,29 @@ const TableScreen = ({ navigation, route }) => {
         )
     }
 
+    // const saveBranch = async (location, branchCode, branchName) => {
+    //     console.log("inserting...");
+    //     db.transaction(
+    //         async (tx) => {
+    //             await tx.executeSql("INSERT INTO Branches (location, branchCode, branchName) VALUES(?,?,?);", [location, branchCode, branchName],
+    //                 (tx, results) => {
+    //                     console.log(results);
+    //                 },
+    //                 (txt, error) => {
+    //                     console.log(error);
+    //                 }
+    //             )
+    //         },
+    //     )
+    // }
+
     const deleteBranch = (_id) => {
-        console.log("deleting...");
+        console.log("[TableScreen]:: Deleting from SQlite...");
         db.transaction(
             (tx) => {
                 tx.executeSql(`DELETE FROM Branches WHERE _id = ?;`, [_id],
                     (tx, results) => {
+                        console.log("[TableScreen]:: Successfully deleted.");
                         console.log(results);
                     },
                     (txt, error) => {
@@ -518,7 +543,7 @@ const TableScreen = ({ navigation, route }) => {
         )
     }
 
-    const handleBranch = (location, branchCode, branchName, recents) => {
+    const handleBranch = async (location, branchCode, branchName, recents) => {
         route.params["location"] = location;
         route.params["branchCode"] = branchCode;
         route.params["branchName"] = branchName;
@@ -535,7 +560,21 @@ const TableScreen = ({ navigation, route }) => {
                 deleteBranch(recents[0]._id);
             }
         }
-        saveBranch(location, branchCode, branchName);
+        saveBranch(location, branchCode, branchName); // this doesnt get waited to be executed
+
+        // await new Promise((resolve, reject) => {
+        //     Image.getSize(image.url, (width, height) => {
+        //         console.log(height);
+        //         console.log(width);
+        //         if(width !== 0 && height !== 0){
+        //             valid = true;   
+        //             resolve();
+        //         }
+        //     }, (error) => {
+        //         console.log("invalid image url");
+        //         resolve();
+        //     })
+        // });
 
         setBranchModal(false);
         navigation.replace("Table", route.params)
@@ -671,7 +710,7 @@ const TableScreen = ({ navigation, route }) => {
 
             {/* Branch Modal */}
 
-            <BranchModal modalVisible={branchModal} setModalVisible={setBranchModal} handleBranch={handleBranch}/>
+            <BranchModal modalVisible={branchModal} setModalVisible={setBranchModal} handleBranch={handleBranch} db={db}/>
 
             {/* Calendar Modal */}
 

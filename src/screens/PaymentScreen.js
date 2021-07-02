@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableHighlight, Image, Alert, TouchableOpacity, ScrollView, NestedScrollView, Platform, NativeModules } from 'react-native';
+import { View, Text, StyleSheet, TouchableHighlight, Image, Alert, TouchableOpacity, ScrollView, ActivityIndicator, Platform, NativeModules } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import axios from 'axios';
@@ -18,10 +18,12 @@ const PaymentScreen = ({ navigation, route }) => {
     const [errorMessageB, setErrorMessageB] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
     const [toggleCheckBox, setToggleCheckBox] = useState(false)
-    const [checked, setChecked] = useState(false);
+    // const [checked, setChecked] = useState(false);
 
     const [usercode, setUsercode] = useState("");
 	const [secretCode, setSecretCode] = useState("");
+
+    const [paymentDone, setPaymentDone] = useState(false);
 
     console.log("Entered PaymentScreen. Params: ");
     console.log(route.params);
@@ -152,7 +154,7 @@ const PaymentScreen = ({ navigation, route }) => {
                 // secretCode: secretCode,
                 resrvStime: `${route.params.year}${route.params.month}${route.params.day}${route.params.startTime}`,
                 // resrvEtime: `${route.params.year}${route.params.month}${route.params.day}${route.params.endTime}`,
-                payAmount: route.params.totalCost.toString(),
+                payAmount: route.params.discount === undefined ? route.params.totalCost.toString() : (route.params.totalCost - route.params.discount).toString(),
                 adminCode: route.params.adminCode,
                 roomCode: route.params.roomCode,
                 roomName: route.params.roomName,
@@ -174,29 +176,43 @@ const PaymentScreen = ({ navigation, route }) => {
             console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 
             if(response.result === "success"){
+                setPaymentDone(true);
                 const res = await makeReservation(response.payCode);
                 if(res === 'error'){
-                    "예약오류",
-                    "예약도중 서버 오류가 일어났습니다. 결제 취소됬습니다. 잠시후 다시 예약해주세요.",
-                    [{
-                        text: "처음으로 돌아가기",
-                        onPress: () => {
-                            navigation.reset({
-                                index: 0,
-                                routes: [
-                                    {name: 'Table'}
-                                ]
-                    })}}]
+                    setPaymentDone(false);
+                    Alert.alert(
+                        "예약오류",
+                        "예약도중 서버 오류가 일어났습니다. 결제 취소됬습니다. 잠시후 다시 예약해주세요.",
+                        [{
+                            text: "처음으로 돌아가기",
+                            onPress: () => {
+                                navigation.reset({
+                                    index: 0,
+                                    routes: [
+                                        {name: 'Table'}
+                                    ]
+                    })}}])
                 }
                 else{
-                    navigation.navigate('Reserved', {
-                        dateString: route.params.dateString,
-                        startTime: `${sTime}:${route.params.startTime.charAt(2)}0 ${sTime > 11 ? "PM" : "AM"}`,
-                        endTime: `${eTime}:${route.params.endTime.charAt(2)}0 ${eTime > 11 ? "PM" : "AM"}`,
-                        resrvCode: res,
-                        weekDay: route.params.weekDay,
-                        roomName: route.params.roomName
+                    navigation.reset({
+                        index: 0,
+                        routes: [{name: 'Reserved', params: {
+                            dateString: route.params.dateString,
+                            startTime: `${sTime}:${route.params.startTime.charAt(2)}0 ${sTime > 11 ? "PM" : "AM"}`,
+                            endTime: `${eTime}:${route.params.endTime.charAt(2)}0 ${eTime > 11 ? "PM" : "AM"}`,
+                            resrvCode: res,
+                            weekDay: route.params.weekDay,
+                            roomName: route.params.roomName
+                        }}],
                     });
+                    // navigation.navigate('Reserved', {
+                    //     dateString: route.params.dateString,
+                    //     startTime: `${sTime}:${route.params.startTime.charAt(2)}0 ${sTime > 11 ? "PM" : "AM"}`,
+                    //     endTime: `${eTime}:${route.params.endTime.charAt(2)}0 ${eTime > 11 ? "PM" : "AM"}`,
+                    //     resrvCode: res,
+                    //     weekDay: route.params.weekDay,
+                    //     roomName: route.params.roomName
+                    // });
                 }
             }
             
@@ -206,7 +222,7 @@ const PaymentScreen = ({ navigation, route }) => {
             console.log(e.message === "E1:payCancel");
             if(e.message === "E1:payCancel"){
                 Alert.alert(
-                    "결제 진행을 취소하셔습니다.",
+                    "결제 진행을 취소하셨습니다.",
                     "[결제하기] 버튼으로 결제 진행을 다시 시작해주세요.",
                     [
                         { text: "확인" },
@@ -261,7 +277,7 @@ const PaymentScreen = ({ navigation, route }) => {
 
     const checkHandler = (newValue) => {
         setErrorMessageB("");
-        setChecked(newValue);YEAR
+        // setChecked(newValue);
         setToggleCheckBox(newValue);
     }
 
@@ -270,7 +286,7 @@ const PaymentScreen = ({ navigation, route }) => {
     },[usercode,secretCode])
 
     return (
-        <SafeAreaView style={{ flex: 1 }} edges={['right', 'left', 'top']}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#f3f4f8" }} edges={['right', 'left', 'top']} pointerEvents={paymentDone ? 'none' : 'auto'}>
             <ScrollView>
                 <View style={styles.viewStyle}>
                     <View style={styles.guideStyle}>
@@ -387,7 +403,7 @@ const PaymentScreen = ({ navigation, route }) => {
                                     value={toggleCheckBox}
                                     onValueChange={(newValue) => {
                                         setErrorMessageB("");
-                                        setChecked(newValue);
+                                        // setChecked(newValue);
                                         setToggleCheckBox(newValue);
                                     }}
                                 />
@@ -397,9 +413,15 @@ const PaymentScreen = ({ navigation, route }) => {
                                     onChange={checkHandler}
                                 /> 
                             }
-                            <View style={{ justifyContent: 'center' }}>
+                            <TouchableOpacity
+                                style={{ justifyContent: 'center' }}
+                                onPress={() => {
+                                    setErrorMessageB("");
+                                    setToggleCheckBox(!toggleCheckBox);
+                                }}
+                            >
                                 <Text style={styles.termsCaption}>이용약관 및 개인정보 처리방침에 동의합니다.</Text>
-                            </View>
+                            </TouchableOpacity>
                         </View>
 
                         <View style={styles.errorBox}>
@@ -410,9 +432,9 @@ const PaymentScreen = ({ navigation, route }) => {
                     <View>
                         <Text style={styles.titleStyle}>결제수단 선택</Text>
                         <TouchableOpacity
-                            style={[styles.openButton, checked ? styles.valid : styles.invalid]}
+                            style={[styles.openButton, toggleCheckBox ? styles.valid : styles.invalid]}
                             onPress={ async () => {
-                                if(checked){
+                                if(toggleCheckBox){
                                     // await getUserId();
                                     await removeSyncTime();
                                     // const res = await makeReservation(sTime, eTime);
@@ -443,8 +465,17 @@ const PaymentScreen = ({ navigation, route }) => {
                         </TouchableOpacity>
                     </View>
                 </View>
-            </ScrollView>
 
+                
+            </ScrollView>
+            {paymentDone ?
+                    <View style={styles.loading} pointerEvents={'none'}>
+                        <ActivityIndicator size='large' color="gray" />
+                        <Text>예약완료중</Text>
+                    </View>
+                    :
+                    null
+            }
         </SafeAreaView>
   );
 };
@@ -626,6 +657,18 @@ const styles = StyleSheet.create({
     invalid: {
         backgroundColor: '#D2D1CB',
     },
+    loading: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: "#F5FCFF88",
+        // borderWidth: 5,
+        // borderColor: 'red',
+    }
 });
 
 

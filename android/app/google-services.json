@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "763608579072",
+    "project_id": "surem-41e18",
+    "storage_bucket": "surem-41e18.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:763608579072:android:d4109626fa0fab2ff7ace5",
+        "android_client_info": {
+          "package_name": "com.surem.reservation"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "763608579072-5nspg0n8tdcpfon02eo26b5f2kf19keb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfwioOSekpbSHBEBAljidwNQ-e3KpQnpU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "763608579072-5nspg0n8tdcpfon02eo26b5f2kf19keb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

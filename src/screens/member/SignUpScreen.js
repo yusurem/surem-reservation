@@ -12,7 +12,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import SuremSimData from 'surem-sim-data';
 import {PERMISSIONS, RESULTS, request} from 'react-native-permissions';
 import Modal from 'react-native-modal';
-import { CheckBox } from 'react-native-elements'
+// import { CheckBox } from 'react-native-elements';
+
+import CheckBox from '@react-native-community/checkbox';
+import IosCheckBox from '../components/IosCheckBox';
 
 import * as SQLite from 'expo-sqlite';
 import { TERMS } from '../../constants';
@@ -152,11 +155,19 @@ export default function SignUpScreen({ navigation }) {
     console.log('Hello',phoneNum)
   }
 
+  const checkHandler = (newValue) => {
+    setModalVisible(!isCheckAcceptedTerm);
+    console.log(isCheckAcceptedTerm)
+    if(isCheckAcceptedTerm){
+      setIsCheckAcceptedTerm(!isCheckAcceptedTerm);
+    }
+  }
+
   useEffect(()=>{
     askPermission();
     if(permissionState){
       if(phoneNum == ""){
-        getPhoneNumber();
+        // getPhoneNumber();
       }
     }
     hasUserId();
@@ -302,7 +313,7 @@ export default function SignUpScreen({ navigation }) {
           }}
         />
         <View style={styles.checkboxContainer}>
-          <CheckBox 
+          {/* <CheckBox 
             style={styles.checkbox}
             disabled={false}
             value={isCheckAcceptedTerm}
@@ -315,7 +326,26 @@ export default function SignUpScreen({ navigation }) {
               }
             }  
             checked={isCheckAcceptedTerm}
-          />
+          /> */}
+          {Platform.OS === 'android' ? 
+            <CheckBox
+                disabled={false}
+                value={isCheckAcceptedTerm}
+                onValueChange={(newValue) => {
+                  setModalVisible(!isCheckAcceptedTerm);
+                  console.log(isCheckAcceptedTerm)
+                  if(isCheckAcceptedTerm){
+                    setIsCheckAcceptedTerm(!isCheckAcceptedTerm)
+                  }
+                }
+              }  
+            />
+          :
+              <IosCheckBox 
+                  value={isCheckAcceptedTerm}
+                  onChange={checkHandler}
+              /> 
+          }
           <Text style={styles.label}>이용약관 및 개인정보 처리방침 동의(필수)</Text>
         </View>
         <View

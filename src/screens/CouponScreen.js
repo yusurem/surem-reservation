@@ -16,6 +16,8 @@ const CouponScreen = ({ navigation, route }) => {
     const [errorMessageA, setErrorMessageA] = useState("");
     const [couponList, setCouponList] = useState([]);
     const [numValid, setNumValid] = useState(0);
+    const [isEmpty, setIsEmpty] = useState(false);
+    const [apiCalled, setApiCalled] = useState(false);
     // const [validCoupons, setValidCoupons] = useState([]);
     // const [invalidCoupons, setInvalidCoupons] = useState([]);
     const [selectedIndex, setSelectedIndex] = useState(route.params.couponIdx !== undefined ? route.params.couponIdx : null);
@@ -37,7 +39,12 @@ const CouponScreen = ({ navigation, route }) => {
             });
             console.log(response.data);
            
-            if(response.data.returnCode !== "E0000"){
+            if(response.data.returnCode === "E1001"){
+                setIsEmpty(true);
+                console.log("[getCouponList]: no coupons for user");
+                return "Empty";
+            }
+            else if(response.data.returnCode !== "E0000"){
                 console.log("Error: " + response.data.returnCode);
                 // add an alert for error in retrieving coupons
                 return 'Error';
@@ -45,6 +52,7 @@ const CouponScreen = ({ navigation, route }) => {
             console.log("Coupon list API call successful!");
             // setCouponList(response.data.coupons);
             sortCoupons(response.data.coupons);
+            setApiCalled(true);
         } catch (err) {
             setErrorMessageA("API 문제발생");
             console.log(err);
@@ -85,23 +93,40 @@ const CouponScreen = ({ navigation, route }) => {
                 continue;
             }
 
+            // Check if weekday is valid
+            if(coupons[i].couponDay === "weekend"){
+                if(route.params.weekDay !== 0 && route.params.weekDay !== 6){
+                    unavails.push(coupons[i]);
+                    continue;
+                }
+            }
+            else if(coupons[i].couponDay === "holiday"){
+                if(route.params.weekDay === 0 || route.params.weekDay === 6){
+                    unavails.push(coupons[i]);
+                    continue;
+                }
+            }
+
             // MinPrice
             if(coupons[i].minPrice !== "null"){
+                // If there is a minPrice, check if cost is at least that much
                 if(route.params.totalCost < parseInt(coupons[i].minPrice)){
                     // console.log("price too low");
                     unavails.push(coupons[i]);
                     continue;
                 }
             }
-            else{
-                if(coupons[i].couponType === 'P'){
-                    if(route.params.totalCost < parseInt(coupons[i].couponDCPrice)){
-                        // console.log("price too low P");
-                        unavails.push(coupons[i]);
-                        continue;
-                    }
-                }
-            }
+            // else{
+            //     // Minprice is null but the coupontype is "P" so have to check if cost is greater than discount
+            //     if(coupons[i].couponType === 'P'){
+            //         if(route.params.totalCost < parseInt(coupons[i].couponDCPrice)){
+            //             // console.log("price too low P");
+            //             unavails.push(coupons[i]);
+            //             continue;
+            //         }
+            //     }
+            // }
+
 
             //check adminCode to see if it matches and if not take it out of avaialble couposn
             avails.push(coupons[i]);
@@ -112,14 +137,18 @@ const CouponScreen = ({ navigation, route }) => {
         // setInvalidCoupons(unavails);
     }
 
+    // have to take into minPrice into consideration
     const CouponItem = ({ item, onPress, bdColor }) => {
         return (
             <TouchableOpacity
                 style={[styles.coupon, { borderColor: bdColor }]}
                 onPress={onPress}
             >
-                <Text style={[styles.couponText]}>{item.couponName}</Text>
-                <Text style={styles.couponDate}>{item.endDay} 까지</Text>
+                <Text style={[styles.couponText]}>[{item.adminCompanyName}점] {item.couponName}</Text>
+                {item.couponType === "P" ? <Text style={styles.couponText}>{item.minPrice === 'null' ? "" : `${item.minPrice}원 이상 결제시 `}{item.couponDCPrice}원 할인</Text> : null} 
+                {item.couponType === "R" ? <Text style={styles.couponText}>{item.couponDCRate}%할인</Text> : null}
+                {item.couponType === "F" ? <Text style={styles.couponText}>무료 쿠폰</Text> : null}
+                <Text style={styles.couponDate}>{item.endDay === 'null' ? "기한 없음" : `${item.endDay.substring(0,4)}.${item.endDay.substring(4,6)}.${item.endDay.substring(6)} 까지`}</Text>
             </TouchableOpacity>
         );
     }
@@ -127,8 +156,11 @@ const CouponScreen = ({ navigation, route }) => {
     const NACoupon = ({ item }) => {
         return (
             <View style={styles.naCoupon}>
-                <Text style={styles.couponText}>{item.couponName}</Text>
-                <Text style={styles.couponDate}>{item.endDay} 까지</Text>
+                <Text style={styles.couponText}>[{item.adminCompanyName}점] {item.couponName}</Text>
+                {item.couponType === "P" ? <Text style={styles.couponText}>{item.minPrice === 'null' ? "" : `${item.minPrice}원 이상 결제시 `}{item.couponDCPrice}원 할인</Text> : null} 
+                {item.couponType === "R" ? <Text style={styles.couponText}>{item.couponDCPrice}원 이상 결제시 {item.couponDCPrice}원 할인</Text> : null}
+                {item.couponType === "F" ? <Text style={styles.couponText}>무료 쿠폰</Text> : null}
+                <Text style={styles.couponDate}>{item.endDay === 'null' ? "기한 없음" : `${item.endDay.substring(0,4)}.${item.endDay.substring(4,6)}.${item.endDay.substring(6)} 까지`}</Text>
             </View>
         );
     }
@@ -152,12 +184,18 @@ const CouponScreen = ({ navigation, route }) => {
                             setSelectedIndex(item.idx);
                             // [CouponType] F- free, P- price, R- rate
                             if(item.couponType === 'P'){
-                                setDiscount(parseInt(item.couponDCPrice));
+                                if(parseInt(item.couponDCPrice) > route.params.totalCost){
+                                    setDiscount(route.params.totalCost);
+                                }
+                                else{
+                                    setDiscount(item.couponDCPrice);
+                                }
+                                // setDiscount(parseInt(item.couponDCPrice));
                                 setCouponIdx(item.idx);
                                 setCouponCode(item.couponCode);
                             }
                             else if(item.couponType === 'R'){
-                                setDiscount((parseInt(item.couponDCRate) / 100) * route.params.totalCost);
+                                setDiscount(Math.ceil((parseInt(item.couponDCRate) / 100) * route.params.totalCost));
                                 setCouponIdx(item.idx);
                                 setCouponCode(item.couponCode);
                             }
@@ -195,7 +233,7 @@ const CouponScreen = ({ navigation, route }) => {
             <View style={styles.priceBox}>
                 <View style={{ width: windowWidth * 0.25 }}>
                     <Text style={[styles.costText, { fontSize: 13 }]}>이용금액</Text>
-                    <Text style={[styles.costText, { fontSize: 19 }]}>{route.params.totalCost.toLocaleString()}원</Text>
+                    <Text style={[styles.costText, { fontSize: 18 }]}>{route.params.totalCost.toLocaleString()}원</Text>
                 </View>
 
                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -205,7 +243,7 @@ const CouponScreen = ({ navigation, route }) => {
 
                 <View style={{ width: windowWidth * 0.25 }}>
                     <Text style={[styles.discountText, { fontSize: 13 }]}>할인금액</Text>
-                    <Text style={[styles.discountText, { fontSize: 19 }]}>{discount.toLocaleString()}원</Text>
+                    <Text style={[styles.discountText, { fontSize: 18 }]}>{discount.toLocaleString()}원</Text>
                 </View>
 
                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -215,7 +253,7 @@ const CouponScreen = ({ navigation, route }) => {
 
                 <View style={{ width: windowWidth * 0.25 }}>
                     <Text style={[styles.costText, { fontSize: 13 }]}>결제금액</Text>
-                    <Text style={[styles.costText, { fontSize: 19 }]}>{parseInt(route.params.totalCost) - discount > 0 ?  
+                    <Text style={[styles.costText, { fontSize: 18 }]}>{parseInt(route.params.totalCost) - discount > 0 ?  
                                                                 Math.floor(parseInt(route.params.totalCost) - discount).toLocaleString()
                                                                 :
                                                                 0 }원</Text>
@@ -223,19 +261,22 @@ const CouponScreen = ({ navigation, route }) => {
             </View>
 
             <View style={styles.couponBox}>
-                {couponList.length === 0 ?
+                {!apiCalled ?
                     <View style={{ marginBottom: 20 }}>
                         <ActivityIndicator size="large" color="gray"/>
                     </View>
                     :
-                    <FlatList
-                        // data={validCoupons}
-                        data={couponList}
-                        keyExtractor={(item, index) => item.idx}
-                        renderItem={renderCoupons}
-                        extraData={selectedIndex}
-                        // scrollEnabled={false}
-                    />
+                    isEmpty ? 
+                        <Text style={{textAlign: 'center', textAlignVertical: 'center'}}>쿠폰이 없습니다.</Text>
+                        :
+                        <FlatList
+                            // data={validCoupons}
+                            data={couponList}
+                            keyExtractor={(item, index) => item.idx}
+                            renderItem={renderCoupons}
+                            extraData={selectedIndex}
+                            // scrollEnabled={false}
+                        />
                 }
             </View>
             <TouchableOpacity
@@ -310,8 +351,10 @@ const styles = StyleSheet.create({
     couponBox: {
         justifyContent: 'center',
         // alignItems: 'center',
-        marginVertical: 40,
-        marginHorizontal: 20
+        marginTop: 30,
+        marginBottom: 20,
+        marginHorizontal: 20,
+        flex: 1
     },
     coupon: {
         borderRadius: 12,
@@ -344,6 +387,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#333333',
         paddingVertical: 15,
         marginHorizontal: 55,
+        marginBottom: 20,
         // marginVertical: 10,
     },
     applyButtonText: {

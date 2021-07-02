@@ -13,6 +13,7 @@ import { useFocusEffect } from '@react-navigation/native';
 const InquiryScreen = ({ navigation, route }) => {
     const [inquiryList, setInquiryList] = useState([]);
     const [initial, setInitial] = useState(true);
+    const [empty, setEmpty] = useState(false);
     const [isOpen, setIsOpen] = useState("");
 
     console.log("Entered InquiryScreen. Params: ");
@@ -69,7 +70,12 @@ const InquiryScreen = ({ navigation, route }) => {
                     });
                     console.log(`Got the response!`);
                     console.log(response.data);
-                    if(response.data.returnCode !== "E0000"){
+                    if(response.data.returnCode === "E1001"){
+                        console.log("[getVocList]: no inquries by user.");
+                        setEmpty(true);
+                        return "Empty";
+                    }
+                    else if(response.data.returnCode !== "E0000"){
                         console.log("Error: " + response.data.returnCode);
                         Alert.alert("문의내역을 가져오는데 오류가 일어났습니다. 잠시후 다시 시도해주세요.");
                         return 'Error';
@@ -119,7 +125,7 @@ const InquiryScreen = ({ navigation, route }) => {
                     </View>
                     :
                     <ScrollView>
-                        {inquiryList.length == 0 ? 
+                        {empty ? 
                             <Text style={{ marginBottom: 40, alignSelf: 'center'}}>문의내역이 없습니다.</Text>
                             :
                             // <FlatList

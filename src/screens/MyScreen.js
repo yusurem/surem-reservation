@@ -190,7 +190,11 @@ const MyScreen = ({ navigation, route }) => {
                                 </View>
                                 <TouchableOpacity
                                     onPress={() => {
-                                        Alert.alert("쿠폰들");
+                                        // Alert.alert("쿠폰들");
+                                        navigation.navigate("MyCoupon", {
+                                            usercode: usercode,
+                                            secretCode: secretCode
+                                        });
                                     }}
                                 >
                                     <View style={{ flexDirection: 'row' }}>

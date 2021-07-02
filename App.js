@@ -36,6 +36,7 @@ import NewTableScreen from './src/screens/NewTableScreen';
 import InitialScreen from './src/screens/InitialScreen';
 import OldTableScreen from './src/screens/OldTableScreen';
 import CouponScreen from './src/screens/CouponScreen';
+import MyCouponScreen from './src/screens/MyCouponScreen';
 
 Font.loadAsync({'NanumSquareRegular':require('./assets/fonts/NanumSquareRegular.ttf')})
 
@@ -114,6 +115,7 @@ const FourthStack = () => {
         <Stack.Screen name="My" component={MyScreen} />
         <Stack.Screen name="Inquiry" component={InquiryScreen} />
         <Stack.Screen name="Inquire" component={InquireScreen} />
+        <Stack.Screen name="MyCoupon" component={MyCouponScreen} />
         <Stack.Screen name="NewTable" component={NewTableScreen} />
     </Stack.Navigator>
   );

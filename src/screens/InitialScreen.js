@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import LoadingScreen from './LoadingScreen'
 
 import * as SQLite from 'expo-sqlite';
+import { Alert } from 'react-native';
 
 const USER_CODE = "suremqr";
 const DEPT_CODE = "35--SX-DQ";
@@ -18,6 +19,7 @@ export default function InitialScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
 
   const hasUserId = async () => {
+    // Alert.alert("HI");
     await db.transaction((tx)=>{
       tx.executeSql(
         `select * from UserId;`,
@@ -25,16 +27,9 @@ export default function InitialScreen({ navigation }) {
         (tx, results) =>{
           console.log(results)
           if(results.rows.length > 0){
-            navigation.reset({
-              index: 0,
-              actions: [
-                navigation.navigate('Tab', {
-                  screen: 'Reserve', params: {
-                      screen: 'Branch'
-                  }
-                })
-              ]
-            })
+            // 이거 navigation.reset 하면 sqlite database 망가짐
+            // loading screen 두번 나오는거 다르게 고쳐주세요
+            navigation.navigate("Tab");
           } else if(results.rows.length == 0){
             setLoading(false)
           }
