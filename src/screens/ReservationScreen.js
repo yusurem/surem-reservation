@@ -617,7 +617,7 @@ const ReservationScreen = ({ navigation, route }) => {
                                             roomName: roomName,
                                             totalCost: totalCost,
                                             adminCode: route.params.adminCode,
-                                            totalTime: (mins + (hours * 6)) * 10,
+                                            totalTime: (mins + (hours * 60)),
                                         });
                                     }
                                     else{

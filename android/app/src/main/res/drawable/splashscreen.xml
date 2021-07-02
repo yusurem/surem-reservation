@@ -4,4 +4,9 @@
 -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
   <item android:drawable="@color/splashscreen_background"/>
+  <ImageView
+      android:layout_width="300dp"
+      android:layout_height="600dp"
+      android:src="@drawable/splashscreen_image"
+      />
 </layer-list>

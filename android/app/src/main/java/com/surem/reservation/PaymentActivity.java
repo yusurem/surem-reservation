@@ -59,7 +59,7 @@ public class PaymentActivity extends Activity {
                     return;
                 }
 //                webView.postUrl("http://192.168.0.232:1234/AllatPay/AllatPayApprovalView.do", postData.getBytes());
-                webView.postUrl(" https://office-admin.surem.com/AllatPay/AllatPayApprovalView.do", postData.getBytes());
+                webView.postUrl("https://office-admin.surem.com/AllatPay/AllatPayApprovalView.do", postData.getBytes());
 
 //                webView.loadUrl("http://192.168.0.232:1234/AllatPay/page");
 //                webView.loadUrl("http://192.168.0.232:1234/AllatPay/AllatPayApprovalView.do");
