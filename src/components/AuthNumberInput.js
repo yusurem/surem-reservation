@@ -104,8 +104,9 @@ const styles = StyleSheet.create({
     marginRight: '45%'
   },
   button: {
-    height: 52,
+    height: 50,
     width: '25%',
+    paddingBottom: 2,
     marginLeft: '5%',
     borderRadius:10,
     alignSelf:'center',
