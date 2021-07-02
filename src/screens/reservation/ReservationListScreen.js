@@ -438,6 +438,8 @@ export default function ReservationListScreen({ navigation }) {
             </View>
             <Text style={{ marginTop: 30, textAlign: 'center' }}>{selectedRoomName}</Text>
             <Text style={{ textAlign: 'center' }}>{moment(selectedReservStime, 'YYYYMMDDHHmmss').format('YYYY / MM / DD')}</Text>
+            {
+              /*
             <Text style={{ marginTop: 30, marginLeft: 20 }}>이용 시간</Text>
             <View style={{ flex: 1, flexDirection: 'row', alignSelf: 'center', justifyContent:'space-between', marginBottom: Platform.OS === 'ios'? 30:null}}>
               <View style={styles.pickerView}>
@@ -472,14 +474,18 @@ export default function ReservationListScreen({ navigation }) {
                 </Picker>
               </View>
             </View>
+            */
+            }
             <View style={{ flex:1,  marginLeft: 20, height:40, width:400}}>
               <Text>메모</Text>
               <TextInput onChangeText={onChangeSelectedMemo} value={selectedMemo}></TextInput>
             </View>
             <View style={{ flex: 1, flexDirection: 'row', alignSelf: 'center' }}>
+              {/*
               <View style={{ flex: Platform.OS === 'ios'? 1:2, marginLeft: 10, marginRight: 10 }}>
                 <Button title="예약 변경" onPress={changeReserv} />
               </View>
+              */}
               <View style={{ flex: 1, marginRight: 10 }}>
                 <Button color='#8F8F8F' title="예약 취소" onPress={handleChangeReservCancel} />
               </View>
