@@ -338,7 +338,7 @@ export default function SignUpScreen({ navigation }) {
                 onValueChange={(newValue) => {
                   setModalVisible(!isCheckAcceptedTerm);
                   console.log(isCheckAcceptedTerm)
-                  setIsCheckAcceptedTerm(newValue)
+                  setIsCheckAcceptedTerm(newVal)
                 }
               }  
             />
@@ -404,6 +404,7 @@ export default function SignUpScreen({ navigation }) {
                         style={styles.acceptBtn}
                         onPress={() => {
                             setModalVisible(!modalVisible);
+                            setIsCheckAcceptedTerm(!isCheckAcceptedTerm);
                           }}
                         >
                         <Text style={styles.buttonText}>동의하기</Text>
@@ -492,7 +493,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginVertical: 30,
     paddingVertical: 15,
-    elevation: 2,
     flex: 1,
     marginHorizontal: 25,
     justifyContent: 'center'
