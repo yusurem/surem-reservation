@@ -46,6 +46,7 @@ export default function SignUpScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const exitModal = () => {
     setModalVisible(!modalVisible);
+    setIsCheckAcceptedTerm(!isCheckAcceptedTerm)
   }
   const [permissionState, setPermissionState] = useState(false);
   const askPermission = async () => {
@@ -329,14 +330,15 @@ export default function SignUpScreen({ navigation }) {
           /> */}
           {Platform.OS === 'android' ? 
             <CheckBox
+                style={{
+                  alignSelf:'center'
+                }}
                 disabled={false}
                 value={isCheckAcceptedTerm}
                 onValueChange={(newValue) => {
                   setModalVisible(!isCheckAcceptedTerm);
                   console.log(isCheckAcceptedTerm)
-                  if(isCheckAcceptedTerm){
-                    setIsCheckAcceptedTerm(!isCheckAcceptedTerm)
-                  }
+                  setIsCheckAcceptedTerm(newValue)
                 }
               }  
             />
@@ -402,7 +404,6 @@ export default function SignUpScreen({ navigation }) {
                         style={styles.acceptBtn}
                         onPress={() => {
                             setModalVisible(!modalVisible);
-                            setIsCheckAcceptedTerm(!isCheckAcceptedTerm);
                           }}
                         >
                         <Text style={styles.buttonText}>동의하기</Text>
