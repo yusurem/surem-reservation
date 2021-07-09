@@ -14,7 +14,7 @@ import 'moment/locale/ko';
 import { Platform } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { URL } from '../../constants';
-
+import { MaterialIcons } from '@expo/vector-icons';
 
 const Item = ({ item, onClickQrBtn, onClickChangeReserv }) => (
   <View style={styles.item}>
@@ -440,13 +440,18 @@ export default function ReservationListScreen({ navigation }) {
         >
           <View style={styles.changeReservModal}>
             <View style={styles.changeReservTitle}>
-              <View style={{ alignSelf: 'center', flex: 10 }}>
-                <Text style={[{ marginLeft: '15%', fontSize: 20, color: '#FFFFFF', textAlignVertical: 'center', textAlign: 'center', height: '100%', textAlignVertical: 'center' },{lineHeight: Platform.OS === 'ios' ? 80 : 30}]}>
+
+              <TouchableOpacity style={{ flex: 1,justifyContent: 'space-between'}} onPress={()=>{}}>
+                <MaterialIcons name="cancel" size={24} color="#4084E4" />
+              </TouchableOpacity>
+              <View style={{ alignSelf: 'center', flex: 4,justifyContent: 'space-between'}}>
+                <Text style={[{ width:'100%', fontSize: 20, color: '#FFFFFF',
+                textAlignVertical: 'center', textAlign: 'center', height: '100%', textAlignVertical: 'center' },{lineHeight: Platform.OS === 'ios' ? 80 : 30}]}>
                   예약 변경하기
-              </Text>
+                </Text>
               </View>
-              <TouchableOpacity style={{ flex: 1 }} onPress={toggleModal}>
-                <Image style={{ width: 20 }} source={require("../../../assets/closeIcon.png")} />
+              <TouchableOpacity style={{ flex: 1,justifyContent: 'flex-end'}} onPress={toggleModal}>
+                <MaterialIcons name="cancel" size={24} color="white" />
               </TouchableOpacity>
             </View>
             <Text style={{ marginTop: 30, textAlign: 'center', color:'black' }}>{selectedRoomName}</Text>
@@ -461,9 +466,9 @@ export default function ReservationListScreen({ navigation }) {
                 <Text style={{height:30,lineHeight:30,textAlign:'center'}}>{moment(selectedReservEtime, 'YYYYMMDDHHmmss').format('HH:mm')}</Text>
               </View>
             </View>
-            <View style={{ flex:1,  marginLeft: 20, height:30, width:400,marginTop:20}}>
-              <Text style={{color:'black'}}>메모</Text>
-              <View style={{backgroundColor:'white', width:300, height:50,color:'white',flex:0,borderRadius:10,marginTop:10}}>
+            <View style={{ flex:1, height:30,marginTop:20}}>
+              <Text style={{color:'black',marginLeft:20}}>메모</Text>
+              <View style={{backgroundColor:'white',width:300, height:50,color:'white',flex:2,borderRadius:10,marginTop:10,alignSelf:'center'}}>
                 <Text style={{height:30,marginLeft:5}}>{selectedMemo}</Text>
               </View>
             </View>
