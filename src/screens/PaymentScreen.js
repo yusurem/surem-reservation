@@ -141,26 +141,28 @@ const PaymentScreen = ({ navigation, route }) => {
     }
 
     const schedulePushNotification = async (year, month, day, hour, min) => {
-        const trigger = new Date(year, parseInt(month) - 1, day, hour - 1, min);
+        const triggerA = new Date(year, parseInt(month) - 1, day, hour - 1, min);
         console.log("[PaymentScreen]:: Attempting to schedule a notification...");
-        console.log("[PaymentScreen]:: Trigger-- " + trigger);
+        console.log("[PaymentScreen]:: Trigger-- " + triggerA);
         await Notifications.scheduleNotificationAsync({
             identifier: `${year}${month}${day}${hour}${min}`,
             content: {
-                title: "예약시간",
+                title: "예약알림 ",
                 body: `오피스쉐어 예약 1시간 전 입니다. / 내용 : ${route.params.roomName}룸 ${sTime}:${route.params.startTime.charAt(2)}0 ~ ${eTime}:${route.params.endTime.charAt(2)}0.`,
                 data: { type: 'reservation' },
             },
-            trigger,
+            triggerA,
         });
+
+        const triggerB = new Date(year, parseInt(month) - 1, day, 16, 30);
         await Notifications.scheduleNotificationAsync({
             identifier: `${year}${month}${day}`,
             content: {
-                title: "예약시간",
-                body: `오피스쉐어 예약 1시간 전 입니다. / 내용 : ${route.params.roomName}룸 ${sTime}:${route.params.startTime.charAt(2)}0 ~ ${eTime}:${route.params.endTime.charAt(2)}0.`,
+                title: "예약알림",
+                body: `오늘 이용예정인 예약이 있습니다.`,
                 data: { type: 'reservation' },
             },
-            trigger,
+            triggerB,
         });
     }
 
@@ -187,6 +189,18 @@ const PaymentScreen = ({ navigation, route }) => {
             }
             console.log("[PaymentScreen]: Params for payment native module: ");
             console.log(params);
+
+            // const year = route.params.year;
+            // const month = route.params.month;
+            // const day = route.params.day;
+            // const rest = "163100"; // route.params.endTime
+            // const hour = rest.substring(0,2);
+            // const min = rest.substring(2,4);
+
+            // await schedulePushNotification(year, month, day, hour, min);
+
+            // return;
+
             const response = await PaymentModule.startPayment(params);
             console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
             console.log(response);
@@ -215,7 +229,7 @@ const PaymentScreen = ({ navigation, route }) => {
                     // const year = route.params.year;
                     // const month = route.params.month;
                     // const day = route.params.day;
-                    // const rest = "121400"; // route.params.endTime
+                    // const rest = "162000"; // route.params.endTime
                     // const hour = rest.substring(0,2);
                     // const min = rest.substring(2,4);
 

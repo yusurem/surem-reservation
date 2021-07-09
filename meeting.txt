@@ -25,8 +25,9 @@
     - Little white screen in between splash screen and app !? (almost fixed)
     - Webview crashses when pressed back !
     - inquiry needs to show, forever loading !
-    - after making an inquiry it has to refresh right away !? (i think is fixed)
-
+    - after making an inquiry it has to refresh right away !
+    - 회원가입후, 강제 종료해서 어플들어가면 table screen no currBranch
+        - initial screen에서 이것도 체크하게만들면됨
     - Push notification
         - Setup !
             - Firebase/Other initial system settings !
