@@ -85,7 +85,7 @@ const TestScreen = ({ navigation, route }) => {
 const year = "2021";
 const month = "07";
 const day = "09";
-const rest = "111800";
+const rest = "121400";
 
 async function schedulePushNotification() {
     const trigger = new Date(year, parseInt(month) - 1, day, rest.substring(0,2), rest.substring(2,4));

@@ -78,7 +78,7 @@ const InquiryScreen = ({ navigation, route }) => {
                     }
                     else if(response.data.returnCode !== "E0000"){
                         console.log("Error: " + response.data.returnCode);
-                        Alert.alert("문의내역을 가져오는데 오류가 일어났습니다. 잠시후 다시 시도해주세요.");
+                        Alert.alert( `` + "문의내역을 가져오는데 오류가 일어났습니다. 잠시후 다시 시도해주세요. ");
                         setEmpty(true);
                         setInitial(false);
                         return 'Error';

@@ -10,6 +10,7 @@ import CheckBox from '@react-native-community/checkbox';
 import IosCheckBox from '../components/IosCheckBox';
 import { useFocusEffect } from '@react-navigation/native';
 import { TERMS,URL, APP_VERSION } from '../constants';
+import * as Notifications from 'expo-notifications';
 
 const PaymentScreen = ({ navigation, route }) => {
     const { PaymentModule } = NativeModules;
@@ -122,7 +123,7 @@ const PaymentScreen = ({ navigation, route }) => {
     const makeReservation = async (payCode) => {
         try{
             console.log("Attempting to make reservation...");
-            const response = await axios.post(URL + '/reservation', {
+            const response = await axios.post( URL + '/reservation', {
                 'roomCode' : route.params.roomCode,
                 'usercode' : usercode,
                 'secretCode' : secretCode,
@@ -157,6 +158,22 @@ const PaymentScreen = ({ navigation, route }) => {
             setErrorMessageA("API 문제발생");
             console.log(err);
         }
+    }
+
+    const schedulePushNotification = async (year, month, day, hour, min, type) => {
+        const trigger = new Date(year, parseInt(month) - 1, day, hour, min);
+        console.log("[TestScreen]:: Scheduling a notification.");
+        console.log(trigger);
+        await Notifications.scheduleNotificationAsync({
+            identifier: "reservation",
+            content: {
+                title: "예약시간",
+                body: '오피스쉐어 예약 1시간 전 입니다. / 내용 : 000룸 00:00 ~ 00:00 조심히 와주세요.',
+                data: { date: '2021-07-07' },
+            },
+            // trigger: { seconds: 2 },
+            trigger,
+        });
     }
 
     const startPayment = async () => {
@@ -207,6 +224,14 @@ const PaymentScreen = ({ navigation, route }) => {
                 }
                 else{
                     // have to set notification right here
+                    // const year = route.params.year;
+                    // const month = route.params.month;
+                    // const day = route.params.day;
+                    // const rest = "121400"; // route.params.endTime
+                    // const hour = rest.substring(0,2);
+                    // const min = rest.substring(2,4);
+
+                    // await schedulePushNotification(year, month, day, hour, min, "reservation");
 
                     navigation.reset({
                         index: 1,
