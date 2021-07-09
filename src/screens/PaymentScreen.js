@@ -99,26 +99,6 @@ const PaymentScreen = ({ navigation, route }) => {
         }
     }
 
-    const getNotifDates = async () => {
-        return new Promise((resolve, reject) => {
-            db.transaction(async (tx)=>{
-                tx.executeSql(
-                    `select * from UserId order by _id desc;`,
-                    [],
-                    (tx, results) => {
-                        console.log(results);
-                        resolve(results);
-                      },
-                    (txt, error) => {
-                        // console.log(error);
-                        reject(error);
-                    }
-                )
-            })
-        })
-    }
-
-
     // 1. 룸 예약
     const makeReservation = async (payCode) => {
         try{
@@ -160,18 +140,26 @@ const PaymentScreen = ({ navigation, route }) => {
         }
     }
 
-    const schedulePushNotification = async (year, month, day, hour, min, type) => {
-        const trigger = new Date(year, parseInt(month) - 1, day, hour, min);
-        console.log("[TestScreen]:: Scheduling a notification.");
-        console.log(trigger);
+    const schedulePushNotification = async (year, month, day, hour, min) => {
+        const trigger = new Date(year, parseInt(month) - 1, day, hour - 1, min);
+        console.log("[PaymentScreen]:: Attempting to schedule a notification...");
+        console.log("[PaymentScreen]:: Trigger-- " + trigger);
         await Notifications.scheduleNotificationAsync({
-            identifier: "reservation",
+            identifier: `${year}${month}${day}${hour}${min}`,
             content: {
                 title: "예약시간",
-                body: '오피스쉐어 예약 1시간 전 입니다. / 내용 : 000룸 00:00 ~ 00:00 조심히 와주세요.',
-                data: { date: '2021-07-07' },
+                body: `오피스쉐어 예약 1시간 전 입니다. / 내용 : ${route.params.roomName}룸 ${sTime}:${route.params.startTime.charAt(2)}0 ~ ${eTime}:${route.params.endTime.charAt(2)}0.`,
+                data: { type: 'reservation' },
             },
-            // trigger: { seconds: 2 },
+            trigger,
+        });
+        await Notifications.scheduleNotificationAsync({
+            identifier: `${year}${month}${day}`,
+            content: {
+                title: "예약시간",
+                body: `오피스쉐어 예약 1시간 전 입니다. / 내용 : ${route.params.roomName}룸 ${sTime}:${route.params.startTime.charAt(2)}0 ~ ${eTime}:${route.params.endTime.charAt(2)}0.`,
+                data: { type: 'reservation' },
+            },
             trigger,
         });
     }

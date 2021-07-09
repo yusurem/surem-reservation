@@ -312,13 +312,17 @@ function App() {
       //   console.log("NAVIGATION REF IS GOOD");
       // }
       if(isReadyRef.current && navigationRef.current){
-        navigationRef.current?.navigate("Reserved");
-
+        if(response.notification.request.content.data.type === "reservation"){
+          navigationRef.current?.navigate("Reserved");
+        }
+        else{
+          console.log("공지사항/쿠폰");
+        }
       }
       else{
         // default action when navigation container has not been mounted yet
         // console.log(response.notification.request.identifier);
-        setNotifType(response.notification.request.identifier);
+        setNotifType(response.notification.request.content.data.type);
         // notifType = response.notification.request.identifier;
       }
       console.log("Done with responding to notification");
