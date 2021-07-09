@@ -24,7 +24,7 @@ const InquireScreen = ({ navigation, route }) => {
     const [locData, setLocData] = useState([]);
     const [initial, setInitial] = useState(true);
 
-    console.log("Entered InquiryScreen. Params: ");
+    console.log("Entered InquireScreen. Params: ");
     console.log(route.params);
 
     const writeVoc = async () => {
