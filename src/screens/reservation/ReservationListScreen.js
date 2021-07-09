@@ -199,47 +199,60 @@ export default function ReservationListScreen({ navigation }) {
   }
 
   const handleChangeReservCancel = async () => {
-    var data = JSON.stringify(
-      {
-        "resrvCode": selectedResrvCode,
-        "usercode": usercode,
-        "secretCode": secretCode
-      }
+    Alert.alert(
+      "예약 변경",
+      "예약을 정말 취소하겠습니까?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        { text: "OK", onPress: async () => {
+          var data = JSON.stringify(
+            {
+              "resrvCode": selectedResrvCode,
+              "usercode": usercode,
+              "secretCode": secretCode
+            }
+          );
+      
+          var config = {
+            method: 'post',
+            url: URL + '/cancelReservation',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            data: data
+          }
+          await axios(config)
+            .then(async function (response) {
+      
+              if (response.data.returnCode == 'E0000') {
+                setTimeout(async ()=>Alert.alert("예약이 취소되었습니다."), 10);
+              } else if (response.data.returnCode == 'E2005') {
+                setTimeout(async ()=>{Alert.alert('취소 불가능한 시간 입니다.')},500)
+              } else if (response.data.returnCode == 'E2006') {
+                setTimeout(async ()=>{Alert.alert("사용자 아이디와 예약자 아이디가 다릅니다.")},500)
+              } else if (response.data.returnCode == 'E2007') {
+                setTimeout(async ()=>{Alert.alert("사용자가 없음.")},500)
+              } else if (response.data.returnCode == 'E2008') {
+                setTimeout(async ()=>{Alert.alert("예약코드에 해당하는 예약 없음.")},500)
+              } else if (response.data.returnCode == 'E2009') {
+                setTimeout(async ()=>{Alert.alert("올바르지 않은 사용자 암호화 코드")},500)
+              } else {
+                setTimeout(async ()=>{Alert.alert("내부 오류 입니다.")},500)
+              }
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+      
+          getMyReserveList();
+          toggleModal();
+        } }
+      ]
     );
-
-    var config = {
-      method: 'post',
-      url: URL + '/cancelReservation',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      data: data
-    }
-    await axios(config)
-      .then(async function (response) {
-
-        if (response.data.returnCode == 'E0000') {
-          setTimeout(async ()=>Alert.alert("예약이 취소되었습니다."), 10);
-        } else if (response.data.returnCode == 'E2005') {
-          setTimeout(async ()=>{Alert.alert('취소 불가능한 시간 입니다.')},500)
-        } else if (response.data.returnCode == 'E2006') {
-          setTimeout(async ()=>{Alert.alert("사용자 아이디와 예약자 아이디가 다릅니다.")},500)
-        } else if (response.data.returnCode == 'E2007') {
-          setTimeout(async ()=>{Alert.alert("사용자가 없음.")},500)
-        } else if (response.data.returnCode == 'E2008') {
-          setTimeout(async ()=>{Alert.alert("예약코드에 해당하는 예약 없음.")},500)
-        } else if (response.data.returnCode == 'E2009') {
-          setTimeout(async ()=>{Alert.alert("올바르지 않은 사용자 암호화 코드")},500)
-        } else {
-          setTimeout(async ()=>{Alert.alert("내부 오류 입니다.")},500)
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-
-    getMyReserveList();
-    toggleModal();
   }
 
   const changeReserv = async () => {
