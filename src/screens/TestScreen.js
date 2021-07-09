@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, useWindowDimensions, BackHandler, Alert, Image, FlatList, NativeModules } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, useWindowDimensions, BackHandler, Alert, Image, FlatList, NativeModules, Button } from 'react-native';
 import { Table, TableWrapper, Row, Rows, Col, Cell } from 'react-native-table-component';
 import { MaterialCommunityIcons, AntDesign, FontAwesome5, Feather } from '@expo/vector-icons';
 import axios from 'axios';
@@ -13,6 +13,7 @@ import { URL } from '../constants';
 import BranchModal from '../components/BranchModal';
 import * as SQLite from 'expo-sqlite';
 import { WebView } from 'react-native-webview';
+import * as Notifications from 'expo-notifications';
 
 // notifications
 // import * as Device from 'expo-device';
@@ -24,48 +25,82 @@ const TITLE_W = 170;
 const MIN_H = 30;
 const HOUR_W = 130;
 
+const db = SQLite.openDatabase("db.db");
+
 const TestScreen = ({ navigation, route }) => {
-    // const { PaymentModule } = NativeModules;
+    const [expoPushToken, setExpoPushToken] = useState('');
+    const [notification, setNotification] = useState(false);
 
-    // registerForPushNotificationsAsync = async () => {
-    //     if (Device.isDevice) {
-    //         const { status: existingStatus } = await Notifications.getPermissionsAsync();
-    //         let finalStatus = existingStatus;
-
-    //         if (existingStatus !== 'granted') {
-    //             const { status } = await Notifications.requestPermissionsAsync();
-    //             finalStatus = status;
-    //         }
-    //         if (finalStatus !== 'granted') {
-    //             alert('Failed to get push token for push notification!');
-    //             return;
-    //         }
-
-    //         const token = (await Notifications.getExpoPushTokenAsync()).data;
-    //         // const token = (await Notifications.getExpoPushTokenAsync("@surem/reservation")).data;
-    //         console.log(token);
-
-    //         this.setState({ expoPushToken: token });
-
-    //     } else {
-    //         alert('Must use physical device for Push Notifications');
-    //     }
-        
-    //     if (Platform.OS === 'android') {
-    //         Notifications.setNotificationChannelAsync('default', {
-    //             name: 'default',
-    //             importance: Notifications.AndroidImportance.MAX,
-    //             vibrationPattern: [0, 250, 250, 250],
-    //             lightColor: '#FF231F7C',    
-    //         });
-    //     }
-    //     };
+    const getToken = () => {
+        console.log("[App.js]:: (Push Token)---retrieving...");
+        db.transaction(
+            (tx) => {
+                tx.executeSql('select * from Token order by _id asc;',
+                    [],
+                    (tx, results) => {
+                        if(results.rows.length > 0){
+                            console.log("AH THE PUSH TOKEN EXISTS BRO");
+                            // setExpoPushToken(results.rows.item(0).pushToken);
+                            setExpoPushToken(results.rows._array[results.rows._array.length - 1].pushToken)
+                        }
+                    },
+                    (tx, error) => {
+                        console.log(error);
+                    }
+                );
+            }
+        )
+    }
+    
+    useEffect(() => {
+        getToken();
+    }, [db])
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }} edges={['right', 'left', 'top']} >    
-            
-        </SafeAreaView>
+        <View
+            style={{
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'space-around',
+            }}>
+            <Text>Your expo push token: {expoPushToken}</Text>
+            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <Text>Title: {notification && notification.request.content.title} </Text>
+                <Text>Body: {notification && notification.request.content.body}</Text>
+                <Text>Data: {notification && JSON.stringify(notification.request.content.data)}</Text>
+            </View>
+            <Button
+                title="Press to schedule a notification"
+                onPress={async () => {
+                    await schedulePushNotification();
+                }}
+            />
+        </View>
     );
+}
+    
+// new Date(year, monthIndex, day, hours, minutes)
+// params have: year, month, day, hhmmss
+
+const year = "2021";
+const month = "07";
+const day = "07";
+const rest = "191300";
+
+async function schedulePushNotification() {
+    const trigger = new Date(year, parseInt(month) - 1, day, rest.substring(0,2), rest.substring(2,4));
+    console.log("[TestScreen]:: Scheduling a notification.")
+    console.log(trigger);
+    await Notifications.scheduleNotificationAsync({
+        identifier: "reservation",
+        content: {
+            title: "예약시간",
+            body: '오피스쉐어 예약 1시간 전 입니다. / 내용 : 000룸 00:00 ~ 00:00 조심히 와주세요.',
+            data: { date: '2021-07-07' },
+        },
+        // trigger: { seconds: 2 },
+        trigger,
+    });
 }
 
 const styles = StyleSheet.create({

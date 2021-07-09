@@ -1,13 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet } from 'react-native';
+import { View, Text, Button } from 'react-native';
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import * as Font from 'expo-font'
 
+import * as Font from 'expo-font'
+import * as Notifications from 'expo-notifications';
 import SplashScreen from 'react-native-splash-screen';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Entypo, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import * as SQLite from 'expo-sqlite';
+
+import registerForPushNotificationsAsync from './src/api/RegisterForPush';
 
 import HomeScreen from './src/screens/home/HomeScreen';
 import HomeMenuScreen from './src/screens/HomeMenuScreen';
@@ -118,6 +124,7 @@ const FourthStack = () => {
         <Stack.Screen name="Inquire" component={InquireScreen} />
         <Stack.Screen name="MyCoupon" component={MyCouponScreen} />
         <Stack.Screen name="NewTable" component={NewTableScreen} />
+        <Stack.Screen name="Test" component={TestScreen} />
     </Stack.Navigator>
   );
 }
@@ -183,31 +190,225 @@ const TabNav = () => {
   )
 }
 
+// sqlite for locally storing push notification token value
+const db = SQLite.openDatabase("db.db");
+
+// db.transaction((tx) => {
+  // tx.executeSql('DROP TABLE IF EXISTS Branches;');
+// })
+
+db.transaction((tx) => {
+  tx.executeSql('CREATE TABLE IF NOT EXISTS TOKEN (_id INTEGER PRIMARY KEY, pushToken TEXT);');
+})
+
+const saveToken = async (pushToken) => {
+  console.log("[App.js]:: (Push Token)--- Inserting...");
+  return new Promise((resolve, reject) => {
+    db.transaction(
+      (tx) => {
+        tx.executeSql("INSERT INTO TOKEN (pushToken) VALUES(?);", [pushToken],
+          (tx, results) => {
+            // console.log(results);
+            console.log("[App.js]:: (Push Token)--- Insertion completed.");
+            resolve(results);
+          },
+          (txt, error) => {
+            // console.log(error);
+            reject(error);
+          }
+        )
+      },
+    );
+  });
+}
+
+const deleteToken = async () => {
+  console.log("[App.js]:: (Push Token)--- Deleting...");
+  return new Promise((resolve, reject) => {
+    db.transaction(
+      (tx) => {
+        tx.executeSql('DELETE FROM TOKEN', [],
+          (tx, results) => {
+            // console.log(results);
+            console.log("[App.js]:: (Push Token)--- Deletion completed.");
+            resolve(results);
+          },
+          (txt, error) => {
+            // console.log(error);
+            reject(error);
+          }
+        )
+      },
+    );
+  }); 
+}
+
+// For setting how the notification will be handled when a notification comes while the application is in foreground
+// When a notification is received, handleNotification is called with the incoming notification as an argument.
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
+
 function App() {
+  // To address the small white screen flash when initially loading the application
   useEffect(() => {
-    // console.log("OMPOEINUTPOEUT");
-    // console.log(typeof(SplashScreen));
     setTimeout(() => SplashScreen.hide() , 50);
-    // SplashScreen.hide();
   }, [Stack])
+
+  // ------------- from this point, push notification setup
+  const [expoPushToken, setExpoPushToken] = useState('');
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
+  const navigationRef = useRef(null);
+  const isReadyRef = useRef(false);
+  const [notifType, setNotifType] = useState(null);
+  // var notifType = null;
+
+  useEffect(() => {
+    console.log("[App.js]:: (PUSH USEEFFECT)--- Starting.");
+    registerForPushNotificationsAsync().then( async (token) => {
+      console.log("[App.js]:: (PUSH USEEFFECT)--- Got token. Token is " + token);
+      try{
+        await deleteToken(); // to have only one token in the table at all time
+        await saveToken(token); // locally store the token for notification setups in other screens
+        console.log("[App.js]:: (PUSH USEEFFECT)--- Delete and insertion completed sucessfully.")
+      }
+      catch (err) {
+        console.log("[App.js]:: (PUSH USEEFECT ERROR)---");
+        console.log(err);
+        console.log("ERROR!");
+      }
+    
+      // setExpoPushToken(token);
+    });
+
+    // A listener for whenever a notification is received while the app is running.
+    // argument: a callback function that takes a "Notification" object as an argument
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+      console.log("[PUSH_NOTIFICATION]:: Received notification while on foreground");
+      console.log(notification);
+      // setNotification(notification);
+    });
+    console.log("[App.js]:: (PUSH USEEFFECT)--- Finished setting up first listner");
+
+    // A listener for whenever a user interacts with a notification (eg. taps on it).
+    // argument: a callback function that takes a "NotificationResponse" object as an argument
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log("[PUSH_NOTIFICATION]:: Responded to notification!");
+      console.log(response);
+      // console.log("-----------------");
+      // console.log(isReadyRef.current);
+      // console.log("-----------------");
+      // console.log(navigationRef.current);
+      // if(isReadyRef.current){
+      //   console.log("IS READY IS GOOD");
+      // }
+      // if(navigationRef.current){
+      //   console.log("NAVIGATION REF IS GOOD");
+      // }
+      if(isReadyRef.current && navigationRef.current){
+        navigationRef.current?.navigate("Reserved");
+
+      }
+      else{
+        // default action when navigation container has not been mounted yet
+        // console.log(response.notification.request.identifier);
+        setNotifType(response.notification.request.identifier);
+        // notifType = response.notification.request.identifier;
+      }
+      console.log("Done with responding to notification");
+    });
+    console.log("[App.js]:: (PUSH USEEFFECT)--- Finished setting up second listner");
+
+    return () => {
+      // unsusbscribing on unmount
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
+  // ------------- finished push notification setup
+  
+  console.log("NOTIFTYPE:: " + notifType);
 
   return (
     <SafeAreaProvider>
-      <NavigationContainer>
+      <NavigationContainer
+        ref={navigationRef}
+        onReady={() => {
+          isReadyRef.current = true;
+        }}
+      >
         <Stack.Navigator 
           initialRouteName='Initial'
           screenOptions={{
             headerShown: false
           }}
         >
-            <Stack.Screen name="Initial" component={InitialScreen}/>
+            <Stack.Screen name="Initial" component={InitialScreen} initialParams={{ notification: notifType }}/>
             <Stack.Screen name="SignUp" component={SignupScreen}/>
             <Stack.Screen name="Tab" component={TabNav} />
         </Stack.Navigator>
       </NavigationContainer>
+      {/* <Button
+        onPress={() => navigationRef.current.navigate('Reserve')}
+        title="Go home"
+      /> */}
     </SafeAreaProvider>
   );
 }
+
+
+// function HomeScr() {
+//   return (
+//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+//       <Text>Home Screen</Text>
+//     </View>
+//   );
+// }
+
+// function Emp() {
+//   return (
+//     <View>
+
+//     </View>
+//   );
+// }
+
+// function App() {
+//   const navigationRef = useRef(null);
+
+//   return (
+//     <View style={{ flex: 1 }}>
+//       <NavigationContainer
+//         ref={navigationRef}
+//         onReady={() => {
+//           isReadyRef.current = true;
+//         }}
+//       >
+//         <Stack.Navigator 
+//           initialRouteName='Initial'
+//           screenOptions={{
+//             headerShown: false
+//           }}
+//         >
+//             <Stack.Screen name="Initial" component={InitialScreen}/>
+//             <Stack.Screen name="SignUp" component={SignupScreen}/>
+//             <Stack.Screen name="Tab" component={TabNav} />
+//             <Stack.Screen name="Homed" component={HomeScr} />
+//         </Stack.Navigator>
+//       </NavigationContainer>
+//       <Button
+//         onPress={() => navigationRef.current.navigate('Reserve')}
+//         title="Go home"
+//       />
+//     </View>
+//   );
+// }
 
 const styles = StyleSheet.create({
   iconStyle: {

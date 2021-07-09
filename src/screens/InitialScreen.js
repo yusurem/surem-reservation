@@ -15,7 +15,10 @@ db.transaction(tx=>{
   tx.executeSql('CREATE TABLE IF NOT EXISTS UserId (_id INTEGER PRIMARY KEY, secretCode TEXT, usercode TEXT);')
 })
 
-export default function InitialScreen({ navigation }) {
+export default function InitialScreen({ navigation, route }) {
+  console.log("[InitialScreen]:: Entered Screen. Params are: ");
+  console.log(route.params);
+
   const [loading, setLoading] = useState(true);
 
   const hasUserId = async () => {
@@ -29,7 +32,12 @@ export default function InitialScreen({ navigation }) {
           if(results.rows.length > 0){
             // 이거 navigation.reset 하면 sqlite database 망가짐
             // loading screen 두번 나오는거 다르게 고쳐주세요
-            navigation.navigate("Tab");
+            if(route.params.notification === "reservation"){
+              navigation.navigate("Tab", { screen: "Reserved" });
+            }
+            else{
+              navigation.navigate("Tab");
+            }
           } else if(results.rows.length == 0){
             setLoading(false)
           }
@@ -63,17 +71,17 @@ export default function InitialScreen({ navigation }) {
             resizeMode="cover"
           >
             <View>
-              <View style={{alignItems:"center"}}>
+              <View style={{ alignItems:"center" }}>
                 <Text style={styles.initFirstText}>"미팅 룸이 필요할 떄는 언제나"</Text>
               </View>
-              <View style={{alignItems:'center',marginBottom:'20%'}}>
+              <View style={{ alignItems:'center', marginBottom:'20%'}}>
                 <Text style={styles.initSecondText}>오피스쉐어에</Text>
                 <Text style={styles.initSecondText}>오신것을 환영합니다.</Text>
               </View>
             </View>
             <View>
               <TouchableOpacity
-                style={[ styles.resrvButton]}
+                style={[ styles.resrvButton ]}
                 onPress={ async () => {
                   navigation.reset({index: 0, routes: [{name: 'SignUp'}] })
                 }}

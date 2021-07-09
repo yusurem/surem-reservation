@@ -73,11 +73,14 @@ const InquiryScreen = ({ navigation, route }) => {
                     if(response.data.returnCode === "E1001"){
                         console.log("[getVocList]: no inquries by user.");
                         setEmpty(true);
+                        setInitial(false);
                         return "Empty";
                     }
                     else if(response.data.returnCode !== "E0000"){
                         console.log("Error: " + response.data.returnCode);
                         Alert.alert("문의내역을 가져오는데 오류가 일어났습니다. 잠시후 다시 시도해주세요.");
+                        setEmpty(true);
+                        setInitial(false);
                         return 'Error';
                     }
                     setInquiryList(response.data.list)
@@ -93,6 +96,7 @@ const InquiryScreen = ({ navigation, route }) => {
 
             return () => {
                 setInitial(true);
+                setEmpty(false);
             }
 
         }, [route.params.usercode])
@@ -108,6 +112,7 @@ const InquiryScreen = ({ navigation, route }) => {
                 <Text style={styles.headerText}>1:1 문의 내역</Text>
                 <TouchableOpacity
                     onPress={() => {
+                        // setInitial(true);
                         navigation.navigate("Inquire", {
                             usercode: route.params.usercode,
                             secretCode: route.params.secretCode,
@@ -119,7 +124,7 @@ const InquiryScreen = ({ navigation, route }) => {
                 </TouchableOpacity>
             </View>
             <View style={[styles.mainBox, { justifyContent: (initial == true || inquiryList.length == 0) ? 'center' : 'flex-start' }]}>
-                {initial === true ? 
+                {initial ? 
                     <View style={{ }}>
                         <ActivityIndicator size="large" color="gray"/>
                     </View>

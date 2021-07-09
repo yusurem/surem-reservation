@@ -69,6 +69,9 @@ public class PaymentActivity extends Activity {
             }
 
             Log.d("PaymentActivity", "Webview properly loaded");
+            Intent intent = new Intent();
+            intent.putExtra("result", "cancelled");
+            setResult(Activity.RESULT_CANCELED, intent);
         }
     }
 
@@ -172,12 +175,12 @@ public class PaymentActivity extends Activity {
     }
 
     public void endActivity(){
-        if(this.result == null){
-            Log.d("PaymentActivity", "Payment is being cancelled before processed.");
-            Intent intent = new Intent();
-            intent.putExtra("result", "cancelled");
-            setResult(Activity.RESULT_CANCELED, intent);
-        }
+//        if(this.result == null){
+//            Log.d("PaymentActivity", "Payment is being cancelled before processed.");
+//            Intent intent = new Intent();
+//            intent.putExtra("result", "cancelled");
+//            setResult(Activity.RESULT_CANCELED, intent);
+//        }
         finish();
     }
 

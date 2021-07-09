@@ -25,6 +25,23 @@ const PaymentScreen = ({ navigation, route }) => {
 
     const [paymentDone, setPaymentDone] = useState(false);
 
+    const db = SQLite.openDatabase('db.db');
+
+    // db.transaction((tx) => {
+    //     tx.executeSql('CREATE TABLE IF NOT EXISTS NOTIFDATES (_id INTEGER PRIMARY KEY, year TEXT, month TEXT, day TEXT);');
+    // })
+
+    const weekDays = new Array('일', '월', '화', '수', '목', '금', '토');
+
+    var sTime = route.params.startTime.substring(0,2);
+    if(sTime[0] == '0'){
+        sTime = sTime[1];
+    }
+    var eTime = route.params.endTime.substring(0,2);
+    if(eTime[0] == '0'){
+        eTime = eTime[1];
+    }
+
     console.log("Entered PaymentScreen. Params: ");
     console.log(route.params);
 
@@ -53,18 +70,6 @@ const PaymentScreen = ({ navigation, route }) => {
         }
     }
 
-    // useFocusEffect(() => {
-    //     const backAction = () => {
-    //         removeSyncTime();
-    //         // console.log(res);
-    //         return false;
-    //     };
-        
-    //     const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
-        
-    //     return (() => backHandler.remove());
-    // });
-
     useFocusEffect(() => {
         const unsubscribe = navigation.addListener('beforeRemove', (e) => {
             removeSyncTime();
@@ -72,19 +77,6 @@ const PaymentScreen = ({ navigation, route }) => {
         
         return unsubscribe;
     },);
-
-    const db = SQLite.openDatabase('db.db');
-
-    const weekDays = new Array('일', '월', '화', '수', '목', '금', '토');
-
-    var sTime = route.params.startTime.substring(0,2);
-    if(sTime[0] == '0'){
-        sTime = sTime[1];
-    }
-    var eTime = route.params.endTime.substring(0,2);
-    if(eTime[0] == '0'){
-        eTime = eTime[1];
-    }
 
     const getUserId = async () => {
         console.log("in getuserID");
@@ -105,6 +97,26 @@ const PaymentScreen = ({ navigation, route }) => {
             console.log(err);
         }
     }
+
+    const getNotifDates = async () => {
+        return new Promise((resolve, reject) => {
+            db.transaction(async (tx)=>{
+                tx.executeSql(
+                    `select * from UserId order by _id desc;`,
+                    [],
+                    (tx, results) => {
+                        console.log(results);
+                        resolve(results);
+                      },
+                    (txt, error) => {
+                        // console.log(error);
+                        reject(error);
+                    }
+                )
+            })
+        })
+    }
+
 
     // 1. 룸 예약
     const makeReservation = async (payCode) => {
@@ -194,6 +206,8 @@ const PaymentScreen = ({ navigation, route }) => {
                     })}}])
                 }
                 else{
+                    // have to set notification right here
+
                     navigation.reset({
                         index: 1,
                         routes: [
@@ -286,7 +300,8 @@ const PaymentScreen = ({ navigation, route }) => {
 
     useEffect(() => {
         getUserId()
-    },[usercode,secretCode])
+    }, [route.params.roomCode]);
+    // },[usercode,secretCode])
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#f3f4f8" }} edges={['right', 'left', 'top']} pointerEvents={paymentDone ? 'none' : 'auto'}>

@@ -149,6 +149,7 @@ const InquireScreen = ({ navigation, route }) => {
                 <TouchableOpacity
                     onPress={() => {
                         setModalVisible(!modalVisible);
+                        setErrorMessage("");
                     }}
                     style={styles.branchButton}
                 >

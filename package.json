@@ -19,6 +19,7 @@
     "accordion-collapse-react-native": "^1.0.0",
     "axios": "^0.21.1",
     "expo": "40.0.1",
+    "expo-constants": "^11.0.1",
     "expo-device": "^3.2.0",
     "expo-font": "~8.4.0",
     "expo-modules-core": "0.2.0",
