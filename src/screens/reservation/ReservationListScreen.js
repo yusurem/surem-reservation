@@ -428,7 +428,7 @@ export default function ReservationListScreen({ navigation }) {
           <View style={styles.changeReservModal}>
             <View style={styles.changeReservTitle}>
               <View style={{ alignSelf: 'center', flex: 10 }}>
-                <Text style={[{ marginLeft: '12%', fontSize: 20, color: '#FFFFFF', textAlignVertical: 'center', textAlign: 'center', height: '100%', textAlignVertical: 'center' },{lineHeight: Platform.OS === 'ios' ? 80 : 30}]}>
+                <Text style={[{ marginLeft: '15%', fontSize: 20, color: '#FFFFFF', textAlignVertical: 'center', textAlign: 'center', height: '100%', textAlignVertical: 'center' },{lineHeight: Platform.OS === 'ios' ? 80 : 30}]}>
                   예약 변경하기
               </Text>
               </View>
@@ -436,8 +436,24 @@ export default function ReservationListScreen({ navigation }) {
                 <Image style={{ width: 20 }} source={require("../../../assets/closeIcon.png")} />
               </TouchableOpacity>
             </View>
-            <Text style={{ marginTop: 30, textAlign: 'center' }}>{selectedRoomName}</Text>
+            <Text style={{ marginTop: 30, textAlign: 'center', color:'black' }}>{selectedRoomName}</Text>
             <Text style={{ textAlign: 'center' }}>{moment(selectedReservStime, 'YYYYMMDDHHmmss').format('YYYY / MM / DD')}</Text>
+            <Text style={{ marginLeft: 20, color:'black'}}>이용 시간</Text>
+            <View style={{alignSelf:'center',height:40,flexDirection:'row',marginTop:10}}>
+              <View style={{backgroundColor:'white', width:135, height:30,color:'white',flex:0,borderRadius:10}}>
+                <Text style={{height:30,lineHeight:30,textAlign:'center'}}>{moment(selectedReservStime, 'YYYYMMDDHHmmss').format('HH:mm')}</Text>
+              </View>
+              <Text style={{flex:0,width:10,alignSelf:'center',height:30,marginLeft:10,marginRight:10}}>~</Text>
+              <View style={{backgroundColor:'white', width:135, height:30,color:'white',flex:0,borderRadius:10}}>
+                <Text style={{height:30,lineHeight:30,textAlign:'center'}}>{moment(selectedReservEtime, 'YYYYMMDDHHmmss').format('HH:mm')}</Text>
+              </View>
+            </View>
+            <View style={{ flex:1,  marginLeft: 20, height:30, width:400,marginTop:20}}>
+              <Text style={{color:'black'}}>메모</Text>
+              <View style={{backgroundColor:'white', width:300, height:50,color:'white',flex:0,borderRadius:10,marginTop:10}}>
+                <Text style={{height:30,marginLeft:5}}>{selectedMemo}</Text>
+              </View>
+            </View>
             {
               /*
             <Text style={{ marginTop: 30, marginLeft: 20 }}>이용 시간</Text>
@@ -476,17 +492,13 @@ export default function ReservationListScreen({ navigation }) {
             </View>
             */
             }
-            <View style={{ flex:1,  marginLeft: 20, height:40, width:400}}>
-              <Text>메모</Text>
-              <TextInput onChangeText={onChangeSelectedMemo} value={selectedMemo}></TextInput>
-            </View>
             <View style={{ flex: 1, flexDirection: 'row', alignSelf: 'center' }}>
               {/*
               <View style={{ flex: Platform.OS === 'ios'? 1:2, marginLeft: 10, marginRight: 10 }}>
                 <Button title="예약 변경" onPress={changeReserv} />
               </View>
               */}
-              <View style={{ flex: 1, marginRight: 10 }}>
+              <View style={{ flex: 1,marginLeft:30,marginRight:30,marginTop:10}}>
                 <Button color='#8F8F8F' title="예약 취소" onPress={handleChangeReservCancel} />
               </View>
             </View>
