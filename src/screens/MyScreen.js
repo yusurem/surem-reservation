@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableHighlight, ActivityIndicator, Image, Button, Alert, TouchableOpacity, ScrollView, Linking, BackHandler } from 'react-native';
+import { View, Text, StyleSheet, TouchableHighlight, ActivityIndicator, Image, Switch, Alert, TouchableOpacity, ScrollView, Linking, BackHandler } from 'react-native';
 import axios from 'axios';
 import { MaterialCommunityIcons, Feather } from '@expo/vector-icons'; 
 import QRCode from 'react-native-qrcode-svg';
@@ -11,6 +11,7 @@ import { TERMS, URL, APP_VERSION } from '../constants';
 import moment from 'moment-timezone';
 
 import * as SQLite from 'expo-sqlite';
+import * as Notifications from 'expo-notifications';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -18,15 +19,17 @@ const MyScreen = ({ navigation, route }) => {
     const [name, setName] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
 
-    const [usercode, setUsercode] = useState("");
-	const [secretCode, setSecretCode] = useState("");
+    const [usercode, setUsercode] = useState(null);
+	const [secretCode, setSecretCode] = useState(null);
     const [couponNum, setCouponNum] = useState(0);
 
     const [serviceTerm, setServiceTerm] = useState(false);
     const [infoTerm, setInfoTerm] = useState(false);
     const [financialTerm, setFinancialTerm] = useState(false);
 
-    const [initial, setInitial] = useState(false);
+    const [initial, setInitial] = useState(true);
+
+    const [allowPush, setAllowPush] = useState(true);
 
     const phoneNumber = '15884640';
 
@@ -47,41 +50,46 @@ const MyScreen = ({ navigation, route }) => {
     },);
 
     const getUserId = async () => {
-        // console.log("in getuserID");
-        try{
-            await db.transaction(async (tx)=>{
-            tx.executeSql(
-                `select * from UserId order by _id desc;`,
-                [],
-                (tx, results) =>{
-                // console.log("doing getUserId");
-                // console.log('SELECT DDDDD :: ', results)
-                            setUsercode(results.rows.item(0).usercode)
-                            setSecretCode(results.rows.item(0).secretCode)
-                }
-            )
+        console.log("in getuserID");
+        return new Promise((resolve, reject) => {
+            db.transaction(async (tx)=>{
+                tx.executeSql(
+                    `select * from UserId order by _id desc;`,
+                    [],
+                    (tx, results) => {
+                        // console.log("called!")
+                        setUsercode(results.rows.item(0).usercode)
+                        setSecretCode(results.rows.item(0).secretCode)
+                        resolve();
+                    },
+                    (tx, error) => {
+                        reject(error);
+                    }
+                )
             })
-        } catch (err){
-            console.log(err);
-        }
+        })
+            
     }
 
     const getMyInfo = async () => {
         try{
             console.log("Attempting to get user info...");
-            console.log("usercode: " + usercode);
-            console.log("secretCode: " + secretCode);
+            // console.log("usercode: " + usercode);
+            // console.log("secretCode: " + secretCode);
+            if(usercode === null || secretCode === null){
+                return;
+            }
             const response = await axios.post(URL+'/myInfo', {
             // const response = await axios.post('http://112.221.94.101:8980/myInfo', {
                 usercode: usercode,
                 securityKey: secretCode
             });
-            // console.log(`Got the response!`);
-            console.log(response.data);
+            console.log(`Got the response!`);
+            // console.log(response.data);
             if(response.data.returnCode !== "E0000"){
-                console.log("Error: " + response.data.returnCode);
-                setCouponNum("N/A");
-                return;
+                console.log("Error from getMyInfo: " + response.data.returnCode);
+                setCouponNum(0);
+                return response.data;
             }
             setCouponNum(response.data.couponCnt);
             // setInitial(false);
@@ -142,6 +150,90 @@ const MyScreen = ({ navigation, route }) => {
         }
     }
 
+    const getPush = () => {
+        console.log("[MyScreen]:: Retreiving push permission..");
+        return new Promise((resolve, reject) => {
+          db.transaction(
+            (tx) => {
+                tx.executeSql('select * from PUSH_PERMISSION;',
+                    [],
+                    (tx, results) => {
+                        if(results.rows.length > 0){
+                          console.log("[MyScreen]:: Push permission not allowed.");
+                          setInitial(false);
+                          resolve(false);
+                        }
+                        else{
+                          console.log("[MyScreen]:: Push permission allowed.");
+                          setInitial(false);
+                          resolve(true);
+                        }
+                    },
+                    (tx, error) => {
+                        // console.log(error);
+                        setInitial(false);
+                        reject(error);
+                    }
+                );
+            }
+          )
+        });
+    }
+
+    const disablePush = async () => {
+        console.log("[MyScreen]:: Disabling push notifications...");
+        return new Promise((resolve, reject) => {
+          db.transaction(
+            (tx) => {
+              tx.executeSql("INSERT INTO PUSH_PERMISSION (allowed) VALUES(?);", [false],
+                (tx, results) => {
+                  // console.log(results);
+                  console.log("[MyScreen]:: Push Disabled.");
+                  resolve(results);
+                },
+                (txt, error) => {
+                  // console.log(error);
+                  reject(error);
+                }
+              )
+            },
+          );
+        });
+      }
+      
+    const enablePush = async () => {
+        console.log("[MyScreen]:: Enabling push notifications...");
+        return new Promise((resolve, reject) => {
+            db.transaction(
+            (tx) => {
+                tx.executeSql('DELETE FROM PUSH_PERMISSION', [],
+                (tx, results) => {
+                    // console.log(results);
+                    console.log("[MyScreen]:: Push enabled.");
+                    resolve(results);
+                },
+                (txt, error) => {
+                    // console.log(error);
+                    reject(error);
+                }
+                )
+            },
+            );
+        }); 
+    }
+
+    const togglePush = async () => {
+        if(allowPush){
+            await Notifications.cancelAllScheduledNotificationsAsync();
+            await disablePush();
+            setAllowPush(false);
+        }
+        else{
+            await enablePush();
+            setAllowPush(true);
+        } 
+    }
+
     const exitModal = () => {
         setModalVisible(!modalVisible);
         setServiceTerm(false);
@@ -150,7 +242,20 @@ const MyScreen = ({ navigation, route }) => {
     }
 
     useEffect(() => {
-        getUserId();
+        const wrapper = async () => {
+            await getUserId();
+            // console.log("got user ID");
+            await getMyInfo();
+            // console.log("got info");
+            const permission = await getPush();
+            if(!permission){
+                setAllowPush(false);
+            }
+            // console.log("got push");
+            // console.log("set initial to false");
+        }
+        wrapper();
+
     },[db])
 
     // useEffect(() => {
@@ -159,7 +264,11 @@ const MyScreen = ({ navigation, route }) => {
 
     useFocusEffect(() => {
         // setInitial(true);
-        getMyInfo();
+        if(!initial){
+            console.log("focus effect called!")
+            getMyInfo();
+        }
+        // getMyInfo();
     })
 
     // console.log(couponNum);
@@ -167,8 +276,9 @@ const MyScreen = ({ navigation, route }) => {
     return (    
         <SafeAreaView style={{ flex: 1, backgroundColor: '#F3F4F8' }} edges={['right', 'left', 'top']}>
             {initial ? 
-                <View style={{ marginBottom: 20 }}>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                     <ActivityIndicator size="large" color="gray"/>
+                    <Text style={styles.loadingText}>로딩중</Text>
                 </View>
                 :
                 <ScrollView>
@@ -309,8 +419,17 @@ const MyScreen = ({ navigation, route }) => {
                                     <MaterialCommunityIcons style={styles.termIcon} name="greater-than" size={18} color="#6C6C6C" />
                                 </View>
                             </TouchableOpacity>
-
-                            <Text style={styles.pushPermission}>푸쉬 알림</Text>
+                            
+                            <View style={styles.pushBox}>
+                                <Text style={styles.pushPermission}>푸쉬 알림</Text>
+                                <Switch
+                                    trackColor={{ false: '#767577', true: '#81b0ff' }}
+                                    thumbColor={'#f4f3f4'}
+                                    ios_backgroundColor="#3e3e3e"
+                                    onValueChange={togglePush}
+                                    value={allowPush}
+                                />
+                            </View>
 
                         </View>
 
@@ -492,6 +611,9 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         fontSize: 13
     },
+    termIcon: {
+        marginRight: 10,
+    },
     subView: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -502,8 +624,14 @@ const styles = StyleSheet.create({
         fontSize: 13,
         marginBottom: 5
     },
+    pushBox: {
+        marginTop: 10, 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        flexDirection: 'row', 
+        flex: 1
+    },
     pushPermission: {
-        marginTop: 10,
         fontSize: 13
     },
     modalBox: {
@@ -571,7 +699,11 @@ const styles = StyleSheet.create({
     buttonText: {
         color: 'white',
         textAlign: 'center'
-    }
+    },
+    loadingText: {
+        color: "gray",
+        marginTop: 5
+    },
 });
 
 export default MyScreen;

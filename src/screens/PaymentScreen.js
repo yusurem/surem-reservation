@@ -28,9 +28,9 @@ const PaymentScreen = ({ navigation, route }) => {
 
     const db = SQLite.openDatabase('db.db');
 
-    // db.transaction((tx) => {
-    //     tx.executeSql('CREATE TABLE IF NOT EXISTS NOTIFDATES (_id INTEGER PRIMARY KEY, year TEXT, month TEXT, day TEXT);');
-    // })
+    db.transaction((tx) => {
+        tx.executeSql('CREATE TABLE IF NOT EXISTS PUSH_ID (_id INTEGER PRIMARY KEY, identifier TEXT, flag TEXT);');
+    })
 
     const weekDays = new Array('일', '월', '화', '수', '목', '금', '토');
 
@@ -49,7 +49,7 @@ const PaymentScreen = ({ navigation, route }) => {
     const removeSyncTime = async () => {
         try{
             console.log("Removing sync time from going back...");
-            const response = await axios.post('http://112.221.94.101:8980/removeSyncTime', {
+            const response = await axios.post( URL + '/removeSyncTime', {
                 'roomCode' : route.params.roomCode,
                 "resrvStime" : `${route.params.year}${route.params.month}${route.params.day}${route.params.startTime}`,
                 "resrvEtime" : `${route.params.year}${route.params.month}${route.params.day}${route.params.endTime}`,
@@ -79,24 +79,24 @@ const PaymentScreen = ({ navigation, route }) => {
         return unsubscribe;
     },);
 
-    const getUserId = async () => {
+    const getUserId = () => {
         console.log("in getuserID");
-        try{
-            await db.transaction(async (tx)=>{
-            tx.executeSql(
-                `select * from UserId order by _id desc;`,
-                [],
-                (tx, results) =>{
-                // console.log("doing getUserId");
-                // console.log('SELECT  :: ', results)
-                            setUsercode(results.rows.item(0).usercode)
-                            setSecretCode(results.rows.item(0).secretCode)
-                }
-            )
-            })
-        } catch (err){
-            console.log(err);
-        }
+        return new Promise((resolve, reject) => {
+            db.transaction(async (tx)=>{
+                tx.executeSql(
+                    `select * from UserId order by _id desc;`,
+                    [],
+                    (tx, results) =>{ 
+                        setUsercode(results.rows.item(0).usercode)
+                        setSecretCode(results.rows.item(0).secretCode)
+                        resolve();
+                    },
+                    (tx, error) => {
+                        reject(error);
+                    }
+                );
+            });
+        });
     }
 
     // 1. 룸 예약
@@ -156,6 +156,7 @@ const PaymentScreen = ({ navigation, route }) => {
                 },
                 trigger: triggerB,
             });
+            await registerPushId(identifier, "B");
         }
 
         if(parseInt(hour) === 9 && parseInt(min) === 0){
@@ -173,7 +174,56 @@ const PaymentScreen = ({ navigation, route }) => {
                 },
                 trigger: triggerA,
             });
+            await registerPushId(identifier, "A");
         }   
+    }
+
+    const getPush = () => {
+        console.log("[PaymentScreen]:: Retreiving push permission..");
+        return new Promise((resolve, reject) => {
+          db.transaction(
+            (tx) => {
+                tx.executeSql('select * from PUSH_PERMISSION;',
+                    [],
+                    (tx, results) => {
+                        if(results.rows.length > 0){
+                          console.log("[PaymentScreen]:: Push permission not allowed.");
+                          resolve(false);
+                        }
+                        else{
+                          console.log("[PaymentScreen]:: Push permission allowed.");
+                          resolve(true);
+                        }
+                    },
+                    (tx, error) => {
+                        // console.log(error);
+                        reject(error);
+                    }
+                );
+            }
+          )
+        });
+    }
+
+    const registerPushId = async (identifier, flag) => {
+        console.log("[PaymentScreen]:: Registering push notification Id...");
+        return new Promise((resolve, reject) => {
+            db.transaction(
+            (tx) => {
+                tx.executeSql("INSERT INTO PUSH_ID (identifier, flag) VALUES(?,?);", [identifier, flag],
+                    (tx, results) => {
+                        // console.log(results);
+                        console.log("[PaymentScreen]:: Push notification Id registered.");
+                        resolve(results);
+                    },
+                    (txt, error) => {
+                        // console.log(error);
+                        reject(error);
+                    }
+                )
+            },
+            );
+        }); 
     }
 
     const startPayment = async () => {
@@ -231,8 +281,12 @@ const PaymentScreen = ({ navigation, route }) => {
                     // const rest = "162000"; // route.params.endTime
                     // const hour = rest.substring(0,2);
                     // const min = rest.substring(2,4);
-
-                    await schedulePushNotification(route.params.year, route.params.month, route.params.day, route.params.startTime.substring(0,2), route.params.startTime.substring(2,4));
+                    
+                    const permission = await getPush();
+                    console.log("after getting permission");
+                    if(permission){
+                        await schedulePushNotification(route.params.year, route.params.month, route.params.day, route.params.startTime.substring(0,2), route.params.startTime.substring(2,4));
+                    }
 
                     navigation.reset({
                         index: 1,
@@ -248,6 +302,7 @@ const PaymentScreen = ({ navigation, route }) => {
                             }}
                         ],
                     });
+
                     // navigation.navigate('Reserved', {
                     //     dateString: route.params.dateString,
                     //     startTime: `${sTime}:${route.params.startTime.charAt(2)}0 ${sTime > 11 ? "PM" : "AM"}`,
@@ -325,7 +380,7 @@ const PaymentScreen = ({ navigation, route }) => {
     }
 
     useEffect(() => {
-        getUserId()
+        getUserId();
     }, [route.params.roomCode]);
     // },[usercode,secretCode])
 
@@ -493,7 +548,20 @@ const PaymentScreen = ({ navigation, route }) => {
                                     // }
                                     // const qr = await getQrCode(res.qrCode);
                                     // console.log(qr);
-
+                                    
+                                    // const permission = await getPush();
+                                    // console.log("after getting permission");
+                                    // if(permission){
+                                    //     await Notifications.scheduleNotificationAsync({
+                                    //         identifier: `tester`,
+                                    //         content: {
+                                    //             title: "예약시간",
+                                    //             body: '오피스쉐어 예약 1시간 전 입니다. / 내용 : 000룸 00:00 ~ 00:00 조심히 와주세요.',
+                                    //             data: { type: "reservation" },
+                                    //         },
+                                    //         trigger: { seconds: 2 },
+                                    //     });
+                                    // }
                                     startPayment();
                                     
                                 }

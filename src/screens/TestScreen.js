@@ -88,9 +88,9 @@ const day = "09";
 const rest = "145600";
 
 async function schedulePushNotification() {
-    const trigger = new Date(year, parseInt(month) - 1, day, rest.substring(0,2), rest.substring(2,4));
+    // const trigger = new Date(year, parseInt(month) - 1, day, rest.substring(0,2), rest.substring(2,4));
     console.log("[TestScreen]:: Scheduling a notification.")
-    console.log(trigger);
+    // console.log(trigger);
     await Notifications.scheduleNotificationAsync({
         identifier: `${year}${month}${day}`,
         content: {
@@ -98,8 +98,8 @@ async function schedulePushNotification() {
             body: '오피스쉐어 예약 1시간 전 입니다. / 내용 : 000룸 00:00 ~ 00:00 조심히 와주세요.',
             data: { type: "reservation" },
         },
-        // trigger: { seconds: 2 },
-        trigger,
+        trigger: { seconds: 2 },
+        // trigger,
     });
 }
 
