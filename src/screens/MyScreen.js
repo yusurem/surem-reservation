@@ -309,6 +309,9 @@ const MyScreen = ({ navigation, route }) => {
                                     <MaterialCommunityIcons style={styles.termIcon} name="greater-than" size={18} color="#6C6C6C" />
                                 </View>
                             </TouchableOpacity>
+
+                            <Text style={styles.pushPermission}>푸쉬 알림</Text>
+
                         </View>
 
                         <TouchableHighlight
@@ -482,7 +485,7 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
     },
     version: {
-        marginBottom: 10,
+        marginBottom: 15,
         fontSize: 13
     },
     terms: {
@@ -498,6 +501,10 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         fontSize: 13,
         marginBottom: 5
+    },
+    pushPermission: {
+        marginTop: 10,
+        fontSize: 13
     },
     modalBox: {
         backgroundColor: '#EDEDED',

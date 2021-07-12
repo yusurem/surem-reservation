@@ -1,3 +1,40 @@
+2021-07-09
+- Things to do: 
+    - 회원가입후, 강제 종료해서 어플들어가면 table screen no currBranch
+    - initial screen에서 이것도 체크하게만들면됨
+    - Push notification
+        - Setup !
+            - Firebase/Other initial system settings !
+            - Coding Parts !
+            - Listeners !
+            - Foreground Handlers !
+            - Backend Server
+                - Have to register Tokens too when we do joinMember
+        - Sending
+            - 예약시간 1시간 전 !
+            - 오전 8시에 예약있는지 없는지 알림 !
+                - 8시 이전건들은 무시, do it until 12
+                - Have to check whether there was already a reservation made for that day
+                    - Will have to use sqlite to store a list of days that I have made reservations notification for
+                    - Check whether it's in here, if not, make the notif, if not don't
+                - Don't do this if the reservation is at 10am cuz it's going to show anyway
+            - 공지사항
+            - 쿠폰 업데이트
+        - Receiving
+            - 곧 예약 시간 notification "reservation" id
+                - Foreground !
+                - Background !
+                - Killed !
+            - 공지사항
+            - 쿠폰 업데이트
+        - Notification Toggle 알림 설정 기능 myScreen
+    - 공유하기
+    - MYScreen 쿠폰 갯수 N/A 처음에 보이는거
+    - inquity screen showing inquiries as not connected (icons and stuff)
+    - Have to check if the time has passed or not in each time so that even if the phone is left open and time passes, the reservation won't happen anymore
+    - Cleaning up the source code and files
+
+
 2021-06-24
 - Things to do:
     - Catching cancelling mid-Payment and doing the appropriate alert !
@@ -26,38 +63,6 @@
     - Webview crashses when pressed back !
     - inquiry needs to show, forever loading !
     - after making an inquiry it has to refresh right away !
-    - 회원가입후, 강제 종료해서 어플들어가면 table screen no currBranch
-        - initial screen에서 이것도 체크하게만들면됨
-    - Push notification
-        - Setup !
-            - Firebase/Other initial system settings !
-            - Coding Parts !
-            - Listeners !
-            - Foreground Handlers !
-            - Backend Server
-                - Have to register Tokens too when we do joinMember
-        - Sending
-            - 예약시간 1시간 전
-            - 오전 8시에 예약있는지 없는지 알림
-                - 8시 이전건들은 무시, do it until 12
-                - Have to check whether there was already a reservation made for that day
-                    - Will have to use sqlite to store a list of days that I have made reservations notification for
-                    - Check whether it's in here, if not, make the notif, if not don't
-                - Don't do this if the reservation is at 10am cuz it's going to show anyway
-            - 공지사항
-            - 쿠폰 업데이트
-        - Receiving
-            - 곧 예약 시간 notification "reservation" id
-                - Foreground !
-                - Background !
-                - Killed !
-            - 공지사항
-            - 쿠폰 업데이트
-    - 공유하기
-    - MYScreen 쿠폰 갯수 N/A 처음에 보이는거
-    - inquity screen showing inquiries as not connected (icons and stuff)
-    - Have to check if the time has passed or not in each time so that even if the phone is left open and time passes, the reservation won't happen anymore
-    - Cleaning up the source code and files
 
 2021-06-13
 - Done as of now

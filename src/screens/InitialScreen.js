@@ -38,7 +38,7 @@ export default function InitialScreen({ navigation, route }) {
             else{
               navigation.navigate("Tab");
             }
-          } else if(results.rows.length == 0){
+          } else if(results.rows.length === 0){
             setLoading(false)
           }
         }

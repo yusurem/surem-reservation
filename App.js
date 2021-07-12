@@ -201,6 +201,37 @@ db.transaction((tx) => {
   tx.executeSql('CREATE TABLE IF NOT EXISTS TOKEN (_id INTEGER PRIMARY KEY, pushToken TEXT);');
 })
 
+db.transaction((tx) => {
+  tx.executeSql('CREATE TABLE IF NOT EXISTS PUSH_PERMISSION (_id INTEGER PRIMARY KEY, allowed BOOLEAN);');
+})
+
+const getPushPermission = () => {
+  console.log("[App.js]:: Retreiving push permission..");
+  return new Promise((resolve, reject) => {
+    db.transaction(
+      (tx) => {
+          tx.executeSql('select * from PUSH_PERMISSION order by _id desc;',
+              [],
+              (tx, results) => {
+                  if(results.rows.length > 0){
+                    console.log("[App.js]:: Push permission not allowed. Skipping notification listeners.");
+                    resolve(false);
+                  }
+                  else{
+                    console.log("[App.js]:: Push permission allowed. Initializing notification listeners.");
+                    resolve(true);
+                  }
+              },
+              (tx, error) => {
+                  // console.log(error);
+                  reject(error);
+              }
+          );
+      }
+    )
+  });
+}
+
 const saveToken = async (pushToken) => {
   console.log("[App.js]:: (Push Token)--- Inserting...");
   return new Promise((resolve, reject) => {
@@ -268,12 +299,20 @@ function App() {
   const isReadyRef = useRef(false);
   const [notifType, setNotifType] = useState(null);
   // var notifType = null;
+  const [receiveNotification, setReceiveNotification] = useState(false); // send this set function as a call back to Myscreen.js that will call it to make this true or false.
+                                                                         // after that, make it so that notifications are only sent depending on this value
 
   useEffect(() => {
     console.log("[App.js]:: (PUSH USEEFFECT)--- Starting.");
+
     registerForPushNotificationsAsync().then( async (token) => {
       console.log("[App.js]:: (PUSH USEEFFECT)--- Got token. Token is " + token);
       try{
+        const permission = await getPushPermission();
+        console.log("[App.js]:: (PUSH USEEFFECT)--- Permission: " + permission);
+        if(!permission){
+          return;
+        }
         await deleteToken(); // to have only one token in the table at all time
         await saveToken(token); // locally store the token for notification setups in other screens
         console.log("[App.js]:: (PUSH USEEFFECT)--- Delete and insertion completed sucessfully.")
@@ -283,10 +322,51 @@ function App() {
         console.log(err);
         console.log("ERROR!");
       }
-    
       // setExpoPushToken(token);
     });
 
+    const wrapper = async() => {
+      const permission = await getPushPermission();
+      console.log("[App.js]:: (PUSH USEEFFECT)--- Permission: " + permission);
+
+      if(permission){
+        // A listener for whenever a notification is received while the app is running.
+        // argument: a callback function that takes a "Notification" object as an argument
+        notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+          console.log("[PUSH_NOTIFICATION]:: Received notification while on foreground");
+          console.log(notification);
+          // setNotification(notification);
+        });
+        console.log("[App.js]:: (PUSH USEEFFECT)--- Finished setting up first listner");
+
+        // A listener for whenever a user interacts with a notification (eg. taps on it).
+        // argument: a callback function that takes a "NotificationResponse" object as an argument
+        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+          console.log("[PUSH_NOTIFICATION]:: Responded to notification!");
+          console.log(response);
+
+          if(isReadyRef.current && navigationRef.current){
+            if(response.notification.request.content.data.type === "reservation"){
+              navigationRef.current?.navigate("Reserved");
+            }
+            else{
+              console.log("공지사항/쿠폰");
+            }
+          }
+          else{
+            // default action when navigation container has not been mounted yet
+            // console.log(response.notification.request.identifier);
+            setNotifType(response.notification.request.content.data.type);
+            // notifType = response.notification.request.identifier;
+          }
+          console.log("Done with responding to notification");
+        });
+        console.log("[App.js]:: (PUSH USEEFFECT)--- Finished setting up second listner");
+      }
+    }
+
+    wrapper();
+    /*
     // A listener for whenever a notification is received while the app is running.
     // argument: a callback function that takes a "Notification" object as an argument
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
@@ -301,16 +381,7 @@ function App() {
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
       console.log("[PUSH_NOTIFICATION]:: Responded to notification!");
       console.log(response);
-      // console.log("-----------------");
-      // console.log(isReadyRef.current);
-      // console.log("-----------------");
-      // console.log(navigationRef.current);
-      // if(isReadyRef.current){
-      //   console.log("IS READY IS GOOD");
-      // }
-      // if(navigationRef.current){
-      //   console.log("NAVIGATION REF IS GOOD");
-      // }
+
       if(isReadyRef.current && navigationRef.current){
         if(response.notification.request.content.data.type === "reservation"){
           navigationRef.current?.navigate("Reserved");
@@ -328,6 +399,7 @@ function App() {
       console.log("Done with responding to notification");
     });
     console.log("[App.js]:: (PUSH USEEFFECT)--- Finished setting up second listner");
+    */
 
     return () => {
       // unsusbscribing on unmount

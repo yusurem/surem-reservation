@@ -141,29 +141,39 @@ const PaymentScreen = ({ navigation, route }) => {
     }
 
     const schedulePushNotification = async (year, month, day, hour, min) => {
-        const triggerA = new Date(year, parseInt(month) - 1, day, hour - 1, min);
         console.log("[PaymentScreen]:: Attempting to schedule a notification...");
-        console.log("[PaymentScreen]:: Trigger-- " + triggerA);
-        await Notifications.scheduleNotificationAsync({
-            identifier: `${year}${month}${day}${hour}${min}`,
-            content: {
-                title: "예약알림 ",
-                body: `오피스쉐어 예약 1시간 전 입니다. / 내용 : ${route.params.roomName}룸 ${sTime}:${route.params.startTime.charAt(2)}0 ~ ${eTime}:${route.params.endTime.charAt(2)}0.`,
-                data: { type: 'reservation' },
-            },
-            triggerA,
-        });
+        var identifier;
 
-        const triggerB = new Date(year, parseInt(month) - 1, day, 16, 30);
-        await Notifications.scheduleNotificationAsync({
-            identifier: `${year}${month}${day}`,
-            content: {
-                title: "예약알림",
-                body: `오늘 이용예정인 예약이 있습니다.`,
-                data: { type: 'reservation' },
-            },
-            triggerB,
-        });
+        if(parseInt(hour) >= 9){
+            const triggerB = new Date(year, parseInt(month) - 1, day, 8, 0);
+            console.log("[PaymentScreen]:: Trigger-- " + triggerB);
+            identifier = await Notifications.scheduleNotificationAsync({
+                identifier: `${year}${month}${day}`,
+                content: {
+                    title: "예약알림",
+                    body: `오늘 이용예정인 예약이 있습니다.`,
+                    data: { type: 'reservation' },
+                },
+                trigger: triggerB,
+            });
+        }
+
+        if(parseInt(hour) === 9 && parseInt(min) === 0){
+            return;
+        }
+        else{
+            const triggerA = new Date(year, parseInt(month) - 1, day, parseInt(hour) - 1, min);
+            console.log("[PaymentScreen]:: Trigger-- " + triggerA);
+            identifier = await Notifications.scheduleNotificationAsync({
+                identifier: `${year}${month}${day}${hour}${min}`,
+                content: {
+                    title: "예약알림 ",
+                    body: `오피스쉐어 예약 1시간 전 입니다. / 내용 : ${route.params.roomName}룸 ${sTime}:${route.params.startTime.charAt(2)}0 ~ ${eTime}:${route.params.endTime.charAt(2)}0.`,
+                    data: { type: 'reservation' },
+                },
+                trigger: triggerA,
+            });
+        }   
     }
 
     const startPayment = async () => {
@@ -189,17 +199,6 @@ const PaymentScreen = ({ navigation, route }) => {
             }
             console.log("[PaymentScreen]: Params for payment native module: ");
             console.log(params);
-
-            // const year = route.params.year;
-            // const month = route.params.month;
-            // const day = route.params.day;
-            // const rest = "163100"; // route.params.endTime
-            // const hour = rest.substring(0,2);
-            // const min = rest.substring(2,4);
-
-            // await schedulePushNotification(year, month, day, hour, min);
-
-            // return;
 
             const response = await PaymentModule.startPayment(params);
             console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
@@ -233,7 +232,7 @@ const PaymentScreen = ({ navigation, route }) => {
                     // const hour = rest.substring(0,2);
                     // const min = rest.substring(2,4);
 
-                    // await schedulePushNotification(year, month, day, hour, min, "reservation");
+                    await schedulePushNotification(route.params.year, route.params.month, route.params.day, route.params.startTime.substring(0,2), route.params.startTime.substring(2,4));
 
                     navigation.reset({
                         index: 1,
@@ -473,7 +472,6 @@ const PaymentScreen = ({ navigation, route }) => {
                             {errorMessageB ? <Text style={styles.errorMessage}>{errorMessageB}</Text> : <Text style={styles.errorMessage}></Text>}
                         </View>
                     </View>
-
                     <View>
                         <Text style={styles.titleStyle}>결제수단 선택</Text>
                         <TouchableOpacity
