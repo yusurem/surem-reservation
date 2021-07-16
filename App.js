@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { View, Text, Button } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
@@ -288,10 +288,12 @@ function App() {
   useEffect(() => {
     setTimeout(() => SplashScreen.hide() , 50);
   }, [Stack])
+  
+  
 
   // ------------- from this point, push notification setup
   const [expoPushToken, setExpoPushToken] = useState('');
-  const [notification, setNotification] = useState(false);
+  const [notification, setNotification] = useState('');
   const notificationListener = useRef();
   const responseListener = useRef();
   const navigationRef = useRef(null);
@@ -300,73 +302,75 @@ function App() {
   // var notifType = null;
   const [receiveNotification, setReceiveNotification] = useState(false); // send this set function as a call back to Myscreen.js that will call it to make this true or false.
                                                                          // after that, make it so that notifications are only sent depending on this value
-
-  useEffect(() => {
-    console.log("[App.js]:: (PUSH USEEFFECT)--- Starting.");
-
-    registerForPushNotificationsAsync().then( async (token) => {
-      console.log("[App.js]:: (PUSH USEEFFECT)--- Got token. Token is " + token);
-      try{
-        // const permission = await getPushPermission();
-        // console.log("[App.js]:: (PUSH USEEFFECT)--- Permission: " + permission);
-        // if(!permission){
-        //   return;
-        // }
-        await deleteToken(); // to have only one token in the table at all time
-        await saveToken(token); // locally store the token for notification setups in other screens
-        console.log("[App.js]:: (PUSH USEEFFECT)--- Delete and insertion completed sucessfully.")
-      }
-      catch (err) {
-        console.log("[App.js]:: (PUSH USEEFECT ERROR)---");
-        console.log(err);
-        console.log("ERROR!");
-      }
-      // setExpoPushToken(token);
-    });
-
-    // A listener for whenever a notification is received while the app is running.
-    // argument: a callback function that takes a "Notification" object as an argument
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      console.log("[PUSH_NOTIFICATION]:: Received notification while on foreground");
-      console.log(notification);
-      // setNotification(notification);
-    });
-    console.log("[App.js]:: (PUSH USEEFFECT)--- Finished setting up first listner");
-
-    // A listener for whenever a user interacts with a notification (eg. taps on it).
-    // argument: a callback function that takes a "NotificationResponse" object as an argument
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log("[PUSH_NOTIFICATION]:: Responded to notification!");
-      console.log(response);
-
-      if(isReadyRef.current && navigationRef.current){
-        if(response.notification.request.content.data.type === "reservation"){
-          navigationRef.current?.navigate("Reserved");
+  if(Platform.OS === 'android'){
+    useEffect(() => {
+      console.log("[App.js]:: (PUSH USEEFFECT)--- Starting.");
+  
+      registerForPushNotificationsAsync().then( async (token) => {
+        console.log("[App.js]:: (PUSH USEEFFECT)--- Got token. Token is " + token);
+        try{
+          // const permission = await getPushPermission();
+          // console.log("[App.js]:: (PUSH USEEFFECT)--- Permission: " + permission);
+          // if(!permission){
+          //   return;
+          // }
+          await deleteToken(); // to have only one token in the table at all time
+          await saveToken(token); // locally store the token for notification setups in other screens
+          console.log("[App.js]:: (PUSH USEEFFECT)--- Delete and insertion completed sucessfully.")
+        }
+        catch (err) {
+          console.log("[App.js]:: (PUSH USEEFECT ERROR)---");
+          console.log(err);
+          console.log("ERROR!");
+        }
+        // setExpoPushToken(token);
+      });
+  
+      // A listener for whenever a notification is received while the app is running.
+      // argument: a callback function that takes a "Notification" object as an argument
+      notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+        console.log("[PUSH_NOTIFICATION]:: Received notification while on foreground");
+        console.log(notification);
+        // setNotification(notification);
+      });
+      console.log("[App.js]:: (PUSH USEEFFECT)--- Finished setting up first listner");
+  
+      // A listener for whenever a user interacts with a notification (eg. taps on it).
+      // argument: a callback function that takes a "NotificationResponse" object as an argument
+      responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+        console.log("[PUSH_NOTIFICATION]:: Responded to notification!");
+        console.log(response);
+  
+        if(isReadyRef.current && navigationRef.current){
+          if(response.notification.request.content.data.type === "reservation"){
+            navigationRef.current?.navigate("Reserved");
+          }
+          else{
+            console.log("공지사항/쿠폰");
+          }
         }
         else{
-          console.log("공지사항/쿠폰");
+          // default action when navigation container has not been mounted yet
+          // console.log(response.notification.request.identifier);
+          setNotifType(response.notification.request.content.data.type);
+          // notifType = response.notification.request.identifier;
         }
-      }
-      else{
-        // default action when navigation container has not been mounted yet
-        // console.log(response.notification.request.identifier);
-        setNotifType(response.notification.request.content.data.type);
-        // notifType = response.notification.request.identifier;
-      }
-      console.log("Done with responding to notification");
-    });
-    console.log("[App.js]:: (PUSH USEEFFECT)--- Finished setting up second listner");
-
-    return () => {
-      // unsusbscribing on unmount
-      Notifications.removeNotificationSubscription(notificationListener.current);
-      Notifications.removeNotificationSubscription(responseListener.current);
-    };
-  }, []);
-  // ------------- finished push notification setup
+        console.log("Done with responding to notification");
+      });
+      console.log("[App.js]:: (PUSH USEEFFECT)--- Finished setting up second listner");
   
-  console.log("NOTIFTYPE:: " + notifType);
-
+      return () => {
+        // unsusbscribing on unmount
+        Notifications.removeNotificationSubscription(notificationListener.current);
+        Notifications.removeNotificationSubscription(responseListener.current);
+      };
+    }, []);
+    // ------------- finished push notification setup
+    
+    console.log("NOTIFTYPE:: " + notifType);
+    
+  }
+  
   return (
     <SafeAreaProvider>
       <NavigationContainer
