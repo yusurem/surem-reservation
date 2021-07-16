@@ -136,14 +136,13 @@ const TabNav = () => {
       lazy="true"
       tabBarOptions={{
         style: {
-          height: (Platform.OS === 'android') ? 70 : 100
+          height: (Platform.OS === 'android') ? 60 : 80
         },
         labelStyle:{
-          marginBottom: 15
+          marginBottom: 8
         },
-        activeTintColor: '#474747',
-        inactiveTintColor: '#474747',
-        activeBackgroundColor: '#D9D8D8',
+        activeTintColor: '#3779DA',
+        inactiveTintColor: '#474747'
       }}
     >
       <Tab.Screen 
@@ -152,9 +151,9 @@ const TabNav = () => {
         options={{
           unmountOnBlur: true,
           tabBarLabel: '홈',
-          tabBarIcon: () => {
+          tabBarIcon: ({ color, size }) => {
             return (
-             <Entypo name="home" color="#474747" size={24} style={{alignSelf: 'center', marginLeft: 0.5, marginTop: 15}} />
+             <Entypo name="home" color={color} size={24} style={{alignSelf: 'center', marginLeft: 0.5, marginTop: 12 }} />
             );
           },
         }}
@@ -165,7 +164,7 @@ const TabNav = () => {
         options={{
           // unmountOnBlur: true,
           tabBarLabel: '예약하기',
-          tabBarIcon: () => <MaterialCommunityIcons name="calendar-clock" color="#474747" size={24} style={{ marginTop: 15 }}/>,
+          tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="calendar-clock" color={color} size={24} style={{ marginTop: 12 }}/>,
         }}
       />
       <Tab.Screen 
@@ -174,7 +173,7 @@ const TabNav = () => {
         options={{
           unmountOnBlur: true,
           tabBarLabel: '예약확인',
-          tabBarIcon: () => <MaterialCommunityIcons name="checkbox-marked-outline" color="#474747" size={24} style={{ marginTop: 15 }}/>,
+          tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="checkbox-marked-outline" color={color} size={24} style={{ marginTop: 12 }}/>,
         }}
       />
       <Tab.Screen 
@@ -183,7 +182,7 @@ const TabNav = () => {
         options={{
           tabBarLabel: 'MY',
           // unmountOnBlur: true,
-          tabBarIcon: () => <FontAwesome5 name="user-alt" color="#474747" size={24} style={{ marginTop: 15 }}/>,
+          tabBarIcon: ({ color, size }) => <FontAwesome5 name="user-alt" color={color} size={24} style={{ marginTop: 12 }}/>,
         }}
       />
     </Tab.Navigator>

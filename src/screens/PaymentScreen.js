@@ -29,7 +29,7 @@ const PaymentScreen = ({ navigation, route }) => {
     const db = SQLite.openDatabase('db.db');
 
     db.transaction((tx) => {
-        tx.executeSql('CREATE TABLE IF NOT EXISTS PUSH_ID (_id INTEGER PRIMARY KEY, identifier TEXT, flag TEXT);');
+        tx.executeSql('CREATE TABLE IF NOT EXISTS PUSH_ID (_id INTEGER PRIMARY KEY, identifier TEXT, flag TEXT, day TEXT);');
     })
 
     const weekDays = new Array('일', '월', '화', '수', '목', '금', '토');
@@ -103,7 +103,7 @@ const PaymentScreen = ({ navigation, route }) => {
     const makeReservation = async (payCode) => {
         try{
             console.log("Attempting to make reservation...");
-            const response = await axios.post( URL + '/reservation', {
+            const ㅇㄸ = await axios.post( URL + '/reservation', {
                 'roomCode' : route.params.roomCode,
                 'usercode' : usercode,
                 'secretCode' : secretCode,
@@ -147,6 +147,7 @@ const PaymentScreen = ({ navigation, route }) => {
         if(parseInt(hour) >= 9){
             const triggerB = new Date(year, parseInt(month) - 1, day, 8, 0);
             console.log("[PaymentScreen]:: Trigger-- " + triggerB);
+            console.log(`DAY :: ${year}${month}${day}`);
             identifier = await Notifications.scheduleNotificationAsync({
                 identifier: `${year}${month}${day}`,
                 content: {
@@ -156,6 +157,7 @@ const PaymentScreen = ({ navigation, route }) => {
                 },
                 trigger: triggerB,
             });
+            console.log('ID :: ',identifier)
             await registerPushId(identifier, "B");
         }
 
