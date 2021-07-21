@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableHighlight, TextInput, Image, Button, Alert, TouchableOpacity, BackHandler } from 'react-native';
+import { View, Text, StyleSheet, TouchableHighlight, TextInput, Image, Button, Alert, TouchableOpacity, BackHandler, Platform, Linking, ToastAndroid } from 'react-native';
 import axios from 'axios';
 import { Feather } from '@expo/vector-icons'; 
 import QRCode from 'react-native-qrcode-svg';
 import Modal from 'react-native-modal';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
+import Clipboard from '@react-native-community/clipboard';
 
 // import { WebView } from 'react-native-webview';
 
@@ -18,6 +19,16 @@ const ReservedScreen = ({ navigation, route }) => {
 
     const weekDays = new Array('일', '월', '화', '수', '목', '금', '토');
 
+    const qrLink = "www.google.com";
+
+    // 이렇게 맨 왼쪽으로 indent 붙여놓지 않으면 형식이 이상해짐. 왜지?
+    const message = 
+`[오피스쉐어 예약]\n
+예약일 : ${route.params.dateString} (${weekDays[route.params.weekDay]})\n예약 시간 : ${route.params.startTime} ~ ${route.params.endTime}\n
+예약자명 : 홍길동\n룸 이름: ${route.params.roomName}\n지점명 : ${route.params.location}점\n
+주소: ${route.params.address}\n
+QR코드 URL\n${qrLink}`;
+
     useFocusEffect(() => {
         const backAction = () => {
             navigation.reset({
@@ -25,7 +36,7 @@ const ReservedScreen = ({ navigation, route }) => {
                 routes: [
                     {name: 'Table'},
                 ] 
-            })            
+            })
             return true;
         };
         
@@ -66,7 +77,7 @@ const ReservedScreen = ({ navigation, route }) => {
                 <Feather style={styles.iconStyle} name="check-circle" size={40} color="black" />
                 <Text style={styles.titleStyle}>예약이 완료 되었습니다!</Text>
                 <Text style={styles.textStyle}>{route.params.roomName}</Text>
-                <Text style={styles.textStyle}>날짜 : {route.params.dateString.replace(/-/g," / ")} ({weekDays[route.params.weekDay]}) </Text>
+                <Text style={styles.textStyle}>날짜 : {route.params.dateString.replace(/-/g, " / ")} ({weekDays[route.params.weekDay]}) </Text>
                 <Text style={styles.textStyle}>시간 : {route.params.startTime} ~ {route.params.endTime}</Text>
 
                 <View style={styles.qrStyle}>
@@ -133,8 +144,22 @@ const ReservedScreen = ({ navigation, route }) => {
                                     </View>
                                 </TouchableOpacity>
                                 <TouchableOpacity
-                                    onPress={() => {
-                                        Alert.alert("문자메시지");
+                                    onPress={ async () => {
+                                        var url;
+                                        if (Platform.OS === 'android') {
+                                            url = `sms:?body=${message}`;
+                                        }
+                                        else  {
+                                            url = `sms:&body=${message}`;
+                                        }
+                                        const supported = await Linking.canOpenURL(url);
+
+                                        if(supported){
+                                            await Linking.openURL(url);
+                                        }
+                                        else {
+                                            Alert.alert(`이 URL을 읽지 못합니다: ${url}`);
+                                        }
                                     }}
                                 >
                                     <View>
@@ -147,7 +172,8 @@ const ReservedScreen = ({ navigation, route }) => {
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     onPress={() => {
-                                        Alert.alert("URL복사");
+                                        Clipboard.setString(message);
+                                        ToastAndroid.show("URL을 복사했습니다.", ToastAndroid.SHORT);
                                     }}
                                 >
                                     <View>

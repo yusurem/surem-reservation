@@ -1,3 +1,33 @@
+2021-07-22
+- Thins to do:
+    - 내 예약 표시 !
+    - Closed면 영업일 아니라는거 표시 !
+    - github merge해서 iOS되게 하기
+    - iOS 푸시
+    - iOS 공유하기
+    - iOS 뒤로가기 문제해결
+
+
+2021-07-14
+- Things to do:
+    - 1st Priority
+        - Not showing time out of operating hours !
+        - On todays date, show from when it is possible to reserev it !
+        - if todays hour is past operating hours, show tomorrow's !
+        - Show my reservation on the tableScreen
+        - Change font -> asked 재영씨
+        - iOS bug fixes
+        - iOS payment module
+        - iOS push notification / share
+        - Android > KakaoTalk share
+    - 2nd Priority 
+        - Table design fix
+        - Styling the table so that rows are together
+        - The top row of the tablescreen
+        - Changing the color of the bottom tab navigator
+        - KakaoPay
+        - NaverPay
+
 2021-07-09
 - Things to do: 
     - 회원가입후, 강제 종료해서 어플들어가면 table screen no currBranch

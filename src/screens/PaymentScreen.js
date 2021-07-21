@@ -166,7 +166,7 @@ const PaymentScreen = ({ navigation, route }) => {
             const triggerA = new Date(year, parseInt(month) - 1, day, parseInt(hour) - 1, min);
             console.log("[PaymentScreen]:: Trigger-- " + triggerA);
             identifier = await Notifications.scheduleNotificationAsync({
-                identifier: `${year}${month}${day}${hour}${min}`,
+                identifier: `${year}${month}${day}${hour}${min}:${route.params.roomName}`,
                 content: {
                     title: "예약알림 ",
                     body: `오피스쉐어 예약 1시간 전 입니다. / 내용 : ${route.params.roomName}룸 ${sTime}:${route.params.startTime.charAt(2)}0 ~ ${eTime}:${route.params.endTime.charAt(2)}0.`,
@@ -271,7 +271,7 @@ const PaymentScreen = ({ navigation, route }) => {
                                     routes: [
                                         {name: 'Table'}
                                     ]
-                    })}}])
+                    })}}]);
                 }
                 else{
                     // have to set notification right here
@@ -288,6 +288,7 @@ const PaymentScreen = ({ navigation, route }) => {
                         await schedulePushNotification(route.params.year, route.params.month, route.params.day, route.params.startTime.substring(0,2), route.params.startTime.substring(2,4));
                     }
 
+                    console.log("[PaymentScreen]:: ABOUT TO GO TO THE RESERVED PAGE");
                     navigation.reset({
                         index: 1,
                         routes: [
@@ -298,7 +299,9 @@ const PaymentScreen = ({ navigation, route }) => {
                                 endTime: `${eTime}:${route.params.endTime.charAt(2)}0 ${eTime > 11 ? "PM" : "AM"}`,
                                 resrvCode: res,
                                 weekDay: route.params.weekDay,
-                                roomName: route.params.roomName
+                                roomName: route.params.roomName,
+                                location: route.params.location,
+                                address: route.params.address,
                             }}
                         ],
                     });
@@ -313,7 +316,6 @@ const PaymentScreen = ({ navigation, route }) => {
                     // });
                 }
             }
-            
         } catch (e){
             console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             console.log(e);
@@ -456,6 +458,8 @@ const PaymentScreen = ({ navigation, route }) => {
                                         discount: route.params.discount,
                                         couponCode: route.params.couponCode,
                                         adminCode: route.params.adminCode,
+                                        address: route.params.address,
+                                        location: route.params.location
                                     })
                                 }}
                             >
@@ -562,6 +566,24 @@ const PaymentScreen = ({ navigation, route }) => {
                                     //         trigger: { seconds: 2 },
                                     //     });
                                     // }
+
+                                    // navigation.reset({
+                                    //     index: 1,
+                                    //     routes: [
+                                    //         {name: "Table"},
+                                    //         {name: 'Reserved', params: {
+                                    //             dateString: route.params.dateString,
+                                    //             startTime: `${sTime}:${route.params.startTime.charAt(2)}0 ${sTime > 11 ? "PM" : "AM"}`,
+                                    //             endTime: `${eTime}:${route.params.endTime.charAt(2)}0 ${eTime > 11 ? "PM" : "AM"}`,
+                                    //             resrvCode: "Testing",
+                                    //             weekDay: route.params.weekDay,
+                                    //             roomName: route.params.roomName,
+                                    //             location: route.params.location,
+                                    //             address: route.params.address,
+                                    //         }}
+                                    //     ],
+                                    // });
+
                                     startPayment();
                                     
                                 }

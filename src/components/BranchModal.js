@@ -16,7 +16,7 @@ import { MaterialCommunityIcons, AntDesign, FontAwesome5, Feather } from '@expo/
 
 
 const BranchModal = ({ modalVisible, setModalVisible, handleBranch, db }) => {
-    console.log("########\n[BranchModal]\n########\nModal Visiblity: " + modalVisible);
+    // console.log("########\n[BranchModal]\n########\nModal Visiblity: " + modalVisible);
     // console.log(modalVisible);
     // console.log(setModalVisible);
 
@@ -44,32 +44,36 @@ const BranchModal = ({ modalVisible, setModalVisible, handleBranch, db }) => {
     // })
 
     const getBranch = () => {
-        console.log("[BranchModal]:: Retrieving from SQlite...");
-        db.transaction(
-            (tx) => {
-                tx.executeSql('select * from Branches order by _id asc;',
-                    [],
-                    (tx, results) => {
-                        // do set current, recentA, recentB 
-                        // ex. set(results.row.item(0).current)
-                        console.log("[BranchModal]:: Successfully retrieved.");
-                        console.log(results);
-                        if(results.rows._array.length === 2){
-                            setRecents([results.rows._array[1], results.rows._array[0]]);
+        // console.log("[BranchModal]:: Retrieving from SQlite...");
+        return new Promise((resolve, reject) => {
+            db.transaction(
+                (tx) => {
+                    tx.executeSql('select * from Branches order by _id asc;',
+                        [],
+                        (tx, results) => {
+                            // do set current, recentA, recentB 
+                            // ex. set(results.row.item(0).current)
+                            // console.log("[BranchModal]:: Successfully retrieved.");
+                            // console.log(results);
+                            if(results.rows._array.length === 2){
+                                setRecents([results.rows._array[1], results.rows._array[0]]);
+                            }
+                            else if(results.rows._array.length === 3){
+                                setRecents([results.rows._array[2], results.rows._array[1], results.rows._array[0]]);
+                            }
+                            else {
+                                setRecents(results.rows._array);
+                            }
+                            resolve("success");
+                        },
+                        (tx, error) => {
+                            console.log(error);
+                            reject(error);
                         }
-                        else if(results.rows._array.length === 3){
-                            setRecents([results.rows._array[2], results.rows._array[1], results.rows._array[0]]);
-                        }
-                        else {
-                            setRecents(results.rows._array);
-                        }
-                    },
-                    (tx, error) => {
-                        console.log(error);
-                    }
-                );
-            }
-        )
+                    );
+                }
+            )
+        })
     }
 
     const saveBranch = (location, branchCode, branchName) => {
@@ -112,12 +116,11 @@ const BranchModal = ({ modalVisible, setModalVisible, handleBranch, db }) => {
 
     const getLocationList = async (loc) => {
         try{
-            console.log("[BranchModal]:: Attempting to retrieve location list...");
+            // console.log("[BranchModal]:: Attempting to retrieve location list...");
             const response = await axios.post(URL + '/getLocationList', {
             //const response = await axios.post('http://112.221.94.101:8980/getLocationList', {
                 location: loc
             });
-            console.log("[BranchModal]:: LocationList API call successful!");
             // console.log(response.data);
             if(response.data.returnCode === 'E1001'){
                 console.log("Room does not exist");
@@ -129,6 +132,7 @@ const BranchModal = ({ modalVisible, setModalVisible, handleBranch, db }) => {
                 Alert.alert("서버 에러가 일어났습니다. 잠시후 다시 시도해주세요.");
                 return "Error";
             }
+            // console.log("[BranchModal]:: LocationList API call successful!");
             setLocData(response.data.place);
             setInitial(false);
         } catch (err) {
@@ -186,9 +190,15 @@ const BranchModal = ({ modalVisible, setModalVisible, handleBranch, db }) => {
         );
     }
 
+    const initialWrapper = async () => {
+        const res = await getBranch();
+        if(res === "success"){
+            await getLocationList(selectedItem);
+        }
+    }
+
     if(initial){
-        getBranch();
-        getLocationList(selectedItem);
+        initialWrapper();
     }
 
 

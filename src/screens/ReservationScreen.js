@@ -145,9 +145,9 @@ const ReservationScreen = ({ navigation, route }) => {
 
     const filterEndTime = (sIndex, startVal, timeVals) => {
         console.log("filterEndTime");
-        console.log(sIndex);
-        console.log(startVal);
-        console.log(timeVals);
+        // console.log(sIndex);
+        // console.log(startVal);
+        // console.log(timeVals);
         const endVals = [];
         var flag = true;
         var init = startVal;
@@ -199,7 +199,7 @@ const ReservationScreen = ({ navigation, route }) => {
                 roomCode: route.params.roomCode
                 // roomCode: '64D1FEC28CFE4A7'
             });
-            // console.log('ROOM INFO : ' + response.data)
+            console.log('ROOM INFO : ' + response.data)
             console.log(response.data);
             if(response.data.returnCode !== "E0000"){
                 console.log("Error: " + response.data.returnCode);
@@ -618,6 +618,8 @@ const ReservationScreen = ({ navigation, route }) => {
                                             totalCost: totalCost,
                                             adminCode: route.params.adminCode,
                                             totalTime: (mins + (hours * 60)),
+                                            address: roomInfo.room.address,
+                                            location: route.params.location,
                                         });
                                     }
                                     else{

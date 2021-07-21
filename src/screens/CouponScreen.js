@@ -297,6 +297,8 @@ const CouponScreen = ({ navigation, route }) => {
                             discount: discount === 0? undefined : discount,
                             couponIdx: selectedIndex,
                             couponCode: couponCode,
+                            location: route.params.location,
+                            address: route.params.address,
                         });
                     }}
                 >
