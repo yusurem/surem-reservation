@@ -14,12 +14,12 @@ import { URL } from '../constants';
 const db = SQLite.openDatabase('db.db');
 
 db.transaction(tx=>{
-  tx.executeSql('CREATE TABLE IF NOT EXISTS UserId (_id INTEGER PRIMARY KEY, secretCode TEXT, usercode TEXT);')
+  tx.executeSql('CREATE TABLE IF NOT EXISTS UserId (_id INTEGER PRIMARY KEY, secretCode TEXT, usercode TEXT, username TEXT);')
 })
 
-const saveUserId = (secretcode,phoneNum) => {
+const saveUserId = (secretcode,phoneNum,userName) => {
   db.transaction((tx)=>{
-    tx.executeSql("INSERT INTO UserId(secretCode,usercode) Values(?,?)",[secretcode,phoneNum],(tx, results)=>{
+    tx.executeSql("INSERT INTO UserId(secretCode,usercode,username) Values(?,?,?)",[secretcode,phoneNum,userName],(tx, results)=>{
       console.log(results)
     },(tx, error)=>{
       console.log(error)
@@ -57,7 +57,7 @@ export default function SignUpButton(props){
       .then(function (response) {
       console.log(JSON.stringify(response.data));
       if(response.data.returnCode === "E0000"){
-        saveUserId(response.data.secretCode, props.phoneNum)
+        saveUserId(response.data.secretCode, props.phoneNum, props.name)
         navigation.reset({index: 0, routes: [{name: 'Tab'}] })
       }
       else if(response.data.returnCode === "E3001"){
@@ -82,7 +82,7 @@ export default function SignUpButton(props){
         alert("사용자가 없습니다.")
       }else{
         console.log('login Success')
-        saveUserId(response.data.returnCode, props.phoneNum)
+        saveUserId(response.data.returnCode, props.phoneNum, props.name)
         setLoading(false);
         //navigation.reset({index: 0, routes: [{name: 'Tab'}] })
         navigation.reset({

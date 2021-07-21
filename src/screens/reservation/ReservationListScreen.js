@@ -15,6 +15,7 @@ import { Platform } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { URL } from '../../constants';
 import { MaterialIcons } from '@expo/vector-icons';
+import * as Notifications from 'expo-notifications';
 
 const Item = ({ item, onClickQrBtn, onClickChangeReserv }) => (
   <View style={styles.item}>
@@ -198,6 +199,64 @@ export default function ReservationListScreen({ navigation }) {
     setQrVisible(false)
   }
 
+  const deletePushId = async (identifier) => {
+    console.log('DELETE PUSH ID :: ',identifier)
+    return new Promise((resolve, reject)=> {
+      db.transaction(
+        async (tx) => {
+          tx.executeSql("DELETE FROM PUSH_ID WHERE identifier=(?)",[identifier],
+            (tx, results) => {
+              resolve(results);
+            },
+            (txt, error)=> {
+              reject(error);
+            }
+          )
+        }
+      )
+    })
+  }
+
+  const selectPushId = async (identifier) => {
+    console.log('SELECT PUSH ID :: ',identifier)
+    return new Promise((resolve, reject)=> {
+      db.transaction(async (tx) => {
+          tx.executeSql(
+            "SELECT COUNT(*) AS c FROM PUSH_ID WHERE identifier like '" + identifier +"%'",
+            [],
+            (tx, results) => {
+              console.log("SELECT PUSH COUNT :: ",results.rows._array[0].c)
+              resolve(results.rows._array[0].c);
+            },
+            (txt, error)=> {
+              console.log('ERROR :: ', error)
+              reject(error);
+            }
+          )
+        }
+      )
+    })
+  }
+
+  const cancelPush = async (year, month, day, hour, min) => {
+    console.log("Cancel Push Notification");
+    console.log('YEAR :: ', year);
+    console.log('MONTH :: ', month);
+    console.log('DAY :: ', day);
+    console.log('HOUR :: ', hour);
+    console.log('MIN :: ', min);
+    
+    Notifications.cancelScheduledNotificationAsync(`${year}${month}${day}${hour}${min}`)
+    await deletePushId(`${year}${month}${day}${hour}${min}`)
+    var count = 0;
+    count = await selectPushId(`${year}${month}${day}`)
+    console.log('COUNT :: ',count)
+    if(count == 1){
+      Notifications.cancelScheduledNotificationAsync(`${year}${month}${day}`)
+      deletePushId(`${year}${month}${day}`)
+    }
+  }
+
   const handleChangeReservCancel = async () => {
     Alert.alert(
       "예약 변경",
@@ -209,6 +268,7 @@ export default function ReservationListScreen({ navigation }) {
           style: "cancel"
         },
         { text: "OK", onPress: async () => {
+
           var data = JSON.stringify(
             {
               "resrvCode": selectedResrvCode,
@@ -247,11 +307,17 @@ export default function ReservationListScreen({ navigation }) {
             .catch(function (error) {
               console.log(error);
             });
-      
+            cancelPush(
+              moment(selectedReservStime, 'YYYYMMDDHHmm').format('YYYY'),
+              moment(selectedReservStime, 'YYYYMMDDHHmm').format('MM'),
+              moment(selectedReservStime, 'YYYYMMDDHHmm').format('DD'),
+              moment(selectedReservStime, 'YYYYMMDDHHmm').format('HH'),
+              moment(selectedReservStime, 'YYYYMMDDHHmm').format('mm'),
+            );
           getMyReserveList();
           toggleModal();
-        } }
-      ]
+        } 
+      }]
     );
   }
 

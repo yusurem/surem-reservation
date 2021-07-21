@@ -1,0 +1,889 @@
+{
+  "root": "/Users/yujaeyeong/workspace/surem-reservation",
+  "reactNativePath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native",
+  "dependencies": {
+    "@react-native-community/checkbox": {
+      "root": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-community/checkbox",
+      "name": "@react-native-community/checkbox",
+      "platforms": {
+        "ios": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-community/checkbox/ios",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-community/checkbox",
+          "pbxprojPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-community/checkbox/ios/RNCCheckbox.xcodeproj/project.pbxproj",
+          "podfile": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-community/checkbox/ios/Podfile",
+          "podspecPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-community/checkbox/RNCCheckbox.podspec",
+          "projectPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-community/checkbox/ios/RNCCheckbox.xcodeproj",
+          "projectName": "RNCCheckbox.xcodeproj",
+          "libraryFolder": "Libraries",
+          "sharedLibraries": [],
+          "plist": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-community/checkbox/android",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-community/checkbox",
+          "packageImportPath": "import com.reactnativecommunity.checkbox.ReactCheckBoxPackage;",
+          "packageInstance": "new ReactCheckBoxPackage()"
+        },
+        "windows": {
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-community/checkbox",
+          "projects": [
+            {
+              "projectFile": "CheckboxWindows/CheckboxWindows.vcxproj",
+              "projectName": "CheckboxWindows",
+              "projectLang": "cpp",
+              "projectGuid": "{eaf81beb-a159-4421-9b6d-e59c37828a57}",
+              "directDependency": true,
+              "cppHeaders": [
+                "winrt/CheckboxWindows.h"
+              ],
+              "cppPackageProviders": [
+                "CheckboxWindows::ReactPackageProvider"
+              ],
+              "csNamespaces": [
+                "CheckboxWindows"
+              ],
+              "csPackageProviders": [
+                "CheckboxWindows.ReactPackageProvider"
+              ]
+            }
+          ],
+          "solutionFile": null,
+          "nugetPackages": [],
+          "sourceDir": "windows"
+        }
+      },
+      "assets": [],
+      "hooks": {},
+      "params": []
+    },
+    "@react-native-community/datetimepicker": {
+      "root": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-community/datetimepicker",
+      "name": "@react-native-community/datetimepicker",
+      "platforms": {
+        "ios": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-community/datetimepicker/ios",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-community/datetimepicker",
+          "pbxprojPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-community/datetimepicker/ios/RNDateTimePicker.xcodeproj/project.pbxproj",
+          "podfile": null,
+          "podspecPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-community/datetimepicker/RNDateTimePicker.podspec",
+          "projectPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-community/datetimepicker/ios/RNDateTimePicker.xcodeproj",
+          "projectName": "RNDateTimePicker.xcodeproj",
+          "libraryFolder": "Libraries",
+          "sharedLibraries": [],
+          "plist": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-community/datetimepicker/android",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-community/datetimepicker",
+          "packageImportPath": "import com.reactcommunity.rndatetimepicker.RNDateTimePickerPackage;",
+          "packageInstance": "new RNDateTimePickerPackage()"
+        },
+        "windows": {
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-community/datetimepicker",
+          "projects": [],
+          "solutionFile": "DateTimePickerWindows.sln",
+          "nugetPackages": [],
+          "sourceDir": "windows"
+        }
+      },
+      "assets": [],
+      "hooks": {},
+      "params": []
+    },
+    "@react-native-community/masked-view": {
+      "root": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-community/masked-view",
+      "name": "@react-native-community/masked-view",
+      "platforms": {
+        "ios": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-community/masked-view/ios",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-community/masked-view",
+          "pbxprojPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-community/masked-view/ios/RNCMaskedView.xcodeproj/project.pbxproj",
+          "podfile": null,
+          "podspecPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-community/masked-view/RNCMaskedView.podspec",
+          "projectPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-community/masked-view/ios/RNCMaskedView.xcodeproj",
+          "projectName": "RNCMaskedView.xcodeproj",
+          "libraryFolder": "Libraries",
+          "sharedLibraries": [],
+          "plist": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-community/masked-view/android",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-community/masked-view",
+          "packageImportPath": "import org.reactnative.maskedview.RNCMaskedViewPackage;",
+          "packageInstance": "new RNCMaskedViewPackage()"
+        },
+        "windows": null
+      },
+      "assets": [],
+      "hooks": {},
+      "params": []
+    },
+    "@react-native-picker/picker": {
+      "root": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-picker/picker",
+      "name": "@react-native-picker/picker",
+      "platforms": {
+        "ios": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-picker/picker/ios",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-picker/picker",
+          "pbxprojPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-picker/picker/ios/RNCPicker.xcodeproj/project.pbxproj",
+          "podfile": null,
+          "podspecPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-picker/picker/RNCPicker.podspec",
+          "projectPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-picker/picker/ios/RNCPicker.xcodeproj",
+          "projectName": "RNCPicker.xcodeproj",
+          "libraryFolder": "Libraries",
+          "sharedLibraries": [],
+          "plist": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-picker/picker/android",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-picker/picker",
+          "packageImportPath": "import com.reactnativecommunity.picker.RNCPickerPackage;",
+          "packageInstance": "new RNCPickerPackage()"
+        },
+        "windows": {
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/@react-native-picker/picker",
+          "projects": [],
+          "solutionFile": "ReactNativePicker.sln",
+          "nugetPackages": [],
+          "sourceDir": "windows"
+        }
+      },
+      "assets": [],
+      "hooks": {},
+      "params": []
+    },
+    "react-native-device-info": {
+      "root": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-device-info",
+      "name": "react-native-device-info",
+      "platforms": {
+        "ios": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-device-info/ios",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-device-info",
+          "pbxprojPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-device-info/ios/RNDeviceInfo.xcodeproj/project.pbxproj",
+          "podfile": null,
+          "podspecPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-device-info/RNDeviceInfo.podspec",
+          "projectPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-device-info/ios/RNDeviceInfo.xcodeproj",
+          "projectName": "RNDeviceInfo.xcodeproj",
+          "libraryFolder": "Libraries",
+          "sharedLibraries": [],
+          "plist": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-device-info/android",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-device-info",
+          "packageImportPath": "import com.learnium.RNDeviceInfo.RNDeviceInfo;",
+          "packageInstance": "new RNDeviceInfo()"
+        },
+        "windows": {
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-device-info",
+          "projects": [
+            {
+              "projectFile": "RNDeviceInfoCPP/RNDeviceInfoCPP.vcxproj",
+              "projectName": "RNDeviceInfoCPP",
+              "projectLang": "cpp",
+              "projectGuid": "{3e3931f2-4735-4417-8cb0-33668a7314d6}",
+              "directDependency": true,
+              "cppHeaders": [
+                "winrt/RNDeviceInfoCPP.h"
+              ],
+              "cppPackageProviders": [
+                "RNDeviceInfoCPP::ReactPackageProvider"
+              ],
+              "csNamespaces": [
+                "RNDeviceInfoCPP"
+              ],
+              "csPackageProviders": [
+                "RNDeviceInfoCPP.ReactPackageProvider"
+              ]
+            }
+          ],
+          "solutionFile": null,
+          "nugetPackages": [],
+          "sourceDir": "windows"
+        }
+      },
+      "assets": [],
+      "hooks": {},
+      "params": []
+    },
+    "react-native-exit-app": {
+      "root": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-exit-app",
+      "name": "react-native-exit-app",
+      "platforms": {
+        "ios": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-exit-app/ios",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-exit-app",
+          "pbxprojPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-exit-app/ios/RNExitApp.xcodeproj/project.pbxproj",
+          "podfile": null,
+          "podspecPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-exit-app/RNExitApp.podspec",
+          "projectPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-exit-app/ios/RNExitApp.xcodeproj",
+          "projectName": "RNExitApp.xcodeproj",
+          "libraryFolder": "Libraries",
+          "sharedLibraries": [],
+          "plist": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-exit-app/android",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-exit-app",
+          "packageImportPath": "import com.github.wumke.RNExitApp.RNExitAppPackage;",
+          "packageInstance": "new RNExitAppPackage()"
+        },
+        "windows": null
+      },
+      "assets": [],
+      "hooks": {},
+      "params": []
+    },
+    "react-native-gesture-handler": {
+      "root": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-gesture-handler",
+      "name": "react-native-gesture-handler",
+      "platforms": {
+        "ios": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-gesture-handler/ios",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-gesture-handler",
+          "pbxprojPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-gesture-handler/ios/RNGestureHandler.xcodeproj/project.pbxproj",
+          "podfile": null,
+          "podspecPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-gesture-handler/RNGestureHandler.podspec",
+          "projectPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-gesture-handler/ios/RNGestureHandler.xcodeproj",
+          "projectName": "RNGestureHandler.xcodeproj",
+          "libraryFolder": "Libraries",
+          "sharedLibraries": [],
+          "plist": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-gesture-handler/android",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-gesture-handler",
+          "packageImportPath": "import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;",
+          "packageInstance": "new RNGestureHandlerPackage()"
+        },
+        "windows": null
+      },
+      "assets": [],
+      "hooks": {},
+      "params": []
+    },
+    "react-native-maps": {
+      "root": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-maps",
+      "name": "react-native-maps",
+      "platforms": {
+        "ios": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-maps/lib/ios",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-maps",
+          "pbxprojPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-maps/lib/ios/AirMaps.xcodeproj/project.pbxproj",
+          "podfile": null,
+          "podspecPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-maps/react-native-maps.podspec",
+          "projectPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-maps/lib/ios/AirMaps.xcodeproj",
+          "projectName": "AirMaps.xcodeproj",
+          "libraryFolder": "Libraries",
+          "sharedLibraries": [],
+          "plist": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-maps/lib/android",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-maps",
+          "packageImportPath": "import com.airbnb.android.react.maps.MapsPackage;",
+          "packageInstance": "new MapsPackage()"
+        },
+        "windows": null
+      },
+      "assets": [],
+      "hooks": {},
+      "params": []
+    },
+    "react-native-permissions": {
+      "root": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-permissions",
+      "name": "react-native-permissions",
+      "platforms": {
+        "ios": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-permissions/ios",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-permissions",
+          "pbxprojPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-permissions/ios/RNPermissions.xcodeproj/project.pbxproj",
+          "podfile": null,
+          "podspecPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-permissions/RNPermissions.podspec",
+          "projectPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-permissions/ios/RNPermissions.xcodeproj",
+          "projectName": "RNPermissions.xcodeproj",
+          "libraryFolder": "Libraries",
+          "sharedLibraries": [],
+          "plist": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-permissions/android",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-permissions",
+          "packageImportPath": "import com.zoontek.rnpermissions.RNPermissionsPackage;",
+          "packageInstance": "new RNPermissionsPackage()"
+        },
+        "windows": {
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-permissions",
+          "projects": [
+            {
+              "projectFile": "RNPermissions/RNPermissions.vcxproj",
+              "projectName": "RNPermissions",
+              "projectLang": "cpp",
+              "projectGuid": "{99677b9d-a27b-4239-930e-c36c8d339c54}",
+              "directDependency": true,
+              "cppHeaders": [
+                "winrt/RNPermissions.h"
+              ],
+              "cppPackageProviders": [
+                "RNPermissions::ReactPackageProvider"
+              ],
+              "csNamespaces": [
+                "RNPermissions"
+              ],
+              "csPackageProviders": [
+                "RNPermissions.ReactPackageProvider"
+              ]
+            }
+          ],
+          "solutionFile": null,
+          "nugetPackages": [],
+          "sourceDir": "windows"
+        }
+      },
+      "assets": [],
+      "hooks": {},
+      "params": []
+    },
+    "react-native-reanimated": {
+      "root": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-reanimated",
+      "name": "react-native-reanimated",
+      "platforms": {
+        "ios": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-reanimated/ios",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-reanimated",
+          "pbxprojPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-reanimated/ios/RNReanimated.xcodeproj/project.pbxproj",
+          "podfile": null,
+          "podspecPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-reanimated/RNReanimated.podspec",
+          "projectPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-reanimated/ios/RNReanimated.xcodeproj",
+          "projectName": "RNReanimated.xcodeproj",
+          "libraryFolder": "Libraries",
+          "sharedLibraries": [],
+          "plist": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-reanimated/android",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-reanimated",
+          "packageImportPath": "import com.swmansion.reanimated.ReanimatedPackage;",
+          "packageInstance": "new ReanimatedPackage()"
+        },
+        "windows": null
+      },
+      "assets": [],
+      "hooks": {},
+      "params": []
+    },
+    "react-native-safe-area-context": {
+      "root": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-safe-area-context",
+      "name": "react-native-safe-area-context",
+      "platforms": {
+        "ios": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-safe-area-context/ios",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-safe-area-context",
+          "pbxprojPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-safe-area-context/ios/SafeAreaView.xcodeproj/project.pbxproj",
+          "podfile": null,
+          "podspecPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-safe-area-context/react-native-safe-area-context.podspec",
+          "projectPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-safe-area-context/ios/SafeAreaView.xcodeproj",
+          "projectName": "SafeAreaView.xcodeproj",
+          "libraryFolder": "Libraries",
+          "sharedLibraries": [],
+          "plist": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-safe-area-context/android",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-safe-area-context",
+          "packageImportPath": "import com.th3rdwave.safeareacontext.SafeAreaContextPackage;",
+          "packageInstance": "new SafeAreaContextPackage()"
+        },
+        "windows": null
+      },
+      "assets": [],
+      "hooks": {},
+      "params": []
+    },
+    "react-native-screens": {
+      "root": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-screens",
+      "name": "react-native-screens",
+      "platforms": {
+        "ios": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-screens/ios",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-screens",
+          "pbxprojPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-screens/ios/RNScreens.xcodeproj/project.pbxproj",
+          "podfile": null,
+          "podspecPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-screens/RNScreens.podspec",
+          "projectPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-screens/ios/RNScreens.xcodeproj",
+          "projectName": "RNScreens.xcodeproj",
+          "libraryFolder": "Libraries",
+          "sharedLibraries": [],
+          "plist": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-screens/android",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-screens",
+          "packageImportPath": "import com.swmansion.rnscreens.RNScreensPackage;",
+          "packageInstance": "new RNScreensPackage()"
+        },
+        "windows": null
+      },
+      "assets": [],
+      "hooks": {},
+      "params": []
+    },
+    "react-native-sim-data": {
+      "root": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-sim-data",
+      "name": "react-native-sim-data",
+      "platforms": {
+        "ios": null,
+        "android": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-sim-data/android",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-sim-data",
+          "packageImportPath": "import eu.sigrlami.rnsimdata.RNSimDataReactPackage;",
+          "packageInstance": "new RNSimDataReactPackage()"
+        },
+        "windows": null
+      },
+      "assets": [],
+      "hooks": {},
+      "params": []
+    },
+    "react-native-sms-retriever": {
+      "root": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-sms-retriever",
+      "name": "react-native-sms-retriever",
+      "platforms": {
+        "ios": null,
+        "android": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-sms-retriever/android",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-sms-retriever",
+          "packageImportPath": "import me.furtado.smsretriever.RNSmsRetrieverPackage;",
+          "packageInstance": "new RNSmsRetrieverPackage()"
+        },
+        "windows": null
+      },
+      "assets": [],
+      "hooks": {},
+      "params": []
+    },
+    "react-native-splash-screen": {
+      "root": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-splash-screen",
+      "name": "react-native-splash-screen",
+      "platforms": {
+        "ios": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-splash-screen/ios",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-splash-screen",
+          "pbxprojPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-splash-screen/ios/SplashScreen.xcodeproj/project.pbxproj",
+          "podfile": null,
+          "podspecPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-splash-screen/react-native-splash-screen.podspec",
+          "projectPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-splash-screen/ios/SplashScreen.xcodeproj",
+          "projectName": "SplashScreen.xcodeproj",
+          "libraryFolder": "Libraries",
+          "sharedLibraries": [],
+          "plist": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-splash-screen/android",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-splash-screen",
+          "packageImportPath": "import org.devio.rn.splashscreen.SplashScreenReactPackage;",
+          "packageInstance": "new SplashScreenReactPackage()"
+        },
+        "windows": null
+      },
+      "assets": [],
+      "hooks": {},
+      "params": []
+    },
+    "react-native-svg": {
+      "root": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-svg",
+      "name": "react-native-svg",
+      "platforms": {
+        "ios": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-svg/apple",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-svg",
+          "pbxprojPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-svg/apple/RNSVG.xcodeproj/project.pbxproj",
+          "podfile": null,
+          "podspecPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-svg/RNSVG.podspec",
+          "projectPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-svg/apple/RNSVG.xcodeproj",
+          "projectName": "RNSVG.xcodeproj",
+          "libraryFolder": "Libraries",
+          "sharedLibraries": [],
+          "plist": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-svg/android",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-svg",
+          "packageImportPath": "import com.horcrux.svg.SvgPackage;",
+          "packageInstance": "new SvgPackage()"
+        },
+        "windows": null
+      },
+      "assets": [],
+      "hooks": {},
+      "params": []
+    },
+    "react-native-webview": {
+      "root": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-webview",
+      "name": "react-native-webview",
+      "platforms": {
+        "ios": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-webview/ios",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-webview",
+          "pbxprojPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-webview/ios/RNCWebView.xcodeproj/project.pbxproj",
+          "podfile": null,
+          "podspecPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-webview/react-native-webview.podspec",
+          "projectPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-webview/ios/RNCWebView.xcodeproj",
+          "projectName": "RNCWebView.xcodeproj",
+          "libraryFolder": "Libraries",
+          "sharedLibraries": [],
+          "plist": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-webview/android",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-webview",
+          "packageImportPath": "import com.reactnativecommunity.webview.RNCWebViewPackage;",
+          "packageInstance": "new RNCWebViewPackage()"
+        },
+        "windows": {
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/react-native-webview",
+          "projects": [],
+          "solutionFile": "ReactNativeWebView.sln",
+          "nugetPackages": [],
+          "sourceDir": "windows"
+        }
+      },
+      "assets": [],
+      "hooks": {},
+      "params": []
+    },
+    "surem-sim-data": {
+      "root": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/surem-sim-data",
+      "name": "surem-sim-data",
+      "platforms": {
+        "ios": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/surem-sim-data/ios",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/surem-sim-data",
+          "pbxprojPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/surem-sim-data/ios/SuremSimData.xcodeproj/project.pbxproj",
+          "podfile": null,
+          "podspecPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/surem-sim-data/surem-sim-data.podspec",
+          "projectPath": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/surem-sim-data/ios/SuremSimData.xcodeproj",
+          "projectName": "SuremSimData.xcodeproj",
+          "libraryFolder": "Libraries",
+          "sharedLibraries": [],
+          "plist": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/surem-sim-data/android",
+          "folder": "/Users/yujaeyeong/workspace/surem-reservation/node_modules/surem-sim-data",
+          "packageImportPath": "import com.suremsimdata.SuremSimDataPackage;",
+          "packageInstance": "new SuremSimDataPackage()"
+        },
+        "windows": null
+      },
+      "assets": [],
+      "hooks": {},
+      "params": []
+    }
+  },
+  "commands": [
+    {
+      "name": "log-ios",
+      "description": "starts iOS device syslog tail"
+    },
+    {
+      "name": "run-ios",
+      "description": "builds your app and starts it on iOS simulator",
+      "examples": [
+        {
+          "desc": "Run on a different simulator, e.g. iPhone SE",
+          "cmd": "react-native run-ios --simulator \"iPhone SE\""
+        },
+        {
+          "desc": "Pass a non-standard location of iOS directory",
+          "cmd": "react-native run-ios --project-path \"./app/ios\""
+        },
+        {
+          "desc": "Run on a connected device, e.g. Max's iPhone",
+          "cmd": "react-native run-ios --device \"Max's iPhone\""
+        },
+        {
+          "desc": "Run on the AppleTV simulator",
+          "cmd": "react-native run-ios --simulator \"Apple TV\"  --scheme \"helloworld-tvOS\""
+        }
+      ],
+      "options": [
+        {
+          "name": "--simulator [string]",
+          "description": "Explicitly set simulator to use. Optionally include iOS version between parenthesis at the end to match an exact version: \"iPhone 6 (10.0)\"",
+          "default": "iPhone 11"
+        },
+        {
+          "name": "--configuration [string]",
+          "description": "Explicitly set the scheme configuration to use",
+          "default": "Debug"
+        },
+        {
+          "name": "--scheme [string]",
+          "description": "Explicitly set Xcode scheme to use"
+        },
+        {
+          "name": "--project-path [string]",
+          "description": "Path relative to project root where the Xcode project (.xcodeproj) lives.",
+          "default": "ios"
+        },
+        {
+          "name": "--device [string]",
+          "description": "Explicitly set device to use by name.  The value is not required if you have a single device connected."
+        },
+        {
+          "name": "--udid [string]",
+          "description": "Explicitly set device to use by udid"
+        },
+        {
+          "name": "--no-packager",
+          "description": "Do not launch packager while building"
+        },
+        {
+          "name": "--verbose",
+          "description": "Do not use xcpretty even if installed"
+        },
+        {
+          "name": "--port [number]",
+          "default": 8081
+        },
+        {
+          "name": "--terminal [string]",
+          "description": "Launches the Metro Bundler in a new window using the specified terminal path."
+        }
+      ]
+    },
+    {
+      "name": "log-android",
+      "description": "starts logkitty"
+    },
+    {
+      "name": "run-android",
+      "description": "builds your app and starts it on a connected Android emulator or device",
+      "options": [
+        {
+          "name": "--root [string]",
+          "description": "[DEPRECATED - root is discovered automatically] Override the root directory for the android build (which contains the android directory)",
+          "default": ""
+        },
+        {
+          "name": "--variant [string]",
+          "description": "Specify your app's build variant",
+          "default": "debug"
+        },
+        {
+          "name": "--appFolder [string]",
+          "description": "[DEPRECATED – use \"project.android.appName\" in react-native.config.js] Specify a different application folder name for the android source. If not, we assume is \"app\""
+        },
+        {
+          "name": "--appId [string]",
+          "description": "Specify an applicationId to launch after build. If not specified, `package` from AndroidManifest.xml will be used.",
+          "default": ""
+        },
+        {
+          "name": "--appIdSuffix [string]",
+          "description": "Specify an applicationIdSuffix to launch after build.",
+          "default": ""
+        },
+        {
+          "name": "--main-activity [string]",
+          "description": "Name of the activity to start",
+          "default": "MainActivity"
+        },
+        {
+          "name": "--deviceId [string]",
+          "description": "builds your app and starts it on a specific device/simulator with the given device id (listed by running \"adb devices\" on the command line)."
+        },
+        {
+          "name": "--no-packager",
+          "description": "Do not launch packager while building"
+        },
+        {
+          "name": "--port [number]",
+          "default": 8081
+        },
+        {
+          "name": "--terminal [string]",
+          "description": "Launches the Metro Bundler in a new window using the specified terminal path.",
+          "default": "iTerm.app"
+        },
+        {
+          "name": "--tasks [list]",
+          "description": "Run custom Gradle tasks. By default it's \"installDebug\""
+        },
+        {
+          "name": "--no-jetifier",
+          "description": "Do not run \"jetifier\" – the AndroidX transition tool. By default it runs before Gradle to ease working with libraries that don't support AndroidX yet. See more at: https://www.npmjs.com/package/jetifier.",
+          "default": false
+        }
+      ]
+    },
+    {
+      "name": "autolink-windows",
+      "description": "performs autolinking",
+      "options": [
+        {
+          "name": "--logging",
+          "description": "Verbose output logging",
+          "default": false
+        },
+        {
+          "name": "--check",
+          "description": "Only check whether any autolinked files need to change",
+          "default": false
+        },
+        {
+          "name": "--sln [string]",
+          "description": "Override the app solution file determined by 'react-native config', e.g. windows\\myApp.sln"
+        },
+        {
+          "name": "--proj [string]",
+          "description": "Override the app project file determined by 'react-native config', e.g. windows\\myApp\\myApp.vcxproj"
+        }
+      ]
+    },
+    {
+      "name": "run-windows",
+      "description": "builds your app and starts it on a connected Windows desktop, emulator or device",
+      "options": [
+        {
+          "name": "--release",
+          "description": "Specifies a release build"
+        },
+        {
+          "name": "--root [string]",
+          "description": "Override the root directory for the windows build which contains the windows folder."
+        },
+        {
+          "name": "--arch [string]",
+          "description": "The build architecture (ARM, ARM64, x86, x64)",
+          "default": "x86"
+        },
+        {
+          "name": "--emulator",
+          "description": "Deploys the app to an emulator"
+        },
+        {
+          "name": "--device",
+          "description": "Deploys the app to a connected device"
+        },
+        {
+          "name": "--target [string]",
+          "description": "Deploys the app to the specified GUID for a device."
+        },
+        {
+          "name": "--remote-debugging",
+          "description": "Deploys the app in remote debugging mode."
+        },
+        {
+          "name": "--logging",
+          "description": "Enables logging",
+          "default": false
+        },
+        {
+          "name": "--no-packager",
+          "description": "Do not launch packager while building",
+          "default": false
+        },
+        {
+          "name": "--bundle",
+          "description": "Enable Bundle configuration and it would be ReleaseBundle/DebugBundle other than Release/Debug",
+          "default": false
+        },
+        {
+          "name": "--no-launch",
+          "description": "Do not launch the app after deployment",
+          "default": false
+        },
+        {
+          "name": "--no-autolink",
+          "description": "Do not run autolinking",
+          "default": false
+        },
+        {
+          "name": "--no-build",
+          "description": "Do not build the solution",
+          "default": false
+        },
+        {
+          "name": "--no-deploy",
+          "description": "Do not deploy the app",
+          "default": false
+        },
+        {
+          "name": "--sln [string]",
+          "description": "Override the app solution file determined by 'react-native config', e.g. windows\\myApp.sln"
+        },
+        {
+          "name": "--proj [string]",
+          "description": "Override the app project file determined by 'react-native config', e.g. windows\\myApp\\myApp.vcxproj"
+        },
+        {
+          "name": "--msbuildprops [string]",
+          "description": "Comma separated props to pass to msbuild, eg: prop1=value1,prop2=value2"
+        },
+        {
+          "name": "--buildLogDirectory [string]",
+          "description": "Optional directory where msbuild log files should be stored"
+        },
+        {
+          "name": "--info",
+          "description": "Dump environment information",
+          "default": false
+        },
+        {
+          "name": "--direct-debugging [number]",
+          "description": "Enable direct debugging on specified port"
+        },
+        {
+          "name": "--no-telemetry",
+          "description": "Disables sending telemetry that allows analysis of usage and failures of the react-native-windows CLI",
+          "default": true
+        }
+      ]
+    }
+  ],
+  "assets": [],
+  "healthChecks": [],
+  "platforms": {
+    "ios": {},
+    "android": {},
+    "windows": {
+      "npmPackageName": "react-native-windows"
+    }
+  },
+  "project": {
+    "ios": null,
+    "android": {
+      "sourceDir": "/Users/yujaeyeong/workspace/surem-reservation/android",
+      "isFlat": true,
+      "folder": "/Users/yujaeyeong/workspace/surem-reservation",
+      "stringsPath": "/Users/yujaeyeong/workspace/surem-reservation/android/app/src/main/res/values/strings.xml",
+      "manifestPath": "/Users/yujaeyeong/workspace/surem-reservation/android/app/src/main/AndroidManifest.xml",
+      "buildGradlePath": "/Users/yujaeyeong/workspace/surem-reservation/android/build.gradle",
+      "settingsGradlePath": "/Users/yujaeyeong/workspace/surem-reservation/android/settings.gradle",
+      "assetsPath": "/Users/yujaeyeong/workspace/surem-reservation/android/app/src/main/assets",
+      "mainFilePath": "/Users/yujaeyeong/workspace/surem-reservation/android/app/src/main/java/com/surem/reservation/MainApplication.java",
+      "packageName": "com.surem.reservation",
+      "packageFolder": "com/surem/reservation",
+      "appName": "app"
+    },
+    "windows": null
+  }
+}
