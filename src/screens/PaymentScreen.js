@@ -103,7 +103,7 @@ const PaymentScreen = ({ navigation, route }) => {
     const makeReservation = async (payCode) => {
         try{
             console.log("Attempting to make reservation...");
-            const ㅇㄸ = await axios.post( URL + '/reservation', {
+            const response = await axios.post( URL + '/reservation', {
                 'roomCode' : route.params.roomCode,
                 'usercode' : usercode,
                 'secretCode' : secretCode,

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableHighlight, TextInput, Image, Button, Alert, TouchableOpacity, BackHandler, Platform, Linking, ToastAndroid } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, TouchableHighlight, TextInput, Image, Button, Alert, TouchableOpacity, BackHandler, Platform, Linking, ToastAndroid, Share } from 'react-native';
 import axios from 'axios';
 import { Feather } from '@expo/vector-icons'; 
 import QRCode from 'react-native-qrcode-svg';
@@ -7,6 +7,7 @@ import Modal from 'react-native-modal';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import Clipboard from '@react-native-community/clipboard';
+import Toast, {DURATION} from 'react-native-easy-toast';
 
 // import { WebView } from 'react-native-webview';
 
@@ -14,18 +15,23 @@ const ReservedScreen = ({ navigation, route }) => {
     const [name, setName] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
 
+    const toastRef = useRef(null);
+
     console.log("Entered ReservedScreen. Params: ");
     console.log(route.params);
 
     const weekDays = new Array('일', '월', '화', '수', '목', '금', '토');
 
-    const qrLink = "www.google.com";
+    const qrLink = "https://office-api.surem.com/getQrcode/" + route.params.resrvCode;
+
+
+    // 예약자명 : 홍길동\n룸 이름: ${route.params.roomName}\n지점명 : ${route.params.location}점\n
 
     // 이렇게 맨 왼쪽으로 indent 붙여놓지 않으면 형식이 이상해짐. 왜지?
     const message = 
 `[오피스쉐어 예약]\n
 예약일 : ${route.params.dateString} (${weekDays[route.params.weekDay]})\n예약 시간 : ${route.params.startTime} ~ ${route.params.endTime}\n
-예약자명 : 홍길동\n룸 이름: ${route.params.roomName}\n지점명 : ${route.params.location}점\n
+룸 이름: ${route.params.roomName}\n지점명 : ${route.params.location}점\n
 주소: ${route.params.address}\n
 QR코드 URL\n${qrLink}`;
 
@@ -44,6 +50,25 @@ QR코드 URL\n${qrLink}`;
         
         return (() => backHandler.remove());
     },);
+
+    const onShare = async () => {
+        try {
+          const result = await Share.share({
+            message: message,
+          });
+          if (result.action === Share.sharedAction) {
+            if (result.activityType) {
+              // shared with activity type of result.activityType
+            } else {
+              // shared
+            }
+          } else if (result.action === Share.dismissedAction) {
+            // dismissed
+          }
+        } catch (error) {
+          alert(error.message);
+        }
+      };
 
     // useEffect(() => {
     //     const unsubscribe = navigation.dangerouslyGetParent().addListener('tabPress', (e) => {
@@ -131,16 +156,15 @@ QR코드 URL\n${qrLink}`;
                         <View style={styles.modalStyle}>
                             <View style={styles.innerModal}>
                                 <TouchableOpacity
-                                    onPress={() => {
-                                        Alert.alert("카카오톡");
-                                    }}
+                                    onPress={onShare}
                                 >
                                     <View>
                                         <Image
                                             style={styles.logoStyle}
-                                            source={require('../../assets/cuts/kakao.png')}
+                                            source={require('../../assets/cuts/share.png')}
+                                            // source={require('../../assets/cuts/kakao.png')}
                                         />
-                                        <Text style={styles.logoCaption}>카카오톡</Text>
+                                        <Text style={styles.logoCaption}>공유하기</Text>
                                     </View>
                                 </TouchableOpacity>
                                 <TouchableOpacity
@@ -173,7 +197,14 @@ QR코드 URL\n${qrLink}`;
                                 <TouchableOpacity
                                     onPress={() => {
                                         Clipboard.setString(message);
-                                        ToastAndroid.show("URL을 복사했습니다.", ToastAndroid.SHORT);
+                                        if(Platform.OS === 'android'){
+                                            ToastAndroid.show("URL을 복사했습니다.", ToastAndroid.SHORT);
+                                        }
+                                        else {
+                                            // this.toast.show('URL을 복사했습니다.', 2000);
+                                            toastRef.current.show('URL을 복사했습니다.', 2000);
+                                            console.log("this worked?");
+                                        }
                                     }}
                                 >
                                     <View>
@@ -187,6 +218,11 @@ QR코드 URL\n${qrLink}`;
                             </View>
                         </View>
                     </View>
+                    <Toast 
+                        ref={toast => toastRef.current = toast}    
+                        // position='top'      
+                        positionValue={250}
+                    />
                 </Modal>
             </View>
         </SafeAreaView> 
@@ -255,6 +291,7 @@ const styles = StyleSheet.create({
         // borderWidth: 1
     },
     logoCaption: {
+        marginTop: 2,
         textAlign: 'center',
         fontSize: 10,
     },

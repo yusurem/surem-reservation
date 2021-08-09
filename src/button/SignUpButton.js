@@ -58,7 +58,17 @@ export default function SignUpButton(props){
       console.log(JSON.stringify(response.data));
       if(response.data.returnCode === "E0000"){
         saveUserId(response.data.secretCode, props.phoneNum, props.name)
-        navigation.reset({index: 0, routes: [{name: 'Tab'}] })
+        // navigation.reset({index: 0, routes: [{name: 'Tab'}] })
+        navigation.reset({
+          index: 0,
+          actions: [
+            navigation.navigate('Tab', {
+              screen: 'Reserve', params: {
+                  screen: 'Branch'
+              }
+            })
+          ]
+        })
       }
       else if(response.data.returnCode === "E3001"){
         var data = JSON.stringify(
