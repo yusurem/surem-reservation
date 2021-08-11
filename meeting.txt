@@ -1,11 +1,23 @@
+2021-08-02
+- Things to do:
+    - Have to recover all the notification alarms after being cancelled
+    - Have to make it to Share() button so that it's shareable to all of the applicaitons !
+    - Fix my reservation error !
+    - Fix crash issue from not selecting brach !
+    - Fix table UI ~
+    - Naver Pay
+    - Kakao Pay
+    - Making push notification work !
+    - Toast on ios not working !
+
 2021-07-22
 - Thins to do:
     - 내 예약 표시 !
     - Closed면 영업일 아니라는거 표시 !
-    - github merge해서 iOS되게 하기
+    - github merge해서 iOS되게 하기 !
     - iOS 푸시
-    - iOS 공유하기
-    - iOS 뒤로가기 문제해결
+    - iOS 공유하기 !
+    - iOS 뒤로가기 문제해결 !
 
 
 2021-07-14

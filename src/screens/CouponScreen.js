@@ -110,7 +110,7 @@ const CouponScreen = ({ navigation, route }) => {
             // MinPrice
             if(coupons[i].minPrice !== "null"){
                 // If there is a minPrice, check if cost is at least that much
-                if(route.params.totalCost < parseInt(coupons[i].minPrice)){
+                if(route.params.totalCost <= parseInt(coupons[i].couponDCPrice)){
                     // console.log("price too low");
                     unavails.push(coupons[i]);
                     continue;
@@ -145,7 +145,7 @@ const CouponScreen = ({ navigation, route }) => {
                 onPress={onPress}
             >
                 <Text style={[styles.couponText]}>[{item.adminCompanyName}점] {item.couponName}</Text>
-                {item.couponType === "P" ? <Text style={styles.couponText}>{item.minPrice === 'null' ? "" : `${item.minPrice}원 이상 결제시 `}{item.couponDCPrice}원 할인</Text> : null} 
+                {item.couponType === "P" ? <Text style={styles.couponText}>{item.minPrice === 'null' ? `${item.couponDCPrice}원 초과 결제시 ` : `${item.minPrice}원 이상 결제시 `}{item.couponDCPrice}원 할인</Text> : null} 
                 {item.couponType === "R" ? <Text style={styles.couponText}>{item.couponDCRate}%할인</Text> : null}
                 {item.couponType === "F" ? <Text style={styles.couponText}>무료 쿠폰</Text> : null}
                 <Text style={styles.couponDate}>{item.endDay === 'null' ? "기한 없음" : `${item.endDay.substring(0,4)}.${item.endDay.substring(4,6)}.${item.endDay.substring(6)} 까지`}</Text>
@@ -157,8 +157,8 @@ const CouponScreen = ({ navigation, route }) => {
         return (
             <View style={styles.naCoupon}>
                 <Text style={styles.couponText}>[{item.adminCompanyName}점] {item.couponName}</Text>
-                {item.couponType === "P" ? <Text style={styles.couponText}>{item.minPrice === 'null' ? "" : `${item.minPrice}원 이상 결제시 `}{item.couponDCPrice}원 할인</Text> : null} 
-                {item.couponType === "R" ? <Text style={styles.couponText}>{item.couponDCPrice}원 이상 결제시 {item.couponDCPrice}원 할인</Text> : null}
+                {item.couponType === "P" ? <Text style={styles.couponText}>{item.minPrice === 'null' ? `${item.couponDCPrice}원 초과 결제시 ` : `${item.minPrice}원 이상 결제시 `}{item.couponDCPrice}원 할인</Text> : null} 
+                {item.couponType === "R" ? <Text style={styles.couponText}>{item.couponDCRate}%할인</Text> : null}
                 {item.couponType === "F" ? <Text style={styles.couponText}>무료 쿠폰</Text> : null}
                 <Text style={styles.couponDate}>{item.endDay === 'null' ? "기한 없음" : `${item.endDay.substring(0,4)}.${item.endDay.substring(4,6)}.${item.endDay.substring(6)} 까지`}</Text>
             </View>

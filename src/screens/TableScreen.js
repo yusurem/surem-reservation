@@ -108,12 +108,17 @@ const TableScreen = ({ navigation, route }) => {
                             // ex. set(results.row.item(0).current)
                             console.log("[TableScreen]:: Successfully retrieved.");
                             // console.log(results);
-                            setCurrBranch(results.rows._array[results.rows._array.length - 1]);
-                            resolve("success");
+                            if(results.rows._array.length === 0){
+                                resolve("noBranch");
+                            }
+                            else{
+                                setCurrBranch(results.rows._array[results.rows._array.length - 1]);
+                                resolve("success");
+                            }
                         },
                         (tx, error) => {
                             console.log(error);
-                            reject(error);
+                            reject('error');
                         }
                     );
                 }
@@ -267,7 +272,15 @@ const TableScreen = ({ navigation, route }) => {
     const initialLoading = async () => {
         if(currBranch === null){
             if(!('location' in route.params)){
-                await getBranch();
+                const bRes = await getBranch();
+                if(bRes !== "success"){
+                    navigation.reset({
+                        index: 0, 
+                        routes: [
+                            {name: 'Branch'}
+                        ] 
+                    });
+                };
             }
         }
         if(!('location' in route.params)){
@@ -330,6 +343,7 @@ const TableScreen = ({ navigation, route }) => {
 
     console.log("[TableScreen]:: FINISHED Intializing Reservation List");
 
+    // separate rendering page for a closed day. For some reason, react won't make me reuse it from the bottom, so have to duplicate
     if(closed.current){
         return (
             <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }} edges={['right', 'left', 'top']} >
