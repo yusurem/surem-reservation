@@ -136,10 +136,10 @@ const TabNav = () => {
       lazy="true"
       tabBarOptions={{
         style: {
-          height: (Platform.OS === 'android') ? 60 : 80
+          height: (Platform.OS === 'android') ? 60 : 70
         },
         labelStyle:{
-          marginBottom: 8
+          marginBottom: (Platform.OS === 'android') ? 8 : 2
         },
         activeTintColor: '#3779DA',
         inactiveTintColor: '#474747'
@@ -153,7 +153,12 @@ const TabNav = () => {
           tabBarLabel: '홈',
           tabBarIcon: ({ color, size }) => {
             return (
-             <Entypo name="home" color={color} size={24} style={{alignSelf: 'center', marginLeft: 0.5, marginTop: 12 }} />
+             <Entypo name="home" color={color} size={24} 
+              style={{
+               alignSelf: 'center', 
+               marginLeft: 0.5, 
+               marginTop: (Platform.OS === 'android') ? 12 : 0 
+              }} />
             );
           },
         }}
@@ -164,7 +169,11 @@ const TabNav = () => {
         options={{
           // unmountOnBlur: true,
           tabBarLabel: '예약하기',
-          tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="calendar-clock" color={color} size={24} style={{ marginTop: 12 }}/>,
+          tabBarIcon: ({ color, size }) => 
+          <MaterialCommunityIcons name="calendar-clock" color={color} size={24} 
+          style={{ 
+            marginTop: (Platform.OS === 'android') ? 12 : 0 
+          }}/>,
         }}
       />
       <Tab.Screen 
@@ -173,7 +182,10 @@ const TabNav = () => {
         options={{
           unmountOnBlur: true,
           tabBarLabel: '예약확인',
-          tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="checkbox-marked-outline" color={color} size={24} style={{ marginTop: 12 }}/>,
+          tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="checkbox-marked-outline" color={color} size={24} 
+          style={{ 
+            marginTop: (Platform.OS === 'android') ? 12 : 0 
+          }}/>,
         }}
       />
       <Tab.Screen 
@@ -182,7 +194,10 @@ const TabNav = () => {
         options={{
           tabBarLabel: 'MY',
           // unmountOnBlur: true,
-          tabBarIcon: ({ color, size }) => <FontAwesome5 name="user-alt" color={color} size={24} style={{ marginTop: 12 }}/>,
+          tabBarIcon: ({ color, size }) => <FontAwesome5 name="user-alt" color={color} size={24} 
+          style={{ 
+            marginTop: (Platform.OS === 'android') ? 12 : 0 
+          }}/>,
         }}
       />
     </Tab.Navigator>

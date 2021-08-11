@@ -263,4 +263,3 @@ public class PaymentActivity extends Activity {
 		}
 	}
 }
-
