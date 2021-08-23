@@ -882,7 +882,7 @@ const TableScreen = ({ navigation, route }) => {
 
     const Min = ({ item, ind, hour}) => {
         return (
-            <View style={[{ borderColor: 'black', borderLeftWidth: 1, height: MIN_H, justifyContent: 'center', paddingHorizontal: 5, alignItems: 'center', width: 47}, ind == 5 ? {borderBottomWidth: 1} : {borderBottomWidth: 1}]}>
+            <View style={[{ borderColor: 'black', borderLeftWidth: 1, height: MIN_H, justifyContent: 'center', paddingHorizontal: 5, alignItems: 'center', width: 50}, ind == 5 ? {borderBottomWidth: 1} : {borderBottomWidth: 1}]}>
                 <Text style={{}}>{hour + item}</Text>
             </View>
         );

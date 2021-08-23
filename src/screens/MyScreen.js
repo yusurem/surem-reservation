@@ -428,6 +428,7 @@ const MyScreen = ({ navigation, route }) => {
                                     ios_backgroundColor="#3e3e3e"
                                     onValueChange={togglePush}
                                     value={allowPush}
+                                    style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }] }}
                                 />
                             </View>
 
