@@ -71,7 +71,7 @@ export default function InitialScreen({ navigation, route }) {
             resizeMode="cover"
           >
             <View>
-              <View style={{ alignItems:"center" }}>
+              <View style={{ alignItems: "center" }}>
                 <Text style={styles.initFirstText}>"미팅 룸이 필요할 떄는 언제나"</Text>
               </View>
               <View style={{ alignItems:'center', marginBottom:'20%'}}>

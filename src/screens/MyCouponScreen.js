@@ -19,7 +19,7 @@ const MyCouponScreen = ({ navigation, route }) => {
     const getCouponList = async () => {
         try{
             console.log("Attempting to retreive list of coupons...");
-            console.log("usercode: " + route.params.userCode);
+            console.log("usercode: " + route.params.usercode);
             console.log("securityKey: " + route.params.secretCode);
             const response = await axios.post( URL + '/getCouponList', {
                 usercode: route.params.usercode,

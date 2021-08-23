@@ -74,18 +74,18 @@ const MyScreen = ({ navigation, route }) => {
     const getMyInfo = async () => {
         try{
             console.log("Attempting to get user info...");
-            // console.log("usercode: " + usercode);
-            // console.log("secretCode: " + secretCode);
+            console.log("usercode: " + usercode);
+            console.log("secretCode: " + secretCode);
             if(usercode === null || secretCode === null){
                 return;
             }
-            const response = await axios.post(URL+'/myInfo', {
+            const response = await axios.post(URL + '/myInfo', {
             // const response = await axios.post('http://112.221.94.101:8980/myInfo', {
                 usercode: usercode,
                 securityKey: secretCode
             });
             console.log(`Got the response!`);
-            // console.log(response.data);
+            console.log(response.data);
             if(response.data.returnCode !== "E0000"){
                 console.log("Error from getMyInfo: " + response.data.returnCode);
                 setCouponNum(0);

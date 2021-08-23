@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, useWindowDimensions, BackHandler, Alert, Image, FlatList } from 'react-native';
 import { MaterialCommunityIcons, AntDesign, FontAwesome5, Feather } from '@expo/vector-icons';
 import axios from 'axios';
@@ -31,6 +31,9 @@ const TableScreen = ({ navigation, route }) => {
     // states
     const [errorMessageA, setErrorMessageA] = useState(""); // errorMessage
     const [resrvLists, setResrvLists] = useState([]); // the full list of availability from API
+    // const [usercode, setUsercode] = useState("");
+	// const [secretCode, setSecretCode] = useState("");
+    // const [myResrvList, setMyResrvList] = useState([]); // users list of reservation
     // const [roomLists, setRoomLists] = useState(""); 
     const [modalVisible, setModalVisible] = useState(false); // visibility of calendar modal
     const [branchModal, setBranchModal] = useState(false); // visiblity of branch modal
@@ -40,13 +43,21 @@ const TableScreen = ({ navigation, route }) => {
     const [called, setCalled] = useState(false); // checking if the requried APIs were called
     const [currBranch, setCurrBranch] = useState(null); // the current branch the table is representing
 
+    const usercode = useRef("");
+    const secretCode = useRef("");
+    const myResrvList = useRef([]);
+    const isToday = useRef(false);
+    const closed = useRef(false);
+
     // const [startPerf, setStartPerf] = useState(performance.now());
     // const [endPerf, setEndPerf] = useState(0);
 
     const weekDays = new Array('일', '월', '화', '수', '목', '금', '토');
 
-    console.log("################\n Entered [TableScreen].\n ################\n Params: ");
+    console.log("[TableScreen]:: Screen has open. --Params: ");
     // console.log(route.params);
+    // console.log(route.params.dateString);
+    console.log(called);
 
     // Focus effect that handles what happens when the back button is pressed on Android
     useFocusEffect(() => {
@@ -86,24 +97,33 @@ const TableScreen = ({ navigation, route }) => {
 
     // Getting the most recent branch and setting it for the table
     const getBranch = async () => {
-        console.log("[TableScreen]:: Retrieving from SQlite...");
-        db.transaction(
-            (tx) => {
-                tx.executeSql('select * from Branches order by _id asc;',
-                    [],
-                    (tx, results) => {
-                        // do set current, recentA, recentB 
-                        // ex. set(results.row.item(0).current)
-                        console.log("[TableScreen]:: Successfully retrieved.");
-                        console.log(results);
-                        setCurrBranch(results.rows._array[results.rows._array.length - 1]);
-                    },
-                    (tx, error) => {
-                        console.log(error);
-                    }
-                );
-            }
-        )
+        // console.log("[TableScreen]:: Retrieving from SQlite...");
+        return new Promise((resolve, reject) => {
+            db.transaction(
+                (tx) => {
+                    tx.executeSql('select * from Branches order by _id asc;',
+                        [],
+                        (tx, results) => {
+                            // do set current, recentA, recentB 
+                            // ex. set(results.row.item(0).current)
+                            console.log("[TableScreen]:: Successfully retrieved.");
+                            // console.log(results);
+                            if(results.rows._array.length === 0){
+                                resolve("noBranch");
+                            }
+                            else{
+                                setCurrBranch(results.rows._array[results.rows._array.length - 1]);
+                                resolve("success");
+                            }
+                        },
+                        (tx, error) => {
+                            console.log(error);
+                            reject('error');
+                        }
+                    );
+                }
+            )
+        })
     }
 
     // API call for the list of availability for reservation
@@ -122,13 +142,90 @@ const TableScreen = ({ navigation, route }) => {
            
             if(response.data.returnCode !== "E0000"){
                 console.log("[TableScreen]:: Error: " + response.data.returnCode);
-                navigation.navigate("Home");
+                Alert.alert(
+                    "API 문제발생",
+                    "잠시후 다시 시도해주세요",
+                    [
+                        {
+                            text: "홈으로",
+                            onPress: () => { 
+                                navigation.navigate("Home");
+                            }
+                        }
+                    ]
+                )
             }
 
             console.log("[TableScreen]:: Reservation List API call successful!");
+
+            if(response.data.roomList[0].workStartTime === 'close'){
+                closed.current = true;
+                return;
+            }
+
             setResrvLists(response.data.roomList);
-            setCalled(true);
+            // setCalled(true);
             // setRefreshing(false);
+        } catch (err) {
+            setErrorMessageA("API 문제발생");
+            console.log(err);
+            return 'Error';
+        }
+    }
+
+    const getUserId = () => {
+        console.log("in getuserID");
+        return new Promise((resolve, reject) => {
+            db.transaction(async (tx)=>{
+                tx.executeSql(
+                    `select * from UserId order by _id desc;`,
+                    [],
+                    (tx, results) =>{ 
+                        console.log("got user id");
+                        usercode.current = results.rows.item(0).usercode;
+                        secretCode.current = results.rows.item(0).secretCode;
+                        // setUsercode(results.rows.item(0).usercode)
+                        // setSecretCode(results.rows.item(0).secretCode)
+                        resolve();
+                    },
+                    (tx, error) => {
+                        reject(error);
+                    }
+                );
+            });
+        });
+    }
+
+    const getReservation = async () => {
+        try{
+            console.log("[TableScreen]:: Attemting to get list of USERS reservations...");
+            console.log("usercode: " + usercode);
+            console.log("secretCode: " + secretCode);
+            const response = await axios.post(URL + '/getReservation', {
+                usercode: usercode.current,
+                secretCode: secretCode.current
+            });
+
+            // console.log(response.data);
+
+            if(response.data.returnCode !== "E0000"){
+                console.log("[TableScreen]:: getReservation Error: " + response.data.returnCode);
+                // Alert.alert(
+                //     "API 문제발생",
+                //     "잠시후 다시 시도해주세요",
+                //     [
+                //         {
+                //             text: "홈으로",
+                //             onPress: () => { 
+                //                 navigation.navigate("Home");
+                //             }
+                //         }
+                //     ]
+                // )
+            }
+            
+            console.log("[TableScreen]:: Successfully retrieved USERS list of reservation.");
+            myResrvList.current = response.data.reservations;
         } catch (err) {
             setErrorMessageA("API 문제발생");
             console.log(err);
@@ -138,14 +235,14 @@ const TableScreen = ({ navigation, route }) => {
 
     // Initialization of required parameters of the TableScreen that is called if this is the first screen in the navigator stack at the launch of the application
     // It defines the date as today
+    var currDate = new Date();
+    var currInfo = {
+        day: currDate.getDate(),
+        month: currDate.getMonth() + 1,
+        weekDay: currDate.getDay(),
+        year: currDate.getFullYear()
+    }
     if(route.params === undefined){
-        var currDate = new Date();
-        var currInfo = {
-            day: currDate.getDate(),
-            month: currDate.getMonth() + 1,
-            weekDay: currDate.getDay(),
-            year: currDate.getFullYear()
-        }
         route.params = {
             dateString: `${currInfo.year}-${currInfo.month > 9 ? currInfo.month : "0" + currInfo.month}-${currInfo.day > 9 ? currInfo.day : "0" + currInfo.day}`,
             day: `${currInfo.day > 9 ? currInfo.day : "0" + currInfo.day}`,
@@ -153,26 +250,88 @@ const TableScreen = ({ navigation, route }) => {
             weekDay: currInfo.weekDay,
             year: currInfo.year
         }
+
+        isToday.current = true;
+    }
+    else{
+        if(route.params.dateString === `${currInfo.year}-${currInfo.month > 9 ? currInfo.month : "0" + currInfo.month}-${currInfo.day > 9 ? currInfo.day : "0" + currInfo.day}`){
+            isToday.current = true;
+        }
     }
    
     // If there is no branch oh wait make this into a await and use it down there.
-    if(currBranch === null){
-        if(!('location' in route.params)){
-            getBranch();
-            return (
-                <LoadingScreen/>
-            )
+    // if(currBranch === null){
+    //     if(!('location' in route.params)){
+    //         getBranch();
+    //         return (
+    //             <LoadingScreen/>
+    //         )
+    //     }
+    // }
+    
+    const initialLoading = async () => {
+        if(currBranch === null){
+            if(!('location' in route.params)){
+                const bRes = await getBranch();
+                if(bRes !== "success"){
+                    navigation.reset({
+                        index: 0, 
+                        routes: [
+                            {name: 'Branch'}
+                        ] 
+                    });
+                };
+            }
         }
+        if(!('location' in route.params)){
+            route.params['location'] = currBranch.location;
+            route.params['branchCode'] = currBranch.branchCode;
+            route.params['branchName'] = currBranch.branchName;
+        }
+
+        await getReservationList(route.params.dateString.replace(/-/g,""), route.params.branchCode);
+
+        if(closed.current){
+            setCalled(true);
+            return;
+        }
+
+        if(resrvLists.length !== 0){
+            let end = resrvLists[0].workEndTime.substring(0,4);
+            let today = new Date();
+    
+            if(today.getHours() > parseInt(end.substring(0,2)) && today.getMinutes() > parseInt(end.subsring(2))){
+                today.setDate(today.getDate() + 1);
+                var todayInfo = {
+                    day: today.getDate(),
+                    month: today.getMonth() + 1,
+                    weekDay: today.getDay(),
+                    year: today.getFullYear()
+                }
+                route.params = {
+                    dateString: `${todayInfo.year}-${todayInfo.month > 9 ? todayInfo.month : "0" + todayInfo.month}-${todayInfo.day > 9 ? todayInfo.day : "0" + todayInfo.day}`,
+                    day: `${todayInfo.day > 9 ? todayInfo.day : "0" + todayInfo.day}`,
+                    month: `${todayInfo.month > 9 ? todayInfo.month : "0" + todayInfo.month}`,
+                    weekDay: todayInfo.weekDay,
+                    year: currInfo.year
+                }
+                navigation.replace("Table", route.params);
+            }
+        }
+
+        await getUserId();
+
+        await getReservation();
+
+        setCalled(true);
     }
 
-    if(resrvLists.length == 0){
+    // if(resrvLists.length == 0){
+    if(!called){
         console.log("[TableScreen]:: INITIALIZING Reservation List...");
-        if(!('location' in route.params)){
-            route.params["location"] = currBranch.location;
-            route.params["branchCode"] = currBranch.branchCode;
-            route.params["branchName"] = currBranch.branchName;
-        }
-        getReservationList(route.params.dateString.replace(/-/g,""), route.params.branchCode);
+
+        initialLoading();
+        // (async () => await initialLoading())();
 
         // var tt1 = performance.now()
         // console.log("API call took " + (tt1 - tt0) + " milliseconds.")
@@ -184,42 +343,203 @@ const TableScreen = ({ navigation, route }) => {
 
     console.log("[TableScreen]:: FINISHED Intializing Reservation List");
 
+    // separate rendering page for a closed day. For some reason, react won't make me reuse it from the bottom, so have to duplicate
+    if(closed.current){
+        return (
+            <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }} edges={['right', 'left', 'top']} >
+                <View style={styles.branchBox}>
+                    <View style={styles.branchHolder}>
+                        <Text style={styles.branchHolderText}>+ 지점 선택</Text>
+                    </View>
+                    <View style={[styles.branchButton, { }]}>
+                        <Text style={styles.branchText}>{route.params.location} {route.params.branchName}점</Text> 
+                    </View>
+
+                    <TouchableOpacity
+                        style={[styles.branchSelector]}
+                        onPress={() => {
+                            setBranchModal(!branchModal);
+                        }}
+                    >
+                        <Text style={styles.branchSelectorText}>+ 지점 선택</Text>
+                    </TouchableOpacity>
+
+                </View>
+
+                <View style={styles.dateBox}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            var today = new Date();
+                            today.setHours(0,0,0,0);
+                            var newDate = new Date(route.params.dateString);
+                            newDate.setDate(newDate.getDate() - 1);
+                            var month = newDate.getMonth() + 1;
+                            var date = newDate.getDate();
+                            if(newDate < today){
+                                Alert.alert("예약할수 없는 날짜입니다.");
+                            }
+                            else{
+                                // setResrvLists([]);
+                                setCalled(false);
+                                isToday.current = false;
+                                navigation.replace('Table', { 
+                                    dateString: `${newDate.getFullYear()}-${month < 10 ? 0 : ""}${newDate.getMonth() + 1}-${date < 10 ? 0 : ""}${newDate.getDate()}`,
+                                    year: newDate.getFullYear(),
+                                    month: `${month < 10 ? 0 : ""}${newDate.getMonth() + 1}`,
+                                    day: `${date < 10 ? 0 : ""}${newDate.getDate()}`,
+                                    weekDay: newDate.getDay()
+                                })
+                            }
+                        }}
+                    >
+                        <MaterialCommunityIcons name="less-than" color="#BFBFBF" size={30} />
+                    </TouchableOpacity>
+                        
+                    <TouchableOpacity
+                        onPress={() => {
+                            setModalVisible(!modalVisible);
+                        }}
+                    >
+                        <View style={styles.dateTitle}>
+                            <View style={{ justifyContent: 'center' }}>
+                                <Text style={styles.dateStyle}>{route.params.dateString.replace(/-/g,'.')}({weekDays[route.params.weekDay]}) </Text>
+                            </View>
+                            <View style={{ justifyContent: 'center' }}>
+                                <AntDesign style={styles.calendarIcon} name="calendar" size={20} color="#838383" />
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity
+                        onPress={() => {
+                            // console.log("HERAETABEWTAWEBTAETAE!");
+                            var newDate = new Date(route.params.dateString);
+                            newDate.setDate(newDate.getDate() + 1);
+                            var month = newDate.getMonth() + 1;
+                            var date = newDate.getDate();
+                            // setResrvLists([]);
+                            setCalled(false);
+                            isToday.current = false;
+                            navigation.replace('Table', { 
+                                dateString: `${newDate.getFullYear()}-${month < 10 ? 0 : ""}${newDate.getMonth() + 1}-${date < 10 ? 0 : ""}${newDate.getDate()}`,
+                                year: newDate.getFullYear(),
+                                month: `${month < 10 ? 0 : ""}${newDate.getMonth() + 1}`,
+                                day: `${date < 10 ? 0 : ""}${newDate.getDate()}`,
+                                weekDay: newDate.getDay()
+                            })
+                        }}
+                    >
+                        <MaterialCommunityIcons name="greater-than" color="#BFBFBF" size={30} />
+                    </TouchableOpacity>
+                </View>
+
+                <View style={{ justifyContent:'center', alignItems:'center', flex: 1 }}>
+                        <Text style={styles.loadingText}>영업일이 아닙니다.</Text>
+                </View>
+            </SafeAreaView>
+        );
+    }
+
     LocaleConfig.locales['kr'] = {
         monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
         monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
         dayNames: ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'],
         dayNamesShort: ['일','월','화','수','목','금','토'],
         today: '오늘'
-      };
+    };
     LocaleConfig.defaultLocale = 'kr';
 
-    const startHour = "0800";
-    const hours = ['8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '13:00 PM', '14:00 PM', 
-                    '15:00 PM', '16:00 PM', '17:00 PM', '18:00 PM', '19:00 PM', '20:00 PM', '21:00 PM', 
-                    '22:00 PM', '23:00 PM'];
+    // const startHour = "0800";
+    // const hours = ['8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '13:00 PM', '14:00 PM', 
+    //                 '15:00 PM', '16:00 PM', '17:00 PM', '18:00 PM', '19:00 PM', '20:00 PM', '21:00 PM', 
+    //                 '22:00 PM', '23:00 PM'];
 
+    var startHour;
     const mins = ['00분', '10분', '20분', '30분', '40분', '50분'];
+    
+    // console.log("isToday: " + isToday);
+    if(isToday.current){
+        var todayHour = new Date().getHours(); // number 0~23
+        let temp = parseInt(resrvLists[0].workStartTime.substring(0,2));
 
+        if(todayHour < temp){
+            startHour = `${resrvLists[0].workStartTime.substring(0,2)}00`;
+        }
+        else{
+            startHour = `${todayHour > 9 ? todayHour : '0' + todayHour }00`;
+        }
+    }
+    else{
+        // console.log("OMG HERE YES IT GOT TO THE RIGHT PLACE")
+        startHour = `${resrvLists[0].workStartTime.substring(0,2)}00`;
+    }
+
+    const endHour = `${resrvLists[0].workEndTime.substring(0,4)}`;
+
+    var tempStart = parseInt(startHour.substring(0,2)); // 00 00
+    var endTime = parseInt(resrvLists[0].workEndTime.substring(0,2)); // 23 59 
+    if(resrvLists[0].workEndTime.charAt(2) !== '0'){
+        endTime++;
+    }
+
+    const hours = [];
+    while(tempStart !== endTime){ // tendHour 24
+        // console.log("here");
+        hours.push(`${tempStart}:00 ${tempStart < 12 ? 'AM' : 'PM'}`);
+        tempStart++;
+    }
+    // console.log("[TableScreen]:: this is thours: ");
+    // console.log(hours);
+    
+    
     // var t0 = performance.now();
     // var tt1 = performance.now();
     // console.log("API call took " + (tt1 - startPerf) + " milliseconds.");
 
-    const openTimes = [];
-    const closeTimes = [];
+    const openTime = parseInt(resrvLists[0].workStartTime.substring(0,4));
+    const closeTime = parseInt(resrvLists[0].workEndTime.substring(0,4));
     const roomCodes = [];
     const roomNames = [];
+    const myResrv = [];
+    var rmCodeMap = {}
     for(var i = 0; i < resrvLists.length; i++){
-        openTimes.push(parseInt(resrvLists[i].workStartTime.substring(0,4)));
-        closeTimes.push(parseInt(resrvLists[i].workEndTime.substring(0,4)));
+        // openTimes.push(parseInt(resrvLists[i].workStartTime.substring(0,4)));
+        // closeTimes.push(parseInt(resrvLists[i].workEndTime.substring(0,4)));
         roomCodes.push(resrvLists[i].roomCode);
         roomNames.push(resrvLists[i].roomName);
+        myResrv.push([]);
+        rmCodeMap[resrvLists[i].roomCode] = i;
     }
+
+
+    for(var i = 0; i < myResrvList.current.length; i++){
+        if(roomCodes.includes(myResrvList.current[i].roomCode)){
+            myResrv[rmCodeMap[myResrvList.current[i].roomCode]].push({
+                resrvStime: myResrvList.current[i].resrvStime,
+                resrvEtime: myResrvList.current[i].resrvEtime,
+            })
+        }
+    }
+
+    console.log(myResrv);
+
+    const isMyResrv = (time, index) => {
+        for(var i = 0; i < myResrv[index].length; i++){
+            if(myResrv[index][i].resrvStime === time){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    console.log("OKAY HERE! " + resrvLists[0]["202107222100"]);
 
     const roomTimes = [];
     const roomData = [];
     const optionsList = [];
     const optionValList = [];
     var valid = false;
+    var myResrvEnd = null;
     for(var i = 0; i < resrvLists.length; i++){
         valid = false;
         var keys = Object.keys(resrvLists[i]);
@@ -228,16 +548,42 @@ const TableScreen = ({ navigation, route }) => {
         const optionVals = [];
         for(var j = 0; j < keys.length; j++){
             if(keys[j] !== 'roomCode' && keys[j] !== 'roomName'){
+                if(myResrvEnd !== null){
+                    // check if it's end
+                    // console.log(keys[j]);
+                    if(myResrvEnd === keys[j] + "00"){
+                        myResrvEnd = null;
+                    }
+                    else {
+                        if(i == 0){
+                            roomTimes.push(temp + "00");
+                        }
+                        room.push("mine");
+                        continue;
+                    }
+                }
                 let temp = keys[j].substring(8);
                 if(temp === startHour){
                     valid = true;
                 }
+                else if(temp === endHour){
+                    valid = false;
+                }
                 if(valid){
-                    if(parseInt(temp) < openTimes[i] || parseInt(temp) >= closeTimes[i]){
+                    if(parseInt(temp) < openTime || parseInt(temp) >= closeTime){
                         room.push("closed");
                     }
                     else if(resrvLists[i][keys[j]] === "false"){
-                        room.push("false");
+                        let index = isMyResrv(keys[j] + "00", i);
+                        if(index === -1){
+                            room.push("false");
+                        }
+                        else {
+                            // console.log(myResrv[i]);
+                            // console.log(myResrv[i][index]);
+                            myResrvEnd = myResrv[i][index].resrvEtime;
+                            room.push("mine");
+                        }
                     }
                     else if(moment(keys[j], 'YYYYMMDDHHmm').isBefore()){
                         room.push("pastTime");
@@ -250,7 +596,7 @@ const TableScreen = ({ navigation, route }) => {
                         room.push("true");
                     }
                     if(i == 0){
-                        roomTimes.push(temp + "00");
+                        roomTimes.push(temp + "00"); // for the startTime in the reservationScreen because it needs it to see where it starts, so geting only for one of the column
                     }
                 }
             }
@@ -260,7 +606,6 @@ const TableScreen = ({ navigation, route }) => {
         optionValList.push(optionVals);
     }
 
-
     const TableCol = ({ item, ind, start }) => {
         return (
             <View>
@@ -268,7 +613,7 @@ const TableScreen = ({ navigation, route }) => {
                     scrollEnabled={false}
                     keyExtractor={(item, index) => item + index}
                     data={item}
-                    renderItem={({ item, index }) => {
+                    RenderHour={({ item, index }) => {
                         if(item === "pastTime"){
                             return (
                                 <NotAvail item={item} ind={index} key={index} />
@@ -304,6 +649,11 @@ const TableScreen = ({ navigation, route }) => {
                     else if(item === 'closed'){
                         return (
                             <Closed item={item} ind={index} key={index} />
+                        )
+                    }
+                    else if(item === 'mine'){
+                        return (
+                            <MyBooked item={item} ind={index} key={index} />
                         )
                     }
                     else{
@@ -370,6 +720,14 @@ const TableScreen = ({ navigation, route }) => {
         );
     }
 
+    const MyBooked = ({ item, index }) => {
+        return (
+            <View style={{ height: MIN_H, justifyContent: 'center', backgroundColor:'#4184E4', borderBottomWidth: 1, borderColor: 'black', borderRightWidth: 1 }}>
+                <Text style={{ textAlign: 'center', color: 'white'}}>내 예약</Text>
+            </View>
+        );
+    }
+
     const Min = ({ item, ind }) => {
         return (
             <View style={[{ borderColor: 'black', borderLeftWidth: 1, height: MIN_H, justifyContent: 'center', paddingHorizontal: 5 }, ind == 5 ? {borderBottomWidth: 1} : {borderBottomWidth: 1}]}>
@@ -386,7 +744,7 @@ const TableScreen = ({ navigation, route }) => {
         )
     }
 
-    const RenderItem = ({ item, ind }) => {
+    const RenderHour = ({ item, ind }) => {
         return (
             <View>
                 {ind === 0 ? 
@@ -514,8 +872,10 @@ const TableScreen = ({ navigation, route }) => {
                             Alert.alert("예약할수 없는 날짜입니다.");
                         }
                         else{
-                            setResrvLists([]);
-                            navigation.navigate('Table', { 
+                            // setResrvLists([]);
+                            setCalled(false);
+                            isToday.current = false;
+                            navigation.replace('Table', { 
                                 dateString: `${newDate.getFullYear()}-${month < 10 ? 0 : ""}${newDate.getMonth() + 1}-${date < 10 ? 0 : ""}${newDate.getDate()}`,
                                 year: newDate.getFullYear(),
                                 month: `${month < 10 ? 0 : ""}${newDate.getMonth() + 1}`,
@@ -545,12 +905,15 @@ const TableScreen = ({ navigation, route }) => {
                 
                 <TouchableOpacity
                     onPress={() => {
+                        // console.log("HERAETABEWTAWEBTAETAE!");
                         var newDate = new Date(route.params.dateString);
                         newDate.setDate(newDate.getDate() + 1);
                         var month = newDate.getMonth() + 1;
                         var date = newDate.getDate();
-                        setResrvLists([]);
-                        navigation.navigate('Table', { 
+                        // setResrvLists([]);
+                        setCalled(false);
+                        isToday.current = false;
+                        navigation.replace('Table', { 
                             dateString: `${newDate.getFullYear()}-${month < 10 ? 0 : ""}${newDate.getMonth() + 1}-${date < 10 ? 0 : ""}${newDate.getDate()}`,
                             year: newDate.getFullYear(),
                             month: `${month < 10 ? 0 : ""}${newDate.getMonth() + 1}`,
@@ -562,9 +925,9 @@ const TableScreen = ({ navigation, route }) => {
                     <MaterialCommunityIcons name="greater-than" color="#BFBFBF" size={30} />
                 </TouchableOpacity>
             </View>
-                           
-            {/* { This is where the table begins } */}
 
+            {/* { This is where the table begins } */}
+              
             <View style={styles.tableBox}>
                 <ScrollView
                     nestedScrollEnabled={true}
@@ -573,7 +936,7 @@ const TableScreen = ({ navigation, route }) => {
                     <View style={{ flexDirection: 'row' }}>
                         <View>
                             {hours.map((item, index) => {
-                                return (<RenderItem item={item} key={index} ind={index}/>)
+                                return (<RenderHour item={item} key={index} ind={index}/>)
                             })}
                         </View>
                         <ScrollView
@@ -597,7 +960,7 @@ const TableScreen = ({ navigation, route }) => {
                         </ScrollView>
                     </View>
                 </ScrollView>
-            </View>    
+            </View>
 
             {/* Branch Modal */}
 

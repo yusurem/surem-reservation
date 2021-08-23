@@ -1,3 +1,50 @@
+2021-08-23
+- Things I've Done
+    - 시간마다 나오게하기
+        - Have to change the entire system of how the hours are divided
+        - Separating the starthour, middle Hours, and End Hours
+        - created RenderStartHour, RenderEndHour, RenderHour all separately
+        - have to separate whether the starting hour's minutes are 00 or nonzero
+            - same for end hour
+        - Adding the 시간 title above
+        - Controlling the width of the minutes column as depending on the hour, it is portrayed differently
+    - 셀 병합하기
+        - 내 에약
+            - 각 예약마다 나눠 내 예약을 표시하는게 맞을것같습니다
+                - 내 예약이 시작하는 순간 그 예약의 끝나는 시간까지 쭉 한후 통합시키는것으로 만듬
+
+        - 예약완료
+            - 예약완료가 이어지자, getting the count of the number it repeats and then using that to set the height of the 병합된 cells
+            - Having a flag if it's unavail and then doing a count to see how long it goes and adjustitng the height accordingly
+            - 문제가 그저 'false'라고만 api에서 리턴되니, 이게 내예약인지 다른사람예약인지 구분이 불가능
+                - 그래서 그 다음게 false라도, 내예약인지 아닌지 체크가 필요
+        
+        - 에러들
+            - 병합된 cell들 밑에 예약가능을 누르면 어플이 crash함
+                - 병합되버려서 시작시간의 index가 틀려서 에러가 일어남
+                - index가 원래 하나씩이였는데 통합된 셀들이있으니 index가 달라짐
+                - startIndex useRef를 하나 만들어 그걸 update따로 하여 해결
+                    - 통합되있는애들은 그 사이즈만큼 increase하고
+                    - 렌더링 문제인지, current가 200대로 이상 넘어가서 문제가 해결안됨
+                - startIndex를 각자 column마다 하나씩 새로 지정해 해결.
+
+    - 푸시 알림 다시 활성화시키기
+    - 결제성공후, X를 눌러도 예약을 진행시키기
+        - Android Activity에서 만지기
+        - Changing the logic for the close button on the upper left side
+    - 각종 에러들
+    - 쿠폰 0개나오는 문제
+        - setData update할때 로직 문제
+            - 해결
+        - 하지만 api에서 오는 couponCnt개수 가 계속 0으로 나온다
+            - 김아성 주임님께 수정 요청함
+    - ios 푸시 알림
+        - Apple key 받아서 등록
+        - Platform에 따라서 맞는 configuration
+        - Testing
+
+
+
 2021-08-02
 - Things to do:
     - Have to recover all the notification alarms after being cancelled
@@ -5,6 +52,17 @@
     - Fix my reservation error !
     - Fix crash issue from not selecting brach !
     - Fix table UI ~
+        - Show by single hour units
+            - RenderItem changed to RenderHour !
+            - have to create separate structures for the hours
+            - have the render execution separated to three pieces, start, middle, end
+            - RenderStartHour, RenderEndhour
+            -
+        - Show by merging cells that are together
+            - My reservation
+            - Unavailables
+        - Change display of minutes !
+            - Have to get hour info somehow
     - Naver Pay
     - Kakao Pay
     - Making push notification work !
@@ -31,7 +89,7 @@
         - iOS bug fixes
         - iOS payment module
         - iOS push notification / share
-        - Android > KakaoTalk share
+        - Android > KakaoTalk shared
     - 2nd Priority 
         - Table design fix
         - Styling the table so that rows are together
