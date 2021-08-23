@@ -25,6 +25,9 @@ const CouponScreen = ({ navigation, route }) => {
     const [couponCode, setCouponCode] = useState(route.params.couponCode !== undefined ? route.params.couponCode : "");
     const [couponIdx, setCouponIdx] = useState(route.params.couponIdx !== undefined ? route.params.couponIdx : "");
 
+    const [availCoupons, setAvailCoupons] = useState([]);
+    const [unavailCoupons, setUnavailCoupons] = useState([]);
+
     console.log("Entered CouponScreen. Params: ");
     console.log(route.params);
 
@@ -132,6 +135,8 @@ const CouponScreen = ({ navigation, route }) => {
             avails.push(coupons[i]);
         }
         setCouponList([...avails, ...unavails]);
+        setAvailCoupons(avails);
+        setUnavailCoupons(unavails);
         setNumValid(avails.length);
         // setValidCoupons(avails);
         // setInvalidCoupons(unavails);
@@ -165,51 +170,54 @@ const CouponScreen = ({ navigation, route }) => {
         );
     }
 
-    const renderCoupons = ({ item, index }) => {
+    const renderAvailCoupons = ({ item, index }) => {
         const borderColor = item.idx === selectedIndex ? "#0070C0" : '#C9C9C9';
 
         return (
-            index < numValid ? 
-                <CouponItem 
-                    item={item} 
-                    bdColor={borderColor}
-                    onPress={() => {
-                        if(item.idx === selectedIndex){
-                            setSelectedIndex(null);
-                            setDiscount(0);
-                            setCouponIdx("");
-                            setCouponCode("");
-                        }
-                        else{
-                            setSelectedIndex(item.idx);
-                            // [CouponType] F- free, P- price, R- rate
-                            if(item.couponType === 'P'){
-                                if(parseInt(item.couponDCPrice) > route.params.totalCost){
-                                    setDiscount(route.params.totalCost);
-                                }
-                                else{
-                                    setDiscount(item.couponDCPrice);
-                                }
-                                // setDiscount(parseInt(item.couponDCPrice));
-                                setCouponIdx(item.idx);
-                                setCouponCode(item.couponCode);
-                            }
-                            else if(item.couponType === 'R'){
-                                setDiscount(Math.ceil((parseInt(item.couponDCRate) / 100) * route.params.totalCost));
-                                setCouponIdx(item.idx);
-                                setCouponCode(item.couponCode);
-                            }
-                            else if(item.couponType === 'F'){
+            <CouponItem 
+                item={item} 
+                bdColor={borderColor}
+                onPress={() => {
+                    if(item.idx === selectedIndex){
+                        setSelectedIndex(null);
+                        setDiscount(0);
+                        setCouponIdx("");
+                        setCouponCode("");
+                    }
+                    else{
+                        setSelectedIndex(item.idx);
+                        // [CouponType] F- free, P- price, R- rate
+                        if(item.couponType === 'P'){
+                            if(parseInt(item.couponDCPrice) > route.params.totalCost){
                                 setDiscount(route.params.totalCost);
-                                setCouponIdx(item.idx);
-                                setCouponCode(item.couponCode);
                             }
+                            else{
+                                setDiscount(item.couponDCPrice);
+                            }
+                            // setDiscount(parseInt(item.couponDCPrice));
+                            setCouponIdx(item.idx);
+                            setCouponCode(item.couponCode);
                         }
-                    }}
-                />
-                :
-                <NACoupon item={item} />
+                        else if(item.couponType === 'R'){
+                            setDiscount(Math.ceil((parseInt(item.couponDCRate) / 100) * route.params.totalCost));
+                            setCouponIdx(item.idx);
+                            setCouponCode(item.couponCode);
+                        }
+                        else if(item.couponType === 'F'){
+                            setDiscount(route.params.totalCost);
+                            setCouponIdx(item.idx);
+                            setCouponCode(item.couponCode);
+                        }
+                    }
+                }}
+            />
         );
+    }
+
+    const renderUnavailCoupons = ({ item, index }) => {
+        return (
+            <NACoupon item={item} />
+        )
     }
 
     return (
@@ -269,14 +277,35 @@ const CouponScreen = ({ navigation, route }) => {
                     isEmpty ? 
                         <Text style={{textAlign: 'center', textAlignVertical: 'center'}}>쿠폰이 없습니다.</Text>
                         :
-                        <FlatList
-                            // data={validCoupons}
-                            data={couponList}
-                            keyExtractor={(item, index) => item.idx}
-                            renderItem={renderCoupons}
-                            extraData={selectedIndex}
-                            // scrollEnabled={false}
-                        />
+                        <ScrollView style={{ flex: 1 }}>
+                            <View style={{ flex: 1 }}>
+                                <Text style={styles.couponHeader}>사용 가능한 쿠폰</Text>
+                                {availCoupons.length == 0 ?
+                                    <Text style={{ textAlign: 'center', marginVertical: 15}}>사용 가능한 쿠폰이 없습니다.</Text>
+                                    :
+                                    <FlatList
+                                        // data={validCoupons}
+                                        data={availCoupons}
+                                        keyExtractor={(item, index) => item.idx}
+                                        renderItem={renderAvailCoupons}
+                                        extraData={selectedIndex}
+                                        scrollEnabled={false}
+                                    />
+                                }
+                                
+                            </View>
+                            <View style={{ flex: 1 }}>
+                                <Text style={styles.couponHeader}>사용 불가한 쿠폰</Text>
+                                <FlatList
+                                    // data={validCoupons}
+                                    data={unavailCoupons}
+                                    keyExtractor={(item, index) => item.idx}
+                                    renderItem={renderUnavailCoupons}
+                                    scrollEnabled={false}
+                                />
+                            </View>
+                        </ScrollView>
+                        
                 }
             </View>
             <TouchableOpacity
@@ -333,7 +362,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginHorizontal: 20,
-        marginTop: 40,
+        marginTop: 30,
         // borderWidth: 1,
         // borderColor: 'red'
     },
@@ -353,10 +382,17 @@ const styles = StyleSheet.create({
     couponBox: {
         justifyContent: 'center',
         // alignItems: 'center',
-        marginTop: 30,
+        marginTop: 20,
         marginBottom: 20,
         marginHorizontal: 20,
         flex: 1
+    },
+    couponHeader: {
+        fontWeight: 'bold',
+        color: 'black',
+        fontSize: 15,
+        marginLeft: 10,
+        marginVertical: 5
     },
     coupon: {
         borderRadius: 12,

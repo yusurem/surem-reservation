@@ -566,15 +566,15 @@ const TableScreen = ({ navigation, route }) => {
         tempStart++;
     }
 
-    // console.log("----------MidReport----------");
-    // console.log("StartTime: " + startTime);
-    // console.log("startMinZero: " + startMinZero);
-    // console.log("EndTime: " + endTime);
-    // console.log("endMinZero: " + endMinZero);
-    // console.log("firstHour: " + firstHour);
-    // console.log("lastHour: " + lastHour);
-    // console.log("hours: " + hours);
-    // console.log("----------MidReport----------");
+    console.log("----------MidReport----------");
+    console.log("StartTime: " + startTime);
+    console.log("startMinZero: " + startMinZero);
+    console.log("EndTime: " + endTime);
+    console.log("endMinZero: " + endMinZero);
+    console.log("firstHour: " + firstHour);
+    console.log("lastHour: " + lastHour);
+    console.log("hours: " + hours);
+    console.log("----------MidReport----------");
 
 
     // console.log("[TableScreen]:: this is thours: ");
@@ -634,6 +634,8 @@ const TableScreen = ({ navigation, route }) => {
     var unavail = false;
     for(var i = 0; i < resrvLists.length; i++){
         valid = false;
+        unavail = false;
+        myResrvEnd = null;
         var keys = Object.keys(resrvLists[i]);
         const room = [];
         const options = [];
@@ -696,8 +698,16 @@ const TableScreen = ({ navigation, route }) => {
                     //     room.push("closed");
                     // }
                     if(resrvLists[i][keys[j]] === "false"){
+                        console.log(keys[j]);
                         let index = isMyResrv(keys[j] + "00", i);
                         if(index === -1){
+                            if(temp === '2350'){
+                                room.push({
+                                    status: 'false',
+                                    size: 1
+                                });
+                                continue;
+                            }
                             unavail = true;
                             count = 1;
                             // room.push("false");
@@ -709,6 +719,13 @@ const TableScreen = ({ navigation, route }) => {
                         else {
                             // console.log(myResrv[i]);
                             // console.log(myResrv[i][index]);
+                            if(temp === '2350'){
+                                room.push({
+                                    status: 'mine',
+                                    size: 1
+                                });
+                                continue;
+                            }
                             myResrvEnd = myResrv[i][index].resrvEtime;
                             count = 1;
                             // room.push("mine");
