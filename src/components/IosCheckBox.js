@@ -4,7 +4,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const IosCheckBox = (props) => {
     return (
-        <View>
+        <View style={{alignSelf:'center'}}>
             <TouchableOpacity
                 onPress={() => {
                     props.onChange(!props.value);

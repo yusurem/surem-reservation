@@ -167,6 +167,7 @@ const PaymentScreen = ({ navigation, route }) => {
         else{
             const triggerA = new Date(year, parseInt(month) - 1, day, parseInt(hour) - 1, min);
             console.log("[PaymentScreen]:: Trigger-- " + triggerA);
+            console.log(`[Trigger-- A] :: ${year}${month}${day}${hour}${min}:${route.params.roomName}`);
             identifier = await Notifications.scheduleNotificationAsync({
                 identifier: `${year}${month}${day}${hour}${min}:${route.params.roomName}`,
                 content: {

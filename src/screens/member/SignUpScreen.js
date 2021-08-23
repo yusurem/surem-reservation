@@ -204,7 +204,6 @@ export default function SignUpScreen({ navigation }) {
               borderRadius:10, 
               backgroundColor:'#FFFFFF',
               paddingLeft:10,
-              paddingBottom:10,
               marginBottom:'1%'
             }} 
             placeholder="이름"
@@ -489,18 +488,21 @@ const styles = StyleSheet.create({
       alignSelf: 'center'
   },
   acceptBtn: {
-    backgroundColor: "#404758",
-    borderRadius: 12,
-    marginVertical: 30,
-    paddingVertical: 15,
-    flex: 1,
-    marginHorizontal: 25,
-    justifyContent: 'center'
+    marginTop:'10%',
+    height: 30,
+    width: '70%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#404757',
+    borderRadius:10,
+    alignSelf:'center'
   },
   buttonText: {
       color: 'white',
       textAlign: 'center',
-  },
+      width:100,
+      lineHeight: Platform.OS === 'ios' ? 30 : 30
+    },
   checkboxContainer: {
     flexDirection: "row",
     alignSelf:'center'

@@ -1,5 +1,5 @@
 import React, { Component, useState, useEffect } from "react";
-import { Text, StyleSheet, View, Image, TouchableOpacity } from "react-native";
+import { Text, StyleSheet, View, Image, TouchableOpacity, Platform } from "react-native";
 import * as SQLite from 'expo-sqlite';
 
 
@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     height: 70,
     flex:1,
-    width: '100%',
+    width: '30%',
     alignItems: 'center',
     alignSelf:'center',
   },
@@ -26,8 +26,8 @@ const styles = StyleSheet.create({
   },
   logo: {
     flex:1,
-    resizeMode:'center',
-    marginTop:'5%'
+    resizeMode: (Platform.OS == 'ios') ? 'contain' : 'center',
+    marginTop: (Platform.OS == 'ios') ? null: '5%'
   },
   menu: {
     resizeMode:'center',

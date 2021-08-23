@@ -206,6 +206,7 @@ export default function ReservationListScreen({ navigation }) {
         async (tx) => {
           tx.executeSql("DELETE FROM PUSH_ID WHERE identifier=(?)",[identifier],
             (tx, results) => {
+              console.log('RESULTS :: ', results);
               resolve(results);
             },
             (txt, error)=> {
@@ -217,7 +218,7 @@ export default function ReservationListScreen({ navigation }) {
     })
   }
 
-  const selectPushId = async (identifier) => {
+  const selectPushIdddd = async (identifier) => {
     console.log('SELECT PUSH ID :: ',identifier)
     return new Promise((resolve, reject)=> {
       db.transaction(async (tx) => {
@@ -238,7 +239,28 @@ export default function ReservationListScreen({ navigation }) {
     })
   }
 
-  const cancelPush = async (year, month, day, hour, min) => {
+  const selectPushId = async (identifier) => {
+    console.log('SELECT PUSH ID :: ',identifier)
+    return new Promise((resolve, reject)=> {
+      db.transaction(async (tx) => {
+          tx.executeSql(
+            "SELECT * FROM PUSH_ID WHERE identifier like '" + identifier +"%'",
+            [],
+            (tx, results) => {
+              console.log("SELECT PUSH COUNT :: ",results.rows._array[0],results.rows._array[0])
+              resolve(results.rows._array[0].c);
+            },
+            (txt, error)=> {
+              console.log('ERROR :: ', error)
+              reject(error);
+            }
+          )
+        }
+      )
+    })
+  }
+
+  const cancelPush = async (year, month, day, hour, min, roomCode) => {
     console.log("Cancel Push Notification");
     console.log('YEAR :: ', year);
     console.log('MONTH :: ', month);
@@ -246,8 +268,8 @@ export default function ReservationListScreen({ navigation }) {
     console.log('HOUR :: ', hour);
     console.log('MIN :: ', min);
     
-    Notifications.cancelScheduledNotificationAsync(`${year}${month}${day}${hour}${min}`)
-    await deletePushId(`${year}${month}${day}${hour}${min}`)
+    Notifications.cancelScheduledNotificationAsync(`${year}${month}${day}${hour}${min}:${selectedRoomName}`)
+    await deletePushId(`${year}${month}${day}${hour}${min}:${selectedRoomName}`)
     var count = 0;
     count = await selectPushId(`${year}${month}${day}`)
     console.log('COUNT :: ',count)
@@ -307,6 +329,7 @@ export default function ReservationListScreen({ navigation }) {
             .catch(function (error) {
               console.log(error);
             });
+            count = await selectPushIdddd(`2`)
             cancelPush(
               moment(selectedReservStime, 'YYYYMMDDHHmm').format('YYYY'),
               moment(selectedReservStime, 'YYYYMMDDHHmm').format('MM'),
