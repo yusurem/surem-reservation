@@ -30,7 +30,7 @@ db.transaction(tx=>{
 })
 
 db.transaction(tx=>{
-  tx.executeSql('CREATE TABLE IF NOT EXISTS UserId (_id INTEGER PRIMARY KEY, secretCode TEXT, usercode TEXT);')
+  tx.executeSql('CREATE TABLE IF NOT EXISTS UserId (_id INTEGER PRIMARY KEY, secretCode TEXT, usercode TEXT, username TEXT);')
 })
 
 export default function SignUpScreen({ navigation }) {

@@ -20,10 +20,10 @@ const CouponScreen = ({ navigation, route }) => {
     const [apiCalled, setApiCalled] = useState(false);
     // const [validCoupons, setValidCoupons] = useState([]);
     // const [invalidCoupons, setInvalidCoupons] = useState([]);
-    const [selectedIndex, setSelectedIndex] = useState(route.params.couponIdx !== undefined ? route.params.couponIdx : null);
+    const [selectedIndex, setSelectedIndex] = useState(route.params.couponIdx !== undefined ? route.params.couponIdx : undefined);
     const [discount, setDiscount] = useState(route.params.discount !== undefined ? route.params.discount : 0);
-    const [couponCode, setCouponCode] = useState(route.params.couponCode !== undefined ? route.params.couponCode : "");
-    const [couponIdx, setCouponIdx] = useState(route.params.couponIdx !== undefined ? route.params.couponIdx : "");
+    const [couponCode, setCouponCode] = useState(route.params.couponCode !== undefined ? route.params.couponCode : undefined);
+    const [couponIdx, setCouponIdx] = useState(route.params.couponIdx !== undefined ? route.params.couponIdx : undefined);
 
     const [availCoupons, setAvailCoupons] = useState([]);
     const [unavailCoupons, setUnavailCoupons] = useState([]);
@@ -328,6 +328,7 @@ const CouponScreen = ({ navigation, route }) => {
                             couponCode: couponCode,
                             location: route.params.location,
                             address: route.params.address,
+                            username: route.params.username,
                         });
                     }}
                 >

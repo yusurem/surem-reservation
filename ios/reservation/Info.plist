@@ -21,6 +21,14 @@
     <key>CFBundleURLTypes</key>
     <array>
       <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>kakaocbec4218e1e25512833065a67e2a9535</string>
+        </array>
+      </dict>
+      <dict>
         <key>CFBundleURLSchemes</key>
         <array>
           <string>com.surem.reservation</string>
@@ -29,6 +37,15 @@
     </array>
     <key>CFBundleVersion</key>
     <string>1.0.5</string>
+    <key>KAKAO_APP_KEY</key>
+    <string>cbec4218e1e25512833065a67e2a9535</string>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+      <!-- 카카오톡으로 로그인 -->
+      <string>kakaokompassauth</string>
+      <!-- 카카오링크 -->
+      <string>kakaolink</string>
+    </array>
     <key>LSRequiresIPhoneOS</key>
     <true/>
     <key>NSAppTransportSecurity</key>

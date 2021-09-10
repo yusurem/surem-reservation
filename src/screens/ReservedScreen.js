@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import Clipboard from '@react-native-community/clipboard';
 import Toast, {DURATION} from 'react-native-easy-toast';
+import KakaoShareLink from 'react-native-kakao-share-link';
 
 // import { WebView } from 'react-native-webview';
 
@@ -31,7 +32,7 @@ const ReservedScreen = ({ navigation, route }) => {
     const message = 
 `[오피스쉐어 예약]\n
 예약일 : ${route.params.dateString} (${weekDays[route.params.weekDay]})\n예약 시간 : ${route.params.startTime} ~ ${route.params.endTime}\n
-룸 이름: ${route.params.roomName}\n지점명 : ${route.params.location}점\n
+예약자명: ${route.params.username}\n룸 이름: ${route.params.roomName}\n지점명 : ${route.params.location}점\n
 주소: ${route.params.address}\n
 QR코드 URL\n${qrLink}`;
 
@@ -53,22 +54,75 @@ QR코드 URL\n${qrLink}`;
 
     const onShare = async () => {
         try {
-          const result = await Share.share({
-            message: message,
-          });
-          if (result.action === Share.sharedAction) {
-            if (result.activityType) {
-              // shared with activity type of result.activityType
-            } else {
-              // shared
+            const result = await Share.share({
+                message: message,
+            });
+            if (result.action === Share.sharedAction) {
+                if (result.activityType) {
+                    // shared with activity type of result.activityType
+                } else {
+                    // shared
+                }
+            } else if (result.action === Share.dismissedAction) {
+                // dismissed
             }
-          } else if (result.action === Share.dismissedAction) {
-            // dismissed
-          }
         } catch (error) {
-          alert(error.message);
+            alert(error.message);
         }
-      };
+    };
+
+    const kakaoShare = async () => {
+        try {
+            const response = await KakaoShareLink.sendFeed({
+              content: {
+                title: '오피스쉐어 예약 안내',
+                imageUrl:
+                  'http://t1.daumcdn.net/friends/prod/editor/dc8b3d02-a15a-4afa-a88b-989cf2a50476.jpg',
+                link: {
+                    webUrl: qrLink,
+                    mobileWebUrl: qrLink
+                },
+                description: '오피스쉐어 예약 정보를 확인해주세요.',
+              },
+              buttons: [
+                {
+                  title: '예약(QR) 확인하기',
+                  link: {
+                    webUrl: qrLink,
+                    mobileWebUrl: qrLink
+                  },
+                },
+              ],
+            });
+            // console.log(response);
+          } catch (e) {
+            console.error(e);
+            console.error(e.message);
+          }
+    }
+
+    const kakaoLocation = async () => {
+        try {
+            const response = await KakaoShareLink.sendLocation({
+                address: route.params.address,
+                addressTitle: `${route.params.location}점`,
+                content: {
+                    title: '오피스쉐어 예약 안내',
+                    imageUrl:
+                        'http://t1.daumcdn.net/friends/prod/editor/dc8b3d02-a15a-4afa-a88b-989cf2a50476.jpg',
+                    link: {
+                        webUrl: qrLink,
+                        mobileWebUrl: qrLink
+                    },
+                    description: '오피스쉐어 예약 정보를 확인해주세요.',
+                },
+            });
+            // console.log(response);
+          } catch (e) {
+            console.error(e);
+            console.error(e.message);
+          }
+    }
 
     // useEffect(() => {
     //     const unsubscribe = navigation.dangerouslyGetParent().addListener('tabPress', (e) => {
@@ -156,6 +210,18 @@ QR코드 URL\n${qrLink}`;
                         <View style={styles.modalStyle}>
                             <View style={styles.innerModal}>
                                 <TouchableOpacity
+                                    // onPress={kakaoShare}
+                                    onPress={kakaoLocation}
+                                >
+                                    <View>
+                                        <Image
+                                            style={styles.logoStyle}
+                                            source={require('../../assets/cuts/kakao.png')}
+                                        />
+                                        <Text style={styles.logoCaption}>카카오톡</Text>
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity
                                     onPress={onShare}
                                 >
                                     <View>
@@ -203,7 +269,6 @@ QR코드 URL\n${qrLink}`;
                                         else {
                                             // this.toast.show('URL을 복사했습니다.', 2000);
                                             toastRef.current.show('URL을 복사했습니다.', 2000);
-                                            console.log("this worked?");
                                         }
                                     }}
                                 >

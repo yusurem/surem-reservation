@@ -59,7 +59,7 @@ const InquireScreen = ({ navigation, route }) => {
     const getLocationList = async (loc) => {
         try{
             console.log("Attempting to retrieve location list...");
-            const response = await axios.post(URL+'/getLocationList', {
+            const response = await axios.post(URL + '/getLocationList', {
                 location: loc
             });
             console.log("LocationList API call successful!");

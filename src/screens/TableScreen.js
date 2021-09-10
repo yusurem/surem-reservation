@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, useWindowDimensions, BackHandler, Alert, Image, FlatList } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, useWindowDimensions, BackHandler, Alert, Image, FlatList, ImageBackground } from 'react-native';
 import { MaterialCommunityIcons, AntDesign, FontAwesome5, Feather } from '@expo/vector-icons';
 import axios from 'axios';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -13,7 +13,7 @@ import BranchModal from '../components/BranchModal';
 import * as SQLite from 'expo-sqlite';
 
 const TITLE_H = 60;
-const TITLE_W = 170;
+var TITLE_W = 170;
 const MIN_H = 35;
 const HOUR_W = 130;
 
@@ -31,33 +31,27 @@ const TableScreen = ({ navigation, route }) => {
     // states
     const [errorMessageA, setErrorMessageA] = useState(""); // errorMessage
     const [resrvLists, setResrvLists] = useState([]); // the full list of availability from API
-    // const [usercode, setUsercode] = useState("");
-	// const [secretCode, setSecretCode] = useState("");
-    // const [myResrvList, setMyResrvList] = useState([]); // users list of reservation
-    // const [roomLists, setRoomLists] = useState(""); 
+
     const [modalVisible, setModalVisible] = useState(false); // visibility of calendar modal
     const [branchModal, setBranchModal] = useState(false); // visiblity of branch modal
-    // const [roomWidth, setRoomWidth] = useState(windowWidth - 30 - 115 - 5);
 
-    // const [tableData, setTableData] = useState([]);
     const [called, setCalled] = useState(false); // checking if the requried APIs were called
-    const [currBranch, setCurrBranch] = useState(null); // the current branch the table is representing
+    // const [currBranch, setCurrBranch] = useState(null); // the current branch the table is representing
 
+    const currBranch = useRef(null);
+    const secondBranch = useRef(null);
+    const thirdBranch = useRef(null);
+    const recents = useRef([]);
     const usercode = useRef("");
     const secretCode = useRef("");
     const myResrvList = useRef([]);
     const isToday = useRef(false);
     const closed = useRef(false);
 
-    // const [startPerf, setStartPerf] = useState(performance.now());
-    // const [endPerf, setEndPerf] = useState(0);
-
     const weekDays = new Array('일', '월', '화', '수', '목', '금', '토');
 
     console.log("[TableScreen]:: Screen has open. --Params: ");
     // console.log(route.params);
-    // console.log(route.params.dateString);
-    // console.log(called);
 
     // Focus effect that handles what happens when the back button is pressed on Android
     useFocusEffect(() => {
@@ -95,6 +89,7 @@ const TableScreen = ({ navigation, route }) => {
         return unsubscribe;
     });
 
+
     // Getting the most recent branch and setting it for the table
     const getBranch = async () => {
         // console.log("[TableScreen]:: Retrieving from SQlite...");
@@ -111,10 +106,17 @@ const TableScreen = ({ navigation, route }) => {
                             if(results.rows._array.length === 0){
                                 resolve("noBranch");
                             }
-                            else{
-                                setCurrBranch(results.rows._array[results.rows._array.length - 1]);
-                                resolve("success");
+                            else if(results.rows._array.length === 2){
+                                secondBranch.current = results.rows._array[0];
                             }
+                            else if(results.rows._array.length === 3){
+                                thirdBranch.current = results.rows._array[0];
+                                secondBranch.current = results.rows._array[1]
+                            }
+
+                            currBranch.current = results.rows._array[results.rows._array.length - 1];
+                            recents.current = results.rows._array;
+                            resolve("success");
                         },
                         (tx, error) => {
                             console.log(error);
@@ -126,6 +128,7 @@ const TableScreen = ({ navigation, route }) => {
         })
     }
 
+
     // API call for the list of availability for reservation
     const getReservationList = async (resDate, adCode) => {
         try{
@@ -135,8 +138,6 @@ const TableScreen = ({ navigation, route }) => {
             const response = await axios.post(URL + '/getReservationList', {
                 resrvCtime: resDate,
                 adminCode: adCode,
-                // adminCode: 'surem3'
-
             });
             // console.log(response.data);
            
@@ -163,12 +164,8 @@ const TableScreen = ({ navigation, route }) => {
                 return;
             }
 
-            console.log("9층 편의점 수: " + Object.keys(response.data.roomList[0]).length);
-            console.log("두피샵 수: " + Object.keys(response.data.roomList[1]).length);
-
             setResrvLists(response.data.roomList);
-            // setCalled(true);
-            // setRefreshing(false);
+
         } catch (err) {
             setErrorMessageA("API 문제발생");
             console.log(err);
@@ -187,8 +184,6 @@ const TableScreen = ({ navigation, route }) => {
                         // console.log("got user id");
                         usercode.current = results.rows.item(0).usercode;
                         secretCode.current = results.rows.item(0).secretCode;
-                        // setUsercode(results.rows.item(0).usercode)
-                        // setSecretCode(results.rows.item(0).secretCode)
                         resolve();
                     },
                     (tx, error) => {
@@ -213,25 +208,18 @@ const TableScreen = ({ navigation, route }) => {
 
             if(response.data.returnCode !== "E0000"){
                 console.log("[TableScreen]:: getReservation Error: " + response.data.returnCode);
-                // Alert.alert(
-                //     "API 문제발생",
-                //     "잠시후 다시 시도해주세요",
-                //     [
-                //         {
-                //             text: "홈으로",
-                //             onPress: () => { 
-                //                 navigation.navigate("Home");
-                //             }
-                //         }
-                //     ]
-                // )
+                Alert.alert(
+                    "내 예약 가져오는데 알수없는 문제가 발생했습니다. 잠시후 다시 시도해주세요."
+                );
+                return 'Error';
             }
             
             // console.log("[TableScreen]:: Successfully retrieved USERS list of reservation.");
             myResrvList.current = response.data.reservations;
         } catch (err) {
-            setErrorMessageA("API 문제발생");
-            console.log(err);
+            Alert.alert(
+                "내 예약 가져오는데 알수없는 문제가 발생했습니다. 잠시후 다시 시도해주세요."
+            );
             return 'Error';
         }
     }
@@ -261,20 +249,11 @@ const TableScreen = ({ navigation, route }) => {
             isToday.current = true;
         }
     }
-   
-    // If there is no branch oh wait make this into a await and use it down there.
-    // if(currBranch === null){
-    //     if(!('location' in route.params)){
-    //         getBranch();
-    //         return (
-    //             <LoadingScreen/>
-    //         )
-    //     }
-    // }
     
     const initialLoading = async () => {
-        if(currBranch === null){
-            if(!('location' in route.params)){
+        // console.log("initialLoading");
+        if(currBranch.current === null){
+            // if(!('location' in route.params)){
                 const bRes = await getBranch();
                 if(bRes !== "success"){
                     navigation.reset({
@@ -284,12 +263,12 @@ const TableScreen = ({ navigation, route }) => {
                         ] 
                     });
                 };
-            }
+            // }
         }
         if(!('location' in route.params)){
-            route.params['location'] = currBranch.location;
-            route.params['branchCode'] = currBranch.branchCode;
-            route.params['branchName'] = currBranch.branchName;
+            route.params['location'] = currBranch.current.location;
+            route.params['branchCode'] = currBranch.current.branchCode;
+            route.params['branchName'] = currBranch.current.branchName;
         }
 
         await getReservationList(route.params.dateString.replace(/-/g,""), route.params.branchCode);
@@ -329,15 +308,10 @@ const TableScreen = ({ navigation, route }) => {
         setCalled(true);
     }
 
-    // if(resrvLists.length == 0){
     if(!called){
         // console.log("[TableScreen]:: INITIALIZING Reservation List...");
 
         initialLoading();
-        // (async () => await initialLoading())();
-
-        // var tt1 = performance.now()
-        // console.log("API call took " + (tt1 - tt0) + " milliseconds.")
 
         return (
             <LoadingScreen/>
@@ -350,6 +324,7 @@ const TableScreen = ({ navigation, route }) => {
     if(closed.current){
         return (
             <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }} edges={['right', 'left', 'top']} >
+
                 <View style={styles.branchBox}>
                     <View style={styles.branchHolder}>
                         <Text style={styles.branchHolderText}>+ 지점 선택</Text>
@@ -366,7 +341,6 @@ const TableScreen = ({ navigation, route }) => {
                     >
                         <Text style={styles.branchSelectorText}>+ 지점 선택</Text>
                     </TouchableOpacity>
-
                 </View>
 
                 <View style={styles.dateBox}>
@@ -452,17 +426,17 @@ const TableScreen = ({ navigation, route }) => {
     };
     LocaleConfig.defaultLocale = 'kr';
 
-    // const startTime = "0800";
-    // const hours = ['8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '13:00 PM', '14:00 PM', 
-    //                 '15:00 PM', '16:00 PM', '17:00 PM', '18:00 PM', '19:00 PM', '20:00 PM', '21:00 PM', 
-    //                 '22:00 PM', '23:00 PM'];
+    // adjusting the cell width accordingly if the screen is much larger
+    let cellWidth = windowWidth - HOUR_W - 20;
+    if((TITLE_W * resrvLists.length) < cellWidth){
+        TITLE_W = cellWidth / resrvLists.length;
+    }
 
     var startTime;
     const mins = [':00', ':10', ':20', ':30', ':40', ':50'];
     var startMinZero = true; // a flag for whether the startTime's minute value is 00 or not
     var endMinZero = true; // a flag for whether the endTime's minute value is 00 or not
     
-    // console.log("isToday: " + isToday);
     if(isToday.current){ // checking if it's today. If it is, determining which time to show
         var todayHr = new Date().getHours(); // number 0~23
         var todayMin = new Date().getMinutes(); // number 0~59
@@ -471,7 +445,6 @@ const TableScreen = ({ navigation, route }) => {
 
         if((todayHr > tempHr) || (todayHr === tempHr && todayMin >= tempMin)){ // checking if current time is past the workStartTime
             todayMin = Math.floor(todayMin / 10);
-            // tempMin = tempMin / 10;
             if(todayMin === 5){
                 todayHr++;
                 todayMin = '00';
@@ -490,13 +463,6 @@ const TableScreen = ({ navigation, route }) => {
                 startMinZero = false;
             }
         }
-
-        // if(todayHour < temp){
-        //     startTime = `${resrvLists[0].workStartTime.substring(0,2)}00`;
-        // }
-        // else{
-        //     startTime = `${todayHour > 9 ? todayHour : '0' + todayHour }00`;
-        // }
     }
     else{
         startTime = `${resrvLists[0].workStartTime.substring(0,4)}`; // assigning the workStartTime because it's not today
@@ -553,37 +519,11 @@ const TableScreen = ({ navigation, route }) => {
         }
     }
 
-    // var tempStart = parseInt(startTime.substring(0,2)); // 00 00
-    // var endHour = parseInt(endTime.substring(0,2)); // 23 59 
-    // if(resrvLists[0].workEndTime.charAt(2) !== '0'){
-    //     endHour++;
-    // }
-
     const hours = [];
     while(tempStart !== endHour){ // tendHour 24
-        // console.log("here");
         hours.push(`${tempStart}:00 ${tempStart < 12 ? 'AM' : 'PM'}`);
         tempStart++;
     }
-
-    console.log("----------MidReport----------");
-    console.log("StartTime: " + startTime);
-    console.log("startMinZero: " + startMinZero);
-    console.log("EndTime: " + endTime);
-    console.log("endMinZero: " + endMinZero);
-    console.log("firstHour: " + firstHour);
-    console.log("lastHour: " + lastHour);
-    console.log("hours: " + hours);
-    console.log("----------MidReport----------");
-
-
-    // console.log("[TableScreen]:: this is thours: ");
-    // console.log(hours);
-    
-    
-    // var t0 = performance.now();
-    // var tt1 = performance.now();
-    // console.log("API call took " + (tt1 - startPerf) + " milliseconds.");
 
     // extracting roomCodes and roomNames & setting up for the user's reservations
     const roomCodes = [];
@@ -591,8 +531,6 @@ const TableScreen = ({ navigation, route }) => {
     const myResrv = [];
     var rmCodeMap = {}
     for(var i = 0; i < resrvLists.length; i++){
-        // openTimes.push(parseInt(resrvLists[i].workStartTime.substring(0,4)));
-        // closeTimes.push(parseInt(resrvLists[i].workEndTime.substring(0,4)));
         roomCodes.push(resrvLists[i].roomCode);
         roomNames.push(resrvLists[i].roomName);
         myResrv.push([]);
@@ -609,8 +547,6 @@ const TableScreen = ({ navigation, route }) => {
         }
     }
 
-    // console.log(myResrv);
-
     const isMyResrv = (time, index) => {
         for(var i = 0; i < myResrv[index].length; i++){
             if(myResrv[index][i].resrvStime === time){
@@ -620,7 +556,6 @@ const TableScreen = ({ navigation, route }) => {
         return -1;
     }
 
-    // console.log("OKAY HERE! " + resrvLists[0]["202107222100"]);
 
     const roomTimes = [];
     const roomData = [];
@@ -628,8 +563,6 @@ const TableScreen = ({ navigation, route }) => {
     const optionValList = [];
     var valid = false;
     var myResrvEnd = null;
-    const openTime = parseInt(resrvLists[0].workStartTime.substring(0,4)); // used to check if 
-    const closeTime = parseInt(resrvLists[0].workEndTime.substring(0,4));
     var count; // used to keep track of how many consecutive cells are displaying the same info 
     var unavail = false;
     for(var i = 0; i < resrvLists.length; i++){
@@ -657,9 +590,6 @@ const TableScreen = ({ navigation, route }) => {
                     if(resrvLists[i][keys[j]] === 'false'){
                         let index = isMyResrv(keys[j] + "00", i);
                         if(index === -1){
-                            // if(i == 0){
-                            //     roomTimes.push(temp + "00");
-                            // }
                             count++;
                             continue;
                         }
@@ -673,8 +603,6 @@ const TableScreen = ({ navigation, route }) => {
                 }
 
                 if(valid && myResrvEnd !== null){
-                    // check if it's end
-                    // console.log(keys[j]);
                     if(myResrvEnd === keys[j] + "00"){
                         myResrvEnd = null;
                         room.push({
@@ -684,21 +612,14 @@ const TableScreen = ({ navigation, route }) => {
                         count = 0;
                     }
                     else {
-                        // if(i == 0){
-                        //     roomTimes.push(temp + "00");
-                        // }
-                        // room.push("mine");
                         count++;
                         continue;
                     }
                 }
 
                 if(valid){
-                    // if(parseInt(temp) < openTime || parseInt(temp) >= closeTime){
-                    //     room.push("closed");
-                    // }
                     if(resrvLists[i][keys[j]] === "false"){
-                        console.log(keys[j]);
+                        // console.log(keys[j]);
                         let index = isMyResrv(keys[j] + "00", i);
                         if(index === -1){
                             if(temp === '2350'){
@@ -710,15 +631,8 @@ const TableScreen = ({ navigation, route }) => {
                             }
                             unavail = true;
                             count = 1;
-                            // room.push("false");
-                            // room.push({
-                            //     status: 'false',
-                            //     size: 1,
-                            // })
                         }
                         else {
-                            // console.log(myResrv[i]);
-                            // console.log(myResrv[i][index]);
                             if(temp === '2350'){
                                 room.push({
                                     status: 'mine',
@@ -728,12 +642,8 @@ const TableScreen = ({ navigation, route }) => {
                             }
                             myResrvEnd = myResrv[i][index].resrvEtime;
                             count = 1;
-                            // room.push("mine");
                         }
                     }
-                    // else if(moment(keys[j], 'YYYYMMDDHHmm').isBefore()){
-                    //     room.push("pastTime");
-                    // }
                     else {
                         let hour = parseInt(temp.substring(0,2));
                         let min = temp.substring(2);
@@ -745,9 +655,6 @@ const TableScreen = ({ navigation, route }) => {
                             size: 1
                         })
                     }
-                    // if(i == 0){
-                    //     roomTimes.push(temp + "00"); // for the startTime in the reservationScreen because it needs it to see where it starts, so geting only for one of the column
-                    // }
                 }
             }
         }
@@ -756,7 +663,6 @@ const TableScreen = ({ navigation, route }) => {
         optionValList.push(optionVals);
     }
 
-    // console.log("ROOMTIME: " + roomTimes.length);
 
     const TableCol = ({ item, ind, start }) => {
         var startIndex = -1;
@@ -789,20 +695,10 @@ const TableScreen = ({ navigation, route }) => {
                     }}
                 /> */}
                 {item.map((item, index) => {
-                    if(item.status === "pastTime"){
-                        return (
-                            <NotAvail key={index} />
-                        );
-                    }
-                    else if(item.status === "true"){
+                    if(item.status === "true"){
                         startIndex++;
                         return (
                             <Avail key={index} rmCode={roomCodes[ind]} ops={optionsList[ind]} opVals={optionValList[ind]} start={roomTimes[startIndex]}/>
-                        )
-                    }
-                    else if(item.status === 'closed'){
-                        return (
-                            <Closed item={item} ind={index} key={index} />
                         )
                     }
                     else if(item.status === 'mine'){
@@ -818,14 +714,6 @@ const TableScreen = ({ navigation, route }) => {
                         )
                     }      
                 })}
-            </View>
-        );
-    }
-
-    const NotAvail = ({ item, ind }) => {
-        return (
-            <View style={{ height: MIN_H, justifyContent: 'center', backgroundColor:'#838383', borderBottomWidth: 1, borderColor: 'black', borderRightWidth: 1,}}>
-                <Text style={{ textAlign: 'center', color: 'white'}}>예약불가</Text>
             </View>
         );
     }
@@ -856,14 +744,6 @@ const TableScreen = ({ navigation, route }) => {
         );
     }
 
-    const Closed = ({ item, ind }) => {
-        return (
-            <View style={{ height: MIN_H, justifyContent: 'center', backgroundColor:'#838383', borderBottomWidth: 1, borderColor: 'black', borderRightWidth: 1,}}>
-                <Text style={{ textAlign: 'center', color: 'white'}}>영업외시간</Text>
-            </View>
-        );
-    }
-
     const Booked = ({ size }) => {
         return (
             <View style={{ height: MIN_H * size, justifyContent: 'center', backgroundColor:'#838383', borderBottomWidth: 1, borderColor: 'black', borderRightWidth: 1, alignItems: 'center' }}>
@@ -886,14 +766,6 @@ const TableScreen = ({ navigation, route }) => {
                 <Text style={{}}>{hour + item}</Text>
             </View>
         );
-    }
-
-    const Hour = ({ item, index }) => {
-        return (
-            <View>
-                <Text style={{height: 180}}>{item}</Text>
-            </View>
-        )
     }
 
     const RenderHour = ({ item, ind }) => {
@@ -964,7 +836,6 @@ const TableScreen = ({ navigation, route }) => {
     }
 
     const onDayPress = day => {
-        // console.log(day);
         setModalVisible(!modalVisible);
         let currDate = new Date(day.dateString);
         navigation.replace('Table', { 
@@ -983,10 +854,10 @@ const TableScreen = ({ navigation, route }) => {
                 tx.executeSql("INSERT INTO Branches (location, branchCode, branchName) VALUES(?,?,?);", [location, branchCode, branchName],
                     (tx, results) => {
                         // console.log("[TableScreen]:: Successfully inserted.");
-                        console.log(results);
+                        // console.log(results);
                     },
                     (txt, error) => {
-                        console.log(error);
+                        // console.log(error);
                     }
                 )
             },
@@ -1000,10 +871,10 @@ const TableScreen = ({ navigation, route }) => {
                 tx.executeSql(`DELETE FROM Branches WHERE _id = ?;`, [_id],
                     (tx, results) => {
                         // console.log("[TableScreen]:: Successfully deleted.");
-                        console.log(results);
+                        // console.log(results);
                     },
                     (txt, error) => {
-                        console.log(error);
+                        // console.log(error);
                     }
                 )
             },
@@ -1035,7 +906,60 @@ const TableScreen = ({ navigation, route }) => {
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }} edges={['right', 'left', 'top']} >
+
+            {/* <View style={{borderWidth: 5, borderColor: 'black'}}>
+                <Image source={require('../../assets/tableBackground.png')} style={{resizeMode: 'contain'}}/>
+            </View> */}
             <View style={styles.branchBox}>
+                <ImageBackground 
+                    source={require('../../assets/tableBackground.png')} 
+                    resizeMode='cover' 
+                    style={styles.bgImage}
+                >
+                    <View style={styles.recentsBox}>
+                        <TouchableOpacity
+                            style={styles.recentBranchBtn}
+                            onPress={() => {
+                                if(!(secondBranch.current === null)){
+                                    handleBranch(secondBranch.current.location, secondBranch.current.branchCode, secondBranch.current.branchName, recents.current);
+
+                                }
+                            }}
+                        >
+                            <Text style={styles.recentBranchBtnText}>{secondBranch.current === null ? '   ----   ' : secondBranch.current.branchName + '점'}</Text>
+                        </TouchableOpacity>
+                        <View
+                            style={styles.currentBranch}
+                        >
+                            <Text style={styles.currentBranchText}>{route.params.branchName}점</Text>
+                        </View>
+                        <TouchableOpacity
+                            style={styles.recentBranchBtn}
+                            onPress={() => {
+                                if(!(thirdBranch.current === null)){
+                                    handleBranch(thirdBranch.current.location, thirdBranch.current.branchCode, thirdBranch.current.branchName, recents.current);
+                                }
+                            }}
+                        >
+                            <Text style={styles.recentBranchBtnText}>{thirdBranch.current === null ? '   ----   ' : thirdBranch.current.branchName + '점'}</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 18}}>
+                        <TouchableOpacity
+                                style={styles.branchSelector}
+                                onPress={() => {
+                                    setBranchModal(!branchModal);
+                                }}
+                            >
+                                <Text style={styles.branchSelectorText}>+지점선택</Text>
+                        </TouchableOpacity>
+                    </View>
+                    
+                </ImageBackground>
+            </View>
+
+            {/* <View style={styles.branchBox}>
                 <View style={styles.branchHolder}>
                     <Text style={styles.branchHolderText}>+ 지점 선택</Text>
                 </View>
@@ -1051,8 +975,7 @@ const TableScreen = ({ navigation, route }) => {
                 >
                     <Text style={styles.branchSelectorText}>+ 지점 선택</Text>
                 </TouchableOpacity>
-
-            </View>
+            </View> */}
 
             <View style={styles.dateBox}>
                 <TouchableOpacity
@@ -1181,8 +1104,6 @@ const TableScreen = ({ navigation, route }) => {
                 onBackButtonPress={() => setModalVisible(!modalVisible)}
                 onBackdropPress={() => setModalVisible(!modalVisible)}
                 hideModalContentWhileAnimating={true}
-                // animationOut={'fadeOut'}
-                // style={{margin: 0, justifyContent: 'flex-end'}}
                 backdropTransitionInTiming={0}
                 useNativeDriver={true}
             >
@@ -1271,21 +1192,48 @@ const TableScreen = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({
     branchBox: {
-        // borderWidth: 2,
-        // borderColor: 'red',
-        // justifyContent: 'center',
-        // alignItems: 'center'
-        flexDirection: 'row',
-        justifyContent: "space-between",
-        alignItems: 'center',
-        marginTop: 10
+        // flexDirection: 'row',
+        // justifyContent: "space-between",
+        // alignItems: 'center',
+        // marginTop: 10,
+        flex: 0.3,
     },
-    branchButton: {
-        backgroundColor: '#17375E',
+    bgImage: {
+        width: '100%',
+        height: '100%',
+    },
+    recentsBox: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginHorizontal: 24,
+        marginTop: 25,
+    },
+    recentBranchBtn: {
+        borderRadius: 20,
+        borderWidth: 1,
+        borderColor: 'white',
+        paddingVertical: 5,
+        paddingHorizontal: 8,
+        maxWidth: '25%',
+        justifyContent: 'center',
+    },
+    recentBranchBtnText: {
+        color: 'white',
+        textAlign: 'center',
+    },
+    currentBranch: {
+        backgroundColor: 'white',
         borderRadius: 20,
         paddingVertical: 5,
-        paddingHorizontal: 20,
-        maxWidth: '30%'
+        paddingHorizontal: 8,
+        justifyContent: 'center'
+    },
+    currentBranchText: {
+        color: '#4383E4',
+        textAlign: 'center',
+    },
+    branchButton: {
+
     },
     branchText: {
         fontWeight: 'bold',
@@ -1300,22 +1248,19 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         paddingHorizontal: 15,
         marginLeft: 15,
-        // maxWidth: '30%'
     },
     branchSelector: {
+        backgroundColor: '#2B60AD',
         borderRadius: 20,
-        borderWidth: 2,
-        borderColor: '#17375E',
         paddingVertical: 5,
-        paddingHorizontal: 15,
-        marginRight: 15,
-        // maxWidth: '25%'
+        paddingHorizontal: 10,
+        // maxWidth: '30%'
     },
     branchHolderText: {
         color: 'white'
     },
     branchSelectorText: {
-        fontSize: 14
+        color: 'white',
     },
     dateBox: {
         flexDirection: 'row', 
@@ -1324,15 +1269,12 @@ const styles = StyleSheet.create({
         marginHorizontal: 20,
         marginTop: 12,
         marginBottom: 22,
-        // borderWidth: 1,
-        // borderColor: 'red',
         alignItems: 'center'
     },
     dateStyle: {
         fontSize: 20,
         color: '#838383',
         fontWeight: 'bold',
-        // marginTop: 2.5
     },
     dateTitle: {
         flexDirection: 'row',
@@ -1344,37 +1286,23 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'black',
         flex: 1,
-        // borderWidth: 1,
-        // borderColor: "purple",
         borderRadius: 10,
         overflow: 'hidden'
     },
     flatList: {
-        // borderWidth: 1,
         borderColor: 'black',
         alignSelf: 'flex-start',
         justifyContent: 'flex-start',
-        // marginLeft: 10,
-        // flex: 1,
-        // marginBottom: 10,
         borderBottomWidth: 1,
     },
     itemBox: {
-        // padding: 10,
-        // borderWidth: 1,
-        // borderColor: 'red',
         width: HOUR_W,
-        // paddingVertical: 10,
-        // borderLeftWidth: 1,
-        // borderBottomWidth: 1,
         borderRightWidth: 1,
         borderColor: 'black',
         flexDirection: 'row',
         alignItems: 'center',
     },
     titles: {
-        // flexDirection: 'row',
-        // width: TITLE_W,
         height: TITLE_H,
         borderBottomWidth: 1,
         borderColor: 'black',
@@ -1385,35 +1313,24 @@ const styles = StyleSheet.create({
         fontSize: 18
     },
     aboveTime: {
-        // padding: 10,
         borderBottomWidth: 1,
         borderRightWidth: 1,
         borderColor: 'black',
         width: HOUR_W,
         height: TITLE_H,
-        // borderTopLeftRadius: 10,
         justifyContent: 'center',
         alignItems: 'center'
     },
     hourText: {
-        // marginLeft: 10,
         textAlign: 'center',
-        // flex: 1,
-        // borderBottomWidth: 1,
-        // borderColor: "black",
-        // borderWidth: 1,
-        // borderColor: 'orange',
     },
     calendarBox: {
-        // borderWidth: 1,
-        // borderColor: 'black',
         paddingHorizontal: 20,
         paddingBottom: 15
     },
     calendar: {
         borderWidth: 1, 
         borderColor: 'black',
-        // margin: 10,
     },
     textStyle: {
         color: "white",
@@ -1424,8 +1341,6 @@ const styles = StyleSheet.create({
     modalBox: {
         borderRadius: 15,
         backgroundColor: 'white',
-        // height: 270,
-        // width: 300,
     },
     closeButton: {
         backgroundColor: "#262829",

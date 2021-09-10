@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, BackHandler, FlatList, Alert, ScrollView, useWindowDimensions} from 'react-native';
 import axios from 'axios';
-import { FontAwesome, Ionicons } from '@expo/vector-icons'; 
+import { Entypo, Ionicons } from '@expo/vector-icons'; 
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Collapse, CollapseHeader, CollapseBody } from 'accordion-collapse-react-native';
@@ -9,17 +9,17 @@ import Collapsible from 'react-native-collapsible';
 import { URL } from '../constants';
 
 import { useFocusEffect } from '@react-navigation/native';
+import { set } from 'react-native-reanimated';
 
 const InquiryScreen = ({ navigation, route }) => {
     const [inquiryList, setInquiryList] = useState([]);
     const [initial, setInitial] = useState(true);
     const [empty, setEmpty] = useState(false);
-    const [isOpen, setIsOpen] = useState("");
+    const [isOpen, setIsOpen] = useState([]);
 
     console.log("Entered InquiryScreen. Params: ");
     console.log(route.params);
 
-    
     // const getVocList = async () => {
     //     try{
     //         console.log("Attempting to get user inquiries...");
@@ -144,12 +144,18 @@ const InquiryScreen = ({ navigation, route }) => {
                                     <View key={index} style={styles.itemOuter}>
                                         <TouchableOpacity
                                             onPress={() => {
-                                                if(isOpen === ""){
-                                                    setIsOpen(item.idx);
+                                                if(!isOpen.includes(item.idx)){
+                                                    setIsOpen([...isOpen, item.idx]);
                                                     return;
                                                 }
                                                 else{
-                                                    setIsOpen("");
+                                                    let temp = [...isOpen];
+                                                    for(var i = 0; i < temp.length; i++){
+                                                        if(temp[i] === item.idx){
+                                                            temp.splice(i, 1);
+                                                        }
+                                                    }
+                                                    setIsOpen(temp);
                                                     return;
                                                 }
                                             }}
@@ -159,25 +165,27 @@ const InquiryScreen = ({ navigation, route }) => {
                                                 <View style={styles.itemData}>
                                                     <Text style={styles.itemSubject}>{item.subject}</Text>
                                                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                                                        <Text style={[styles.itemStatus, item.adminChk === 'O' ? styles.answered : styles.unAnswered]}>{item.adminChk === 'O' ? "답변 완료" : "답변 대기"}  </Text>
-                                                            {isOpen ?
-                                                                <Ionicons style={styles.caretIcon} name="ios-caret-up-circle-outline" size={24} color={item.adminChk === 'O' ? '#4982CF' : 'black'} />
+                                                        <Text style={[styles.itemStatus, item.adminChk === 'O' ? styles.answered : styles.unAnswered]}>{item.adminChk === 'O' ? "답변 완료" : "답변 대기"} </Text>
+                                                            {isOpen.includes(item.idx) ?
+                                                                // <Ionicons style={styles.caretIcon} name="ios-caret-up-circle-outline" size={24} color={item.adminChk === 'O' ? '#4982CF' : 'black'} />
+                                                                <Entypo name="chevron-up" size={24} color="#888888" />
                                                                 :
-                                                                <Ionicons style={styles.caretIcon} name="ios-caret-down-circle-outline" size={24} color={item.adminChk === 'O' ? '#4982CF' : 'black'} />
+                                                                // <Ionicons style={styles.caretIcon} name="ios-caret-down-circle-outline" size={24} color={item.adminChk === 'O' ? '#4982CF' : 'black'} />
+                                                                <Entypo name="chevron-down" size={24} color="#888888" />
                                                             }
                                                     </View>
                                                 </View>
                                             </View>
 
                                             <Collapsible
-                                                collapsed={isOpen !== item.idx}
+                                                collapsed={!isOpen.includes(item.idx)}
                                             > 
                                                 <View style={styles.itemBody}>
                                                     <Text style={styles.itemBodyText}>{item.note}</Text>
                                                     {item.adminChk === 'O' ?
                                                         (<View style={{}}>
                                                             <Text style={styles.answerLabel}>답변: </Text>
-                                                            <Text style={styles.answerText}>이것이 답변입니다!</Text>
+                                                            <Text style={styles.answerText}>이것이 답변입니다!{item.answer}</Text>
                                                         </View>)
                                                         :
                                                         null

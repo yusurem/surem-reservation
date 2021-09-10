@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableHighlight, ActivityIndicator, Image, Switch, Alert, TouchableOpacity, ScrollView, Linking, BackHandler } from 'react-native';
 import axios from 'axios';
-import { MaterialCommunityIcons, Feather } from '@expo/vector-icons'; 
+import { MaterialCommunityIcons, Feather, Entypo } from '@expo/vector-icons'; 
 import QRCode from 'react-native-qrcode-svg';
 import Modal from 'react-native-modal';
 import { useEffect } from 'react';
@@ -19,9 +19,13 @@ const MyScreen = ({ navigation, route }) => {
     const [name, setName] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
 
-    const [usercode, setUsercode] = useState(null);
-	const [secretCode, setSecretCode] = useState(null);
+    // const [usercode, setUsercode] = useState(null);
+	// const [secretCode, setSecretCode] = useState(null);
     const [couponNum, setCouponNum] = useState(0);
+
+    const usercode = useRef(null);
+    const secretCode = useRef(null);
+    const username = useRef(null);
 
     const [serviceTerm, setServiceTerm] = useState(false);
     const [infoTerm, setInfoTerm] = useState(false);
@@ -58,8 +62,11 @@ const MyScreen = ({ navigation, route }) => {
                     [],
                     (tx, results) => {
                         // console.log("called!")
-                        setUsercode(results.rows.item(0).usercode)
-                        setSecretCode(results.rows.item(0).secretCode)
+                        // setUsercode(results.rows.item(0).usercode);
+                        usercode.current = results.rows.item(0).usercode;
+                        // setSecretCode(results.rows.item(0).secretCode);
+                        secretCode.current = results.rows.item(0).secretCode;
+                        username.current = results.rows.item(0).username
                         resolve();
                     },
                     (tx, error) => {
@@ -74,15 +81,15 @@ const MyScreen = ({ navigation, route }) => {
     const getMyInfo = async () => {
         try{
             console.log("Attempting to get user info...");
-            console.log("usercode: " + usercode);
-            console.log("secretCode: " + secretCode);
-            if(usercode === null || secretCode === null){
+            console.log("usercode: " + usercode.current);
+            console.log("secretCode: " + secretCode.current);
+            if(usercode.current === null || secretCode.current === null){
                 return;
             }
             const response = await axios.post(URL + '/myInfo', {
             // const response = await axios.post('http://112.221.94.101:8980/myInfo', {
-                usercode: usercode,
-                securityKey: secretCode
+                usercode: usercode.current,
+                securityKey: secretCode.current
             });
             console.log(`Got the response!`);
             console.log(response.data);
@@ -126,11 +133,11 @@ const MyScreen = ({ navigation, route }) => {
     const quitMember = async () => {
         try{
             console.log("Attempting to quit user...");
-            console.log("usercode: " + usercode);
-            console.log("secretCode: " + secretCode);
+            console.log("usercode: " + usercode.current);
+            console.log("secretCode: " + secretCode.current);
             const response = await axios.post(URL + '/quitMember', {
-                usercode: usercode,
-                securityKey: secretCode
+                usercode: usercode.current,
+                securityKey: secretCode.current
             });
 
             console.log(`Got the response for quit!`);
@@ -160,18 +167,18 @@ const MyScreen = ({ navigation, route }) => {
                     (tx, results) => {
                         if(results.rows.length > 0){
                           console.log("[MyScreen]:: Push permission not allowed.");
-                          setInitial(false);
+                        //   setInitial(false);
                           resolve(false);
                         }
                         else{
                           console.log("[MyScreen]:: Push permission allowed.");
-                          setInitial(false);
+                        //   setInitial(false);
                           resolve(true);
                         }
                     },
                     (tx, error) => {
                         // console.log(error);
-                        setInitial(false);
+                        // setInitial(false);
                         reject(error);
                     }
                 );
@@ -251,6 +258,7 @@ const MyScreen = ({ navigation, route }) => {
             if(!permission){
                 setAllowPush(false);
             }
+            setInitial(false);
             // console.log("got push");
             // console.log("set initial to false");
         }
@@ -290,27 +298,34 @@ const MyScreen = ({ navigation, route }) => {
                         <View style={styles.infoBox}>
                             <View style={styles.infoTitle}>
                                 <View style={styles.infoTextBox}>
+                                    <Text style={styles.infoText}>이름</Text>
+                                </View>
+                                <View style={styles.infoTextBox}>
                                     <Text style={styles.infoText}>핸드폰 번호</Text>
                                 </View>
                                 <Text style={styles.infoText}>내 쿠폰 확인</Text>
                             </View>
                             <View style={styles.infoValue}>
                                 <View style={styles.infoTextBox}>
-                                    <Text style={styles.infoText}>{usercode.substring(0,3) + "-" + usercode.substring(3,7) + "-" + usercode.substring(7)}</Text>
+                                    <Text style={styles.infoText}>{username.current}</Text>
+                                </View>
+                                <View style={styles.infoTextBox}>
+                                    <Text style={styles.infoText}>{usercode.current.substring(0,3) + "-" + usercode.current.substring(3,7) + "-" + usercode.current.substring(7)}</Text>
                                 </View>
                                 <TouchableOpacity
                                     onPress={() => {
                                         // Alert.alert("쿠폰들");
                                         navigation.navigate("MyCoupon", {
-                                            usercode: usercode,
-                                            secretCode: secretCode
+                                            usercode: usercode.current,
+                                            secretCode: secretCode.current
                                         });
                                     }}
                                 >
-                                    <View style={{ flexDirection: 'row' }}>
-                                        <Text style={styles.infoText}>{couponNum}개</Text>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                        <Text style={styles.infoText}>{couponNum}개   </Text>
                                         <View style={{ justifyContent: 'center' }}> 
-                                            <MaterialCommunityIcons style={styles.couponIcon} name="greater-than" size={18} color="#6C6C6C" />
+                                            {/* <MaterialCommunityIcons style={styles.couponIcon} name="greater-than" size={18} color="#6C6C6C" /> */}
+                                            <Entypo name="chevron-thin-right" size={16} color="#999999" />
                                         </View>
                                     </View>
                                 </TouchableOpacity>
@@ -336,14 +351,18 @@ const MyScreen = ({ navigation, route }) => {
                                             style={{ flexDirection: 'row' , flex: 1}}
                                             onPress={() => {
                                                 navigation.navigate("Inquiry", {
-                                                    usercode: usercode,
-                                                    secretCode: secretCode
+                                                    usercode: usercode.current,
+                                                    secretCode: secretCode.current
                                                 });
                                             }}
                                         >
                                             <View style={{ flexDirection: 'row' }}>
-                                                <Text style={styles.infoText}> </Text>
-                                                <MaterialCommunityIcons style={styles.askIcon} name="greater-than" size={18} color="#6C6C6C" />
+                                                <Text style={styles.infoText}>   </Text>
+                                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                                    {/* <MaterialCommunityIcons style={{}} name="greater-than" size={18} color="#6C6C6C" /> */}
+                                                    <Entypo name="chevron-thin-right" size={16} color="#999999" />
+
+                                                </View>
                                                 <View style={{ flex: 1 }}/>
                                             </View>
                                         </TouchableOpacity>
@@ -371,8 +390,11 @@ const MyScreen = ({ navigation, route }) => {
                                             }}
                                         >
                                             <View style={{ flexDirection: 'row' }}>
-                                                <Text style={styles.infoText}> </Text>
-                                                <MaterialCommunityIcons style={styles.askIcon} name="greater-than" size={18} color="#6C6C6C" />
+                                                <Text style={styles.infoText}>   </Text>
+                                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                                    {/* <MaterialCommunityIcons style={{}} name="greater-than" size={18} color="#6C6C6C" /> */}
+                                                    <Entypo name="chevron-thin-right" size={16} color="#999999" />
+                                                </View>
                                                 <View style={{ flex: 1 }}/>
                                             </View>
                                         </TouchableOpacity>          
@@ -392,7 +414,8 @@ const MyScreen = ({ navigation, route }) => {
                             >
                                 <View style={styles.subView}>
                                     <Text style={styles.subTerms}>서비스 이용약관</Text>
-                                    <MaterialCommunityIcons style={styles.termIcon} name="greater-than" size={18} color="#6C6C6C" />
+                                    {/* <MaterialCommunityIcons style={styles.termIcon} name="greater-than" size={18} color="#6C6C6C" /> */}
+                                    <Entypo name="chevron-thin-right" size={16} color="#999999" />
                                 </View>
                             </TouchableOpacity>
                             <TouchableOpacity
@@ -404,7 +427,8 @@ const MyScreen = ({ navigation, route }) => {
                             >
                                 <View style={styles.subView}>
                                     <Text style={styles.subTerms}>개인정보 취급 방침</Text>
-                                    <MaterialCommunityIcons style={styles.termIcon} name="greater-than" size={18} color="#6C6C6C" />
+                                    {/* <MaterialCommunityIcons style={styles.termIcon} name="greater-than" size={18} color="#6C6C6C" /> */}
+                                    <Entypo name="chevron-thin-right" size={16} color="#999999" />
                                 </View>
                             </TouchableOpacity>
                             <TouchableOpacity
@@ -416,7 +440,8 @@ const MyScreen = ({ navigation, route }) => {
                             >
                                 <View style={styles.subView}>
                                     <Text style={styles.subTerms}>전자 금융 거래 약관</Text>
-                                    <MaterialCommunityIcons style={styles.termIcon} name="greater-than" size={18} color="#6C6C6C" />
+                                    {/* <MaterialCommunityIcons style={styles.termIcon} name="greater-than" size={18} color="#6C6C6C" /> */}
+                                    <Entypo name="chevron-thin-right" size={16} color="#999999" />
                                 </View>
                             </TouchableOpacity>
                             

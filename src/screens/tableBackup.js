@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, useWindowDimensions, BackHandler, Alert, Image, FlatList } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, useWindowDimensions, BackHandler, Alert, Image, FlatList, ImageBackground } from 'react-native';
 import { MaterialCommunityIcons, AntDesign, FontAwesome5, Feather } from '@expo/vector-icons';
 import axios from 'axios';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -13,8 +13,8 @@ import BranchModal from '../components/BranchModal';
 import * as SQLite from 'expo-sqlite';
 
 const TITLE_H = 60;
-const TITLE_W = 170;
-const MIN_H = 30;
+var TITLE_W = 170;
+const MIN_H = 35;
 const HOUR_W = 130;
 
 const db = SQLite.openDatabase("db.db");
@@ -31,15 +31,10 @@ const TableScreen = ({ navigation, route }) => {
     // states
     const [errorMessageA, setErrorMessageA] = useState(""); // errorMessage
     const [resrvLists, setResrvLists] = useState([]); // the full list of availability from API
-    // const [usercode, setUsercode] = useState("");
-	// const [secretCode, setSecretCode] = useState("");
-    // const [myResrvList, setMyResrvList] = useState([]); // users list of reservation
-    // const [roomLists, setRoomLists] = useState(""); 
+
     const [modalVisible, setModalVisible] = useState(false); // visibility of calendar modal
     const [branchModal, setBranchModal] = useState(false); // visiblity of branch modal
-    // const [roomWidth, setRoomWidth] = useState(windowWidth - 30 - 115 - 5);
 
-    // const [tableData, setTableData] = useState([]);
     const [called, setCalled] = useState(false); // checking if the requried APIs were called
     const [currBranch, setCurrBranch] = useState(null); // the current branch the table is representing
 
@@ -49,15 +44,10 @@ const TableScreen = ({ navigation, route }) => {
     const isToday = useRef(false);
     const closed = useRef(false);
 
-    // const [startPerf, setStartPerf] = useState(performance.now());
-    // const [endPerf, setEndPerf] = useState(0);
-
     const weekDays = new Array('일', '월', '화', '수', '목', '금', '토');
 
     console.log("[TableScreen]:: Screen has open. --Params: ");
     // console.log(route.params);
-    // console.log(route.params.dateString);
-    console.log(called);
 
     // Focus effect that handles what happens when the back button is pressed on Android
     useFocusEffect(() => {
@@ -106,7 +96,7 @@ const TableScreen = ({ navigation, route }) => {
                         (tx, results) => {
                             // do set current, recentA, recentB 
                             // ex. set(results.row.item(0).current)
-                            console.log("[TableScreen]:: Successfully retrieved.");
+                            // console.log("[TableScreen]:: Successfully retrieved.");
                             // console.log(results);
                             if(results.rows._array.length === 0){
                                 resolve("noBranch");
@@ -129,14 +119,12 @@ const TableScreen = ({ navigation, route }) => {
     // API call for the list of availability for reservation
     const getReservationList = async (resDate, adCode) => {
         try{
-            console.log("[TableScreen]:: Attempting to retreive list of available reservation times...");
+            // console.log("[TableScreen]:: Attempting to retreive list of available reservation times...");
             // console.log("resrvCTime: " + resDate);
             // console.log("adminCode: " + adCode);
             const response = await axios.post(URL + '/getReservationList', {
                 resrvCtime: resDate,
                 adminCode: adCode,
-                // adminCode: 'surem3'
-
             });
             // console.log(response.data);
            
@@ -156,7 +144,7 @@ const TableScreen = ({ navigation, route }) => {
                 )
             }
 
-            console.log("[TableScreen]:: Reservation List API call successful!");
+            // console.log("[TableScreen]:: Reservation List API call successful!");
 
             if(response.data.roomList[0].workStartTime === 'close'){
                 closed.current = true;
@@ -164,8 +152,7 @@ const TableScreen = ({ navigation, route }) => {
             }
 
             setResrvLists(response.data.roomList);
-            // setCalled(true);
-            // setRefreshing(false);
+
         } catch (err) {
             setErrorMessageA("API 문제발생");
             console.log(err);
@@ -174,18 +161,16 @@ const TableScreen = ({ navigation, route }) => {
     }
 
     const getUserId = () => {
-        console.log("in getuserID");
+        // console.log("in getuserID");
         return new Promise((resolve, reject) => {
             db.transaction(async (tx)=>{
                 tx.executeSql(
                     `select * from UserId order by _id desc;`,
                     [],
                     (tx, results) =>{ 
-                        console.log("got user id");
+                        // console.log("got user id");
                         usercode.current = results.rows.item(0).usercode;
                         secretCode.current = results.rows.item(0).secretCode;
-                        // setUsercode(results.rows.item(0).usercode)
-                        // setSecretCode(results.rows.item(0).secretCode)
                         resolve();
                     },
                     (tx, error) => {
@@ -198,9 +183,9 @@ const TableScreen = ({ navigation, route }) => {
 
     const getReservation = async () => {
         try{
-            console.log("[TableScreen]:: Attemting to get list of USERS reservations...");
-            console.log("usercode: " + usercode);
-            console.log("secretCode: " + secretCode);
+            // console.log("[TableScreen]:: Attemting to get list of USERS reservations...");
+            // console.log("usercode: " + usercode);
+            // console.log("secretCode: " + secretCode);
             const response = await axios.post(URL + '/getReservation', {
                 usercode: usercode.current,
                 secretCode: secretCode.current
@@ -210,25 +195,18 @@ const TableScreen = ({ navigation, route }) => {
 
             if(response.data.returnCode !== "E0000"){
                 console.log("[TableScreen]:: getReservation Error: " + response.data.returnCode);
-                // Alert.alert(
-                //     "API 문제발생",
-                //     "잠시후 다시 시도해주세요",
-                //     [
-                //         {
-                //             text: "홈으로",
-                //             onPress: () => { 
-                //                 navigation.navigate("Home");
-                //             }
-                //         }
-                //     ]
-                // )
+                Alert.alert(
+                    "내 예약 가져오는데 알수없는 문제가 발생했습니다. 잠시후 다시 시도해주세요."
+                );
+                return 'Error';
             }
             
-            console.log("[TableScreen]:: Successfully retrieved USERS list of reservation.");
+            // console.log("[TableScreen]:: Successfully retrieved USERS list of reservation.");
             myResrvList.current = response.data.reservations;
         } catch (err) {
-            setErrorMessageA("API 문제발생");
-            console.log(err);
+            Alert.alert(
+                "내 예약 가져오는데 알수없는 문제가 발생했습니다. 잠시후 다시 시도해주세요."
+            );
             return 'Error';
         }
     }
@@ -258,16 +236,6 @@ const TableScreen = ({ navigation, route }) => {
             isToday.current = true;
         }
     }
-   
-    // If there is no branch oh wait make this into a await and use it down there.
-    // if(currBranch === null){
-    //     if(!('location' in route.params)){
-    //         getBranch();
-    //         return (
-    //             <LoadingScreen/>
-    //         )
-    //     }
-    // }
     
     const initialLoading = async () => {
         if(currBranch === null){
@@ -326,27 +294,23 @@ const TableScreen = ({ navigation, route }) => {
         setCalled(true);
     }
 
-    // if(resrvLists.length == 0){
     if(!called){
-        console.log("[TableScreen]:: INITIALIZING Reservation List...");
+        // console.log("[TableScreen]:: INITIALIZING Reservation List...");
 
         initialLoading();
-        // (async () => await initialLoading())();
-
-        // var tt1 = performance.now()
-        // console.log("API call took " + (tt1 - tt0) + " milliseconds.")
 
         return (
             <LoadingScreen/>
         )
     }
 
-    console.log("[TableScreen]:: FINISHED Intializing Reservation List");
+    // console.log("[TableScreen]:: FINISHED Intializing Reservation List");
 
     // separate rendering page for a closed day. For some reason, react won't make me reuse it from the bottom, so have to duplicate
     if(closed.current){
         return (
             <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }} edges={['right', 'left', 'top']} >
+
                 <View style={styles.branchBox}>
                     <View style={styles.branchHolder}>
                         <Text style={styles.branchHolderText}>+ 지점 선택</Text>
@@ -363,7 +327,6 @@ const TableScreen = ({ navigation, route }) => {
                     >
                         <Text style={styles.branchSelectorText}>+ 지점 선택</Text>
                     </TouchableOpacity>
-
                 </View>
 
                 <View style={styles.dateBox}>
@@ -449,69 +412,118 @@ const TableScreen = ({ navigation, route }) => {
     };
     LocaleConfig.defaultLocale = 'kr';
 
-    // const startHour = "0800";
-    // const hours = ['8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '13:00 PM', '14:00 PM', 
-    //                 '15:00 PM', '16:00 PM', '17:00 PM', '18:00 PM', '19:00 PM', '20:00 PM', '21:00 PM', 
-    //                 '22:00 PM', '23:00 PM'];
+    // adjusting the cell width accordingly if the screen is much larger
+    let cellWidth = windowWidth - HOUR_W - 20;
+    if((TITLE_W * resrvLists.length) < cellWidth){
+        TITLE_W = cellWidth / resrvLists.length;
+    }
 
-    var startHour;
-    const mins = ['00분', '10분', '20분', '30분', '40분', '50분'];
+    var startTime;
+    const mins = [':00', ':10', ':20', ':30', ':40', ':50'];
+    var startMinZero = true; // a flag for whether the startTime's minute value is 00 or not
+    var endMinZero = true; // a flag for whether the endTime's minute value is 00 or not
     
-    // console.log("isToday: " + isToday);
-    if(isToday.current){
-        var todayHour = new Date().getHours(); // number 0~23
-        let temp = parseInt(resrvLists[0].workStartTime.substring(0,2));
+    if(isToday.current){ // checking if it's today. If it is, determining which time to show
+        var todayHr = new Date().getHours(); // number 0~23
+        var todayMin = new Date().getMinutes(); // number 0~59
+        let tempHr = parseInt(resrvLists[0].workStartTime.substring(0,2));
+        let tempMin = parseInt(resrvLists[0].workStartTime.substring(2,4))
 
-        if(todayHour < temp){
-            startHour = `${resrvLists[0].workStartTime.substring(0,2)}00`;
+        if((todayHr > tempHr) || (todayHr === tempHr && todayMin >= tempMin)){ // checking if current time is past the workStartTime
+            todayMin = Math.floor(todayMin / 10);
+            if(todayMin === 5){
+                todayHr++;
+                todayMin = '00';
+            }
+            else{
+                todayMin++;
+                todayMin *= 10;
+                startMinZero = false;
+
+            }
+            startTime = (todayHr > 9 ? todayHr : `0${todayHr}`) + (todayMin + ""); // assigning the startTime of the table as 10 minutes after current time
         }
         else{
-            startHour = `${todayHour > 9 ? todayHour : '0' + todayHour }00`;
+            startTime = (tempHr > 9 ? tempHr : `0${tempHr}`) + ((tempMin === 0 ? '00' : tempMin)  + ""); // assigning the startTime as workStartTime because current time is before it
+            if(tempMin !== 0){
+                startMinZero = false;
+            }
         }
     }
     else{
-        // console.log("OMG HERE YES IT GOT TO THE RIGHT PLACE")
-        startHour = `${resrvLists[0].workStartTime.substring(0,2)}00`;
+        startTime = `${resrvLists[0].workStartTime.substring(0,4)}`; // assigning the workStartTime because it's not today
+        if(resrvLists[0].workStartTime.charAt(2) !== '0'){
+            startMinZero = false;
+        }
     }
 
-    const endHour = `${resrvLists[0].workEndTime.substring(0,4)}`;
+    const endTime = `${resrvLists[0].workEndTime.substring(0,4)}`; // assigning the endTime of the table (minutes is not necessariliy 00)
+    if(endTime.substring(2) !== '00'){
+        endMinZero = false;
+    }
 
-    var tempStart = parseInt(startHour.substring(0,2)); // 00 00
-    var endTime = parseInt(resrvLists[0].workEndTime.substring(0,2)); // 23 59 
-    if(resrvLists[0].workEndTime.charAt(2) !== '0'){
-        endTime++;
+    // making a separate firstHour object for the starting hour of the table. This is because the starting minutes is variable, and depending on whether
+    // it is 00 or not, we add the appropriate mins to the 'min' property of the firstHour object
+    var firstHour;
+    var tempStart = parseInt(startTime.substring(0,2)); // 00 00
+    if(startMinZero){
+        firstHour = {
+            hour: `${tempStart}:00 ${tempStart < 12 ? 'AM' : 'PM'}`,
+            mins: [':00', ':10', ':20', ':30', ':40', ':50'],
+        }
+    }
+    else{
+        var firstMins = [];
+        while(todayMin < 60){
+            firstMins.push(`:${todayMin}`);
+            todayMin += 10;
+        }
+        firstHour = {
+            hour: `${tempStart}:00 ${tempStart < 12 ? 'AM' : 'PM'}`,
+            mins: firstMins,
+        }
+    }
+    tempStart++; // to start from the next hour
+
+    // making a separate lastHour object for the ending hour fo the table. This is because the ending minutes is variable, and depending on whether
+    // it is 00 or not, we add the appropriate mins to the 'min' property fo the lastHour object
+    // it's slightly different for the end Hour because if it's 00 then you don't show it at all, but if it's not, then you have to show it
+    // for instance, if it's 8:00, then you don't show the 8:00 section at all. But if it's 8:20, then you have to show till the 20 minute mark.
+    var lastHour;
+    var endHour = parseInt(endTime.substring(0,2));
+    var endMin = parseInt(endTime.substring(2));
+    if(!endMinZero){
+        var lastMins = [':00'];
+        let temp = 10;
+        while(temp <= endMin){
+            lastMins.push(`:${temp}`);
+            temp += 10;
+        }
+        lastHour = {
+            hour: `${endHour}:00 ${endHour < 12 ? 'AM' : 'PM'}`,
+            mins: lastMins,
+        }
     }
 
     const hours = [];
-    while(tempStart !== endTime){ // tendHour 24
-        // console.log("here");
+    while(tempStart !== endHour){ // tendHour 24
         hours.push(`${tempStart}:00 ${tempStart < 12 ? 'AM' : 'PM'}`);
         tempStart++;
     }
-    // console.log("[TableScreen]:: this is thours: ");
-    // console.log(hours);
-    
-    
-    // var t0 = performance.now();
-    // var tt1 = performance.now();
-    // console.log("API call took " + (tt1 - startPerf) + " milliseconds.");
 
-    const openTime = parseInt(resrvLists[0].workStartTime.substring(0,4));
-    const closeTime = parseInt(resrvLists[0].workEndTime.substring(0,4));
+    // extracting roomCodes and roomNames & setting up for the user's reservations
     const roomCodes = [];
     const roomNames = [];
     const myResrv = [];
     var rmCodeMap = {}
     for(var i = 0; i < resrvLists.length; i++){
-        // openTimes.push(parseInt(resrvLists[i].workStartTime.substring(0,4)));
-        // closeTimes.push(parseInt(resrvLists[i].workEndTime.substring(0,4)));
         roomCodes.push(resrvLists[i].roomCode);
         roomNames.push(resrvLists[i].roomName);
         myResrv.push([]);
         rmCodeMap[resrvLists[i].roomCode] = i;
     }
 
-
+    // extracting my reservations based on current branch
     for(var i = 0; i < myResrvList.current.length; i++){
         if(roomCodes.includes(myResrvList.current[i].roomCode)){
             myResrv[rmCodeMap[myResrvList.current[i].roomCode]].push({
@@ -520,8 +532,6 @@ const TableScreen = ({ navigation, route }) => {
             })
         }
     }
-
-    console.log(myResrv);
 
     const isMyResrv = (time, index) => {
         for(var i = 0; i < myResrv[index].length; i++){
@@ -532,7 +542,6 @@ const TableScreen = ({ navigation, route }) => {
         return -1;
     }
 
-    console.log("OKAY HERE! " + resrvLists[0]["202107222100"]);
 
     const roomTimes = [];
     const roomData = [];
@@ -540,63 +549,97 @@ const TableScreen = ({ navigation, route }) => {
     const optionValList = [];
     var valid = false;
     var myResrvEnd = null;
+    var count; // used to keep track of how many consecutive cells are displaying the same info 
+    var unavail = false;
     for(var i = 0; i < resrvLists.length; i++){
         valid = false;
+        unavail = false;
+        myResrvEnd = null;
         var keys = Object.keys(resrvLists[i]);
         const room = [];
         const options = [];
         const optionVals = [];
         for(var j = 0; j < keys.length; j++){
             if(keys[j] !== 'roomCode' && keys[j] !== 'roomName'){
-                if(myResrvEnd !== null){
-                    // check if it's end
-                    // console.log(keys[j]);
+                let temp = keys[j].substring(8);
+                if(temp === startTime){
+                    valid = true;
+                }
+                else if(temp === endTime){
+                    valid = false;
+                }
+                if(valid && i == 0){
+                    roomTimes.push(temp + '00');
+                }
+
+                if(valid && unavail){
+                    if(resrvLists[i][keys[j]] === 'false'){
+                        let index = isMyResrv(keys[j] + "00", i);
+                        if(index === -1){
+                            count++;
+                            continue;
+                        }
+                    }
+                    unavail = false;
+                    room.push({
+                        status: 'false',
+                        size: count,
+                    })
+                    count = 0;
+                }
+
+                if(valid && myResrvEnd !== null){
                     if(myResrvEnd === keys[j] + "00"){
                         myResrvEnd = null;
+                        room.push({
+                            status: 'mine',
+                            size: count,
+                        });
+                        count = 0;
                     }
                     else {
-                        if(i == 0){
-                            roomTimes.push(temp + "00");
-                        }
-                        room.push("mine");
+                        count++;
                         continue;
                     }
                 }
-                let temp = keys[j].substring(8);
-                if(temp === startHour){
-                    valid = true;
-                }
-                else if(temp === endHour){
-                    valid = false;
-                }
+
                 if(valid){
-                    if(parseInt(temp) < openTime || parseInt(temp) >= closeTime){
-                        room.push("closed");
-                    }
-                    else if(resrvLists[i][keys[j]] === "false"){
+                    if(resrvLists[i][keys[j]] === "false"){
+                        // console.log(keys[j]);
                         let index = isMyResrv(keys[j] + "00", i);
                         if(index === -1){
-                            room.push("false");
+                            if(temp === '2350'){
+                                room.push({
+                                    status: 'false',
+                                    size: 1
+                                });
+                                continue;
+                            }
+                            unavail = true;
+                            count = 1;
                         }
                         else {
-                            // console.log(myResrv[i]);
-                            // console.log(myResrv[i][index]);
+                            if(temp === '2350'){
+                                room.push({
+                                    status: 'mine',
+                                    size: 1
+                                });
+                                continue;
+                            }
                             myResrvEnd = myResrv[i][index].resrvEtime;
-                            room.push("mine");
+                            count = 1;
                         }
-                    }
-                    else if(moment(keys[j], 'YYYYMMDDHHmm').isBefore()){
-                        room.push("pastTime");
                     }
                     else {
                         let hour = parseInt(temp.substring(0,2));
                         let min = temp.substring(2);
                         options.push(`${hour}:${min} ${hour > 11 ? "PM" : "AM"}`);
                         optionVals.push(`${hour > 9 ? hour : '0' + hour}${min}00`);
-                        room.push("true");
-                    }
-                    if(i == 0){
-                        roomTimes.push(temp + "00"); // for the startTime in the reservationScreen because it needs it to see where it starts, so geting only for one of the column
+                        // room.push("true");
+                        room.push({
+                            status: 'true',
+                            size: 1
+                        })
                     }
                 }
             }
@@ -606,7 +649,9 @@ const TableScreen = ({ navigation, route }) => {
         optionValList.push(optionVals);
     }
 
+
     const TableCol = ({ item, ind, start }) => {
+        var startIndex = -1;
         return (
             <View>
                 {/* <FlatList
@@ -636,33 +681,22 @@ const TableScreen = ({ navigation, route }) => {
                     }}
                 /> */}
                 {item.map((item, index) => {
-                    if(item === "pastTime"){
+                    if(item.status === "true"){
+                        startIndex++;
                         return (
-                            <NotAvail item={item} ind={index} key={index} />
-                        );
-                    }
-                    else if(item === "true"){
-                        return (
-                            <Avail item={item} ind={index} key={index} rmCode={roomCodes[ind]} ops={optionsList[ind]} opVals={optionValList[ind]} start={roomTimes[index]}/>
+                            <Avail key={index} rmCode={roomCodes[ind]} ops={optionsList[ind]} opVals={optionValList[ind]} start={roomTimes[startIndex]}/>
                         )
                     }
-                    else if(item === 'closed'){
+                    else if(item.status === 'mine'){
+                        startIndex += item.size;
                         return (
-                            <Closed item={item} ind={index} key={index} />
-                        )
-                    }
-                    else if(item === 'mine'){
-                        return (
-                            <MyBooked item={item} ind={index} key={index} />
+                            <MyBooked key={index} size={item.size} />
                         )
                     }
                     else{
-                        // continue until last false (count++)
-                        // and then do a mapping of range(count)
-                        // if odd, in middle one, if even, in between middle two
-                        // equation for middle : len / 2 & len / 2 -n1
+                        startIndex += item.size;  
                         return (
-                            <Booked item={item} ind={index} key={index} />
+                            <Booked key={index} size={item.size} />
                         )
                     }      
                 })}
@@ -670,15 +704,7 @@ const TableScreen = ({ navigation, route }) => {
         );
     }
 
-    const NotAvail = ({ item, index }) => {
-        return (
-            <View style={{ height: MIN_H, justifyContent: 'center', backgroundColor:'#838383', borderBottomWidth: 1, borderColor: 'black', borderRightWidth: 1,}}>
-                <Text style={{ textAlign: 'center', color: 'white'}}>예약불가</Text>
-            </View>
-        );
-    }
-
-    const Avail = ({ item, index, rmCode, ops, opVals, start}) => {
+    const Avail = ({ rmCode, ops, opVals, start}) => {
         return (
             <TouchableOpacity  
                 onPress={() => {
@@ -704,63 +730,90 @@ const TableScreen = ({ navigation, route }) => {
         );
     }
 
-    const Closed = ({ item, index }) => {
+    const Booked = ({ size }) => {
         return (
-            <View style={{ height: MIN_H, justifyContent: 'center', backgroundColor:'#838383', borderBottomWidth: 1, borderColor: 'black', borderRightWidth: 1,}}>
-                <Text style={{ textAlign: 'center', color: 'white'}}>영업외시간</Text>
-            </View>
-        );
-    }
-
-    const Booked = ({ item, index }) => {
-        return (
-            <View style={{ height: MIN_H, justifyContent: 'center', backgroundColor:'#838383', borderBottomWidth: 1, borderColor: 'black', borderRightWidth: 1 }}>
+            <View style={{ height: MIN_H * size, justifyContent: 'center', backgroundColor:'#838383', borderBottomWidth: 1, borderColor: 'black', borderRightWidth: 1, alignItems: 'center' }}>
                 <Text style={{ textAlign: 'center', color: 'white'}}>예약완료</Text>
             </View>
         );
     }
 
-    const MyBooked = ({ item, index }) => {
+    const MyBooked = ({ size }) => {
         return (
-            <View style={{ height: MIN_H, justifyContent: 'center', backgroundColor:'#4184E4', borderBottomWidth: 1, borderColor: 'black', borderRightWidth: 1 }}>
+            <View style={{ height: MIN_H * size, justifyContent: 'center', backgroundColor:'#4184E4', borderBottomWidth: 1, borderColor: 'black', borderRightWidth: 1, alignItems: 'center' }}>
                 <Text style={{ textAlign: 'center', color: 'white'}}>내 예약</Text>
             </View>
         );
     }
 
-    const Min = ({ item, ind }) => {
+    const Min = ({ item, ind, hour}) => {
         return (
-            <View style={[{ borderColor: 'black', borderLeftWidth: 1, height: MIN_H, justifyContent: 'center', paddingHorizontal: 5 }, ind == 5 ? {borderBottomWidth: 1} : {borderBottomWidth: 1}]}>
-                <Text style={{}}>{item}</Text>
+            <View style={[{ borderColor: 'black', borderLeftWidth: 1, height: MIN_H, justifyContent: 'center', paddingHorizontal: 5, alignItems: 'center', width: 50}, ind == 5 ? {borderBottomWidth: 1} : {borderBottomWidth: 1}]}>
+                <Text style={{}}>{hour + item}</Text>
             </View>
         );
     }
 
-    const Hour = ({ item, index }) => {
-        return (
-            <View>
-                <Text style={{height: 180}}>{item}</Text>
-            </View>
-        )
-    }
-
     const RenderHour = ({ item, ind }) => {
+        var hr = item.charAt(1) === ':' ? item.charAt(0) : item.substring(0,2)
         return (
             <View>
-                {ind === 0 ? 
-                    <View style={styles.aboveTime}>
-                        <Text></Text>
-                    </View>
-                :
-                    null
-                }
                 <View style={styles.itemBox}>
                     <View style={{ borderBottomWidth: 1, borderColor: 'black', height: MIN_H * 6, flex: 1, justifyContent: 'space-around', alignItems: 'center'}}>
                         <Text style={styles.hourText}>{item}</Text>
                     </View>
                     <View style={{ }}>
                         {mins.map((item, index) => {
-                            return (<Min item={item} key={index} ind={index} />)
+                            return (<Min item={item} key={index} ind={index} hour={hr} />)
+                        })}
+                    </View>
+                </View>
+            </View>
+        )
+    }
+
+    // The item:
+    // firstHour = {
+    //     hour: `${tempStart}:00 ${tempStart < 12 ? 'AM' : 'PM'}`,
+    //     mins: firstMins,
+    // }
+    const RenderStartHour = ({ item }) => {
+        var hr = item.hour.charAt(1) === ':' ? item.hour.charAt(0) : item.hour.substring(0,2)
+        return (
+            <View>
+                <View style={styles.aboveTime}>
+                    <Text style={styles.titleText}>시간</Text>
+                </View>
+                <View style={styles.itemBox}>
+                    <View style={{ borderBottomWidth: 1, borderColor: 'black', height: MIN_H * item.mins.length, flex: 1, justifyContent: 'space-around', alignItems: 'center'}}>
+                        <Text style={styles.hourText}>{item.hour}</Text>
+                    </View>
+                    <View style={{ }}>
+                        {item.mins.map((item, index) => {
+                            return (<Min item={item} key={index} ind={index} hour={hr} />)
+                        })}
+                    </View>
+                </View>
+            </View>
+        )
+    }
+
+    // The item: (remember to only call this if endHour's min is nonzero)
+    // lastHour = {
+    //     hour: `${endHour}:00 ${endHour < 12 ? 'AM' : 'PM'}`,
+    //     mins: lastMins,
+    // }
+    const RenderEndHour = ({ item }) => {
+        var hr = item.hour.charAt(1) === ':' ? item.hour.charAt(0) : item.hour.substring(0,2)
+        return (
+            <View>
+                <View style={styles.itemBox}>
+                    <View style={{ borderBottomWidth: 1, borderColor: 'black', height: MIN_H * item.mins.length, flex: 1, justifyContent: 'space-around', alignItems: 'center'}}>
+                        <Text style={styles.hourText}>{item.hour}</Text>
+                    </View>
+                    <View style={{ }}>
+                        {item.mins.map((item, index) => {
+                            return (<Min item={item} key={index} ind={index} hour={hr} />)
                         })}
                     </View>
                 </View>
@@ -769,7 +822,6 @@ const TableScreen = ({ navigation, route }) => {
     }
 
     const onDayPress = day => {
-        // console.log(day);
         setModalVisible(!modalVisible);
         let currDate = new Date(day.dateString);
         navigation.replace('Table', { 
@@ -782,16 +834,16 @@ const TableScreen = ({ navigation, route }) => {
     };
 
     const saveBranch = (location, branchCode, branchName) => {
-        console.log("[TableScreen]:: Inserting into SQlite...");
+        // console.log("[TableScreen]:: Inserting into SQlite...");
         db.transaction(
             (tx) => {
                 tx.executeSql("INSERT INTO Branches (location, branchCode, branchName) VALUES(?,?,?);", [location, branchCode, branchName],
                     (tx, results) => {
-                        console.log("[TableScreen]:: Successfully inserted.");
-                        console.log(results);
+                        // console.log("[TableScreen]:: Successfully inserted.");
+                        // console.log(results);
                     },
                     (txt, error) => {
-                        console.log(error);
+                        // console.log(error);
                     }
                 )
             },
@@ -799,16 +851,16 @@ const TableScreen = ({ navigation, route }) => {
     }
 
     const deleteBranch = (_id) => {
-        console.log("[TableScreen]:: Deleting from SQlite...");
+        // console.log("[TableScreen]:: Deleting from SQlite...");
         db.transaction(
             (tx) => {
                 tx.executeSql(`DELETE FROM Branches WHERE _id = ?;`, [_id],
                     (tx, results) => {
-                        console.log("[TableScreen]:: Successfully deleted.");
-                        console.log(results);
+                        // console.log("[TableScreen]:: Successfully deleted.");
+                        // console.log(results);
                     },
                     (txt, error) => {
-                        console.log(error);
+                        // console.log(error);
                     }
                 )
             },
@@ -840,7 +892,18 @@ const TableScreen = ({ navigation, route }) => {
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }} edges={['right', 'left', 'top']} >
+
             <View style={styles.branchBox}>
+                <ImageBackground 
+                    source={require('../../assets/tableBackground.png')} 
+                    resizeMode='contain' 
+                    style={styles.bgImage}
+                >
+                    <Text>Hello</Text>
+                </ImageBackground>
+            </View>
+
+            {/* <View style={styles.branchBox}>
                 <View style={styles.branchHolder}>
                     <Text style={styles.branchHolderText}>+ 지점 선택</Text>
                 </View>
@@ -856,8 +919,7 @@ const TableScreen = ({ navigation, route }) => {
                 >
                     <Text style={styles.branchSelectorText}>+ 지점 선택</Text>
                 </TouchableOpacity>
-
-            </View>
+            </View> */}
 
             <View style={styles.dateBox}>
                 <TouchableOpacity
@@ -935,9 +997,21 @@ const TableScreen = ({ navigation, route }) => {
                 >
                     <View style={{ flexDirection: 'row' }}>
                         <View>
+                            {/* This is where we render the beginning hour point */}
+                            <RenderStartHour item={firstHour} />
+
+                            {/* This is where we render the middle hour points */}
                             {hours.map((item, index) => {
                                 return (<RenderHour item={item} key={index} ind={index}/>)
                             })}
+
+                            {/* This is where we render the ending hour point */}
+                            {endMinZero ? 
+                                null 
+                                :
+                                <RenderEndHour item={lastHour} />
+                            }
+
                         </View>
                         <ScrollView
                             nestedScrollEnabled={true}
@@ -974,8 +1048,6 @@ const TableScreen = ({ navigation, route }) => {
                 onBackButtonPress={() => setModalVisible(!modalVisible)}
                 onBackdropPress={() => setModalVisible(!modalVisible)}
                 hideModalContentWhileAnimating={true}
-                // animationOut={'fadeOut'}
-                // style={{margin: 0, justifyContent: 'flex-end'}}
                 backdropTransitionInTiming={0}
                 useNativeDriver={true}
             >
@@ -1064,14 +1136,13 @@ const TableScreen = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({
     branchBox: {
-        // borderWidth: 2,
-        // borderColor: 'red',
-        // justifyContent: 'center',
-        // alignItems: 'center'
         flexDirection: 'row',
         justifyContent: "space-between",
         alignItems: 'center',
         marginTop: 10
+    },
+    bgImage: {
+
     },
     branchButton: {
         backgroundColor: '#17375E',
@@ -1093,7 +1164,6 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         paddingHorizontal: 15,
         marginLeft: 15,
-        // maxWidth: '30%'
     },
     branchSelector: {
         borderRadius: 20,
@@ -1102,7 +1172,6 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         paddingHorizontal: 15,
         marginRight: 15,
-        // maxWidth: '25%'
     },
     branchHolderText: {
         color: 'white'
@@ -1117,15 +1186,12 @@ const styles = StyleSheet.create({
         marginHorizontal: 20,
         marginTop: 12,
         marginBottom: 22,
-        // borderWidth: 1,
-        // borderColor: 'red',
         alignItems: 'center'
     },
     dateStyle: {
         fontSize: 20,
         color: '#838383',
         fontWeight: 'bold',
-        // marginTop: 2.5
     },
     dateTitle: {
         flexDirection: 'row',
@@ -1137,37 +1203,23 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'black',
         flex: 1,
-        // borderWidth: 1,
-        // borderColor: "purple",
         borderRadius: 10,
         overflow: 'hidden'
     },
     flatList: {
-        // borderWidth: 1,
         borderColor: 'black',
         alignSelf: 'flex-start',
         justifyContent: 'flex-start',
-        // marginLeft: 10,
-        // flex: 1,
-        // marginBottom: 10,
         borderBottomWidth: 1,
     },
     itemBox: {
-        // padding: 10,
-        // borderWidth: 1,
-        // borderColor: 'red',
         width: HOUR_W,
-        // paddingVertical: 10,
-        // borderLeftWidth: 1,
-        // borderBottomWidth: 1,
         borderRightWidth: 1,
         borderColor: 'black',
         flexDirection: 'row',
         alignItems: 'center',
     },
     titles: {
-        // flexDirection: 'row',
-        // width: TITLE_W,
         height: TITLE_H,
         borderBottomWidth: 1,
         borderColor: 'black',
@@ -1178,33 +1230,24 @@ const styles = StyleSheet.create({
         fontSize: 18
     },
     aboveTime: {
-        // padding: 10,
         borderBottomWidth: 1,
         borderRightWidth: 1,
         borderColor: 'black',
         width: HOUR_W,
         height: TITLE_H,
-        // borderTopLeftRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     hourText: {
-        // marginLeft: 10,
         textAlign: 'center',
-        // flex: 1,
-        // borderBottomWidth: 1,
-        // borderColor: "black",
-        // borderWidth: 1,
-        // borderColor: 'orange',
     },
     calendarBox: {
-        // borderWidth: 1,
-        // borderColor: 'black',
         paddingHorizontal: 20,
         paddingBottom: 15
     },
     calendar: {
         borderWidth: 1, 
         borderColor: 'black',
-        // margin: 10,
     },
     textStyle: {
         color: "white",
@@ -1215,8 +1258,6 @@ const styles = StyleSheet.create({
     modalBox: {
         borderRadius: 15,
         backgroundColor: 'white',
-        // height: 270,
-        // width: 300,
     },
     closeButton: {
         backgroundColor: "#262829",

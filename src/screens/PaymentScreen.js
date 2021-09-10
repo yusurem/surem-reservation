@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableHighlight, Image, Alert, TouchableOpacity, ScrollView, ActivityIndicator, Platform, NativeModules } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -21,8 +21,12 @@ const PaymentScreen = ({ navigation, route }) => {
     const [toggleCheckBox, setToggleCheckBox] = useState(false)
     // const [checked, setChecked] = useState(false);
 
-    const [usercode, setUsercode] = useState("");
-	const [secretCode, setSecretCode] = useState("");
+    // const [usercode, setUsercode] = useState("");
+	// const [secretCode, setSecretCode] = useState("");
+
+    const usercode = useRef("");
+    const secretCode = useRef("");
+    const username = useRef("");
 
     const [paymentDone, setPaymentDone] = useState(false);
 
@@ -87,8 +91,11 @@ const PaymentScreen = ({ navigation, route }) => {
                     `select * from UserId order by _id desc;`,
                     [],
                     (tx, results) =>{ 
-                        setUsercode(results.rows.item(0).usercode)
-                        setSecretCode(results.rows.item(0).secretCode)
+                        // setUsercode(results.rows.item(0).usercode)
+                        usercode.current = results.rows.item(0).usercode;
+                        // setSecretCode(results.rows.item(0).secretCode)
+                        secretCode.current = results.rows.item(0).secretCode;
+                        username.current = results.rows.item(0).username;
                         resolve();
                     },
                     (tx, error) => {
@@ -105,8 +112,8 @@ const PaymentScreen = ({ navigation, route }) => {
             console.log("Attempting to make reservation...");
             const response = await axios.post( URL + '/reservation', {
                 'roomCode' : route.params.roomCode,
-                'usercode' : usercode,
-                'secretCode' : secretCode,
+                'usercode' : usercode.current,
+                'secretCode' : secretCode.current,
                 'payCode' : payCode,
                 "resrvStime" : `${route.params.year}${route.params.month}${route.params.day}${route.params.startTime}`,
                 "resrvEtime" : `${route.params.year}${route.params.month}${route.params.day}${route.params.endTime}`,
@@ -232,7 +239,7 @@ const PaymentScreen = ({ navigation, route }) => {
     const startPayment = async () => {
         try{
             const params = {
-                userCode: usercode,
+                userCode: usercode.current,
                 // secretCode: secretCode,
                 resrvStime: `${route.params.year}${route.params.month}${route.params.day}${route.params.startTime}`,
                 // resrvEtime: `${route.params.year}${route.params.month}${route.params.day}${route.params.endTime}`,
@@ -240,7 +247,7 @@ const PaymentScreen = ({ navigation, route }) => {
                 adminCode: route.params.adminCode,
                 roomCode: route.params.roomCode,
                 roomName: route.params.roomName,
-                userName: "test",
+                userName: username.current,
                 totalTime: route.params.totalTime.toString(),
                 couponCode: route.params.couponCode === undefined ? null : route.params.couponCode,
                 couponIdx: route.params.couponIdx === undefined ? null : route.params.couponIdx,
@@ -286,7 +293,7 @@ const PaymentScreen = ({ navigation, route }) => {
                     // const min = rest.substring(2,4);
                     
                     const permission = await getPush();
-                    console.log("after getting permission");
+                    // console.log("after getting permission");
                     if(permission){
                         await schedulePushNotification(route.params.year, route.params.month, route.params.day, route.params.startTime.substring(0,2), route.params.startTime.substring(2,4));
                     }
@@ -305,6 +312,7 @@ const PaymentScreen = ({ navigation, route }) => {
                                 roomName: route.params.roomName,
                                 location: route.params.location,
                                 address: route.params.address,
+                                username: username.current,
                             }}
                         ],
                     });
@@ -455,14 +463,15 @@ const PaymentScreen = ({ navigation, route }) => {
                                         totalCost: route.params.totalCost,
                                         weekDay: route.params.weekDay,
                                         year: route.params.year,
-                                        userCode: usercode,
-                                        secretCode: secretCode,
+                                        userCode: usercode.current,
+                                        secretCode: secretCode.current,
                                         couponIdx: route.params.couponIdx,
                                         discount: route.params.discount,
                                         couponCode: route.params.couponCode,
                                         adminCode: route.params.adminCode,
                                         address: route.params.address,
-                                        location: route.params.location
+                                        location: route.params.location,
+                                        username: username.current,
                                     })
                                 }}
                             >

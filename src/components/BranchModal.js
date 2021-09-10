@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableHighlight, TouchableOpacity, BackHandl
 import axios from 'axios';
 
 import Modal from 'react-native-modal';
-import { MaterialIcons } from '@expo/vector-icons'; 
+import { MaterialIcons, Feather } from '@expo/vector-icons'; 
 import LoadingScreen from '../screens/LoadingScreen';
 
 
@@ -12,7 +12,6 @@ import * as SQLite from 'expo-sqlite';
 import { URL } from '../constants';
 
 import { CalendarList, Calendar, LocaleConfig } from 'react-native-calendars';
-import { MaterialCommunityIcons, AntDesign, FontAwesome5, Feather } from '@expo/vector-icons';
 
 
 const BranchModal = ({ modalVisible, setModalVisible, handleBranch, db }) => {
@@ -149,12 +148,13 @@ const BranchModal = ({ modalVisible, setModalVisible, handleBranch, db }) => {
                 onPress={onPress}
             >
                 <Text style={styles.locationText}>{item}</Text>
+                <Feather name="check" size={24} color={bgColor === 'white' ? 'white' : "red"} />
             </TouchableOpacity>
         );
     }
 
     const renderLocation = ({ item }) => {
-        const backgroundColor = item === selectedItem ? "white" : "#F2F2F2";
+        const backgroundColor = item === selectedItem ? "#F2F2F2" : "white";
         return (
             <LocItem
                 item={item}
@@ -201,7 +201,6 @@ const BranchModal = ({ modalVisible, setModalVisible, handleBranch, db }) => {
         initialWrapper();
     }
 
-
     return (
         <Modal
             isVisible={modalVisible}
@@ -228,9 +227,12 @@ const BranchModal = ({ modalVisible, setModalVisible, handleBranch, db }) => {
                     >
                         <MaterialIcons name="cancel" size={24} color="black" />
                     </TouchableOpacity>
+                    
+                    <View style={styles.headerView}>
+                        <Text style={styles.headerText}>최근 이용 지점</Text>
+                    </View>
 
                     <View style={styles.recentBox}>
-                        <Text>최근 이용 지점</Text>
                         <View style={styles.recentList}>
                             <TouchableOpacity
                                 onPress={() => {
@@ -241,7 +243,9 @@ const BranchModal = ({ modalVisible, setModalVisible, handleBranch, db }) => {
                                 style={styles.recent}
                             >
                                 {/* <Text style={styles.recentText}>{recents[2] === null ? "--" : recents[2].branchName}</Text> */}
-                                <Text style={styles.recentText}>{recents.length > 0 ? recents[0].branchName : "--"}</Text>
+                                <Text style={styles.recentText}>{recents.length > 0 ? recents[0].branchName + "점" : "--"}</Text>
+                                {/* <Text style={styles.recentText}>{recents.length > 0 ? "서울강변점" : "--"}</Text> */}
+
 
                             </TouchableOpacity>
 
@@ -251,10 +255,10 @@ const BranchModal = ({ modalVisible, setModalVisible, handleBranch, db }) => {
                                         handleBranch(recents[1].location, recents[1].branchCode, recents[1].branchName, recents.reverse());
                                     }
                                 }}
-                                style={[styles.recent, { marginHorizontal: 5 }]}
+                                style={[styles.recent, { marginHorizontal: 10 }]}
                             >
                                 {/* <Text style={styles.recentText}>{recents[1] === null ? "--" : recents[1].branchName}</Text> */}
-                                <Text style={styles.recentText}>{recents.length > 1 ? recents[1].branchName : "--"}</Text>
+                                <Text style={styles.recentText}>{recents.length > 1 ? recents[1].branchName + "점" : "--"}</Text>
 
                             </TouchableOpacity>
 
@@ -267,7 +271,7 @@ const BranchModal = ({ modalVisible, setModalVisible, handleBranch, db }) => {
                                 style={styles.recent}
                             >
                                 {/* <Text style={styles.recentText}>{recents[0] === null ? "--" : recents[1].branchName}</Text> */}
-                                <Text style={styles.recentText}>{recents.length > 2 ? recents[2].branchName : "--"}</Text>
+                                <Text style={styles.recentText}>{recents.length > 2 ? recents[2].branchName + "점" : "--"}</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -319,90 +323,79 @@ const styles = StyleSheet.create({
         marginRight: 15,
         marginTop: 15,
     },
+    headerView: {
+        marginLeft: 20,
+    },
+    headerText: {
+        color: 'black'
+    },
     recentBox: {
-        marginVertical: 10,
-        marginHorizontal: 40
+        marginTop: 20,
+        marginBottom: 10,
+        marginHorizontal: 30,
+        // borderWidth: 1,
+        // borderColor: 'red'
     },
     recentList: {
         flexDirection: 'row',
-        marginVertical: 10,
         justifyContent: 'space-between'
     },
     recent: {
-        paddingHorizontal: 20,
+        // paddingHorizontal: 15,
         paddingVertical: 5,
-        borderRadius: 5,
-        borderWidth: 2,
-        borderColor: 'black',
+        borderRadius: 20,
+        borderWidth: 1,
+        borderColor: '#BEBEBE',
         alignItems: 'center',
         flex: 1,
         justifyContent: 'center'
     },
     recentText: {
         fontWeight: 'bold',
-        textAlign: 'center'
+        textAlign: 'center',
+        fontSize: 12,
+        // lineHeight: 10
     },
     branchBox: {
         // flex: 1,
         flexDirection: 'row',
         marginHorizontal: 30,
-        marginVertical: 10
+        marginVertical: 10,
+        borderWidth: 1,
+        borderColor: '#C3C3C3',
     },
     locationBox: {
-        backgroundColor: '#F2F2F2',
+        // backgroundColor: '#F2F2F2',
         // borderWidth: 1,
-        // borderColor: 'blue',
+        // borderColor: 'red',
     },
     locationView: {
-        backgroundColor: '#F2F2F2',
-        paddingVertical: 12,
+        paddingVertical: 24,
         paddingLeft: 20,
-        paddingRight: 60
+        paddingRight: 15,
+        flexDirection: 'row'
     },
-
-
-
-
-    headerBox: {
-        // borderWidth: 1,
-        // borderColor: 'red',
-        alignItems: 'center',
-        backgroundColor: '#17375E',
-        paddingBottom: 15,
-        paddingTop: 30,
-    },
-    headerText: {
-        color: 'white',
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-    mainBox: {
-        // borderWidth: 1,
-        // borderColor: 'red',
-        // margin: 5,
-        flex: 1
-    },
-    
-
     branchView: {
-        paddingVertical: 12,
+        paddingVertical: 24,
         borderBottomWidth: 1,
-        borderColor: '#D9D9D9'
+        borderColor: '#C3C3C3',
     },
     locationText: {
-        fontSize: 16,
-        textAlign: 'center'
+        fontSize: 14,
+        textAlign: 'center',
+        paddingRight: 30,
     },
     branchText: {
-        fontSize: 16,
+        fontSize: 14,
         marginLeft: 15
     },
     branches: {
         // borderWidth: 1,
-        // borderColor: 'gray',
+        // borderColor: 'green',
         flex: 1,
         justifyContent: 'center',
         // alignItems: 'center'
+        backgroundColor: '#F2F2F2',
     }
 });
 

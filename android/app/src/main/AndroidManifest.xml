@@ -40,6 +40,12 @@
           <category android:name="android.intent.category.BROWSABLE"/>
           <data android:scheme="com.surem.reservation"/>
         </intent-filter>
+        <intent-filter>
+          <action android:name="android.intent.action.VIEW" />
+          <category android:name="android.intent.category.DEFAULT" />
+          <category android:name="android.intent.category.BROWSABLE" />
+          <data android:host="kakaolink" android:scheme="kakaocbec4218e1e25512833065a67e2a9535" />
+        </intent-filter>
     </activity>
     <activity android:name="com.facebook.react.devsupport.DevSettingsActivity"/>
     

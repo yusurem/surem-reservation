@@ -1,4 +1,5 @@
 PODS:
+  - Alamofire (5.4.3)
   - boost-for-react-native (1.63.0)
   - CocoaAsyncSocket (7.6.5)
   - DoubleConversion (1.1.6)
@@ -110,6 +111,18 @@ PODS:
     - FlipperKit/Core
     - FlipperKit/FlipperKitNetworkPlugin
   - glog (0.3.5)
+  - KakaoSDKCommon (2.5.6):
+    - KakaoSDKCommon/Common (= 2.5.6)
+    - KakaoSDKCommon/Network (= 2.5.6)
+  - KakaoSDKCommon/Common (2.5.6)
+  - KakaoSDKCommon/Network (2.5.6):
+    - Alamofire (~> 5.1)
+    - KakaoSDKCommon/Common (= 2.5.6)
+  - KakaoSDKLink (2.5.6):
+    - KakaoSDKCommon (= 2.5.6)
+    - KakaoSDKTemplate (= 2.5.6)
+  - KakaoSDKTemplate (2.5.6):
+    - KakaoSDKCommon/Common (= 2.5.6)
   - libevent (2.1.12)
   - OpenSSL-Universal (1.1.180)
   - Permission-AppTrackingTransparency (3.0.5):
@@ -343,6 +356,11 @@ PODS:
     - React-jsi (= 0.64.2)
     - React-perflogger (= 0.64.2)
   - React-jsinspector (0.64.2)
+  - react-native-kakao-share-link (1.0.2):
+    - KakaoSDKCommon (~> 2.5.0)
+    - KakaoSDKLink (~> 2.5.0)
+    - KakaoSDKTemplate (~> 2.5.0)
+    - React-Core
   - react-native-maps (0.27.1):
     - React
   - react-native-safe-area-context (3.1.9):
@@ -533,6 +551,7 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
+  - react-native-kakao-share-link (from `../node_modules/react-native-kakao-share-link`)
   - react-native-maps (from `../node_modules/react-native-maps`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-splash-screen (from `../node_modules/react-native-splash-screen`)
@@ -578,6 +597,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - Alamofire
     - boost-for-react-native
     - CocoaAsyncSocket
     - Flipper
@@ -587,6 +607,9 @@ SPEC REPOS:
     - Flipper-PeerTalk
     - Flipper-RSocket
     - FlipperKit
+    - KakaoSDKCommon
+    - KakaoSDKLink
+    - KakaoSDKTemplate
     - libevent
     - OpenSSL-Universal
     - YogaKit
@@ -694,6 +717,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsiexecutor"
   React-jsinspector:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
+  react-native-kakao-share-link:
+    :path: "../node_modules/react-native-kakao-share-link"
   react-native-maps:
     :path: "../node_modules/react-native-maps"
   react-native-safe-area-context:
@@ -780,6 +805,7 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
+  Alamofire: e447a2774a40c996748296fa2c55112fdbbc42f9
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   DoubleConversion: cf9b38bf0b2d048436d9a82ad2abe1404f11e7de
@@ -810,6 +836,9 @@ SPEC CHECKSUMS:
   Flipper-RSocket: 127954abe8b162fcaf68d2134d34dc2bd7076154
   FlipperKit: 8a20b5c5fcf9436cac58551dc049867247f64b00
   glog: 73c2498ac6884b13ede40eda8228cb1eee9d9d62
+  KakaoSDKCommon: cdf340a8f671eef75f4ca012003cb350af3c4b6d
+  KakaoSDKLink: 59336155a065da278ba30dc656506295dc682979
+  KakaoSDKTemplate: 0370e640abd33d0acb3d7bbe4ef3c02dc42a4576
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   OpenSSL-Universal: 1aa4f6a6ee7256b83db99ec1ccdaa80d10f9af9b
   Permission-AppTrackingTransparency: 9044a120c00e650227056c4c998ecca4eec595c2
@@ -842,6 +871,7 @@ SPEC CHECKSUMS:
   React-jsi: 67747b9722f6dab2ffe15b011bcf6b3f2c3f1427
   React-jsiexecutor: 80c46bd381fd06e418e0d4f53672dc1d1945c4c3
   React-jsinspector: cc614ec18a9ca96fd275100c16d74d62ee11f0ae
+  react-native-kakao-share-link: a13482db327a0f2eb9665be349d5389ee493e833
   react-native-maps: f4b89da81626ad7f151a8bfcb79733295d31ce5c
   react-native-safe-area-context: 86612d2c9a9e94e288319262d10b5f93f0b395f5
   react-native-splash-screen: 200d11d188e2e78cea3ad319964f6142b6384865

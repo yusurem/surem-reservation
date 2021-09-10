@@ -12,7 +12,7 @@ const DEPT_CODE = "35--SX-DQ";
 const db = SQLite.openDatabase('db.db');
 
 db.transaction(tx=>{
-  tx.executeSql('CREATE TABLE IF NOT EXISTS UserId (_id INTEGER PRIMARY KEY, secretCode TEXT, usercode TEXT);')
+  tx.executeSql('CREATE TABLE IF NOT EXISTS UserId (_id INTEGER PRIMARY KEY, secretCode TEXT, usercode TEXT, username TEXT);')
 })
 
 export default function InitialScreen({ navigation, route }) {
@@ -86,7 +86,7 @@ export default function InitialScreen({ navigation, route }) {
                   navigation.reset({index: 0, routes: [{name: 'SignUp'}] })
                 }}
               >
-                <Text style={ styles.buttonText }>예약하기</Text>
+                <Text style={ styles.buttonText }>서비스 시작하기</Text>
               </TouchableOpacity>
             </View>
 

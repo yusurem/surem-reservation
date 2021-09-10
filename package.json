@@ -45,6 +45,7 @@
     "react-native-exit-app": "1.1.0",
     "react-native-gesture-handler": "~1.8.0",
     "react-native-image-slider-box": "^1.0.12",
+    "react-native-kakao-share-link": "^1.0.2",
     "react-native-loading-spinner-overlay": "2.0.0",
     "react-native-maps": "0.27.1",
     "react-native-modal": "^11.7.0",

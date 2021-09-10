@@ -9,9 +9,14 @@ import Modal from 'react-native-modal';
 import { URL } from '../constants';
 import { FontAwesome5 } from '@expo/vector-icons'; 
 
+var PICKER_IN_BTWN_W = 33;
+
 const ReservationScreen = ({ navigation, route }) => {
     const windowWidth = useWindowDimensions().width;
     const windowHeight = useWindowDimensions().height;
+
+    // setting picker width based on screen dimension
+    var PICKER_W = ((windowWidth - 24 - 17 - PICKER_IN_BTWN_W) / 2) - 2;
 
     const [startTime, setStartTime] = useState(route.params.startTime);
     const [endTime, setEndTime] = useState("0");
@@ -481,7 +486,7 @@ const ReservationScreen = ({ navigation, route }) => {
                     <View style={Platform.OS === 'android' ? styles.pickerBox : styles.iosPickerBox}>
                         <View style={Platform.OS === 'android' ? styles.pickerView : null}>
                             <Picker
-                                style={Platform.OS === 'android' ? styles.picker : styles.iosPicker}
+                                style={[Platform.OS === 'android' ? styles.picker : styles.iosPicker, { width: PICKER_W }]}
                                 // itemStyle={styles.pickerItem}
                                 selectedValue={startTime}
                                 onValueChange={(itemValue, itemIndex) => {
@@ -502,12 +507,17 @@ const ReservationScreen = ({ navigation, route }) => {
                             </Picker>
                         </View>
                         <View style={{ justifyContent: 'center' }}>
-                            <Text style={Platform.OS === 'android' ? {color: '#A0A0A0', fontSize: 20} : {color: '#A0A0A0', fontSize: 50}}>~</Text>
+                            <Text 
+                                style={Platform.OS === 'android' ? 
+                                    {color: '#A0A0A0', fontSize: 20, textAlign: 'center', width: PICKER_IN_BTWN_W} 
+                                    : 
+                                    {color: '#A0A0A0', fontSize: 50, textAlign: 'center', width: PICKER_IN_BTWN_W}}
+                                >~</Text>
                         </View>
                         <View style={Platform.OS === 'android' ? styles.pickerView : null}>
                             <Picker
                                 selectedValue={endTime}
-                                style={Platform.OS === 'android' ? styles.picker : styles.iosPicker}
+                                style={[Platform.OS === 'android' ? styles.picker : styles.iosPicker, { width: PICKER_W }]}
                                 onValueChange={(itemValue, itemIndex) => {
                                     setEndTime(itemValue);
                                     if(itemValue != "0"){
@@ -688,7 +698,7 @@ const styles = StyleSheet.create({
     },
     mainBox: {
         paddingVertical: 10,
-        paddingHorizontal: 12
+        paddingHorizontal: 12 // 12
     },
     description: {
         marginLeft: 9,
@@ -703,7 +713,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginTop: 7,
         marginBottom: 12,
-        marginHorizontal: 8.5,
+        marginHorizontal: 8.5, // 8.5
     },
     iosPickerBox: {
         flexDirection: 'row',
@@ -723,13 +733,13 @@ const styles = StyleSheet.create({
         color: 'black',
         // backgroundColor: 'red',
         height: 30, 
-        width: 140
+        // width: PICKER_W
     },
     iosPicker: {
         color: '#B2B2B2',
         // backgroundColor: 'red',
         height: 200, 
-        width: 140,
+        // width: PICKER_W,
         borderWidth: 1.5,
         borderColor: '#B2B2B2',
         borderRadius: 15,

@@ -45,6 +45,7 @@
         - Apple key 받아서 등록
         - Platform에 따라서 맞는 configuration
         - Testing
+    - 이름 저장하기
 
 
 
