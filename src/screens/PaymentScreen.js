@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableHighlight, Image, Alert, TouchableOpac
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import axios from 'axios';
-import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';
+import { MaterialCommunityIcons, Feather, Entypo } from '@expo/vector-icons';
 import Modal from 'react-native-modal';
 import * as SQLite from 'expo-sqlite';
 import CheckBox from '@react-native-community/checkbox';
@@ -478,7 +478,8 @@ const PaymentScreen = ({ navigation, route }) => {
                                 <View style={{ flexDirection: 'row' }}>
                                     <Text style={styles.valueStyle}>{route.params.discount === undefined ? '사용 가능한 쿠폰들' : '-' + route.params.discount + '원'} </Text>
                                     <View style={{ justifyContent: 'center' }}>
-                                        <MaterialCommunityIcons name="greater-than" size={18} color="#6C6C6C" />
+                                        {/* <MaterialCommunityIcons name="greater-than" size={18} color="#6C6C6C" /> */}
+                                        <Entypo name="chevron-thin-right" size={15} color="#6C6C6C" />
                                     </View>
                                 </View>
                             </TouchableOpacity>

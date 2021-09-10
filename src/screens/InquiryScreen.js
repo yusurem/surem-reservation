@@ -168,10 +168,10 @@ const InquiryScreen = ({ navigation, route }) => {
                                                         <Text style={[styles.itemStatus, item.adminChk === 'O' ? styles.answered : styles.unAnswered]}>{item.adminChk === 'O' ? "답변 완료" : "답변 대기"} </Text>
                                                             {isOpen.includes(item.idx) ?
                                                                 // <Ionicons style={styles.caretIcon} name="ios-caret-up-circle-outline" size={24} color={item.adminChk === 'O' ? '#4982CF' : 'black'} />
-                                                                <Entypo name="chevron-up" size={24} color="#888888" />
+                                                                <Entypo name="chevron-up" size={24} color={item.adminChk === 'O' ? '#4485E5' : "#888888"} />
                                                                 :
                                                                 // <Ionicons style={styles.caretIcon} name="ios-caret-down-circle-outline" size={24} color={item.adminChk === 'O' ? '#4982CF' : 'black'} />
-                                                                <Entypo name="chevron-down" size={24} color="#888888" />
+                                                                <Entypo name="chevron-down" size={24} color={item.adminChk === 'O' ? '#4485E5' : "#888888"} />
                                                             }
                                                     </View>
                                                 </View>
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
     },
     itemBox: {
         backgroundColor: 'white',
-        paddingHorizontal: 15,
+        paddingHorizontal: 20,
         paddingTop: 15,
         borderColor: '#CDCFCF',
         borderTopWidth: 1,
@@ -255,6 +255,7 @@ const styles = StyleSheet.create({
     itemDate: {
         color: '#686868',
         marginBottom: 15,
+
     },
     itemData: {
         flexDirection: 'row',
@@ -264,7 +265,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     itemSubject: {
-        marginLeft: 5,
+        // marginLeft: 5,
         color: 'black',
 
     },
@@ -279,16 +280,24 @@ const styles = StyleSheet.create({
         borderColor: '#CDCFCF',
         borderLeftWidth: 1,
         borderRightWidth: 1,
-        paddingHorizontal: 15,
-        paddingLeft: 20,
+        paddingHorizontal: 20,
+        // paddingLeft: 20,
         paddingTop: 10
     },
     itemBodyText: {
 
     },
+    answered: {
+        color: '#4485E5'
+    },
+    unanswered: {
+        color: '#888888'
+    },
     answerLabel: {
         marginTop: 10,
-        color: '#4982CF',
+        color: '#4485E5',
+        fontWeight: 'bold',
+        marginBottom: 4
     },
     answerText: {
     },

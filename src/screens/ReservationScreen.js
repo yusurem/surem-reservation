@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import LoadingScreen from './LoadingScreen';
 import Modal from 'react-native-modal';
 import { URL } from '../constants';
-import { FontAwesome5 } from '@expo/vector-icons'; 
+import { FontAwesome5, MaterialIcons } from '@expo/vector-icons'; 
 
 var PICKER_IN_BTWN_W = 33;
 
@@ -356,23 +356,25 @@ const ReservationScreen = ({ navigation, route }) => {
         <SafeAreaView style={{flex: 1, backgroundColor: 'white'}} edges={['right', 'left', 'top']}>
             <ScrollView>
                 <TouchableOpacity
-                    style={{ backgroundColor: 'white', paddingHorizontal: 6, paddingVertical: 3, position: 'absolute', top: 127, left: 30, zIndex: 1, justifyContent: 'center', borderRadius: 10, }}
+                    style={{ backgroundColor: 'white', paddingHorizontal: 8, paddingVertical: 3, position: 'absolute', top: 127, left: 32, zIndex: 1, justifyContent: 'center', borderRadius: 10, }}
                     onPress={() => {
                         // shift the imgs array by 1 to the left
                         rotateRight();
                     }}
                 >
-                    <FontAwesome5 name="less-than" size={22} color="black" />
+                    {/* <FontAwesome5 name="less-than" size={22} color="black" /> */}
+                    <FontAwesome5 name="chevron-left" size={24} color="#888888" />
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    style={{ backgroundColor: 'white', paddingHorizontal: 6, paddingVertical: 3, position: 'absolute', top: 127, right: 30, zIndex: 1, justifyContent: 'center', alignSelf: 'flex-end', borderRadius: 10 }}
+                    style={{ backgroundColor: 'white', paddingHorizontal: 8, paddingVertical: 3, position: 'absolute', top: 127, right: 32, zIndex: 1, justifyContent: 'center', alignSelf: 'flex-end', borderRadius: 10 }}
                     onPress={() => {
                         // shift the imgs array by 1 to the right
                         rotateLeft();
                     }}
                 >
-                    <FontAwesome5 name="greater-than" size={22} color="black" />
+                    {/* <FontAwesome5 name="greater-than" size={22} color="black" /> */}
+                    <FontAwesome5 name="chevron-right" size={22} color="#888888" />
                 </TouchableOpacity>
 
                 <View style={styles.mainBox}>
@@ -686,14 +688,14 @@ const styles = StyleSheet.create({
     },
     blueBar: {
         backgroundColor: '#A1C1F1',
-        height: 14.5,
+        height: 19,
         width: 5,
         borderRadius: 5,
-        marginTop: 3.5,
-        marginRight: 3
+        marginTop: 3,
+        marginRight: 4
     },
     headerText: {
-        fontSize: 14,
+        fontSize: 16,
         color: "#39393A",
     },
     mainBox: {

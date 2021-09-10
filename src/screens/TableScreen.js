@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, useWindowDimensions, BackHandler, Alert, Image, FlatList, ImageBackground } from 'react-native';
-import { MaterialCommunityIcons, AntDesign, FontAwesome5, Feather } from '@expo/vector-icons';
+import { MaterialCommunityIcons, AntDesign, FontAwesome5, Feather, Entypo } from '@expo/vector-icons';
 import axios from 'axios';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CalendarList, Calendar, LocaleConfig } from 'react-native-calendars';
@@ -12,10 +12,11 @@ import { URL } from '../constants';
 import BranchModal from '../components/BranchModal';
 import * as SQLite from 'expo-sqlite';
 
-const TITLE_H = 60;
+const TITLE_H = 45;
 var TITLE_W = 170;
 const MIN_H = 35;
 const HOUR_W = 130;
+const TABLE_BORDER_COLOR = '#C3C3C3';
 
 const db = SQLite.openDatabase("db.db");
 
@@ -51,7 +52,7 @@ const TableScreen = ({ navigation, route }) => {
     const weekDays = new Array('일', '월', '화', '수', '목', '금', '토');
 
     console.log("[TableScreen]:: Screen has open. --Params: ");
-    // console.log(route.params);
+    console.log(route.params);
 
     // Focus effect that handles what happens when the back button is pressed on Android
     useFocusEffect(() => {
@@ -369,7 +370,8 @@ const TableScreen = ({ navigation, route }) => {
                             }
                         }}
                     >
-                        <MaterialCommunityIcons name="less-than" color="#BFBFBF" size={30} />
+                        {/* <MaterialCommunityIcons name="less-than" color="#BFBFBF" size={30} /> */}
+                        <Entypo name="chevron-thin-left" size={30} color="#BFBFBF" />
                     </TouchableOpacity>
                         
                     <TouchableOpacity
@@ -379,10 +381,10 @@ const TableScreen = ({ navigation, route }) => {
                     >
                         <View style={styles.dateTitle}>
                             <View style={{ justifyContent: 'center' }}>
-                                <Text style={styles.dateStyle}>{route.params.dateString.replace(/-/g,'.')}({weekDays[route.params.weekDay]}) </Text>
+                            <Text style={styles.dateStyle}>{route.params.year}년 {route.params.month}월 {route.params.day}일 ({weekDays[route.params.weekDay]}) </Text>
                             </View>
                             <View style={{ justifyContent: 'center' }}>
-                                <AntDesign style={styles.calendarIcon} name="calendar" size={20} color="#838383" />
+                                <AntDesign style={styles.calendarIcon} name="calendar" size={20} color="black" />
                             </View>
                         </View>
                     </TouchableOpacity>
@@ -406,7 +408,8 @@ const TableScreen = ({ navigation, route }) => {
                             })
                         }}
                     >
-                        <MaterialCommunityIcons name="greater-than" color="#BFBFBF" size={30} />
+                        {/* <MaterialCommunityIcons name="greater-than" color="#BFBFBF" size={30} /> */}
+                        <Entypo name="chevron-thin-right" size={30} color="#BFBFBF" />
                     </TouchableOpacity>
                 </View>
 
@@ -737,7 +740,7 @@ const TableScreen = ({ navigation, route }) => {
                     })
                 }}
             >
-                <View style={{ height: MIN_H, backgroundColor: '#F6F6F6', justifyContent: 'center', borderBottomWidth: 1, borderColor: 'black', borderRightWidth: 1 }}>
+                <View style={{ height: MIN_H, backgroundColor: '#F6F6F6', justifyContent: 'center', borderBottomWidth: 1, borderColor: TABLE_BORDER_COLOR, borderRightWidth: 1 }}>
                     <Text style={{ textAlign: 'center', color: '#757575' }}>예약가능</Text>
                 </View>
             </TouchableOpacity>
@@ -746,7 +749,7 @@ const TableScreen = ({ navigation, route }) => {
 
     const Booked = ({ size }) => {
         return (
-            <View style={{ height: MIN_H * size, justifyContent: 'center', backgroundColor:'#838383', borderBottomWidth: 1, borderColor: 'black', borderRightWidth: 1, alignItems: 'center' }}>
+            <View style={{ height: MIN_H * size, justifyContent: 'center', backgroundColor:'#838383', borderBottomWidth: 1, borderColor: TABLE_BORDER_COLOR, borderRightWidth: 1, alignItems: 'center' }}>
                 <Text style={{ textAlign: 'center', color: 'white'}}>예약완료</Text>
             </View>
         );
@@ -754,7 +757,7 @@ const TableScreen = ({ navigation, route }) => {
 
     const MyBooked = ({ size }) => {
         return (
-            <View style={{ height: MIN_H * size, justifyContent: 'center', backgroundColor:'#4184E4', borderBottomWidth: 1, borderColor: 'black', borderRightWidth: 1, alignItems: 'center' }}>
+            <View style={{ height: MIN_H * size, justifyContent: 'center', backgroundColor:'#4184E4', borderBottomWidth: 1, borderColor: TABLE_BORDER_COLOR, borderRightWidth: 1, alignItems: 'center' }}>
                 <Text style={{ textAlign: 'center', color: 'white'}}>내 예약</Text>
             </View>
         );
@@ -762,8 +765,8 @@ const TableScreen = ({ navigation, route }) => {
 
     const Min = ({ item, ind, hour}) => {
         return (
-            <View style={[{ borderColor: 'black', borderLeftWidth: 1, height: MIN_H, justifyContent: 'center', paddingHorizontal: 5, alignItems: 'center', width: 50}, ind == 5 ? {borderBottomWidth: 1} : {borderBottomWidth: 1}]}>
-                <Text style={{}}>{hour + item}</Text>
+            <View style={[{ borderColor: TABLE_BORDER_COLOR, borderLeftWidth: 1, height: MIN_H, justifyContent: 'center', paddingHorizontal: 5, alignItems: 'center', width: 50}, ind == 5 ? {borderBottomWidth: 1} : {borderBottomWidth: 1}]}>
+                <Text style={{color: 'black'}}>{hour + item}</Text>
             </View>
         );
     }
@@ -773,7 +776,7 @@ const TableScreen = ({ navigation, route }) => {
         return (
             <View>
                 <View style={styles.itemBox}>
-                    <View style={{ borderBottomWidth: 1, borderColor: 'black', height: MIN_H * 6, flex: 1, justifyContent: 'space-around', alignItems: 'center'}}>
+                    <View style={{ borderBottomWidth: 1, borderColor: TABLE_BORDER_COLOR, height: MIN_H * 6, flex: 1, justifyContent: 'space-around', alignItems: 'center'}}>
                         <Text style={styles.hourText}>{item}</Text>
                     </View>
                     <View style={{ }}>
@@ -799,7 +802,7 @@ const TableScreen = ({ navigation, route }) => {
                     <Text style={styles.titleText}>시간</Text>
                 </View>
                 <View style={styles.itemBox}>
-                    <View style={{ borderBottomWidth: 1, borderColor: 'black', height: MIN_H * item.mins.length, flex: 1, justifyContent: 'space-around', alignItems: 'center'}}>
+                    <View style={{ borderBottomWidth: 1, borderColor: TABLE_BORDER_COLOR, height: MIN_H * item.mins.length, flex: 1, justifyContent: 'space-around', alignItems: 'center'}}>
                         <Text style={styles.hourText}>{item.hour}</Text>
                     </View>
                     <View style={{ }}>
@@ -822,7 +825,7 @@ const TableScreen = ({ navigation, route }) => {
         return (
             <View>
                 <View style={styles.itemBox}>
-                    <View style={{ borderBottomWidth: 1, borderColor: 'black', height: MIN_H * item.mins.length, flex: 1, justifyContent: 'space-around', alignItems: 'center'}}>
+                    <View style={{ borderBottomWidth: 1, borderColor: TABLE_BORDER_COLOR, height: MIN_H * item.mins.length, flex: 1, justifyContent: 'space-around', alignItems: 'center'}}>
                         <Text style={styles.hourText}>{item.hour}</Text>
                     </View>
                     <View style={{ }}>
@@ -1003,7 +1006,8 @@ const TableScreen = ({ navigation, route }) => {
                         }
                     }}
                 >
-                    <MaterialCommunityIcons name="less-than" color="#BFBFBF" size={30} />
+                    {/* <MaterialCommunityIcons name="less-than" color="#BFBFBF" size={30} /> */}
+                    <Entypo name="chevron-thin-left" size={30} color="#BFBFBF" />
                 </TouchableOpacity>
                     
                 <TouchableOpacity
@@ -1013,10 +1017,10 @@ const TableScreen = ({ navigation, route }) => {
                 >
                     <View style={styles.dateTitle}>
                         <View style={{ justifyContent: 'center' }}>
-                            <Text style={styles.dateStyle}>{route.params.dateString.replace(/-/g,'.')}({weekDays[route.params.weekDay]}) </Text>
+                            <Text style={styles.dateStyle}>{route.params.year}년 {route.params.month}월 {route.params.day}일 ({weekDays[route.params.weekDay]}) </Text>
                         </View>
                         <View style={{ justifyContent: 'center' }}>
-                            <AntDesign style={styles.calendarIcon} name="calendar" size={20} color="#838383" />
+                            <AntDesign style={styles.calendarIcon} name="calendar" size={20} color="black" />
                         </View>
                     </View>
                 </TouchableOpacity>
@@ -1040,7 +1044,8 @@ const TableScreen = ({ navigation, route }) => {
                         })
                     }}
                 >
-                    <MaterialCommunityIcons name="greater-than" color="#BFBFBF" size={30} />
+                    {/* <MaterialCommunityIcons name="greater-than" color="#BFBFBF" size={30} /> */}
+                    <Entypo name="chevron-thin-right" size={30} color="#BFBFBF" />
                 </TouchableOpacity>
             </View>
 
@@ -1272,9 +1277,9 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     dateStyle: {
-        fontSize: 20,
-        color: '#838383',
-        fontWeight: 'bold',
+        fontSize: 16,
+        color: 'black',
+        // fontWeight: 'bold',
     },
     dateTitle: {
         flexDirection: 'row',
@@ -1284,7 +1289,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 10,
         marginBottom: 10,
         borderWidth: 1,
-        borderColor: 'black',
+        borderColor: '#B3B3B3',
         flex: 1,
         borderRadius: 10,
         overflow: 'hidden'
@@ -1298,24 +1303,25 @@ const styles = StyleSheet.create({
     itemBox: {
         width: HOUR_W,
         borderRightWidth: 1,
-        borderColor: 'black',
+        borderColor: TABLE_BORDER_COLOR,
         flexDirection: 'row',
         alignItems: 'center',
     },
     titles: {
         height: TITLE_H,
         borderBottomWidth: 1,
-        borderColor: 'black',
+        borderColor: TABLE_BORDER_COLOR,
         justifyContent: 'center',
         alignItems: 'center'
     },
     titleText: {
-        fontSize: 18
+        fontSize: 14,
+        color: 'black'
     },
     aboveTime: {
         borderBottomWidth: 1,
         borderRightWidth: 1,
-        borderColor: 'black',
+        borderColor: TABLE_BORDER_COLOR,
         width: HOUR_W,
         height: TITLE_H,
         justifyContent: 'center',
@@ -1323,6 +1329,7 @@ const styles = StyleSheet.create({
     },
     hourText: {
         textAlign: 'center',
+        color: 'black',
     },
     calendarBox: {
         paddingHorizontal: 20,
