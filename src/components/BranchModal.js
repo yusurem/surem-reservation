@@ -54,15 +54,20 @@ const BranchModal = ({ modalVisible, setModalVisible, handleBranch, db }) => {
                             // ex. set(results.row.item(0).current)
                             // console.log("[BranchModal]:: Successfully retrieved.");
                             // console.log(results);
-                            if(results.rows._array.length === 2){
-                                setRecents([results.rows._array[1], results.rows._array[0]]);
-                            }
-                            else if(results.rows._array.length === 3){
-                                setRecents([results.rows._array[2], results.rows._array[1], results.rows._array[0]]);
-                            }
-                            else {
+                            if(results.rows._array.length === 1){
                                 setRecents(results.rows._array);
                             }
+                            else if(results.rows._array.length === 2){
+                                setRecents([results.rows._array[1], results.rows._array[0]]);
+                            }
+                            else {
+                                let len = results.rows._array.length;
+                                setRecents([results.rows._array[len - 1], results.rows._array[len - 2], results.rows._array[len - 3]]);
+                            }
+                            // else if(results.rows._array.length === 3){
+                            //     setRecents([results.rows._array[2], results.rows._array[1], results.rows._array[0]]);
+                            // }
+                            
                             resolve("success");
                         },
                         (tx, error) => {
@@ -75,39 +80,6 @@ const BranchModal = ({ modalVisible, setModalVisible, handleBranch, db }) => {
         })
     }
 
-    const saveBranch = (location, branchCode, branchName) => {
-        console.log("[BranchModal]:: Inserting into SQlite...");
-        db.transaction(
-            (tx) => {
-                tx.executeSql("INSERT INTO Branches (location, branchCode, branchName) VALUES(?,?,?);", [location, branchCode, branchName],
-                    (tx, results) => {
-                        console.log("[BranchModal]:: Successfully inserted.");
-                        console.log(results);
-                    },
-                    (txt, error) => {
-                        console.log(error);
-                    }
-                )
-            },
-        )
-    }
-
-    const deleteBranch = (_id) => {
-        console.log("[BranchModal]:: Deleting from SQlite...");
-        db.transaction(
-            (tx) => {
-                tx.executeSql(`DELETE FROM Branches WHERE _id = ?;`, [_id],
-                    (tx, results) => {
-                        console.log("[BranchModal]:: Successfully deleted.");
-                        console.log(results);
-                    },
-                    (txt, error) => {
-                        console.log(error);
-                    }
-                )
-            },
-        )
-    }
 
     // console.log("RECENTS: ")
     // console.log(recents);

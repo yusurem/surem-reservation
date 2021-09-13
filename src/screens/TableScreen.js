@@ -52,7 +52,7 @@ const TableScreen = ({ navigation, route }) => {
     const weekDays = new Array('일', '월', '화', '수', '목', '금', '토');
 
     console.log("[TableScreen]:: Screen has open. --Params: ");
-    console.log(route.params);
+    // console.log(route.params);
 
     // Focus effect that handles what happens when the back button is pressed on Android
     useFocusEffect(() => {
@@ -107,16 +107,16 @@ const TableScreen = ({ navigation, route }) => {
                             if(results.rows._array.length === 0){
                                 resolve("noBranch");
                             }
-                            else if(results.rows._array.length === 2){
-                                secondBranch.current = results.rows._array[0];
-                            }
-                            else if(results.rows._array.length === 3){
-                                thirdBranch.current = results.rows._array[0];
-                                secondBranch.current = results.rows._array[1]
-                            }
+                            // else if(results.rows._array.length === 2){
+                            //     secondBranch.current = results.rows._array[0];
+                            // }
+                            // else if(results.rows._array.length === 3){
+                            //     thirdBranch.current = results.rows._array[0];
+                            //     secondBranch.current = results.rows._array[1]
+                            // }
 
                             currBranch.current = results.rows._array[results.rows._array.length - 1];
-                            recents.current = results.rows._array;
+                            recents.current = results.rows._array.reverse();
                             resolve("success");
                         },
                         (tx, error) => {
@@ -252,7 +252,6 @@ const TableScreen = ({ navigation, route }) => {
     }
     
     const initialLoading = async () => {
-        // console.log("initialLoading");
         if(currBranch.current === null){
             // if(!('location' in route.params)){
                 const bRes = await getBranch();
@@ -433,6 +432,11 @@ const TableScreen = ({ navigation, route }) => {
     let cellWidth = windowWidth - HOUR_W - 20;
     if((TITLE_W * resrvLists.length) < cellWidth){
         TITLE_W = cellWidth / resrvLists.length;
+    }
+    if(TITLE_W !== 170){
+        if((170 * resrvLists.length) >= cellWidth){
+            TITLE_W = 170;
+        }
     }
 
     var startTime;
@@ -669,6 +673,10 @@ const TableScreen = ({ navigation, route }) => {
 
     const TableCol = ({ item, ind, start }) => {
         var startIndex = -1;
+        let startLen = firstHour.mins.length;
+        var bgColor = '#F6F6F6';
+        var afterStart = false;
+        let count = 0;
         return (
             <View>
                 {/* <FlatList
@@ -698,6 +706,19 @@ const TableScreen = ({ navigation, route }) => {
                     }}
                 /> */}
                 {item.map((item, index) => {
+                    // if(index > startLen - 1){
+                    //     afterStart = true;
+                    // }
+                    // if(afterStart){
+                    //     if(count === 0){
+                    //         bgColor = 'white';
+                    //         count++;
+                    //     }
+                    //     else{
+
+                    //     }
+                    // }
+
                     if(item.status === "true"){
                         startIndex++;
                         return (
@@ -850,38 +871,47 @@ const TableScreen = ({ navigation, route }) => {
         });
     };
 
-    const saveBranch = (location, branchCode, branchName) => {
+    const saveBranch = async (location, branchCode, branchName) => {
         // console.log("[TableScreen]:: Inserting into SQlite...");
-        db.transaction(
-            (tx) => {
-                tx.executeSql("INSERT INTO Branches (location, branchCode, branchName) VALUES(?,?,?);", [location, branchCode, branchName],
-                    (tx, results) => {
-                        // console.log("[TableScreen]:: Successfully inserted.");
-                        // console.log(results);
-                    },
-                    (txt, error) => {
-                        // console.log(error);
-                    }
-                )
-            },
-        )
+        return new Promise((resolve, reject) => {
+            db.transaction(
+                (tx) => {
+                    tx.executeSql("INSERT INTO Branches (location, branchCode, branchName) VALUES(?,?,?);", [location, branchCode, branchName],
+                        (tx, results) => {
+                            // console.log("[TableScreen]:: Successfully inserted.");
+                            // console.log(results);
+                            resolve("success");
+                        },
+                        (txt, error) => {
+                            // console.log(error);
+                            reject("error");
+                        }
+                    )
+                },
+            )
+        })
+        
     }
 
     const deleteBranch = (_id) => {
         // console.log("[TableScreen]:: Deleting from SQlite...");
-        db.transaction(
-            (tx) => {
-                tx.executeSql(`DELETE FROM Branches WHERE _id = ?;`, [_id],
-                    (tx, results) => {
-                        // console.log("[TableScreen]:: Successfully deleted.");
-                        // console.log(results);
-                    },
-                    (txt, error) => {
-                        // console.log(error);
-                    }
-                )
-            },
-        )
+        return new Promise((resolve, reject) => {
+            db.transaction(
+                (tx) => {
+                    tx.executeSql(`DELETE FROM Branches WHERE _id = ?;`, [_id],
+                        (tx, results) => {
+                            // console.log("[TableScreen]:: Successfully deleted.");
+                            // console.log(results);
+                            resolve("success");
+                        },
+                        (txt, error) => {
+                            // console.log(error);
+                            reject("error");
+                        }
+                    )
+                },
+            )
+        })
     }
 
     const handleBranch = async (location, branchCode, branchName, recents) => {
@@ -892,20 +922,65 @@ const TableScreen = ({ navigation, route }) => {
         var deleted = false;
         for(var i = 0; i < recents.length; i++){
             if(recents[i].branchCode === branchCode){
-                deleteBranch(recents[i]._id);
+                await deleteBranch(recents[i]._id);
                 deleted = true;
             }
         }
-        if(recents.length > 2){
+        if(recents.length > 5){
             if(!deleted){
-                deleteBranch(recents[0]._id);
+                await deleteBranch(recents[0]._id);
             }
         }
-        saveBranch(location, branchCode, branchName); // this doesnt get waited to be executed
+        await saveBranch(location, branchCode, branchName); // this doesnt get waited to be executed
 
         setBranchModal(false);
         navigation.replace("Table", route.params)
     }
+
+    const handelBranchBtn = async (location, branchCode, branchName, recents) => {
+        route.params["location"] = location;
+        route.params["branchCode"] = branchCode;
+        route.params["branchName"] = branchName;
+        
+        var deleted = false;
+        for(var i = 0; i < recents.length; i++){
+            if(recents[i].branchCode === branchCode){
+                await deleteBranch(recents[i]._id);
+                deleted = true;
+            }
+        }
+        if(recents.length > 5){
+            if(!deleted){
+                // await deleteBranch(recents[0]._id);
+                await deleteBranch(recents[recents.length - 1]._id);
+            }
+        }
+        await saveBranch(location, branchCode, branchName); // this doesnt get waited to be executed
+        navigation.replace("Table", route.params);
+    }
+
+    const RenderBranch = ({ item, ind }) => {
+        if(ind === 0){
+            return (
+                <View style={styles.currentBranch}>
+                    <Text style={styles.currentBranchText}>{item.branchName}점</Text>
+                </View>
+            );
+        }
+        else{
+            return (
+                <TouchableOpacity
+                    style={styles.recentBranchBtn}
+                    onPress={async () => {
+                        await handelBranchBtn(item.location, item.branchCode, item.branchName, recents.current);
+                    }}
+                >
+                    <Text style={styles.recentBranchBtnText}>{item.branchName}점</Text>
+                </TouchableOpacity>
+            );
+        }
+    }
+
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }} edges={['right', 'left', 'top']} >
@@ -919,34 +994,21 @@ const TableScreen = ({ navigation, route }) => {
                     resizeMode='cover' 
                     style={styles.bgImage}
                 >
-                    <View style={styles.recentsBox}>
-                        <TouchableOpacity
-                            style={styles.recentBranchBtn}
-                            onPress={() => {
-                                if(!(secondBranch.current === null)){
-                                    handleBranch(secondBranch.current.location, secondBranch.current.branchCode, secondBranch.current.branchName, recents.current);
-
-                                }
-                            }}
+                    <View>
+                        <ScrollView 
+                            nestedScrollEnabled={true}
+                            horizontal={true}
+                            showsHorizontalScrollIndicator={false}
                         >
-                            <Text style={styles.recentBranchBtnText}>{secondBranch.current === null ? '   ----   ' : secondBranch.current.branchName + '점'}</Text>
-                        </TouchableOpacity>
-                        <View
-                            style={styles.currentBranch}
-                        >
-                            <Text style={styles.currentBranchText}>{route.params.branchName}점</Text>
-                        </View>
-                        <TouchableOpacity
-                            style={styles.recentBranchBtn}
-                            onPress={() => {
-                                if(!(thirdBranch.current === null)){
-                                    handleBranch(thirdBranch.current.location, thirdBranch.current.branchCode, thirdBranch.current.branchName, recents.current);
-                                }
-                            }}
-                        >
-                            <Text style={styles.recentBranchBtnText}>{thirdBranch.current === null ? '   ----   ' : thirdBranch.current.branchName + '점'}</Text>
-                        </TouchableOpacity>
+                            <View style={styles.recentsBox}>
+                                {recents.current.map((item, index) => {
+                                    return <RenderBranch item={item} key={index} ind={index} />
+                                })}
+                            </View>
+                            
+                        </ScrollView>
                     </View>
+                    
 
                     <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 18}}>
                         <TouchableOpacity
@@ -957,7 +1019,7 @@ const TableScreen = ({ navigation, route }) => {
                             >
                                 <Text style={styles.branchSelectorText}>+지점선택</Text>
                         </TouchableOpacity>
-                    </View>
+                    </View> 
                     
                 </ImageBackground>
             </View>
@@ -1072,7 +1134,6 @@ const TableScreen = ({ navigation, route }) => {
                                 :
                                 <RenderEndHour item={lastHour} />
                             }
-
                         </View>
                         <ScrollView
                             nestedScrollEnabled={true}
@@ -1210,32 +1271,36 @@ const styles = StyleSheet.create({
     recentsBox: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginHorizontal: 24,
+        marginLeft: 10,
         marginTop: 25,
     },
     recentBranchBtn: {
-        borderRadius: 20,
+        borderRadius: 35,
         borderWidth: 1,
         borderColor: 'white',
-        paddingVertical: 5,
-        paddingHorizontal: 8,
-        maxWidth: '25%',
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        // maxWidth: '25%',
         justifyContent: 'center',
+        marginRight: 10
     },
     recentBranchBtnText: {
         color: 'white',
         textAlign: 'center',
+        fontSize: 16
     },
     currentBranch: {
         backgroundColor: 'white',
-        borderRadius: 20,
-        paddingVertical: 5,
-        paddingHorizontal: 8,
-        justifyContent: 'center'
+        borderRadius: 35,
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        justifyContent: 'center',
+        marginRight: 10,
     },
     currentBranchText: {
-        color: '#4383E4',
+        color: '#4485E5',
         textAlign: 'center',
+        fontSize: 16,
     },
     branchButton: {
 
@@ -1249,14 +1314,14 @@ const styles = StyleSheet.create({
     branchHolder: {
         borderWidth: 2,
         borderColor: 'white',
-        borderRadius: 20,
+        borderRadius: 35,
         paddingVertical: 5,
         paddingHorizontal: 15,
         marginLeft: 15,
     },
     branchSelector: {
         backgroundColor: '#2B60AD',
-        borderRadius: 20,
+        borderRadius: 35,
         paddingVertical: 5,
         paddingHorizontal: 10,
         // maxWidth: '30%'

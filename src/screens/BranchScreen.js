@@ -107,10 +107,6 @@ const BranchScreen = ({ navigation, route }) => {
         getBranch();
     }, [curr])
 
-    // saveBranch('hi1', 'hey1', 'hello1');
-    // saveBranch('hi2', 'hey2', 'hello2');
-    // saveBranch('hi3', 'hey3', 'hello3');
-    // getBranch();
     console.log(recents);
 
     const getLocationList = async (loc) => {
