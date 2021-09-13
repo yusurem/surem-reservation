@@ -26,6 +26,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     flex:1,
+    width: (Platform.OS == 'ios') ? '100%' : null,
     resizeMode: (Platform.OS == 'ios') ? 'contain' : 'center',
     marginTop: (Platform.OS == 'ios') ? null: '5%'
   },

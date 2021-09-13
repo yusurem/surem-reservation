@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, Text, TouchableOpacity, Platform } from 'react-native'
 import moment from 'moment';
 import Dialog from 'react-native-dialog';
 import QRCode from 'react-native-qrcode-svg';
@@ -28,7 +28,7 @@ export default function MyReservationRow(props) {
 			style={styles.qrBtn}
 			onPress={onPress}
 		>
-			<Text style={styles.qrBtnText}>QR 코드</Text>
+			<Text style={[styles.qrBtnText,{lineHeight:28}]}>QR 코드</Text>
 		</TouchableOpacity>
 		<View>
 		<Modal 

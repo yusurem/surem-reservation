@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>reservation.ipa</key>
+	<array>
+		<dict>
+			<key>architectures</key>
+			<array>
+				<string>arm64</string>
+			</array>
+			<key>certificate</key>
+			<dict>
+				<key>SHA1</key>
+				<string>9AD81EB49246411E5974B346C79C27C0ADF98095</string>
+				<key>dateExpires</key>
+				<string>2022/08/02</string>
+				<key>type</key>
+				<string>Apple Distribution</string>
+			</dict>
+			<key>embeddedBinaries</key>
+			<array>
+				<dict>
+					<key>architectures</key>
+					<array>
+						<string>arm64</string>
+					</array>
+					<key>certificate</key>
+					<dict>
+						<key>SHA1</key>
+						<string>9AD81EB49246411E5974B346C79C27C0ADF98095</string>
+						<key>dateExpires</key>
+						<string>2022/08/02</string>
+						<key>type</key>
+						<string>Apple Distribution</string>
+					</dict>
+					<key>name</key>
+					<string>OpenSSL.framework</string>
+					<key>team</key>
+					<dict>
+						<key>id</key>
+						<string>H7D5SV72Q3</string>
+						<key>name</key>
+						<string>SureM Co., Ltd.</string>
+					</dict>
+				</dict>
+			</array>
+			<key>entitlements</key>
+			<dict>
+				<key>application-identifier</key>
+				<string>H7D5SV72Q3.com.surem.reservation</string>
+				<key>aps-environment</key>
+				<string>production</string>
+				<key>com.apple.developer.team-identifier</key>
+				<string>H7D5SV72Q3</string>
+				<key>get-task-allow</key>
+				<false/>
+			</dict>
+			<key>name</key>
+			<string>reservation.app</string>
+			<key>profile</key>
+			<dict>
+				<key>UUID</key>
+				<string>810a4e30-bd02-4de3-b483-4ed3ee01b6fd</string>
+				<key>name</key>
+				<string>iOS Team Ad Hoc Provisioning Profile: com.surem.reservation</string>
+			</dict>
+			<key>team</key>
+			<dict>
+				<key>id</key>
+				<string>H7D5SV72Q3</string>
+				<key>name</key>
+				<string>SureM Co., Ltd.</string>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>
