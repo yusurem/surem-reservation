@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ImageBackground, Text, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LoadingScreen from './LoadingScreen'
-
 import * as SQLite from 'expo-sqlite';
 import { Alert } from 'react-native';
 
@@ -12,7 +11,7 @@ const DEPT_CODE = "35--SX-DQ";
 const db = SQLite.openDatabase('db.db');
 
 db.transaction(tx=>{
-  tx.executeSql('CREATE TABLE IF NOT EXISTS UserId (_id INTEGER PRIMARY KEY, secretCode TEXT, usercode TEXT, username TEXT);')
+  tx.executeSql('CREATE TABLE IF NOT EXISTS UserId (_id INTEGER PRIMARY KEY, secretCode TEXT, usercode TEXT);')
 })
 
 export default function InitialScreen({ navigation, route }) {
@@ -71,8 +70,8 @@ export default function InitialScreen({ navigation, route }) {
             resizeMode="cover"
           >
             <View>
-              <View style={{ alignItems: "center" }}>
-                <Text style={styles.initFirstText}>"미팅 룸이 필요할 떄는 언제나"</Text>
+              <View style={{ alignItems: "center"}}>
+                <Text style={styles.initFirstText}>"미팅 룸이 필요할 땐 언제나"</Text>
               </View>
               <View style={{ alignItems:'center', marginBottom:'20%'}}>
                 <Text style={styles.initSecondText}>오피스쉐어에</Text>
@@ -102,10 +101,22 @@ const styles = StyleSheet.create({
     color:'#FFFFFF',
     fontSize:18,
     marginBottom:'15%',
+    fontFamily:"BMHANNAPro",
+    fontWeight:"bold",
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: {width: 1, height: 1},
+    textShadowRadius: 2  
   },
   initSecondText : {
     color:'#FFFFFF',
     fontSize:18,
+    fontFamily:"NanumSquareRegular" ,
+    fontWeight:"bold",
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: {width: 1, height: 1},
+    textShadowRadius: 2,
+    lineHeight:30
+
   },
   resrvButton: {
     alignSelf: 'stretch',
@@ -115,8 +126,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#4184E4',
   },
   buttonText: {
-      color: "white",
-      textAlign: "center",
-      fontSize: 13
+    color: "white",
+    textAlign: "center",
+    fontSize: 13,
+    fontFamily:"NanumSquareRegular" ,
+    fontWeight:"bold"
   }
 });

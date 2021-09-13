@@ -5,7 +5,8 @@ import { WebView } from 'react-native-webview';
 import * as SQLite from 'expo-sqlite';
 import * as Notifications from 'expo-notifications';
 import axios from 'axios';
-import { Platform } from 'react-native';
+import { Platform,Alert } from 'react-native';
+import { TERMS,URL, APP_VERSION } from '../constants';
 
 export default function PaymentPageScreen({ navigation, route }) {
 
@@ -25,18 +26,22 @@ export default function PaymentPageScreen({ navigation, route }) {
     }
 
   // 1. 룸 예약
+
   const makeReservation = async (payCode) => {
     try{
         console.log("Attempting to make reservation...");
+        console.log(`${route.params.resrvStime}`)
+        console.log(`${route.params.resrvEtime}`)
+        console.log(`${route.params.couponIdx}`)
         const response = await axios.post( URL + '/reservation', {
             'roomCode' : route.params.roomCode,
             'usercode' : route.params.userCode,
             'secretCode' : route.params.secretCode,
             'payCode' : payCode,
-            "resrvStime" : `${route.params.year}${route.params.month}${route.params.day}${route.params.startTime}`,
-            "resrvEtime" : `${route.params.year}${route.params.month}${route.params.day}${route.params.endTime}`,
+            "resrvStime" : `${route.params.resrvStime}`,
+            "resrvEtime" : `${route.params.resrvEtime}`,
             "resrvNote": route.params.memo,
-            "useCoupon": route.params.couponIdx === undefined ? 'N' : 'Y',
+            "useCoupon": (route.params.couponIdx === undefined || route.params.couponIdx === null) ? 'N' : 'Y',
             "couponIdx": route.params.couponIdx,
             "appVersion": APP_VERSION,
             "os": Platform.OS,
@@ -201,14 +206,20 @@ const getPush = () => {
     //   }
 
       console.log("[PaymentScreen]:: ABOUT TO GO TO THE RESERVED PAGE");
+      console.log('Stime :: ', route.params.startTime)
+      console.log('EndTime :: ',route.params.endTime)
+      console.log(`${sTime}:${route.params.startTime.charAt(2)}0 ${sTime > 11 ? "PM" : "AM"}`)
+      console.log(`${eTime}:${route.params.endTime.charAt(2)}0 ${eTime > 11 ? "PM" : "AM"}`)
+
+      console.log('STARTTIME :: ',`${route.params.startTime.charAt(2)}`)
       navigation.reset({
           index: 1,
           routes: [
               {name: "Table"},
               {name: 'Reserved', params: {
                   dateString: route.params.dateString,
-                  startTime: `${sTime}:${route.params.startTime.charAt(2)}0 ${sTime > 11 ? "PM" : "AM"}`,
-                  endTime: `${eTime}:${route.params.endTime.charAt(2)}0 ${eTime > 11 ? "PM" : "AM"}`,
+                  startTime: `${route.params.startTime}`,
+                  endTime: `${route.params.endTime}`,
                   resrvCode: res,
                   weekDay: route.params.weekDay,
                   roomName: route.params.roomName,

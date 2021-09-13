@@ -83,11 +83,13 @@ const navigation = useNavigation();
             if(index < 3)
               return(
 				<View key={index} style={styles.noticeItem}>
-					<Text style={{color:'black',marginLeft:'1%',width:'65%',height:28,textAlignVertical:'center',marginLeft:'5%',fontFamily:'NanumSquareRegular'}}>{item.noticeSubject}</Text>
+					<Text style={{color:'black',marginLeft:'1%',width:'65%',
+					lineHeight:28,
+					height:28,textAlignVertical:'center',marginLeft:'5%',fontFamily:'NanumSquareRegular'}}>{item.noticeSubject}</Text>
 					<View
 						style={styles.qrBtn}
 					>
-						<Text style={[styles.qrBtnText, {lineHeight: Platform.OS === 'ios' ? 30 : 30}]}>{moment(item.noticeTime,'YYYYMMDDHHmmss').format('YYYY.MM.DD')}</Text>
+						<Text style={[styles.qrBtnText, {lineHeight: Platform.OS === 'ios' ? 28 : 28}]}>{moment(item.noticeTime,'YYYYMMDDHHmmss').format('YYYY.MM.DD')}</Text>
 					</View>
 				</View>
 			)

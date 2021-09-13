@@ -47,6 +47,8 @@ import MyCouponScreen from './src/screens/MyCouponScreen';
 import PaymentPageScreen from './src/screens/PaymentPageScreen';
 
 Font.loadAsync({'NanumSquareRegular':require('./assets/fonts/NanumSquareRegular.ttf')})
+Font.loadAsync({'NanumSquareBold':require('./assets/fonts/NanumSquareBold.ttf')})
+Font.loadAsync({'BMHANNAPro':require('./assets/fonts/BMHANNAPro.ttf')})
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -132,6 +134,7 @@ const FourthStack = () => {
   );
 }
 
+
 const TabNav = () => {
   return (
     <Tab.Navigator
@@ -139,10 +142,10 @@ const TabNav = () => {
       lazy="true"
       tabBarOptions={{
         style: {
-          height: (Platform.OS === 'android') ? 60 : 80
+          height: (Platform.OS === 'android') ? 70 : 100
         },
         labelStyle:{
-          marginBottom: (Platform.OS === 'android') ? 8 : 15
+          marginBottom: (Platform.OS === 'android') ? 8 : 10
         },
         activeTintColor: '#3779DA',
         inactiveTintColor: '#474747'

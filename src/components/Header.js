@@ -5,7 +5,6 @@ import * as SQLite from 'expo-sqlite';
 
 
 const Header = ({ navigation, route }) => {
-
   return (
     <View style={[styles.headerContainer]}>
       <Image style={styles.logo} source={require("../../assets/logo_02.png")}/>
@@ -26,7 +25,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     flex:1,
-    width: (Platform.OS == 'ios') ? '100%' : null,
+    width: (Platform.OS == 'ios') ? '100%' : 100,
     resizeMode: (Platform.OS == 'ios') ? 'contain' : 'center',
     marginTop: (Platform.OS == 'ios') ? null: '5%'
   },

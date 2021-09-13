@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableHighlight, Image, Alert, TouchableOpacity, ScrollView, ActivityIndicator, Platform, NativeModules } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import axios from 'axios';
-import { MaterialCommunityIcons, Feather, Entypo } from '@expo/vector-icons';
+import { MaterialCommunityIcons, Feather, AntDesign } from '@expo/vector-icons';
 import Modal from 'react-native-modal';
 import * as SQLite from 'expo-sqlite';
 import CheckBox from '@react-native-community/checkbox';
@@ -21,12 +21,8 @@ const PaymentScreen = ({ navigation, route }) => {
     const [toggleCheckBox, setToggleCheckBox] = useState(false)
     // const [checked, setChecked] = useState(false);
 
-    // const [usercode, setUsercode] = useState("");
-	// const [secretCode, setSecretCode] = useState("");
-
-    const usercode = useRef("");
-    const secretCode = useRef("");
-    const username = useRef("");
+    const [usercode, setUsercode] = useState("");
+	const [secretCode, setSecretCode] = useState("");
 
     const [paymentDone, setPaymentDone] = useState(false);
 
@@ -91,11 +87,8 @@ const PaymentScreen = ({ navigation, route }) => {
                     `select * from UserId order by _id desc;`,
                     [],
                     (tx, results) =>{ 
-                        // setUsercode(results.rows.item(0).usercode)
-                        usercode.current = results.rows.item(0).usercode;
-                        // setSecretCode(results.rows.item(0).secretCode)
-                        secretCode.current = results.rows.item(0).secretCode;
-                        username.current = results.rows.item(0).username;
+                        setUsercode(results.rows.item(0).usercode)
+                        setSecretCode(results.rows.item(0).secretCode)
                         resolve();
                     },
                     (tx, error) => {
@@ -112,8 +105,8 @@ const PaymentScreen = ({ navigation, route }) => {
             console.log("Attempting to make reservation...");
             const response = await axios.post( URL + '/reservation', {
                 'roomCode' : route.params.roomCode,
-                'usercode' : usercode.current,
-                'secretCode' : secretCode.current,
+                'usercode' : usercode,
+                'secretCode' : secretCode,
                 'payCode' : payCode,
                 "resrvStime" : `${route.params.year}${route.params.month}${route.params.day}${route.params.startTime}`,
                 "resrvEtime" : `${route.params.year}${route.params.month}${route.params.day}${route.params.endTime}`,
@@ -384,16 +377,16 @@ const PaymentScreen = ({ navigation, route }) => {
                 secretCode: secretCode,
                 // secretCode: secretCode,
                 resrvStime: `${route.params.year}${route.params.month}${route.params.day}${route.params.startTime}`,
-                // resrvEtime: `${route.params.year}${route.params.month}${route.params.day}${route.params.endTime}`,
+                resrvEtime: `${route.params.year}${route.params.month}${route.params.day}${route.params.endTime}`,
                 payAmount: route.params.discount === undefined ? route.params.totalCost.toString() : (route.params.totalCost - route.params.discount).toString(),
                 adminCode: route.params.adminCode,
                 roomCode: route.params.roomCode,
                 roomName: route.params.roomName,
-                userName: username.current,
+                userName: "test",
                 totalTime: route.params.totalTime.toString(),
                 couponCode: route.params.couponCode === undefined ? null : route.params.couponCode,
                 couponIdx: route.params.couponIdx === undefined ? null : route.params.couponIdx,
-                // resrvNote: route.params.memo,
+                memo: route.params.memo,
                 useCoupon: route.params.couponIdx === undefined ? 'N' : 'Y',
                 dateString: route.params.dateString,
                 startTime: `${sTime}:${route.params.startTime.charAt(2)}0 ${sTime > 11 ? "PM" : "AM"}`,
@@ -402,7 +395,7 @@ const PaymentScreen = ({ navigation, route }) => {
                 roomName: route.params.roomName,
                 location: route.params.location,
                 address: route.params.address,
-                totalCost: route.params.totalCost
+                totalCost: route.params.totalCost    
             })
         }
     }
@@ -485,23 +478,21 @@ const PaymentScreen = ({ navigation, route }) => {
                                         totalCost: route.params.totalCost,
                                         weekDay: route.params.weekDay,
                                         year: route.params.year,
-                                        userCode: usercode.current,
-                                        secretCode: secretCode.current,
+                                        userCode: usercode,
+                                        secretCode: secretCode,
                                         couponIdx: route.params.couponIdx,
                                         discount: route.params.discount,
                                         couponCode: route.params.couponCode,
                                         adminCode: route.params.adminCode,
                                         address: route.params.address,
-                                        location: route.params.location,
-                                        username: username.current,
+                                        location: route.params.location
                                     })
                                 }}
                             >
                                 <View style={{ flexDirection: 'row' }}>
-                                    <Text style={styles.valueStyle}>{route.params.discount === undefined ? '사용 가능한 쿠폰들' : '-' + route.params.discount + '원'} </Text>
-                                    <View style={{ justifyContent: 'center' }}>
-                                        {/* <MaterialCommunityIcons name="greater-than" size={18} color="#6C6C6C" /> */}
-                                        <Entypo name="chevron-thin-right" size={15} color="#6C6C6C" />
+                                    <Text style={[styles.valueStyle,{lineHeight:18}]}>{route.params.discount === undefined ? '사용 가능한 쿠폰들' : '-' + route.params.discount + '원'} </Text>
+                                    <View style={{ justifyContent: 'center',alignSelf:'center' }}>
+                                        <AntDesign name="right" size={18} color="#888888" />
                                     </View>
                                 </View>
                             </TouchableOpacity>

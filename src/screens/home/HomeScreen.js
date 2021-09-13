@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, ScrollView, Text, TouchableOpacity, StyleSheet, Image, BackHandler, Alert } from 'react-native'
+import { View, ScrollView, Text, TouchableOpacity, StyleSheet, Image, BackHandler, Alert, Platform } from 'react-native'
 import Header from '../../components/Header'
 import MyReservationList from '../../components/MyReservationList'
 import MainNotices from '../../components/MainNotices'
@@ -9,6 +9,7 @@ import SecondMainBanner from '../../components/SecondMainBanner';
 import { useFocusEffect } from '@react-navigation/native';
 import MainInformationUse from '../../components/MainInformationUse';
 import MapView, {Marker} from 'react-native-maps';
+import { EvilIcons } from '@expo/vector-icons'; 
 
 export default function HomeScreen({navigation}) {
 
@@ -35,7 +36,7 @@ export default function HomeScreen({navigation}) {
   );
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+    <View style={{flex: 1, backgroundColor: 'white', marginTop:Platform.OS == 'ios' ? 30: 0}}>
       <ScrollView style={{flex: 1}}>
       <Header color="#FFFFFF"></Header>
       <TouchableOpacity style={styles.reserveRoomBtn}
@@ -60,25 +61,29 @@ export default function HomeScreen({navigation}) {
       <MainNotices/>
       <FirstMainBanner/>
       <SecondMainBanner/>
-      <View style={{flexDirection:'row',width:'90%',alignSelf:'center',alignItems:'flex-end',marginBottom:40}}>
+      <View style={{flexDirection:'row',width:'90%',alignSelf:'center',alignItems:'flex-end',marginBottom:50}}>
         <View 
           style={styles.bar}
         />
         <TouchableOpacity
+         style={selectedMode ? styles.textSelectedUnderline : styles.textUnderline}
           onPress={()=>{
             setSelectedMode(true)
           }}
         >
-          <Text style={[{fontSize:14,flex:3,fontFamily:'NanumSquareRegular',textAlign:'center'},selectedMode ? styles.textSelectedUnderline : styles.textUnderline]}>이용안내</Text>
+          <Text style={[{fontSize:14,flex:3,fontFamily:'NanumSquareRegular',textAlign:'center'},
+          selectedMode ? styles.textSelectedUnderline : styles.textUnderline]}>이용안내</Text>
         </TouchableOpacity>
         <View 
           style={[styles.bar,{flex:2}]}
         />
         <TouchableOpacity
+          style={selectedMode ? styles.textUnderline : styles.textSelectedUnderline}
           onPress={()=>{
             setSelectedMode(false)
           }}>
-          <Text style={[{fontSize:14,flex:3,fontFamily:'NanumSquareRegular',textAlign:'center'},selectedMode ? styles.textUnderline : styles.textSelectedUnderline]}>찾아오는 길</Text>
+          <Text style={[{fontSize:14,flex:3,fontFamily:'NanumSquareRegular',textAlign:'center'},
+          selectedMode ? styles.textUnderline : styles.textSelectedUnderline]}>찾아오는 길</Text>
         </TouchableOpacity>
         <View 
           style={styles.bar}
@@ -87,29 +92,35 @@ export default function HomeScreen({navigation}) {
       {
         selectedMode ? 
         <MainInformationUse/> : 
-        <View style={{flex:1, width:'90%', height:300, alignItems: 'center',alignContent:'center', alignSelf:'center', marginBottom:50}}>
-          <MapView         
-          initialRegion={{
-            latitude: 37.53501664977686,
-            longitude: 127.0947798497017,
-            latitudeDelta: 0.0025,
-            longitudeDelta: 0.0025,
-          }}
-         style={{flex:1,width:'100%', alignSelf:'center'}}>
-           <Marker
-            coordinate={
-              {
-                latitude: 37.53576432444482,
-                longitude: 127.09561035726969
+        <View>
+          <View style={{flex:1,flexDirection:'row',marginBottom:20}}>
+            <EvilIcons name="location" size={25} color="#939393" style={{flex:0,marginLeft:'5%',alignSelf:'center'}} />
+            <Text fontFamily="NanumSquareRegular" style={{lineHeight:20,alignSelf:'center'}}>서울 광진구 광나루로56길 85 테크노-마트21</Text>
+          </View>
+          <View style={{flex:1, width:'90%', height:300, alignItems: 'center',alignContent:'center', alignSelf:'center', marginBottom:50}}>
+            <MapView         
+            initialRegion={{
+              latitude: 37.53501664977686,
+              longitude: 127.0947798497017,
+              latitudeDelta: 0.0025,
+              longitudeDelta: 0.0025,
+            }}
+          style={{flex:1,width:'100%', alignSelf:'center'}}>
+            <Marker
+              coordinate={
+                {
+                  latitude: 37.53576432444482,
+                  longitude: 127.09561035726969
+                }
               }
-            }
-            title="테크노마트"
-           />
-          </MapView>
+              title="테크노마트"
+            />
+            </MapView>
+          </View>
         </View>
       }
     </ScrollView>
-    </SafeAreaView>
+    </View>
   );  
 }
 
@@ -157,15 +168,17 @@ const styles = StyleSheet.create({
   bar:{
     flex:1,
     height:1,
-    backgroundColor:'#BBC8E8',
+    backgroundColor:'#A3A3A3',
   },
   textSelectedUnderline:{
-    borderBottomWidth: 1,
-    borderColor: '#4284E4'
+    color: 'black',
+    borderColor: '#4284E4',
+    borderBottomWidth: Platform.OS == 'ios' ? 2 : 1
   },
   textUnderline:{
-    borderBottomWidth: 1,
-    borderColor: '#BBC8E8'
+    color:'#A3A3A3',
+    borderBottomColor: '#A3A3A3',
+    borderBottomWidth: Platform.OS == 'ios' ? 2 : 1
   },
   map: {
     width: 100,
