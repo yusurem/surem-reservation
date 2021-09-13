@@ -231,11 +231,6 @@ const PaymentScreen = ({ navigation, route }) => {
     }
 
     const startPayment = async () => {
-<<<<<<< HEAD
-        try{
-            const params = {
-                userCode: usercode.current,
-=======
         if(Platform.OS === 'android'){
             try{
                 const params = {
@@ -387,7 +382,6 @@ const PaymentScreen = ({ navigation, route }) => {
             navigation.navigate('PaymentPage',{
                 userCode: usercode,
                 secretCode: secretCode,
->>>>>>> b7e62e4 (IOS Payment & modifying UI)
                 // secretCode: secretCode,
                 resrvStime: `${route.params.year}${route.params.month}${route.params.day}${route.params.startTime}`,
                 // resrvEtime: `${route.params.year}${route.params.month}${route.params.day}${route.params.endTime}`,
@@ -401,137 +395,6 @@ const PaymentScreen = ({ navigation, route }) => {
                 couponIdx: route.params.couponIdx === undefined ? null : route.params.couponIdx,
                 // resrvNote: route.params.memo,
                 useCoupon: route.params.couponIdx === undefined ? 'N' : 'Y',
-<<<<<<< HEAD
-                // appVersion: APP_VERSION,
-                // os: Platform.OS,
-                // resrvCode: resResult.resrvCode,
-            }
-            console.log("[PaymentScreen]: Params for payment native module: ");
-            console.log(params);
-
-            const response = await PaymentModule.startPayment(params);
-            console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-            console.log(response);
-            console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-
-            if(response.result === "success"){
-                setPaymentDone(true);
-                const res = await makeReservation(response.payCode);
-                if(res === 'error'){
-                    setPaymentDone(false);
-                    Alert.alert(
-                        "예약오류",
-                        "예약도중 서버 오류가 일어났습니다. 결제 취소됬습니다. 잠시후 다시 예약해주세요.",
-                        [{
-                            text: "처음으로 돌아가기",
-                            onPress: () => {
-                                navigation.reset({
-                                    index: 0,
-                                    routes: [
-                                        {name: 'Table'}
-                                    ]
-                    })}}]);
-                }
-                else{
-                    // have to set notification right here
-                    // const year = route.params.year;
-                    // const month = route.params.month;
-                    // const day = route.params.day;
-                    // const rest = "162000"; // route.params.endTime
-                    // const hour = rest.substring(0,2);
-                    // const min = rest.substring(2,4);
-                    
-                    const permission = await getPush();
-                    // console.log("after getting permission");
-                    if(permission){
-                        await schedulePushNotification(route.params.year, route.params.month, route.params.day, route.params.startTime.substring(0,2), route.params.startTime.substring(2,4));
-                    }
-
-                    console.log("[PaymentScreen]:: ABOUT TO GO TO THE RESERVED PAGE");
-                    navigation.reset({
-                        index: 1,
-                        routes: [
-                            {name: "Table"},
-                            {name: 'Reserved', params: {
-                                dateString: route.params.dateString,
-                                startTime: `${sTime}:${route.params.startTime.charAt(2)}0 ${sTime > 11 ? "PM" : "AM"}`,
-                                endTime: `${eTime}:${route.params.endTime.charAt(2)}0 ${eTime > 11 ? "PM" : "AM"}`,
-                                resrvCode: res,
-                                weekDay: route.params.weekDay,
-                                roomName: route.params.roomName,
-                                location: route.params.location,
-                                address: route.params.address,
-                                username: username.current,
-                            }}
-                        ],
-                    });
-
-                    // navigation.navigate('Reserved', {
-                    //     dateString: route.params.dateString,
-                    //     startTime: `${sTime}:${route.params.startTime.charAt(2)}0 ${sTime > 11 ? "PM" : "AM"}`,
-                    //     endTime: `${eTime}:${route.params.endTime.charAt(2)}0 ${eTime > 11 ? "PM" : "AM"}`,
-                    //     resrvCode: res,
-                    //     weekDay: route.params.weekDay,
-                    //     roomName: route.params.roomName
-                    // });
-                }
-            }
-        } catch (e){
-            console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            console.log(e);
-            console.log(e.message === "E1:payCancel");
-            if(e.message === "E1:payCancel"){
-                Alert.alert(
-                    "결제 진행을 취소하셨습니다.",
-                    "[결제하기] 버튼으로 결제 진행을 다시 시작해주세요.",
-                    [
-                        { text: "확인" },
-                        {
-                            text: "처음으로 돌아가기",
-                            onPress: () => { 
-                                navigation.reset({
-                                    index: 0, 
-                                    routes: [
-                                        {name: 'Table'}
-                                    ] 
-                            }); }
-                        }
-                    ]
-                )
-            }
-            else if(e.message === "E2:userFail"){
-                Alert.alert(
-                    "결제가 실패했습니다",
-                    "잠시후 다시 예약해주세요.",
-                    [
-                        {
-                            text: "처음으로 돌아가기",
-                            onPress: () => { 
-                                navigation.reset({
-                                    index: 0, 
-                                    routes: [
-                                        {name: 'Table'}
-                                    ] 
-                                }); 
-                }}]);
-            }
-            else{
-                Alert.alert(
-                    "결제오류",
-                    "결제도중 알수없는 오류가 일어났습니다. 잠시후 다시 예약해주세요. 같은 오류 반복시 전화문의해주세요.",
-                    [
-                        {
-                            text: "처음으로 돌아가기",
-                            onPress: () => { 
-                                navigation.reset({
-                                    index: 0, 
-                                    routes: [
-                                        {name: 'Table'}
-                                    ] 
-                                }); 
-                }}]);
-            }
-=======
                 dateString: route.params.dateString,
                 startTime: `${sTime}:${route.params.startTime.charAt(2)}0 ${sTime > 11 ? "PM" : "AM"}`,
                 endTime: `${eTime}:${route.params.endTime.charAt(2)}0 ${eTime > 11 ? "PM" : "AM"}`,
@@ -541,7 +404,6 @@ const PaymentScreen = ({ navigation, route }) => {
                 address: route.params.address,
                 totalCost: route.params.totalCost
             })
->>>>>>> b7e62e4 (IOS Payment & modifying UI)
         }
     }
 
