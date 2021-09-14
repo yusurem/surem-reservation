@@ -12,7 +12,16 @@ export default function MainInformationUse() {
         <View style={styles.leftSide}>
             <View style={styles.element}>
                 <View style={styles.numberBox}>
-                    <Image source={require("../../assets/number1.png")} />
+                    <View style={{height:24,width:43}}>
+                    <Image  
+                    style={{
+                        width:'100%',
+                        height:'100%',
+                        resizeMode: (Platform.OS == 'ios') ? 'contain' : 'center'
+                    }}
+                    source={require("../../assets/number1.png")} />
+                    </View>
+
                     <View 
                         style={styles.bar}
                     />
@@ -27,7 +36,16 @@ export default function MainInformationUse() {
             </View>
             <View style={styles.element}> 
                 <View style={styles.numberBox}>
-                    <Image source={require("../../assets/number3.png")} />
+                    <View style={{height:24,width:43}}>
+                    <Image  
+                    style={{
+                        width:'100%',
+                        height:'100%',
+                        resizeMode: (Platform.OS == 'ios') ? 'contain' : 'center'
+                    }}
+                    source={require("../../assets/number3.png")} />
+                    </View>
+
                     <View 
                         style={styles.bar}
                     />
@@ -44,10 +62,19 @@ export default function MainInformationUse() {
             </View>
             <View style={styles.element}>
                 <View style={styles.numberBox}>
-                <Image source={require("../../assets/number5.png")} />
-                <View 
-                    style={styles.bar}
-                />
+                    <View style={{height:24,width:43}}>
+                    <Image  
+                    style={{
+                        width:'100%',
+                        height:'100%',
+                        resizeMode: (Platform.OS == 'ios') ? 'contain' : 'center'
+                    }}
+                    source={require("../../assets/number5.png")} />
+                    </View>
+
+                    <View 
+                        style={styles.bar}
+                    />
                 </View>
                 <Text style={styles.titleFont}>
                     회원실 이용
@@ -61,7 +88,16 @@ export default function MainInformationUse() {
             <View style={styles.element}> 
                 
                 <View style={styles.numberBox}>
-                    <Image source={require("../../assets/number2.png")} />
+                    <View style={{height:24,width:43}}>
+                    <Image  
+                    style={{
+                        width:'100%',
+                        height:'100%',
+                        resizeMode: (Platform.OS == 'ios') ? 'contain' : 'center'
+                    }}
+                    source={require("../../assets/number2.png")} />
+                    </View>
+
                     <View 
                         style={styles.bar}
                     />
@@ -75,7 +111,16 @@ export default function MainInformationUse() {
             </View>
             <View style={styles.element}> 
                 <View style={styles.numberBox}>
-                    <Image source={require("../../assets/number4.png")} />
+                <View style={{height:24,width:43}}>
+                    <Image  
+                    style={{
+                        width:'100%',
+                        height:'100%',
+                        resizeMode: (Platform.OS == 'ios') ? 'contain' : 'center'
+                    }}
+                    source={require("../../assets/number4.png")} />
+                    </View>
+
                     <View 
                         style={styles.bar}
                     />
@@ -120,7 +165,9 @@ const styles = StyleSheet.create({
         flex:1,
         height:1,
         backgroundColor:'#BBC8E8',
-        margin:10  
+        marginTop:20,
+        marginLeft:10,
+        marginRight:10
     },
     titleFont:{
         fontSize: 15,
@@ -137,7 +184,8 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
     contents:{
-        fontFamily:'NanumSquareRegular'
+        fontFamily:'NanumSquareRegular',
+        lineHeight:18
     }
 });
   

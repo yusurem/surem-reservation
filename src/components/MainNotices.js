@@ -83,9 +83,16 @@ const navigation = useNavigation();
             if(index < 3)
               return(
 				<View key={index} style={styles.noticeItem}>
-					<Text style={{color:'black',marginLeft:'1%',width:'65%',
-					lineHeight:28,
-					height:28,textAlignVertical:'center',marginLeft:'5%',fontFamily:'NanumSquareRegular'}}>{item.noticeSubject}</Text>
+					<Text style={{
+						color:'black',
+						width:'65%',
+						maxWidth:'65%',
+						lineHeight:28,
+						height:28,
+						textAlignVertical:'center',
+						marginLeft:'5%',
+						fontFamily:'NanumSquareRegular'
+					}}>{item.noticeSubject}</Text>
 					<View
 						style={styles.qrBtn}
 					>

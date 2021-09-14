@@ -71,7 +71,7 @@ export default function HomeScreen({navigation}) {
             setSelectedMode(true)
           }}
         >
-          <Text style={[{fontSize:14,flex:3,fontFamily:'NanumSquareRegular',textAlign:'center'},
+          <Text style={[{fontSize:16,flex:3,fontFamily:'NanumSquareRegular',textAlign:'center'},
           selectedMode ? styles.textSelectedUnderline : styles.textUnderline]}>이용안내</Text>
         </TouchableOpacity>
         <View 
@@ -82,7 +82,7 @@ export default function HomeScreen({navigation}) {
           onPress={()=>{
             setSelectedMode(false)
           }}>
-          <Text style={[{fontSize:14,flex:3,fontFamily:'NanumSquareRegular',textAlign:'center'},
+          <Text style={[{fontSize:16,flex:3,fontFamily:'NanumSquareRegular',textAlign:'center'},
           selectedMode ? styles.textUnderline : styles.textSelectedUnderline]}>찾아오는 길</Text>
         </TouchableOpacity>
         <View 
