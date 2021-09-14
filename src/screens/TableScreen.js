@@ -12,9 +12,9 @@ import { URL } from '../constants';
 import BranchModal from '../components/BranchModal';
 import * as SQLite from 'expo-sqlite';
 
-const TITLE_H = 45;
+const TITLE_H = 35;
 var TITLE_W = 170;
-const MIN_H = 35;
+const MIN_H = 30;
 const HOUR_W = 130;
 const TABLE_BORDER_COLOR = '#C3C3C3';
 
@@ -326,21 +326,39 @@ const TableScreen = ({ navigation, route }) => {
             <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }} edges={['right', 'left', 'top']} >
 
                 <View style={styles.branchBox}>
-                    <View style={styles.branchHolder}>
-                        <Text style={styles.branchHolderText}>+ 지점 선택</Text>
-                    </View>
-                    <View style={[styles.branchButton, { }]}>
-                        <Text style={styles.branchText}>{route.params.location} {route.params.branchName}점</Text> 
-                    </View>
-
-                    <TouchableOpacity
-                        style={[styles.branchSelector]}
-                        onPress={() => {
-                            setBranchModal(!branchModal);
-                        }}
+                    <ImageBackground 
+                        source={require('../../assets/tableBackground.png')} 
+                        resizeMode='cover' 
+                        style={styles.bgImage}
                     >
-                        <Text style={styles.branchSelectorText}>+ 지점 선택</Text>
-                    </TouchableOpacity>
+                        <View>
+                            <ScrollView 
+                                nestedScrollEnabled={true}
+                                horizontal={true}
+                                showsHorizontalScrollIndicator={false}
+                            >
+                                <View style={styles.recentsBox}>
+                                    {recents.current.map((item, index) => {
+                                        return <RenderBranch item={item} key={index} ind={index} />
+                                    })}
+                                </View>
+                                
+                            </ScrollView>
+                        </View>
+                        
+
+                        <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 18}}>
+                            <TouchableOpacity
+                                    style={styles.branchSelector}
+                                    onPress={() => {
+                                        setBranchModal(!branchModal);
+                                    }}
+                                >
+                                    <Text style={styles.branchSelectorText}>+지점선택</Text>
+                            </TouchableOpacity>
+                        </View> 
+                        
+                    </ImageBackground>
                 </View>
 
                 <View style={styles.dateBox}>
@@ -706,23 +724,31 @@ const TableScreen = ({ navigation, route }) => {
                     }}
                 /> */}
                 {item.map((item, index) => {
-                    // if(index > startLen - 1){
-                    //     afterStart = true;
+                    // if(count > startLen - 1){
+                    //     afterStart = true;  
                     // }
                     // if(afterStart){
-                    //     if(count === 0){
+                    //     if(index - startLen === 0){
                     //         bgColor = 'white';
-                    //         count++;
                     //     }
                     //     else{
+                    //         // console.log((index - startLen) % 6);
 
+                    //         if((index - startLen) % 6 === 0){
+                    //             console.log(index);
+                    //             if(bgColor === 'white'){
+                    //                 bgColor = '#F6F6F6';
+                    //             }
+                    //             else{
+                    //                 bgColor = 'white';
+                    //             }
+                    //         }
                     //     }
                     // }
-
                     if(item.status === "true"){
                         startIndex++;
                         return (
-                            <Avail key={index} rmCode={roomCodes[ind]} ops={optionsList[ind]} opVals={optionValList[ind]} start={roomTimes[startIndex]}/>
+                            <Avail key={index} background={bgColor} rmCode={roomCodes[ind]} ops={optionsList[ind]} opVals={optionValList[ind]} start={roomTimes[startIndex]}/>
                         )
                     }
                     else if(item.status === 'mine'){
@@ -742,7 +768,7 @@ const TableScreen = ({ navigation, route }) => {
         );
     }
 
-    const Avail = ({ rmCode, ops, opVals, start}) => {
+    const Avail = ({ background, rmCode, ops, opVals, start}) => {
         return (
             <TouchableOpacity  
                 onPress={() => {
@@ -761,7 +787,7 @@ const TableScreen = ({ navigation, route }) => {
                     })
                 }}
             >
-                <View style={{ height: MIN_H, backgroundColor: '#F6F6F6', justifyContent: 'center', borderBottomWidth: 1, borderColor: TABLE_BORDER_COLOR, borderRightWidth: 1 }}>
+                <View style={{ height: MIN_H, backgroundColor: background, justifyContent: 'center', borderBottomWidth: 1, borderColor: TABLE_BORDER_COLOR, borderRightWidth: 1 }}>
                     <Text style={{ textAlign: 'center', color: '#757575' }}>예약가능</Text>
                 </View>
             </TouchableOpacity>
@@ -770,16 +796,16 @@ const TableScreen = ({ navigation, route }) => {
 
     const Booked = ({ size }) => {
         return (
-            <View style={{ height: MIN_H * size, justifyContent: 'center', backgroundColor:'#838383', borderBottomWidth: 1, borderColor: TABLE_BORDER_COLOR, borderRightWidth: 1, alignItems: 'center' }}>
-                <Text style={{ textAlign: 'center', color: 'white'}}>예약완료</Text>
+            <View style={{ height: MIN_H * size, justifyContent: 'center', backgroundColor:'#838383', borderBottomWidth: 1, borderColor: TABLE_BORDER_COLOR, borderRightWidth: 1, alignItems: 'center'}}>
+                <Text style={{ textAlign: 'center', color: 'white', fontSize: 16, fontWeight: 'bold'}}>예약완료</Text>
             </View>
         );
     }
 
     const MyBooked = ({ size }) => {
         return (
-            <View style={{ height: MIN_H * size, justifyContent: 'center', backgroundColor:'#4184E4', borderBottomWidth: 1, borderColor: TABLE_BORDER_COLOR, borderRightWidth: 1, alignItems: 'center' }}>
-                <Text style={{ textAlign: 'center', color: 'white'}}>내 예약</Text>
+            <View style={{ height: MIN_H * size, justifyContent: 'center', backgroundColor:'#4184E4', borderBottomWidth: 1, borderColor: TABLE_BORDER_COLOR, borderRightWidth: 1, alignItems: 'center'}}>
+                <Text style={{ textAlign: 'center', color: 'white', fontSize: 16, fontWeight: 'bold'}}>내 예약</Text>
             </View>
         );
     }
@@ -983,7 +1009,7 @@ const TableScreen = ({ navigation, route }) => {
 
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }} edges={['right', 'left', 'top']} >
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'white', }} edges={['right', 'left',]} >
 
             {/* <View style={{borderWidth: 5, borderColor: 'black'}}>
                 <Image source={require('../../assets/tableBackground.png')} style={{resizeMode: 'contain'}}/>
@@ -1069,7 +1095,7 @@ const TableScreen = ({ navigation, route }) => {
                     }}
                 >
                     {/* <MaterialCommunityIcons name="less-than" color="#BFBFBF" size={30} /> */}
-                    <Entypo name="chevron-thin-left" size={30} color="#BFBFBF" />
+                    <Entypo name="chevron-thin-left" size={25} color="#BFBFBF" />
                 </TouchableOpacity>
                     
                 <TouchableOpacity
@@ -1107,7 +1133,7 @@ const TableScreen = ({ navigation, route }) => {
                     }}
                 >
                     {/* <MaterialCommunityIcons name="greater-than" color="#BFBFBF" size={30} /> */}
-                    <Entypo name="chevron-thin-right" size={30} color="#BFBFBF" />
+                    <Entypo name="chevron-thin-right" size={25} color="#BFBFBF" />
                 </TouchableOpacity>
             </View>
 
@@ -1272,13 +1298,13 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginLeft: 10,
-        marginTop: 25,
+        marginTop: 33,
     },
     recentBranchBtn: {
         borderRadius: 35,
         borderWidth: 1,
         borderColor: 'white',
-        paddingVertical: 10,
+        paddingVertical: 4,
         paddingHorizontal: 15,
         // maxWidth: '25%',
         justifyContent: 'center',
@@ -1287,12 +1313,12 @@ const styles = StyleSheet.create({
     recentBranchBtnText: {
         color: 'white',
         textAlign: 'center',
-        fontSize: 16
+        fontSize: 14
     },
     currentBranch: {
         backgroundColor: 'white',
         borderRadius: 35,
-        paddingVertical: 10,
+        paddingVertical: 4,
         paddingHorizontal: 15,
         justifyContent: 'center',
         marginRight: 10,
@@ -1300,7 +1326,7 @@ const styles = StyleSheet.create({
     currentBranchText: {
         color: '#4485E5',
         textAlign: 'center',
-        fontSize: 16,
+        fontSize: 14,
     },
     branchButton: {
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, BackHandler, FlatList, Alert, ScrollView, useWindowDimensions} from 'react-native';
 import axios from 'axios';
-import { Entypo, Ionicons } from '@expo/vector-icons'; 
+import { Entypo, Feather } from '@expo/vector-icons'; 
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Collapse, CollapseHeader, CollapseBody } from 'accordion-collapse-react-native';
@@ -168,10 +168,16 @@ const InquiryScreen = ({ navigation, route }) => {
                                                         <Text style={[styles.itemStatus, item.adminChk === 'O' ? styles.answered : styles.unAnswered]}>{item.adminChk === 'O' ? "답변 완료" : "답변 대기"} </Text>
                                                             {isOpen.includes(item.idx) ?
                                                                 // <Ionicons style={styles.caretIcon} name="ios-caret-up-circle-outline" size={24} color={item.adminChk === 'O' ? '#4982CF' : 'black'} />
-                                                                <Entypo name="chevron-up" size={24} color={item.adminChk === 'O' ? '#4485E5' : "#888888"} />
+                                                                // <Entypo name="chevron-up" size={24} color={item.adminChk === 'O' ? '#4485E5' : "#888888"} />
+                                                                <View style={{ justifyContent: 'center' }}>
+                                                                    <Feather name="chevron-up" size={24} color={item.adminChk === 'O' ? '#4485E5' : "#999999"} />
+                                                                </View>
                                                                 :
                                                                 // <Ionicons style={styles.caretIcon} name="ios-caret-down-circle-outline" size={24} color={item.adminChk === 'O' ? '#4982CF' : 'black'} />
-                                                                <Entypo name="chevron-down" size={24} color={item.adminChk === 'O' ? '#4485E5' : "#888888"} />
+                                                                // <Entypo name="chevron-down" size={24} color={item.adminChk === 'O' ? '#4485E5' : "#888888"} />
+                                                                <View style={{ justifyContent: 'center' }}>
+                                                                    <Feather name="chevron-down" size={24} color={item.adminChk === 'O' ? '#4485E5' : "#999999"} />
+                                                                </View>
                                                             }
                                                     </View>
                                                 </View>
@@ -185,7 +191,8 @@ const InquiryScreen = ({ navigation, route }) => {
                                                     {item.adminChk === 'O' ?
                                                         (<View style={{}}>
                                                             <Text style={styles.answerLabel}>답변: </Text>
-                                                            <Text style={styles.answerText}>이것이 답변입니다!{item.answer}</Text>
+                                                            <Text style={styles.answerText}>{item.answer}</Text>
+                                                            {/* <Text style={styles.answerText}>이용에 불편을 드려 정말 죄송합니다. 간혹 휴대폰 화면의 밝기가 너무 어두울 경우 QR 코드 인식이 잘 안될 때가 있습니다. 계속해서 인식에 어려움이 있으시다면 전화 문의 부탁드리겠습니다. 감사합니다.</Text> */}
                                                         </View>)
                                                         :
                                                         null
@@ -211,13 +218,15 @@ const InquiryScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
     headerBox: {
         flexDirection: 'row',
-        marginTop: 50,
-        marginHorizontal: 30,
+        marginTop: 30,
+        marginHorizontal: 20,
         justifyContent: 'space-between',
-        marginBottom: 15,
+        marginBottom: 0,
+        alignItems: 'center',
     },
     headerText: {
-        fontSize: 18
+        fontSize: 16,
+        color: 'black'
     },
     askButton: {
         backgroundColor: '#40465A',
@@ -231,7 +240,7 @@ const styles = StyleSheet.create({
     mainBox: {
         flex: 1,
         // padding: 30,
-        paddingHorizontal: 30,
+        paddingHorizontal: 20,
         padding: 10
         // alignItems: 'center',
         // borderWidth: 1,
@@ -244,10 +253,10 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         paddingHorizontal: 20,
         paddingTop: 15,
-        borderColor: '#CDCFCF',
-        borderTopWidth: 1,
-        borderLeftWidth: 1,
-        borderRightWidth: 1,
+        // borderColor: '#CDCFCF',
+        // borderTopWidth: 1,
+        // borderLeftWidth: 1,
+        // borderRightWidth: 1,
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
         // marginBottom: 15
@@ -270,16 +279,16 @@ const styles = StyleSheet.create({
 
     },
     itemStatus: {
-        fontSize: 14
+        // fontSize: 13
     },
     caretIcon: {
         margin: 0
     },
     itemBody: {
         backgroundColor: 'white',
-        borderColor: '#CDCFCF',
-        borderLeftWidth: 1,
-        borderRightWidth: 1,
+        // borderColor: '#CDCFCF',
+        // borderLeftWidth: 1,
+        // borderRightWidth: 1,
         paddingHorizontal: 20,
         // paddingLeft: 20,
         paddingTop: 10
@@ -303,10 +312,10 @@ const styles = StyleSheet.create({
     },
     itemEnd: {
         backgroundColor: 'white',
-        borderColor: '#CDCFCF',
-        borderBottomWidth: 1,
-        borderLeftWidth: 1,
-        borderRightWidth: 1,
+        // borderColor: '#CDCFCF',
+        // borderBottomWidth: 1,
+        // borderLeftWidth: 1,
+        // borderRightWidth: 1,
         borderBottomLeftRadius: 10,
         borderBottomRightRadius: 10,
         paddingBottom: 5

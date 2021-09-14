@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import LoadingScreen from './LoadingScreen';
 import Modal from 'react-native-modal';
 import { URL } from '../constants';
-import { FontAwesome5, MaterialIcons } from '@expo/vector-icons'; 
+import { FontAwesome5, MaterialIcons, Feather } from '@expo/vector-icons'; 
 
 var PICKER_IN_BTWN_W = 33;
 
@@ -356,25 +356,25 @@ const ReservationScreen = ({ navigation, route }) => {
         <SafeAreaView style={{flex: 1, backgroundColor: 'white'}} edges={['right', 'left', 'top']}>
             <ScrollView>
                 <TouchableOpacity
-                    style={{ backgroundColor: 'white', paddingHorizontal: 8, paddingVertical: 3, position: 'absolute', top: 127, left: 32, zIndex: 1, justifyContent: 'center', borderRadius: 10, }}
+                    style={{ backgroundColor: 'white', paddingHorizontal: 1, paddingVertical: 0, position: 'absolute', top: 127, left: 32, zIndex: 1, justifyContent: 'center', borderRadius: 10, alignItems: 'center'}}
                     onPress={() => {
                         // shift the imgs array by 1 to the left
                         rotateRight();
                     }}
                 >
-                    {/* <FontAwesome5 name="less-than" size={22} color="black" /> */}
-                    <FontAwesome5 name="chevron-left" size={24} color="#888888" />
+                    {/* <FontAwesome5 name="chevron-left" size={18} color="#888888" /> */}
+                    <Feather name="chevron-left" size={25} color="#888888" />
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    style={{ backgroundColor: 'white', paddingHorizontal: 8, paddingVertical: 3, position: 'absolute', top: 127, right: 32, zIndex: 1, justifyContent: 'center', alignSelf: 'flex-end', borderRadius: 10 }}
+                    style={{ backgroundColor: 'white', paddingHorizontal: 1, paddingVertical: 0, position: 'absolute', top: 127, right: 32, zIndex: 1, justifyContent: 'center', alignSelf: 'flex-end', borderRadius: 10, alignItems: 'center' }}
                     onPress={() => {
                         // shift the imgs array by 1 to the right
                         rotateLeft();
                     }}
                 >
-                    {/* <FontAwesome5 name="greater-than" size={22} color="black" /> */}
-                    <FontAwesome5 name="chevron-right" size={22} color="#888888" />
+                    {/* <FontAwesome5 name="chevron-right" size={18} color="#888888" /> */}
+                    <Feather name="chevron-right" size={25} color="#888888" />
                 </TouchableOpacity>
 
                 <View style={styles.mainBox}>
@@ -491,6 +491,7 @@ const ReservationScreen = ({ navigation, route }) => {
                                 style={[Platform.OS === 'android' ? styles.picker : styles.iosPicker, { width: PICKER_W }]}
                                 // itemStyle={styles.pickerItem}
                                 selectedValue={startTime}
+                                itemStyle={{textAlign: 'center'}}
                                 onValueChange={(itemValue, itemIndex) => {
                                     console.log("itemValue: " + itemValue);
                                     var start = configureStart(itemValue, route.params.optionVals);
@@ -684,19 +685,23 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginBottom: 5,
         // borderWidth: 1,
-        // borderColor: 'black'
+        // borderColor: 'red',
+        alignItems: 'center'
     },
     blueBar: {
         backgroundColor: '#A1C1F1',
-        height: 19,
+        height: 15,
         width: 5,
         borderRadius: 5,
-        marginTop: 3,
-        marginRight: 4
+        // marginTop: 3,
+        marginRight: 4,
+        // borderWidth: 1,
     },
     headerText: {
         fontSize: 16,
         color: "#39393A",
+        // borderWidth: 1,
+        // borderColor: 'black',
     },
     mainBox: {
         paddingVertical: 10,
@@ -730,6 +735,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#B2B2B2',
         borderRadius: 5,
+        flexDirection: 'row',
     },
     picker: {
         color: 'black',
