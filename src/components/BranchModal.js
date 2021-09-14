@@ -120,7 +120,7 @@ const BranchModal = ({ modalVisible, setModalVisible, handleBranch, db }) => {
                 onPress={onPress}
             >
                 <Text style={styles.locationText}>{item}</Text>
-                <Feather name="check" size={24} color={bgColor === 'white' ? 'white' : "red"} />
+                <Feather name="check" size={24} color={bgColor === 'white' ? 'white' : "red"} style={{ marginBottom: -12 }}/>
             </TouchableOpacity>
         );
     }
@@ -296,7 +296,8 @@ const styles = StyleSheet.create({
         marginTop: 15,
     },
     headerView: {
-        marginLeft: 20,
+        // marginLeft: 20,
+        marginHorizontal: 20,
     },
     headerText: {
         color: 'black'
@@ -304,7 +305,7 @@ const styles = StyleSheet.create({
     recentBox: {
         marginTop: 20,
         marginBottom: 10,
-        marginHorizontal: 30,
+        marginHorizontal: 20,
         // borderWidth: 1,
         // borderColor: 'red'
     },
@@ -331,7 +332,7 @@ const styles = StyleSheet.create({
     branchBox: {
         // flex: 1,
         flexDirection: 'row',
-        marginHorizontal: 30,
+        marginHorizontal: 20,
         marginVertical: 10,
         borderWidth: 1,
         borderColor: '#C3C3C3',
@@ -345,12 +346,16 @@ const styles = StyleSheet.create({
         paddingVertical: 24,
         paddingLeft: 20,
         paddingRight: 15,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        // borderWidth: 1,
+        // borderColor: 'red'
     },
     branchView: {
         paddingVertical: 24,
         borderBottomWidth: 1,
         borderColor: '#C3C3C3',
+        // borderWidth: 1,
+        // borderColor: 'green'
     },
     locationText: {
         fontSize: 14,

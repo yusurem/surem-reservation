@@ -85,13 +85,14 @@ const navigation = useNavigation();
 				<View key={index} style={styles.noticeItem}>
 					<Text style={{
 						color:'black',
-						width:'65%',
-						maxWidth:'65%',
+						// width:'60%',
+						maxWidth:'60%',
 						lineHeight:28,
 						height:28,
 						textAlignVertical:'center',
 						marginLeft:'5%',
-						fontFamily:'NanumSquareRegular'
+						fontFamily:'NanumSquareRegular',
+						flex: 1,
 					}}>{item.noticeSubject}</Text>
 					<View
 						style={styles.qrBtn}
@@ -143,10 +144,14 @@ const styles = StyleSheet.create({
 		flex:0
 	},
 	noticeItem: {
-		flex:0,
+		// flex:1,
+		// borderWidth: 1,
+		// borderColor: 'red',
 		marginBottom:'1%',
 		flexDirection:'row',
-		marginRight:5
+		// marginRight:5,
+		justifyContent: 'space-between',
+		// flex: 1
 	},
 	qrBtn: {
 		borderRadius: 10,
