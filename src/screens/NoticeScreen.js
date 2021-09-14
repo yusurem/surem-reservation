@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
   },
   showingContent: {
     flex:2,
-    height:250
+    height:200
   },
   notShowingContent:{
     flex:1,
