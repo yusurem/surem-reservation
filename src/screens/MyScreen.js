@@ -63,6 +63,7 @@ const MyScreen = ({ navigation, route }) => {
                     [],
                     (tx, results) => {
                         // console.log("called!")
+                        console.log(results.rows.item(0));
                         // setUsercode(results.rows.item(0).usercode);
                         usercode.current = results.rows.item(0).usercode;
                         // setSecretCode(results.rows.item(0).secretCode);
