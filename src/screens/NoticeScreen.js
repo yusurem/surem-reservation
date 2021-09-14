@@ -9,6 +9,7 @@ import 'moment/locale/ko';
 import { Platform } from 'react-native';
 import { WebView } from 'react-native-webview' 
 import LoadingScreen from './LoadingScreen'
+import { Feather } from '@expo/vector-icons'; 
 import { URL } from '../constants';
 
 const Item = ({ item }) => {
@@ -23,24 +24,25 @@ const Item = ({ item }) => {
             {
               isFolder === true ? 
               <WebView 
-                style={{ width: 1000 }}
+                style={{ width: '95%',alignSelf:'center' }}
                 injectedJavaScript={`const meta = document.createElement('meta'); meta.setAttribute('content', 'width=width, initial-scale=1.0, maximum-scale=1.0, user-scalable=1.0'); meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta); `}
                 scalesPageToFit={false}            
-                source={{ html: '<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"></head><body>'+item.noticeNote+'</body></html>' }}
+                source={{ html: '<html><head><meta name="viewport" content="width=device-width, initial-scale=0.75"></head><body>'+item.noticeNote+'</body></html>' }}
                 /> : null
             }
         </View>
-        <View style={styles.rightSide}>
+        <View style={styles.rightSide,{marginTop: 10, flex:1, height:30}}>
             <TouchableOpacity style={
-                {marginTop:'25%'}
+                {alignSelf:'center'}
             } onPress={()=>{
                 setIsFolder(!isFolder)
             }}>
                 {
-                    isFolder === true ?  <Text style={{fontSize:30}}>▲</Text> : <Text style={{fontSize:30}}>▼</Text>
+                    isFolder === true ?   
+                    <Feather name="chevron-up" size={24} color="#999999" />
+                    : <Feather name="chevron-down" size={24} color="#999999" />
                 }
             </TouchableOpacity>
-
         </View>
     </View>
   )
@@ -152,8 +154,8 @@ export default function NoticeScreen({ navigation }) {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-      <View style={{flex:1}}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#F3F4F8' }}>
+      <View style={{flex:1, backgroundColor:'#F3F4F8'}}>
       <Text style={{marginLeft:'5%',marginTop:'8%',marginBottom:'5%', fontSize:18}}>공지사항</Text>
       <FlatList
         data={notices}
@@ -172,30 +174,28 @@ const styles = StyleSheet.create({
   item: {
     borderWidth: 1,
     borderRadius: 10,
-    width: '85%',
+    width: '90%',
     alignSelf: 'center',
     marginBottom: 10,
-    borderLeftColor: '#EDEDED',
-    borderTopColor: '#EDEDED',
-    borderRightColor: '#EDEDED',
-    borderBottomColor: '#EDEDED',
-    flexDirection: 'row'
+    borderLeftColor: '#F3F4F8',
+    borderTopColor: '#F3F4F8',
+    borderRightColor: '#F3F4F8',
+    borderBottomColor: '#F3F4F8',
+    flexDirection: 'row',
+    backgroundColor: 'white'
   },
   leftSide: {
     height: '100%',
-    flex: 1,
+    flex: 7,
   },
   rightSide: {
-    height: '100%',
-    flex: 1,
-    marginRight: '10%',
-    alignItems: 'flex-end'
+    flex: 1
   },
   contentContainerStyle: {
     justifyContent: 'center'
   },
   itemText: {
-    marginLeft: '5%'
+    marginLeft: '2%'
   },
   noticeContent: {
     marginLeft: '5%',
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
   },
   noticeTime: {
     marginLeft: '5%',
-    marginTop: '2%',
+    marginTop: 10,
     marginBottom: '2%',
     color:'#A0A0A0'
   },
@@ -232,10 +232,10 @@ const styles = StyleSheet.create({
   },
   showingContent: {
     flex:2,
-    height:300
+    height:250
   },
   notShowingContent:{
     flex:1,
-    height:100
+    height:80
   }
 });

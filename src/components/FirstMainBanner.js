@@ -5,7 +5,7 @@ export default function FirstMainBanner() {
   return (
 	<View style={styles.banner}>
 		<View stlye={{flex:1}}>
-			<View style={{flex:1,marginLeft:'5%',justifyContent:'center',marginTop:'5%'}}>	
+			<View style={{flex:1,marginLeft:'6%',justifyContent:'center',marginTop:'5%'}}>	
 				<Text style={styles.noticeTitle}>이제 회의실 예약도</Text>
 				<Text style={styles.noticeTitle}>간편한 오피스쉐어 APP으로!</Text>
 			</View>
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
 		color:'black',
 		fontSize:15,
 		textAlignVertical:'center',
-		marginLeft:'5%',
+		marginLeft:5,
 		marginBottom:5,
 		fontFamily:'NanumSquareRegular',
 		textAlignVertical:'center'

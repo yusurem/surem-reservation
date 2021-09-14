@@ -7,6 +7,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@babel/highlight": "^7.14.5",
     "@expo/ngrok": "^2.4.3",
     "@react-native-community/checkbox": "0.5.8",
     "@react-native-community/cli": "5.0.1",
@@ -58,6 +59,7 @@
     "react-native-sim-data": "3.0.0",
     "react-native-sms-retriever": "1.1.1",
     "react-native-splash-screen": "^3.2.0",
+    "react-native-surem-payment-webview": "^0.1.0",
     "react-native-svg": "^12.1.0",
     "react-native-table-component": "^1.2.1",
     "react-native-unimodules": "~0.12.0",

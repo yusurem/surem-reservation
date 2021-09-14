@@ -44,8 +44,11 @@ import InitialScreen from './src/screens/InitialScreen';
 import OldTableScreen from './src/screens/OldTableScreen';
 import CouponScreen from './src/screens/CouponScreen';
 import MyCouponScreen from './src/screens/MyCouponScreen';
+import PaymentPageScreen from './src/screens/PaymentPageScreen';
 
 Font.loadAsync({'NanumSquareRegular':require('./assets/fonts/NanumSquareRegular.ttf')})
+Font.loadAsync({'NanumSquareBold':require('./assets/fonts/NanumSquareBold.ttf')})
+Font.loadAsync({'BMHANNAPro':require('./assets/fonts/BMHANNAPro.ttf')})
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -91,6 +94,8 @@ const SecondStack = () => {
         <Stack.Screen name="Table" component={TableScreen} />
         <Stack.Screen name="Payment" component={PaymentScreen} />
         <Stack.Screen name="Coupon" component={CouponScreen} />
+        <Stack.Screen name="PaymentPage" component={PaymentPageScreen}/>
+        
     </Stack.Navigator>
   );
 }
@@ -129,6 +134,7 @@ const FourthStack = () => {
   );
 }
 
+
 const TabNav = () => {
   return (
     <Tab.Navigator
@@ -136,10 +142,10 @@ const TabNav = () => {
       lazy="true"
       tabBarOptions={{
         style: {
-          height: (Platform.OS === 'android') ? 60 : 70
+          height: (Platform.OS === 'android') ? 70 : 100
         },
         labelStyle:{
-          marginBottom: (Platform.OS === 'android') ? 8 : 2
+          marginBottom: (Platform.OS === 'android') ? 8 : 10
         },
         activeTintColor: '#3779DA',
         inactiveTintColor: '#474747'
@@ -157,7 +163,7 @@ const TabNav = () => {
               style={{
                alignSelf: 'center', 
                marginLeft: 0.5, 
-               marginTop: (Platform.OS === 'android') ? 12 : 0 
+               marginTop: (Platform.OS === 'android') ? 12 : 5 
               }} />
             );
           },
@@ -172,7 +178,7 @@ const TabNav = () => {
           tabBarIcon: ({ color, size }) => 
           <MaterialCommunityIcons name="calendar-clock" color={color} size={24} 
           style={{ 
-            marginTop: (Platform.OS === 'android') ? 12 : 0 
+            marginTop: (Platform.OS === 'android') ? 12 : 5
           }}/>,
         }}
       />
@@ -184,7 +190,7 @@ const TabNav = () => {
           tabBarLabel: '예약확인',
           tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="checkbox-marked-outline" color={color} size={24} 
           style={{ 
-            marginTop: (Platform.OS === 'android') ? 12 : 0 
+            marginTop: (Platform.OS === 'android') ? 12 : 5
           }}/>,
         }}
       />
@@ -196,7 +202,7 @@ const TabNav = () => {
           // unmountOnBlur: true,
           tabBarIcon: ({ color, size }) => <FontAwesome5 name="user-alt" color={color} size={24} 
           style={{ 
-            marginTop: (Platform.OS === 'android') ? 12 : 0 
+            marginTop: (Platform.OS === 'android') ? 12 : 5
           }}/>,
         }}
       />

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, Text, TouchableOpacity, Platform } from 'react-native'
 import moment from 'moment';
 import Dialog from 'react-native-dialog';
 import QRCode from 'react-native-qrcode-svg';
@@ -28,25 +28,30 @@ export default function MyReservationRow(props) {
 			style={styles.qrBtn}
 			onPress={onPress}
 		>
-			<Text style={styles.qrBtnText}>QR 코드</Text>
+			<Text style={[styles.qrBtnText,{lineHeight:25,alignSelf:'center'}]}>QR 코드</Text>
 		</TouchableOpacity>
 		<View>
-		<Modal 
-			isVisible={qrVisible} 
-			onBackdropPress={()=> handleQrCancel()}
-			onRequestClose={()=> handleQrCancel()}
-		>
+	  <Modal 
+		isVisible={qrVisible} 
+		onBackdropPress={()=> handleQrCancel()}
+		onRequestClose={()=> handleQrCancel()}
+	  >
         <View style={styles.qrStyle}>
-		  <Text style={{ marginTop: 5, textAlign: 'center' }}>{props.roomName}</Text>
-		  <Text style={{ textAlign: 'center' }}>날짜 : {moment(props.resrvStime, 'YYYYMMDDHHmmss').format('YYYY / MM / DD')}</Text>
-		  <Text style={{ textAlign: 'center' ,marginBottom:10 }}>시간 : {moment(props.resrvStime, 'YYYYMMDDHHmmss').format('HH:mm')} ~ {moment(props.resrvEtime, 'YYYYMMDDHHmmss').format('HH:mm')}</Text>
-           
+		<View style= {{borderRadius:8, backgroundColor:'#F3F4F8' ,marginBottom:2, borderWidth:5, borderColor: '#F3F4F8'}}>
+		  	<Text style={{ textAlign: 'center', fontSize:16 }}>{props.roomName}</Text>
+		  </View>
+		  <View style= {{borderRadius:8, backgroundColor:'#F3F4F8' ,marginBottom:2, borderWidth:5, borderColor: '#F3F4F8'}}>
+			<Text style={{ textAlign: 'center', fontSize:16 }}>날짜 : {moment(props.resrvStime, 'YYYYMMDDHHmmss').format('YYYY / MM / DD')}</Text>
+		  </View>
+		  <View style= {{borderRadius:8, backgroundColor:'#F3F4F8' ,marginBottom:20, borderWidth:5, borderColor: '#F3F4F8'}}>
+			  <Text style={{ textAlign: 'center', fontSize:16 }}>시간 : {moment(props.resrvStime, 'YYYYMMDDHHmmss').format('HH:mm')} ~ {moment(props.resrvEtime, 'YYYYMMDDHHmmss').format('HH:mm')}</Text>
+		  </View>
           <QRCode
             size={280}
             value={props.resrvCode}
           />
         </View>
-      </Modal>
+	  </Modal>
     </View>
 	</View>
   );  
@@ -65,7 +70,8 @@ const styles = StyleSheet.create({
 		color:'white',
 		marginLeft:'4%',
 		width:'73%',
-		fontFamily:'NanumSquareRegular'
+		fontFamily:'NanumSquareRegular',
+		lineHeight:25
 	},
 	qrBtn:{
 		borderRadius:7,
@@ -73,7 +79,8 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		width:'20%',
 		height:25,
-		marginRight:10
+		marginRight:10,
+		alignItems:'center'
 	}, 
 	qrBtnText:{
 		flex:1,
@@ -82,7 +89,7 @@ const styles = StyleSheet.create({
 		textAlign:'center',
 		fontFamily:'NanumSquareRegular',
 		alignSelf:'center',
-		textAlignVertical:'center'
+		textAlignVertical:'center',
 	},
 	qrStyle:{
 		alignSelf:'center',
@@ -91,7 +98,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		marginVertical:'15%',
 		width:300,
-		height: 370,
+		height: 420,
 		backgroundColor:'#FFFFFF',
 		borderRadius:10
 	}

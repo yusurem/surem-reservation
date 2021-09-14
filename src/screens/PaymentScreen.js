@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableHighlight, Image, Alert, TouchableOpacity, ScrollView, ActivityIndicator, Platform, NativeModules } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import axios from 'axios';
-import { MaterialCommunityIcons, Feather, Entypo } from '@expo/vector-icons';
+import { MaterialCommunityIcons, Feather, AntDesign } from '@expo/vector-icons';
 import Modal from 'react-native-modal';
 import * as SQLite from 'expo-sqlite';
 import CheckBox from '@react-native-community/checkbox';
@@ -21,12 +21,8 @@ const PaymentScreen = ({ navigation, route }) => {
     const [toggleCheckBox, setToggleCheckBox] = useState(false)
     // const [checked, setChecked] = useState(false);
 
-    // const [usercode, setUsercode] = useState("");
-	// const [secretCode, setSecretCode] = useState("");
-
-    const usercode = useRef("");
-    const secretCode = useRef("");
-    const username = useRef("");
+    const [usercode, setUsercode] = useState("");
+	const [secretCode, setSecretCode] = useState("");
 
     const [paymentDone, setPaymentDone] = useState(false);
 
@@ -91,11 +87,8 @@ const PaymentScreen = ({ navigation, route }) => {
                     `select * from UserId order by _id desc;`,
                     [],
                     (tx, results) =>{ 
-                        // setUsercode(results.rows.item(0).usercode)
-                        usercode.current = results.rows.item(0).usercode;
-                        // setSecretCode(results.rows.item(0).secretCode)
-                        secretCode.current = results.rows.item(0).secretCode;
-                        username.current = results.rows.item(0).username;
+                        setUsercode(results.rows.item(0).usercode)
+                        setSecretCode(results.rows.item(0).secretCode)
                         resolve();
                     },
                     (tx, error) => {
@@ -112,8 +105,8 @@ const PaymentScreen = ({ navigation, route }) => {
             console.log("Attempting to make reservation...");
             const response = await axios.post( URL + '/reservation', {
                 'roomCode' : route.params.roomCode,
-                'usercode' : usercode.current,
-                'secretCode' : secretCode.current,
+                'usercode' : usercode,
+                'secretCode' : secretCode,
                 'payCode' : payCode,
                 "resrvStime" : `${route.params.year}${route.params.month}${route.params.day}${route.params.startTime}`,
                 "resrvEtime" : `${route.params.year}${route.params.month}${route.params.day}${route.params.endTime}`,
@@ -135,12 +128,6 @@ const PaymentScreen = ({ navigation, route }) => {
 
             return rCode;
 
-            // return {
-            //     dateString: route.params.dateString,
-            //     startTime: `${sTime}:${route.params.startTime.charAt(2)}0 ${sTime > 11 ? "PM" : "AM"}`,
-            //     endTime: `${eTime}:${route.params.endTime.charAt(2)}0 ${eTime > 11 ? "PM" : "AM"}`,
-            //     resrvCode: rCode
-            // };
         } catch (err) {
             setErrorMessageA("API 문제발생");
             console.log(err);
@@ -237,151 +224,179 @@ const PaymentScreen = ({ navigation, route }) => {
     }
 
     const startPayment = async () => {
-        try{
-            const params = {
-                userCode: usercode.current,
+        if(Platform.OS === 'android'){
+            try{
+                const params = {
+                    userCode: usercode,
+                    // secretCode: secretCode,
+                    resrvStime: `${route.params.year}${route.params.month}${route.params.day}${route.params.startTime}`,
+                    // resrvEtime: `${route.params.year}${route.params.month}${route.params.day}${route.params.endTime}`,
+                    payAmount: route.params.discount === undefined ? route.params.totalCost.toString() : (route.params.totalCost - route.params.discount).toString(),
+                    adminCode: route.params.adminCode,
+                    roomCode: route.params.roomCode,
+                    roomName: route.params.roomName,
+                    userName: "test",
+                    totalTime: route.params.totalTime.toString(),
+                    couponCode: route.params.couponCode === undefined ? null : route.params.couponCode,
+                    couponIdx: route.params.couponIdx === undefined ? null : route.params.couponIdx,
+                    // resrvNote: route.params.memo,
+                    useCoupon: route.params.couponIdx === undefined ? 'N' : 'Y',
+                    // appVersion: APP_VERSION,
+                    // os: Platform.OS,
+                    // resrvCode: resResult.resrvCode,
+                }
+                console.log("[PaymentScreen]: Params for payment native module: ");
+                console.log(params);
+
+                const response = await PaymentModule.startPayment(params);
+                console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+                console.log(response);
+                console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+
+                if(response.result === "success"){
+                    setPaymentDone(true);
+                    const res = await makeReservation(response.payCode);
+                    if(res === 'error'){
+                        setPaymentDone(false);
+                        Alert.alert(
+                            "예약오류",
+                            "예약도중 서버 오류가 일어났습니다. 결제 취소됬습니다. 잠시후 다시 예약해주세요.",
+                            [{
+                                text: "처음으로 돌아가기",
+                                onPress: () => {
+                                    navigation.reset({
+                                        index: 0,
+                                        routes: [
+                                            {name: 'Table'}
+                                        ]
+                        })}}]);
+                    }
+                    else{
+                        // have to set notification right here
+                        // const year = route.params.year;
+                        // const month = route.params.month;
+                        // const day = route.params.day;
+                        // const rest = "162000"; // route.params.endTime
+                        // const hour = rest.substring(0,2);
+                        // const min = rest.substring(2,4);
+                        
+                        const permission = await getPush();
+                        console.log("after getting permission");
+                        if(permission){
+                            await schedulePushNotification(route.params.year, route.params.month, route.params.day, route.params.startTime.substring(0,2), route.params.startTime.substring(2,4));
+                        }
+
+                        console.log("[PaymentScreen]:: ABOUT TO GO TO THE RESERVED PAGE");
+                        navigation.reset({
+                            index: 1,
+                            routes: [
+                                {name: "Table"},
+                                {name: 'Reserved', params: {
+                                    dateString: route.params.dateString,
+                                    startTime: `${sTime}:${route.params.startTime.charAt(2)}0 ${sTime > 11 ? "PM" : "AM"}`,
+                                    endTime: `${eTime}:${route.params.endTime.charAt(2)}0 ${eTime > 11 ? "PM" : "AM"}`,
+                                    resrvCode: res,
+                                    weekDay: route.params.weekDay,
+                                    roomName: route.params.roomName,
+                                    location: route.params.location,
+                                    address: route.params.address,
+                                }}
+                            ],
+                        });
+
+                        // navigation.navigate('Reserved', {
+                        //     dateString: route.params.dateString,
+                        //     startTime: `${sTime}:${route.params.startTime.charAt(2)}0 ${sTime > 11 ? "PM" : "AM"}`,
+                        //     endTime: `${eTime}:${route.params.endTime.charAt(2)}0 ${eTime > 11 ? "PM" : "AM"}`,
+                        //     resrvCode: res,
+                        //     weekDay: route.params.weekDay,
+                        //     roomName: route.params.roomName
+                        // });
+                    }
+                }
+            } catch (e){
+                console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                console.log(e);
+                console.log(e.message === "E1:payCancel");
+                if(e.message === "E1:payCancel"){
+                    Alert.alert(
+                        "결제 진행을 취소하셨습니다.",
+                        "[결제하기] 버튼으로 결제 진행을 다시 시작해주세요.",
+                        [
+                            { text: "확인" },
+                            {
+                                text: "처음으로 돌아가기",
+                                onPress: () => { 
+                                    navigation.reset({
+                                        index: 0, 
+                                        routes: [
+                                            {name: 'Table'}
+                                        ] 
+                                }); }
+                            }
+                        ]
+                    )
+                }
+                else if(e.message === "E2:userFail"){
+                    Alert.alert(
+                        "결제가 실패했습니다",
+                        "잠시후 다시 예약해주세요.",
+                        [
+                            {
+                                text: "처음으로 돌아가기",
+                                onPress: () => { 
+                                    navigation.reset({
+                                        index: 0, 
+                                        routes: [
+                                            {name: 'Table'}
+                                        ] 
+                                    }); 
+                    }}]);
+                }
+                else{
+                    Alert.alert(
+                        "결제오류",
+                        "결제도중 알수없는 오류가 일어났습니다. 잠시후 다시 예약해주세요. 같은 오류 반복시 전화문의해주세요.",
+                        [
+                            {
+                                text: "처음으로 돌아가기",
+                                onPress: () => { 
+                                    navigation.reset({
+                                        index: 0, 
+                                        routes: [
+                                            {name: 'Table'}
+                                        ] 
+                                    }); 
+                    }}]);
+                }
+            }
+        } else {
+            console.log('hi')
+            navigation.navigate('PaymentPage',{
+                userCode: usercode,
+                secretCode: secretCode,
                 // secretCode: secretCode,
                 resrvStime: `${route.params.year}${route.params.month}${route.params.day}${route.params.startTime}`,
-                // resrvEtime: `${route.params.year}${route.params.month}${route.params.day}${route.params.endTime}`,
+                resrvEtime: `${route.params.year}${route.params.month}${route.params.day}${route.params.endTime}`,
                 payAmount: route.params.discount === undefined ? route.params.totalCost.toString() : (route.params.totalCost - route.params.discount).toString(),
                 adminCode: route.params.adminCode,
                 roomCode: route.params.roomCode,
                 roomName: route.params.roomName,
-                userName: username.current,
+                userName: "test",
                 totalTime: route.params.totalTime.toString(),
                 couponCode: route.params.couponCode === undefined ? null : route.params.couponCode,
                 couponIdx: route.params.couponIdx === undefined ? null : route.params.couponIdx,
-                // resrvNote: route.params.memo,
+                memo: route.params.memo,
                 useCoupon: route.params.couponIdx === undefined ? 'N' : 'Y',
-                // appVersion: APP_VERSION,
-                // os: Platform.OS,
-                // resrvCode: resResult.resrvCode,
-            }
-            console.log("[PaymentScreen]: Params for payment native module: ");
-            console.log(params);
-
-            const response = await PaymentModule.startPayment(params);
-            console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-            console.log(response);
-            console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-
-            if(response.result === "success"){
-                setPaymentDone(true);
-                const res = await makeReservation(response.payCode);
-                if(res === 'error'){
-                    setPaymentDone(false);
-                    Alert.alert(
-                        "예약오류",
-                        "예약도중 서버 오류가 일어났습니다. 결제 취소됬습니다. 잠시후 다시 예약해주세요.",
-                        [{
-                            text: "처음으로 돌아가기",
-                            onPress: () => {
-                                navigation.reset({
-                                    index: 0,
-                                    routes: [
-                                        {name: 'Table'}
-                                    ]
-                    })}}]);
-                }
-                else{
-                    // have to set notification right here
-                    // const year = route.params.year;
-                    // const month = route.params.month;
-                    // const day = route.params.day;
-                    // const rest = "162000"; // route.params.endTime
-                    // const hour = rest.substring(0,2);
-                    // const min = rest.substring(2,4);
-                    
-                    const permission = await getPush();
-                    // console.log("after getting permission");
-                    if(permission){
-                        await schedulePushNotification(route.params.year, route.params.month, route.params.day, route.params.startTime.substring(0,2), route.params.startTime.substring(2,4));
-                    }
-
-                    console.log("[PaymentScreen]:: ABOUT TO GO TO THE RESERVED PAGE");
-                    navigation.reset({
-                        index: 1,
-                        routes: [
-                            {name: "Table"},
-                            {name: 'Reserved', params: {
-                                dateString: route.params.dateString,
-                                startTime: `${sTime}:${route.params.startTime.charAt(2)}0 ${sTime > 11 ? "PM" : "AM"}`,
-                                endTime: `${eTime}:${route.params.endTime.charAt(2)}0 ${eTime > 11 ? "PM" : "AM"}`,
-                                resrvCode: res,
-                                weekDay: route.params.weekDay,
-                                roomName: route.params.roomName,
-                                location: route.params.location,
-                                address: route.params.address,
-                                username: username.current,
-                            }}
-                        ],
-                    });
-
-                    // navigation.navigate('Reserved', {
-                    //     dateString: route.params.dateString,
-                    //     startTime: `${sTime}:${route.params.startTime.charAt(2)}0 ${sTime > 11 ? "PM" : "AM"}`,
-                    //     endTime: `${eTime}:${route.params.endTime.charAt(2)}0 ${eTime > 11 ? "PM" : "AM"}`,
-                    //     resrvCode: res,
-                    //     weekDay: route.params.weekDay,
-                    //     roomName: route.params.roomName
-                    // });
-                }
-            }
-        } catch (e){
-            console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            console.log(e);
-            console.log(e.message === "E1:payCancel");
-            if(e.message === "E1:payCancel"){
-                Alert.alert(
-                    "결제 진행을 취소하셨습니다.",
-                    "[결제하기] 버튼으로 결제 진행을 다시 시작해주세요.",
-                    [
-                        { text: "확인" },
-                        {
-                            text: "처음으로 돌아가기",
-                            onPress: () => { 
-                                navigation.reset({
-                                    index: 0, 
-                                    routes: [
-                                        {name: 'Table'}
-                                    ] 
-                            }); }
-                        }
-                    ]
-                )
-            }
-            else if(e.message === "E2:userFail"){
-                Alert.alert(
-                    "결제가 실패했습니다",
-                    "잠시후 다시 예약해주세요.",
-                    [
-                        {
-                            text: "처음으로 돌아가기",
-                            onPress: () => { 
-                                navigation.reset({
-                                    index: 0, 
-                                    routes: [
-                                        {name: 'Table'}
-                                    ] 
-                                }); 
-                }}]);
-            }
-            else{
-                Alert.alert(
-                    "결제오류",
-                    "결제도중 알수없는 오류가 일어났습니다. 잠시후 다시 예약해주세요. 같은 오류 반복시 전화문의해주세요.",
-                    [
-                        {
-                            text: "처음으로 돌아가기",
-                            onPress: () => { 
-                                navigation.reset({
-                                    index: 0, 
-                                    routes: [
-                                        {name: 'Table'}
-                                    ] 
-                                }); 
-                }}]);
-            }
+                dateString: route.params.dateString,
+                startTime: `${sTime}:${route.params.startTime.charAt(2)}0 ${sTime > 11 ? "PM" : "AM"}`,
+                endTime: `${eTime}:${route.params.endTime.charAt(2)}0 ${eTime > 11 ? "PM" : "AM"}`,
+                weekDay: route.params.weekDay,
+                roomName: route.params.roomName,
+                location: route.params.location,
+                address: route.params.address,
+                totalCost: route.params.totalCost    
+            })
         }
     }
 
@@ -463,23 +478,21 @@ const PaymentScreen = ({ navigation, route }) => {
                                         totalCost: route.params.totalCost,
                                         weekDay: route.params.weekDay,
                                         year: route.params.year,
-                                        userCode: usercode.current,
-                                        secretCode: secretCode.current,
+                                        userCode: usercode,
+                                        secretCode: secretCode,
                                         couponIdx: route.params.couponIdx,
                                         discount: route.params.discount,
                                         couponCode: route.params.couponCode,
                                         adminCode: route.params.adminCode,
                                         address: route.params.address,
-                                        location: route.params.location,
-                                        username: username.current,
+                                        location: route.params.location
                                     })
                                 }}
                             >
                                 <View style={{ flexDirection: 'row' }}>
-                                    <Text style={styles.valueStyle}>{route.params.discount === undefined ? '사용 가능한 쿠폰들' : '-' + route.params.discount + '원'} </Text>
-                                    <View style={{ justifyContent: 'center' }}>
-                                        {/* <MaterialCommunityIcons name="greater-than" size={18} color="#6C6C6C" /> */}
-                                        <Entypo name="chevron-thin-right" size={15} color="#6C6C6C" />
+                                    <Text style={[styles.valueStyle,{lineHeight:18}]}>{route.params.discount === undefined ? '사용 가능한 쿠폰들' : '-' + route.params.discount + '원'} </Text>
+                                    <View style={{ justifyContent: 'center',alignSelf:'center' }}>
+                                        <AntDesign name="right" size={18} color="#888888" />
                                     </View>
                                 </View>
                             </TouchableOpacity>
@@ -596,7 +609,7 @@ const PaymentScreen = ({ navigation, route }) => {
                                     //         }}
                                     //     ],
                                     // });
-
+                                    
                                     startPayment();
                                     
                                 }

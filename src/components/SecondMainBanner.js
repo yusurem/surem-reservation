@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
 		borderRadius:10,
 		flex:0,
 		alignSelf:'center',
-		marginBottom:'5%'
+		marginBottom:40
 	},
 	bannerTitle: {
 		color:'black',
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
 	},
 	bannerContent: {
 		color:'black',
-		fontSize:15,
+		fontSize:13,
 		marginTop:3,
 		fontFamily:'NanumSquareRegular'
 	},

@@ -27,16 +27,17 @@ const Item = ({ item, onClickQrBtn, onClickChangeReserv }) => (
     </View>
     <View style={styles.rightSide}>
       <TouchableOpacity
-        style={styles.qrBtn}
+        style={[styles.qrBtn,{backgroundColor: '#F1F1F1',borderColor:'#F1F1F1'}]}
         onPress={onClickQrBtn}
       >
-        <Text style={[styles.qrBtnText, {lineHeight: Platform.OS === 'ios' ? 30 : 30}]}>QR코드</Text>
+        <Text style={[styles.qrBtnText, {lineHeight: Platform.OS === 'ios' ? 30 : 30,color:'black'}]}>QR코드</Text>
       </TouchableOpacity>
+      <View style={{height:10}}></View>
       <TouchableOpacity
-        style={styles.qrBtn}
+        style={[styles.qrBtn,{backgroundColor: '#4084E4',borderColor:'#4084E4'}]}
         onPress={onClickChangeReserv}
       >
-        <Text style={[styles.qrBtnText, {lineHeight: Platform.OS === 'ios' ? 30 : 30} ]}>일정변경</Text>
+        <Text style={[styles.qrBtnText, {lineHeight: Platform.OS === 'ios' ? 30 : 30,color:'white'} ]}>일정 변경</Text>
       </TouchableOpacity>
     </View>
   </View>
@@ -330,13 +331,15 @@ export default function ReservationListScreen({ navigation }) {
               console.log(error);
             });
             count = await selectPushIdddd(`2`)
-            cancelPush(
-              moment(selectedReservStime, 'YYYYMMDDHHmm').format('YYYY'),
-              moment(selectedReservStime, 'YYYYMMDDHHmm').format('MM'),
-              moment(selectedReservStime, 'YYYYMMDDHHmm').format('DD'),
-              moment(selectedReservStime, 'YYYYMMDDHHmm').format('HH'),
-              moment(selectedReservStime, 'YYYYMMDDHHmm').format('mm'),
-            );
+            if(Platform.OS == 'android'){  
+              cancelPush(
+                moment(selectedReservStime, 'YYYYMMDDHHmm').format('YYYY'),
+                moment(selectedReservStime, 'YYYYMMDDHHmm').format('MM'),
+                moment(selectedReservStime, 'YYYYMMDDHHmm').format('DD'),
+                moment(selectedReservStime, 'YYYYMMDDHHmm').format('HH'),
+                moment(selectedReservStime, 'YYYYMMDDHHmm').format('mm'),
+              );
+            }
           getMyReserveList();
           toggleModal();
         } 
@@ -469,6 +472,7 @@ export default function ReservationListScreen({ navigation }) {
     return () => {}
   }, [usercode, secretCode]);
 
+
   const startLoading = async () => {
     setLoading(true);
     setTimeout(async ()=>{
@@ -505,20 +509,26 @@ export default function ReservationListScreen({ navigation }) {
         }}
       />
       <View>
-        <Modal
-          isVisible={qrVisible}
-          onBackdropPress={() => handleQrCancel()}
+        <Modal 
+          isVisible={qrVisible} 
+          onBackdropPress={()=> handleQrCancel()}
           onRequestClose={()=> handleQrCancel()}
         >
-          <View style={styles.qrStyle}>
-            <Text style={{ marginTop: 5, textAlign: 'center' }}>{selectedRoomName}</Text>
-            <Text style={{ textAlign: 'center' }}>날짜 : {moment(selectedReservStime, 'YYYYMMDDHHmmss').format('YYYY / MM / DD')}</Text>
-            <Text style={{ textAlign: 'center' ,marginBottom:10 }}>시간 : {moment(selectedReservStime, 'YYYYMMDDHHmmss').format('HH:mm')} ~ {moment(selectedReservEtime, 'YYYYMMDDHHmmss').format('HH:mm')}</Text>
-            <QRCode
-              size={280}
-              value={qrReservCode}
-            />
+            <View style={styles.qrStyle}>
+        <View style= {{borderRadius:8, backgroundColor:'#F3F4F8' ,marginBottom:2, borderWidth:5, borderColor: '#F3F4F8'}}>
+            <Text style={{ textAlign: 'center', fontSize:16 }}>{selectedRoomName}</Text>
           </View>
+          <View style= {{borderRadius:8, backgroundColor:'#F3F4F8' ,marginBottom:2, borderWidth:5, borderColor: '#F3F4F8'}}>
+          <Text style={{ textAlign: 'center', fontSize:16 }}>날짜 : {moment(selectedReservStime, 'YYYYMMDDHHmmss').format('YYYY / MM / DD')}</Text>
+          </View>
+          <View style= {{borderRadius:8, backgroundColor:'#F3F4F8' ,marginBottom:20, borderWidth:5, borderColor: '#F3F4F8'}}>
+            <Text style={{ textAlign: 'center', fontSize:16 }}>시간 : {moment(selectedReservStime, 'YYYYMMDDHHmmss').format('HH:mm')} ~ {moment(selectedReservEtime, 'YYYYMMDDHHmmss').format('HH:mm')}</Text>
+          </View>
+              <QRCode
+                size={280}
+                value={qrReservCode}
+              />
+            </View>
         </Modal>
       </View>
       <View style={{ flex: 1 }}>
@@ -531,21 +541,21 @@ export default function ReservationListScreen({ navigation }) {
             <View style={styles.changeReservTitle}>
 
               <TouchableOpacity style={{ flex: 1,justifyContent: 'space-between'}} onPress={()=>{}}>
-                <MaterialIcons name="cancel" size={24} color="#4084E4" />
+                <MaterialIcons name="cancel" size={26} color="#4084E4" />
               </TouchableOpacity>
               <View style={{ alignSelf: 'center', flex: 4,justifyContent: 'space-between'}}>
-                <Text style={[{ width:'100%', fontSize: 20, color: '#FFFFFF',
+                <Text style={[{ width:'100%', fontSize: 20, color: '#FFFFFF',lineHeight:28,
                 textAlignVertical: 'center', textAlign: 'center', height: '100%', textAlignVertical: 'center' },{lineHeight: Platform.OS === 'ios' ? 80 : 30}]}>
                   예약 변경하기
                 </Text>
               </View>
-              <TouchableOpacity style={{ flex: 1,justifyContent: 'flex-end'}} onPress={toggleModal}>
-                <MaterialIcons name="cancel" size={24} color="white" />
+              <TouchableOpacity style={{ flex: 1, alignSelf:'center',justifyContent:'center'}} onPress={toggleModal}>
+                <MaterialIcons name="cancel" size={26} color="white"/>
               </TouchableOpacity>
             </View>
-            <Text style={{ marginTop: 30, textAlign: 'center', color:'black' }}>{selectedRoomName}</Text>
+            <Text style={{ marginTop: 20, textAlign: 'center', color:'black' }}>{selectedRoomName}</Text>
             <Text style={{ textAlign: 'center' }}>{moment(selectedReservStime, 'YYYYMMDDHHmmss').format('YYYY / MM / DD')}</Text>
-            <Text style={{ marginLeft: 20, color:'black'}}>이용 시간</Text>
+            <Text style={{ marginLeft: 20, color:'black',marginTop:20}}>이용 시간</Text>
             <View style={{alignSelf:'center',height:40,flexDirection:'row',marginTop:10}}>
               <View style={{backgroundColor:'white', width:135, height:30,color:'white',flex:0,borderRadius:10}}>
                 <Text style={{height:30,lineHeight:30,textAlign:'center'}}>{moment(selectedReservStime, 'YYYYMMDDHHmmss').format('HH:mm')}</Text>
@@ -605,8 +615,14 @@ export default function ReservationListScreen({ navigation }) {
                 <Button title="예약 변경" onPress={changeReserv} />
               </View>
               */}
-              <View style={{ flex: 1,marginLeft:30,marginRight:30,marginTop:10}}>
-                <Button color='#8F8F8F' title="예약 취소" onPress={handleChangeReservCancel} />
+              
+              <View style={{ flex: 1, alignSelf:'center'}}>
+                <TouchableOpacity
+                style={[styles.cancelBtn]}
+                onPress={handleChangeReservCancel}
+                > 
+                  <Text style={[styles.cancelBtnText,{lineHeight:40,alignSelf:'center',color:'white'}]}>예약 취소</Text>
+                </TouchableOpacity>
               </View>
             </View>
           </View>
@@ -634,56 +650,69 @@ const styles = StyleSheet.create({
   },
   leftSide: {
     height: '100%',
-    flex: 1,
+    flex: 2,
+    justifyContent:'center'
   },
   rightSide: {
     height: '100%',
     flex: 1,
-    marginRight: '10%',
+    marginRight: '5%',
     alignItems: 'flex-end',
+    justifyContent:'center'
   },
   contentContainerStyle: {
     flexGrow: 1,
     justifyContent: 'center'
   },
   itemText: {
-    marginLeft: '5%'
+    marginLeft: '10%'
   },
   room: {
-    marginLeft: '5%',
-    marginTop: '2%',
-    marginBottom: '2%'
+    marginLeft: '10%',
+    marginTop: '3%',
+    marginBottom: '3%'
   },
   qrBtn: {
     borderRadius: 10,
-    borderColor: '#F1F1F1',
-    backgroundColor: '#F1F1F1',
     borderWidth: 1,
     width: 70,
     height: 30,
-    justifyContent: 'center',
-    marginTop: '10%'
+    justifyContent: 'center'
   },
-  qrBtnText: {
-    color: 'black',
+  cancelBtn: {
+    borderRadius: 10,
+    borderWidth: 1,
+    width: '80%',
+    height: 40,
+    justifyContent: 'center',
+    alignSelf:'center',
+    backgroundColor:'#2E2E2E'
+  },
+  cancelBtnText: {
     width: '100%',
     textAlign: 'center',
     textAlignVertical: 'center',
     justifyContent:'center',
     height: '100%'
   },
-  qrStyle: {
-    alignSelf: 'center',
-    alignItems: 'center',
-    alignContent: 'center',
-    justifyContent: 'center',
-
-    marginVertical: '15%',
-    width: 300,
-    height: 370,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 10
+  qrBtnText: {
+    width: '100%',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    justifyContent:'center',
+    height: '100%'
   },
+  qrStyle:{
+		alignSelf:'center',
+		alignItems: 'center',
+		alignContent: 'center',
+		justifyContent: 'center',
+		marginVertical:'15%',
+		width:300,
+		height: 420,
+		backgroundColor:'#FFFFFF',
+		borderRadius:10
+	},
   changeReservModal: {
     backgroundColor: '#EDEDED',
     borderRadius: 10,

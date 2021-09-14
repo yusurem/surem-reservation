@@ -7772,6 +7772,13 @@ react-native-dialog@6.2.0:
   dependencies:
     prop-types "^15.7.2"
 
+react-native-easy-toast@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-easy-toast/-/react-native-easy-toast-2.0.0.tgz#059671ed23efd7fbe2855a1c3e4d21e6c4222a84"
+  integrity sha512-mLvHOy/slCJfgrLfOercIhVKslTF6D7NrJ7XLTRK3BCim7kNO1JdAgQ5+IF6bqdcUcFMIW/GwiauUbnSpynr8Q==
+  dependencies:
+    prop-types "^15.5.10"
+
 react-native-elements@3.4.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/react-native-elements/-/react-native-elements-3.4.0.tgz#6717a9de89fc037b9cb3b0ff1dc45f1fd0526276"
@@ -7914,6 +7921,11 @@ react-native-splash-screen@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/react-native-splash-screen/-/react-native-splash-screen-3.2.0.tgz#d47ec8557b1ba988ee3ea98d01463081b60fff45"
   integrity sha512-Ls9qiNZzW/OLFoI25wfjjAcrf2DZ975hn2vr6U9gyuxi2nooVbzQeFoQS5vQcbCt9QX5NY8ASEEAtlLdIa6KVg==
+
+react-native-surem-payment-webview@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-surem-payment-webview/-/react-native-surem-payment-webview-0.1.0.tgz#02bf4f8c171222120fbf554d615c2e494331df9e"
+  integrity sha512-EMTkCjpDjtAFwKSsavMXVkt/sfd5wJVnd1s7hFPPodHLNpckAatq9X7tCnEXwh+btdRMV8ztolEap3CGxnbmPw==
 
 react-native-svg@^12.1.0:
   version "12.1.1"
