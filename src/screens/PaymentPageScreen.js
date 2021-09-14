@@ -7,6 +7,7 @@ import * as Notifications from 'expo-notifications';
 import axios from 'axios';
 import { Platform,Alert } from 'react-native';
 import { TERMS,URL, APP_VERSION } from '../constants';
+import { cloneWithoutLoc } from '@babel/types';
 
 export default function PaymentPageScreen({ navigation, route }) {
 
@@ -33,19 +34,37 @@ export default function PaymentPageScreen({ navigation, route }) {
         console.log(`${route.params.resrvStime}`)
         console.log(`${route.params.resrvEtime}`)
         console.log(`${route.params.couponIdx}`)
+        console.log('payCode :: ',payCode)
+        console.log((route.params.couponIdx == undefined || route.params.couponIdx == null) ? 'N' : 'Y')
+        console.log('hi')
+        console.log(payCode)
+        console.log('RESRSTIME:: ',route.params.resrvStime)
+        console.log('RESRETIME:: ',route.params.resrvEtime)
+        console.log('usrcode:: ',route.params.userCode.current)
+        console.log('secretCode:: ',route.params.secretCode.current)
+
+        console.log('hhieeee22')
+        console.log('roomCode:: ',route.params.roomCode)
+
+        console.log('APPVERSION::',APP_VERSION);
+        console.log(Platform.OS);
         const response = await axios.post( URL + '/reservation', {
             'roomCode' : route.params.roomCode,
-            'usercode' : route.params.userCode,
-            'secretCode' : route.params.secretCode,
+            'usercode' : route.params.userCode.current,
+            'secretCode' : route.params.secretCode.current,
             'payCode' : payCode,
-            "resrvStime" : `${route.params.resrvStime}`,
-            "resrvEtime" : `${route.params.resrvEtime}`,
+            "resrvStime" : route.params.resrvStime,
+            "resrvEtime" : route.params.resrvEtime,
             "resrvNote": route.params.memo,
-            "useCoupon": (route.params.couponIdx === undefined || route.params.couponIdx === null) ? 'N' : 'Y',
+            "useCoupon": (route.params.couponIdx == undefined || route.params.couponIdx == null) ? 'N' : 'Y',
             "couponIdx": route.params.couponIdx,
             "appVersion": APP_VERSION,
             "os": Platform.OS,
         });
+
+
+        
+
 
         console.log(`Got the response!`);
         console.log(response.data);
@@ -208,8 +227,6 @@ const getPush = () => {
       console.log("[PaymentScreen]:: ABOUT TO GO TO THE RESERVED PAGE");
       console.log('Stime :: ', route.params.startTime)
       console.log('EndTime :: ',route.params.endTime)
-      console.log(`${sTime}:${route.params.startTime.charAt(2)}0 ${sTime > 11 ? "PM" : "AM"}`)
-      console.log(`${eTime}:${route.params.endTime.charAt(2)}0 ${eTime > 11 ? "PM" : "AM"}`)
 
       console.log('STARTTIME :: ',`${route.params.startTime.charAt(2)}`)
       navigation.reset({
@@ -238,7 +255,7 @@ const getPush = () => {
         <WebView
             source={{uri: 'https://office-admin.surem.com/AllatPay/AllatPayApprovalView.do', 
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `userCode=${route.params.userCode}&resrvStime=${route.params.resrvStime}&payAmount=${route.params.payAmount}&adminCode=${route.params.adminCode}&roomCode=${route.params.roomCode}&roomName=${route.params.roomName}&userName=test&totalTime=${route.params.totalTime}`,
+            body: `userCode=${route.params.userCode.current}&resrvStime=${route.params.resrvStime}&payAmount=${route.params.payAmount}&adminCode=${route.params.adminCode}&roomCode=${route.params.roomCode}&roomName=${route.params.roomName}&userName=test&totalTime=${route.params.totalTime}`,
             method:'POST'}}
             injectedJavaScript={`window.postMessage(JSON.stringify({ listening: 'Sup' }), '*')`}
             onLoad={this.handleOnLoad}
