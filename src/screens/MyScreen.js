@@ -590,7 +590,7 @@ const MyScreen = ({ navigation, route }) => {
                         {/* <TouchableHighlight
                             style={styles.deleteButton}
                             onPress={() => {
-                                navigation.navigate("Branch");
+                                navigation.navigate("Test");
                             }}
                         >
                             <Text style={styles.buttonText}>테스트</Text>

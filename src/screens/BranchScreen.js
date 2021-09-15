@@ -5,8 +5,6 @@ import axios from 'axios';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as SQLite from 'expo-sqlite';
 import { URL } from '../constants';
-import { Feather } from '@expo/vector-icons'; 
-
 
 const BranchScreen = ({ navigation, route }) => {
     console.log("Entered BranchScreen. Params: ");
@@ -146,13 +144,12 @@ const BranchScreen = ({ navigation, route }) => {
                 onPress={onPress}
             >
                 <Text style={styles.locationText}>{item}</Text>
-                <Feather name="check" size={24} color={bgColor === 'white' ? 'white' : "red"} style={{ paddingLeft: 0, marginBottom: -12 }}/>
             </TouchableOpacity>
         );
     }
 
     const renderLocation = ({ item }) => {
-        const backgroundColor = item === selectedItem ? "#F2F2F2" : "white";
+        const backgroundColor = item === selectedItem ? "white" : "#F2F2F2";
         return (
             <LocItem
                 item={item}
@@ -256,18 +253,15 @@ const styles = StyleSheet.create({
     headerBox: {
         // borderWidth: 1,
         // borderColor: 'red',
-        // alignItems: 'center',
-        // backgroundColor: '#17375E',
-        paddingBottom: 10,
-        paddingTop: 20,
-        borderBottomWidth: 1,
-        borderColor: '#888888',
+        alignItems: 'center',
+        backgroundColor: '#17375E',
+        paddingBottom: 15,
+        paddingTop: 30,
     },
     headerText: {
-        color: '#555555',
+        color: 'white',
         fontSize: 18,
-        // fontWeight: 'bold',
-        marginLeft: 20
+        fontWeight: 'bold',
     },
     mainBox: {
         // borderWidth: 1,
@@ -276,28 +270,27 @@ const styles = StyleSheet.create({
         flex: 1
     },
     locationBox: {
-        // backgroundColor: '#F2F2F2',
+        backgroundColor: '#F2F2F2',
         // borderWidth: 1,
         // borderColor: 'blue'
     },
     locationView: {
-        paddingVertical: 24,
-        paddingLeft: 25,
-        paddingRight: 15,
-        flexDirection: 'row',
+        backgroundColor: '#F2F2F2',
+        paddingVertical: 12,
+        paddingLeft: 20,
+        paddingRight: 60
     },
     branchView: {
-        paddingVertical: 24,
+        paddingVertical: 12,
         borderBottomWidth: 1,
-        borderColor: '#C3C3C3',
+        borderColor: '#D9D9D9'
     },
     locationText: {
-        fontSize: 14,
-        textAlign: 'center',
-        paddingRight: 30,
+        fontSize: 16,
+        textAlign: 'center'
     },
     branchText: {
-        fontSize: 14,
+        fontSize: 16,
         marginLeft: 15
     },
     branchBox: {
@@ -306,7 +299,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         // alignItems: 'center'
-        backgroundColor: '#F2F2F2',
     }
 });
 

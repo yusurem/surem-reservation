@@ -1,1 +1,9 @@
+<<<<<<< HEAD
 [{"outputType":{"type":"APK"},"apkData":{"type":"MAIN","splits":[],"versionCode":13,"versionName":"2.0.4","enabled":true,"outputFile":"app-release.apk","fullName":"release","baseName":"release","dirName":""},"path":"app-release.apk","properties":{}}]
+=======
+<<<<<<< HEAD
+[{"outputType":{"type":"APK"},"apkData":{"type":"MAIN","splits":[],"versionCode":10,"versionName":"2.0.0","enabled":true,"outputFile":"app-release.apk","fullName":"release","baseName":"release","dirName":""},"path":"app-release.apk","properties":{}}]
+=======
+[{"outputType":{"type":"APK"},"apkData":{"type":"MAIN","splits":[],"versionCode":11,"versionName":"2.0.1","enabled":true,"outputFile":"app-release.apk","fullName":"release","baseName":"release"},"path":"app-release.apk","properties":{}}]
+>>>>>>> b7e62e4 (IOS Payment & modifying UI)
+>>>>>>> parent of d7015fa... final changes for now
