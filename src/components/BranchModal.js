@@ -346,16 +346,12 @@ const styles = StyleSheet.create({
         paddingVertical: 24,
         paddingLeft: 20,
         paddingRight: 15,
-        flexDirection: 'row',
-        // borderWidth: 1,
-        // borderColor: 'red'
+        flexDirection: 'row'
     },
     branchView: {
         paddingVertical: 24,
         borderBottomWidth: 1,
         borderColor: '#C3C3C3',
-        // borderWidth: 1,
-        // borderColor: 'green'
     },
     locationText: {
         fontSize: 14,

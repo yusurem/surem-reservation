@@ -281,7 +281,7 @@ const TableScreen = ({ navigation, route }) => {
         if(resrvLists.length !== 0){
             let end = resrvLists[0].workEndTime.substring(0,4);
             let today = new Date();
-            console.log(end)
+            // console.log(end)
     
             if(today.getHours() > parseInt(end.substring(0,2)) && today.getMinutes() > parseInt(end.substring(2))){
                 today.setDate(today.getDate() + 1);

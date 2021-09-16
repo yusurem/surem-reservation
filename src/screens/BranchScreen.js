@@ -5,8 +5,7 @@ import axios from 'axios';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as SQLite from 'expo-sqlite';
 import { URL } from '../constants';
-import { Feather } from '@expo/vector-icons'; 
-
+import { Feather } from '@expo/vector-icons';
 
 const BranchScreen = ({ navigation, route }) => {
     console.log("Entered BranchScreen. Params: ");
@@ -256,8 +255,6 @@ const styles = StyleSheet.create({
     headerBox: {
         // borderWidth: 1,
         // borderColor: 'red',
-        // alignItems: 'center',
-        // backgroundColor: '#17375E',
         paddingBottom: 10,
         paddingTop: 20,
         borderBottomWidth: 1,
@@ -289,7 +286,7 @@ const styles = StyleSheet.create({
     branchView: {
         paddingVertical: 24,
         borderBottomWidth: 1,
-        borderColor: '#C3C3C3',
+        borderColor: '#C3C3C3'
     },
     locationText: {
         fontSize: 14,

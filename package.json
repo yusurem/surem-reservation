@@ -76,6 +76,6 @@
     "react-test-renderer": "~16.13.1"
   },
   "private": true,
-  "name": "OfficeShare",
+  "name": "officeshare",
   "version": "2.0.4"
 }
