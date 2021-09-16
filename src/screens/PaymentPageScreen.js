@@ -7,7 +7,6 @@ import * as Notifications from 'expo-notifications';
 import axios from 'axios';
 import { Platform,Alert } from 'react-native';
 import { TERMS,URL, APP_VERSION } from '../constants';
-import { cloneWithoutLoc } from '@babel/types';
 
 export default function PaymentPageScreen({ navigation, route }) {
 
