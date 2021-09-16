@@ -23,21 +23,21 @@ const Item = ({ item, onClickQrBtn, onClickChangeReserv }) => (
       <Text style={styles.room}>{item.roomName}</Text>
       <Text style={styles.itemText}>날짜 : {moment(item.resrvStime, 'YYYYMMDDHHmmss').format('YYYY / MM / DD')}</Text>
       <Text style={styles.itemText}>시간 : {moment(item.resrvStime, 'YYYYMMDDHHmmss').format('HH:mm')} ~ {moment(item.resrvEtime, 'YYYYMMDDHHmmss').format('HH:mm')}</Text>
-      <Text style={styles.itemText}>메모 : {item.resrvNote.replace('null', '')}</Text>
+      <Text style={[styles.itemText,{marginBottom:'3%'}]}>메모 : {item.resrvNote.replace('null', '')}</Text>
     </View>
     <View style={styles.rightSide}>
       <TouchableOpacity
         style={[styles.qrBtn,{backgroundColor: '#F1F1F1',borderColor:'#F1F1F1'}]}
         onPress={onClickQrBtn}
       >
-        <Text style={[styles.qrBtnText, {lineHeight: Platform.OS === 'ios' ? 30 : 30,color:'black'}]}>QR코드</Text>
+        <Text style={[styles.qrBtnText, {lineHeight: Platform.OS === 'ios' ? 30 : 28,color:'black'}]}>QR코드</Text>
       </TouchableOpacity>
       <View style={{height:10}}></View>
       <TouchableOpacity
         style={[styles.qrBtn,{backgroundColor: '#4084E4',borderColor:'#4084E4'}]}
         onPress={onClickChangeReserv}
       >
-        <Text style={[styles.qrBtnText, {lineHeight: Platform.OS === 'ios' ? 30 : 30,color:'white'} ]}>일정 변경</Text>
+        <Text style={[styles.qrBtnText, {lineHeight: Platform.OS === 'ios' ? 30 : 28,color:'white'} ]}>일정 변경</Text>
       </TouchableOpacity>
     </View>
   </View>
@@ -634,7 +634,7 @@ export default function ReservationListScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   item: {
-    height: 100,
+    height: Platform.OS == 'ios' ? 110 : 120,
     borderWidth: 1,
     borderRadius: 10,
     borderLeftColor: '#4084E4',
@@ -665,12 +665,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   itemText: {
-    marginLeft: '10%'
+    marginLeft: '10%',
+    color:'#333333'
   },
   room: {
     marginLeft: '10%',
     marginTop: '3%',
-    marginBottom: '3%'
+    marginBottom: '5%',
+    color: '#333333'
   },
   qrBtn: {
     borderRadius: 10,

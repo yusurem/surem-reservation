@@ -47,12 +47,12 @@ export default function HomeScreen({navigation}) {
           <Image style={styles.leftSideImg} source={require("../../../assets/resrvBtn.png")} />
           <View style={styles.rightSide}>
             <View style={{flex:0,flexDirection:'row',alignItems:'center',marginBottom:5}}>
-              <Text style={{color:'white',fontSize:20,marginLeft:'10%',fontFamily:'NanumSquareRegular'}}>회의실 예약하기</Text>
+              <Text style={{color:'white',fontSize:20,marginLeft:Platform.OS == 'ios' ? '10%':'9%',fontFamily:'NanumSquareRegular'}}>회의실 예약하기</Text>
               <Image style={{flex:0,width:null,height:null,width:30,height:30,marginLeft:10}} source={require("../../../assets/arrow.png")} />
             </View>
             <View>  
-              <Text style={{color:'white',fontSize:10,marginLeft:'10%',marginTop:'5%',marginBottom:5,fontFamily:'NanumSquareRegular'}}>할인된 가격에 내 마음에 쏙 드는 회의실까지!</Text>
-              <Text style={{color:'white',fontSize:10,marginLeft:'10%',fontFamily:'NanumSquareRegular'}}>오피스쉐어 앱으로 회의실을 예약해보세요.</Text>
+              <Text style={{color:'white',fontSize:Platform.OS == 'ios' ? 10: 11,marginLeft:Platform.OS == 'ios' ? '10%':'9%',marginTop:'5%',marginBottom:5,fontFamily:'NanumSquareRegular'}}>할인된 가격에 내 마음에 쏙 드는 회의실까지!</Text>
+              <Text style={{color:'white',fontSize:Platform.OS == 'ios' ? 10: 11,marginLeft:Platform.OS == 'ios' ? '10%':'9%',fontFamily:'NanumSquareRegular'}}>오피스쉐어 앱으로 회의실을 예약해보세요.</Text>
             </View>
           </View>
         </View>

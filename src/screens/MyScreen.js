@@ -26,7 +26,6 @@ const MyScreen = ({ navigation, route }) => {
     const usercode = useRef(null);
     const secretCode = useRef(null);
     const username = useRef(null);
-    const myResrvList = useRef([]);
 
     const [serviceTerm, setServiceTerm] = useState(false);
     const [infoTerm, setInfoTerm] = useState(false);
@@ -63,7 +62,6 @@ const MyScreen = ({ navigation, route }) => {
                     [],
                     (tx, results) => {
                         // console.log("called!")
-                        console.log(results.rows.item(0));
                         // setUsercode(results.rows.item(0).usercode);
                         usercode.current = results.rows.item(0).usercode;
                         // setSecretCode(results.rows.item(0).secretCode);
@@ -231,95 +229,6 @@ const MyScreen = ({ navigation, route }) => {
         }); 
     }
 
-    const getReservation = async () => {
-        try{
-            // console.log("[TableScreen]:: Attemting to get list of USERS reservations...");
-            // console.log("usercode: " + usercode);
-            // console.log("secretCode: " + secretCode);
-            const response = await axios.post(URL + '/getReservation', {
-                usercode: usercode.current,
-                secretCode: secretCode.current
-            });
-
-            // console.log(response.data);
-
-            if(response.data.returnCode !== "E0000"){
-                console.log("[TableScreen]:: getReservation Error: " + response.data.returnCode);
-                Alert.alert(
-                    "내 예약 가져오는데 알수없는 문제가 발생했습니다. 잠시후 다시 시도해주세요."
-                );
-                return 'Error';
-            }
-            
-            // console.log("[TableScreen]:: Successfully retrieved USERS list of reservation.");
-            myResrvList.current = response.data.reservations;
-            return "success";
-        } catch (err) {
-            Alert.alert(
-                "내 예약 가져오는데 알수없는 문제가 발생했습니다. 잠시후 다시 시도해주세요."
-            );
-            return 'Error';
-        }
-    }
-
-    const schedulePushNotification = async (year, month, day, hour, min) => {
-        console.log("[PaymentScreen]:: Attempting to schedule a notification...");
-        var identifier;
-
-        if(parseInt(hour) >= 9){
-            const triggerB = new Date(year, parseInt(month) - 1, day, 8, 0);
-            console.log("[PaymentScreen]:: Trigger-- " + triggerB);
-            console.log(`DAY :: ${year}${month}${day}`);
-            identifier = await Notifications.scheduleNotificationAsync({
-                identifier: `${year}${month}${day}`,
-                content: {
-                    title: "예약알림",
-                    body: `오늘 이용예정인 예약이 있습니다.`,
-                    data: { type: 'reservation' },
-                },
-                trigger: triggerB,
-            });
-            console.log('ID :: ',identifier)
-            await registerPushId(identifier, "B");
-        }
-
-        if(parseInt(hour) === 9 && parseInt(min) === 0){
-            return;
-        }
-        else{
-            const triggerA = new Date(year, parseInt(month) - 1, day, parseInt(hour) - 1, min);
-            console.log("[PaymentScreen]:: Trigger-- " + triggerA);
-            console.log(`[Trigger-- A] :: ${year}${month}${day}${hour}${min}:${route.params.roomName}`);
-            identifier = await Notifications.scheduleNotificationAsync({
-                identifier: `${year}${month}${day}${hour}${min}:${route.params.roomName}`,
-                content: {
-                    title: "예약알림 ",
-                    body: `오피스쉐어 예약 1시간 전 입니다. / 내용 : ${route.params.roomName}룸 ${sTime}:${route.params.startTime.charAt(2)}0 ~ ${eTime}:${route.params.endTime.charAt(2)}0.`,
-                    data: { type: 'reservation' },
-                },
-                trigger: triggerA,
-            });
-            await registerPushId(identifier, "A");
-        }   
-    }
-
-    const resetAlarms = async () => {
-        try{
-            await getReservation();
-            if(myResrvList.current.length > 0){
-                for(var i = 0; i < myResrvList.current.length; i++){
-                    await schedulePushNotification(myResrvList.current[i]);
-                }
-            }
-        } catch (err) {
-            console.log(err);
-            // Alert.alert(
-            //     "푸시 활성화하는데 일시적인 에러가 일어났습니다. 잠시후 다시 시도해주세요."
-            // );
-            return 'Error';
-        }
-    }
-
     const togglePush = async () => {
         if(allowPush){
             await Notifications.cancelAllScheduledNotificationsAsync();
@@ -328,7 +237,6 @@ const MyScreen = ({ navigation, route }) => {
         }
         else{
             await enablePush();
-            // await resetAlarms();
             setAllowPush(true);
         } 
     }
@@ -590,7 +498,7 @@ const MyScreen = ({ navigation, route }) => {
                         {/* <TouchableHighlight
                             style={styles.deleteButton}
                             onPress={() => {
-                                navigation.navigate("Branch");
+                                navigation.navigate("Test");
                             }}
                         >
                             <Text style={styles.buttonText}>테스트</Text>

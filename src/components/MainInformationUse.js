@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, Image} from 'react-native'
+import { StyleSheet, View, Text, Image, Platform} from 'react-native'
 import * as SQLite from 'expo-sqlite';
 
 const db = SQLite.openDatabase('db.db');
@@ -173,7 +173,8 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: 'bold',
         fontFamily:'NanumSquareRegular',
-        marginBottom:5
+        marginBottom:5,
+        color:'#333333'
     },
     element:{
         height:150
@@ -185,7 +186,10 @@ const styles = StyleSheet.create({
     },
     contents:{
         fontFamily:'NanumSquareRegular',
-        lineHeight:18
+        lineHeight:18,
+        color:'#333333',
+        fontSize: Platform.OS == 'ios' ? null : 14.7
+
     }
 });
   

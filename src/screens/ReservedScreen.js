@@ -155,10 +155,15 @@ QR코드 URL\n${qrLink}`;
             <View style={styles.viewStyle}>
                 <Feather style={styles.iconStyle} name="check-circle" size={40} color="black" />
                 <Text style={styles.titleStyle}>예약이 완료 되었습니다!</Text>
-                <Text style={styles.textStyle}>{route.params.roomName}</Text>
-                <Text style={styles.textStyle}>날짜 : {route.params.dateString.replace(/-/g, " / ")} ({weekDays[route.params.weekDay]}) </Text>
-                <Text style={styles.textStyle}>시간 : {route.params.startTime} ~ {route.params.endTime}</Text>
-
+                <View style={styles.textOuterStyle}>
+                    <Text style={styles.textStyle}>{route.params.roomName}</Text>
+                </View>
+                <View style={styles.textOuterStyle}>
+                    <Text style={styles.textStyle}>날짜 : {route.params.dateString.replace(/-/g, " / ")} ({weekDays[route.params.weekDay]}) </Text>
+                </View>
+                <View style={styles.textOuterStyle}>
+                    <Text style={styles.textStyle}>시간 : {route.params.startTime} ~ {route.params.endTime}</Text>
+                </View>
                 <View style={styles.qrStyle}>
                     <QRCode
                         size={140}
@@ -302,20 +307,25 @@ const styles = StyleSheet.create({
     },
     textStyle: {
         textAlign: 'center',
-        // backgroundColor: 'white',
-        borderRadius: 8,
-        fontSize: 13,
-        marginBottom: 2,
+        //borderRadius: 20,
+        fontSize: 15,
         padding: 2,
-        paddingHorizontal: 10
+        paddingHorizontal: 10,
+        color:'#333333'
+    },
+    textOuterStyle:{
+        backgroundColor:'white',
+        borderRadius:10,
+        marginBottom:3
     },
     titleStyle: {
         fontSize: 16,
-        marginBottom: 18
+        marginBottom: 18,
+        color:'#333333'
     },
     iconStyle: {
         marginTop: 50,
-        color: '#07a7e6',
+        color: '#3F84E3',
         marginBottom: 10
     },
     qrStyle: {
@@ -346,19 +356,22 @@ const styles = StyleSheet.create({
     innerModal:{
         marginHorizontal: 48,
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        marginBottom:10
     },
     logoStyle: {
         width: 50,
         height: 50,
+        alignSelf:'center'
         // resizeMode: 'contain',
         // borderColor: 'black',
         // borderWidth: 1
     },
     logoCaption: {
-        marginTop: 2,
+        marginTop: 8,
         textAlign: 'center',
-        fontSize: 10,
+        fontSize: 15,
+        alignSelf:'center'
     },
     modal: {
         justifyContent: 'flex-end',
