@@ -5,7 +5,7 @@ PODS:
   - DoubleConversion (1.1.6)
   - EXApplication (3.1.2):
     - UMCore
-  - EXConstants (11.0.2):
+  - EXConstants (11.0.1):
     - ExpoModulesCore
     - UMCore
   - EXDevice (3.3.0):
@@ -111,18 +111,18 @@ PODS:
     - FlipperKit/Core
     - FlipperKit/FlipperKitNetworkPlugin
   - glog (0.3.5)
-  - KakaoSDKCommon (2.4.1):
-    - KakaoSDKCommon/Common (= 2.4.1)
-    - KakaoSDKCommon/Network (= 2.4.1)
-  - KakaoSDKCommon/Common (2.4.1)
-  - KakaoSDKCommon/Network (2.4.1):
+  - KakaoSDKCommon (2.5.6):
+    - KakaoSDKCommon/Common (= 2.5.6)
+    - KakaoSDKCommon/Network (= 2.5.6)
+  - KakaoSDKCommon/Common (2.5.6)
+  - KakaoSDKCommon/Network (2.5.6):
     - Alamofire (~> 5.1)
-    - KakaoSDKCommon/Common (= 2.4.1)
-  - KakaoSDKLink (2.4.1):
-    - KakaoSDKCommon (= 2.4.1)
-    - KakaoSDKTemplate (= 2.4.1)
-  - KakaoSDKTemplate (2.4.1):
-    - KakaoSDKCommon/Common (= 2.4.1)
+    - KakaoSDKCommon/Common (= 2.5.6)
+  - KakaoSDKLink (2.5.6):
+    - KakaoSDKCommon (= 2.5.6)
+    - KakaoSDKTemplate (= 2.5.6)
+  - KakaoSDKTemplate (2.5.6):
+    - KakaoSDKCommon/Common (= 2.5.6)
   - libevent (2.1.12)
   - OpenSSL-Universal (1.1.180)
   - Permission-AppTrackingTransparency (3.0.5):
@@ -356,10 +356,10 @@ PODS:
     - React-jsi (= 0.64.2)
     - React-perflogger (= 0.64.2)
   - React-jsinspector (0.64.2)
-  - react-native-kakao-share-link (1.0.4):
-    - KakaoSDKCommon (~> 2.4.0)
-    - KakaoSDKLink (~> 2.4.0)
-    - KakaoSDKTemplate (~> 2.4.0)
+  - react-native-kakao-share-link (1.0.2):
+    - KakaoSDKCommon (~> 2.5.0)
+    - KakaoSDKLink (~> 2.5.0)
+    - KakaoSDKTemplate (~> 2.5.0)
     - React-Core
   - react-native-maps (0.27.1):
     - React
@@ -443,7 +443,7 @@ PODS:
     - React-Core
   - RNDateTimePicker (3.0.4):
     - React-Core
-  - RNDeviceInfo (8.3.2):
+  - RNDeviceInfo (8.1.3):
     - React-Core
   - RNExitApp (1.1.0):
     - React
@@ -480,7 +480,7 @@ PODS:
 
 DEPENDENCIES:
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
-  - EXApplication (from `../node_modules/expo-application/ios`)
+  - EXApplication (from `../node_modules/expo-notifications/node_modules/expo-application/ios`)
   - EXConstants (from `../node_modules/expo-constants/ios`)
   - EXDevice (from `../node_modules/expo-device/ios`)
   - EXErrorRecovery (from `../node_modules/expo-error-recovery/ios`)
@@ -618,7 +618,7 @@ EXTERNAL SOURCES:
   DoubleConversion:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   EXApplication:
-    :path: "../node_modules/expo-application/ios"
+    :path: "../node_modules/expo-notifications/node_modules/expo-application/ios"
   EXConstants:
     :path: "../node_modules/expo-constants/ios"
   EXDevice:
@@ -809,25 +809,25 @@ SPEC CHECKSUMS:
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   DoubleConversion: cf9b38bf0b2d048436d9a82ad2abe1404f11e7de
-  EXApplication: 4797b8b37f0b0470f587fdccf6407f44b50d18b5
-  EXConstants: 4cb52b6d8f636c767104a44bf7db3873e9c01a6f
-  EXDevice: 6f1eed02c099f5b382a12a40406c58868892aba6
-  EXErrorRecovery: b46af4b91e2b4ec598ab1fa51d2cf088aaf5511f
-  EXFileSystem: 0e4974ab77bff04cda68d2886d070cbe64b93a6b
-  EXFont: 30c64ed8735a180e3f20046e4fdac4ea074d71d3
-  EXImageLoader: f96ec9992733a4224418bbd9382e5485c8948944
-  EXKeepAwake: 615c5a6fca5c2afedf611bb6f7f2ca323246de94
-  EXLinearGradient: c803fbd1aa974be038177b1e45524bc35759fe9c
-  EXLocation: d55e2a37f61bcfb4eba9c813b3f4621d896c4c00
-  EXNotifications: c13e078d83ce01c7aeb8e3f44a48c13f50099291
-  EXPermissions: 17d4846ad1880f6891c74ae58ca1acb43e47ed47
-  ExpoModulesCore: 2734852616127a6c1fc23012197890a6f3763dc7
-  EXSecureStore: 1b571851e6068b30b8ec097be848a04603c03bae
-  EXSplashScreen: 8c7c1112ce7611a853486af4737fe2298eda7657
-  EXSQLite: bda6a286dded0637bb312ee781239dcca163ff4b
-  EXUpdates: 5124c03b19730078482a27b97fcb4718b06ca6b5
+  EXApplication: 47e6e78f70d07f538eeb544d5d0abe3287ac7043
+  EXConstants: 5fc49c1bf567558e4576befcccb5e99f49f9c2ce
+  EXDevice: ba3dbcfc18946fc8e474f7d5b885b5aa32348906
+  EXErrorRecovery: 595048e4ae93a70716b195f2ebc1849d63e0ee3f
+  EXFileSystem: 7c4397042d9a3ae47e6c53c0ce0229d4b4204851
+  EXFont: 0f005a50e7d6d30b61e4680069c4025b9feeffe4
+  EXImageLoader: b9f8ac1b2d9bcf9d929a6daf487c70b8425ea7d4
+  EXKeepAwake: cb0641970ea9c9a35759a5e3be23eca7e0c83b70
+  EXLinearGradient: e082a9b5ec21532b98acba28ee988f9e70b50119
+  EXLocation: 5689bbf163581eefb70978130611ec25d027bcf3
+  EXNotifications: 476a4f9ecb33373f5a188a101ee6a49f5b61d38f
+  EXPermissions: 55cadfd11547c07a5390ba7eea63bd998a71018d
+  ExpoModulesCore: 730c7158b2fb179ba5921230e56a083a2304974d
+  EXSecureStore: 7cda998bd7c150b28021cb9c85b0747daa6a5ab5
+  EXSplashScreen: 5bd1d445b1c5fc883fa2f5612633defc48759273
+  EXSQLite: 98f4062e567a2facc80aa6a064be88fa1a9476b6
+  EXUpdates: 060bc885bc697acaf3b0a4606508ce909d91571d
   FBLazyVector: e686045572151edef46010a6f819ade377dfeb4b
-  FBReactNativeSpec: 6757e783262250c3cf590d6771207d46289a64d1
+  FBReactNativeSpec: 8420ac5824e73722ecf698890b34ac0878c1478d
   Flipper: d3da1aa199aad94455ae725e9f3aa43f3ec17021
   Flipper-DoubleConversion: 38631e41ef4f9b12861c67d17cb5518d06badc41
   Flipper-Folly: 755929a4f851b2fb2c347d533a23f191b008554c
@@ -836,30 +836,30 @@ SPEC CHECKSUMS:
   Flipper-RSocket: 127954abe8b162fcaf68d2134d34dc2bd7076154
   FlipperKit: 8a20b5c5fcf9436cac58551dc049867247f64b00
   glog: 73c2498ac6884b13ede40eda8228cb1eee9d9d62
-  KakaoSDKCommon: 0912aa0c7db051ae8dc07a35395cf644f7728f95
-  KakaoSDKLink: fe6f2ca19092836f8af2a9d7fabe60fd67740104
-  KakaoSDKTemplate: 8bb288765bfc0195631da809b2d707f09495acdf
+  KakaoSDKCommon: cdf340a8f671eef75f4ca012003cb350af3c4b6d
+  KakaoSDKLink: 59336155a065da278ba30dc656506295dc682979
+  KakaoSDKTemplate: 0370e640abd33d0acb3d7bbe4ef3c02dc42a4576
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   OpenSSL-Universal: 1aa4f6a6ee7256b83db99ec1ccdaa80d10f9af9b
-  Permission-AppTrackingTransparency: ed3a54759541929d0a81a75b04a3559af5b2a738
-  Permission-BluetoothPeripheral: deb3e2052364da825f8516d200c40f066b5ff421
-  Permission-Calendars: 7524e233f7cec0c95b7e40f8cf017383183e9289
-  Permission-Camera: ac603073e4128e51e6ca3c39129778f05b4082fa
-  Permission-Contacts: 4bd4bdbbcec21ce0175e02cc4925070a773204cf
-  Permission-FaceID: 9b1f0d42ee7aa2c830844964e739676fe6b634bd
-  Permission-LocationAccuracy: c008fa8c4a90fcb6e33f465c2a8684e92d93b794
-  Permission-LocationAlways: 0704c3bcce11f98f8d6ddf34c49c65893ec64b09
-  Permission-LocationWhenInUse: e1168a583654f1d2d34d3a18c4c6518ce409ad2a
-  Permission-MediaLibrary: ca07553882f0533f67739cdea7486c369b6556f0
-  Permission-Microphone: f795f37089f6de4c71ae147b32770a5ebfdee08c
-  Permission-Motion: ea8c247adbe0aaf0d82027014d6d67b629000512
-  Permission-Notifications: 16ccd862111103378a7bab9fb1c5c71addffc348
-  Permission-PhotoLibrary: 0748c1a490fad126dfe36dbea8234dedfe59cc27
-  Permission-PhotoLibraryAddOnly: 224d33cea3c2f1f8982a2a4e343c0726fba3acf9
-  Permission-Reminders: 26a287d1ac29db33c237af7dfbc2f3e786a58896
-  Permission-Siri: 01083b1ef6964b961e74e6693a727f1c37a42272
-  Permission-SpeechRecognition: fb67f19ecfd3de245833d2c1fc0ba00278f90cac
-  Permission-StoreKit: cf0ca74fec91ecf132cfb92257e06371160cb464
+  Permission-AppTrackingTransparency: 9044a120c00e650227056c4c998ecca4eec595c2
+  Permission-BluetoothPeripheral: f0de3621968349a0419bac1228179a187b4c65db
+  Permission-Calendars: 4996a2d88982b45244e35d6a3d95488fe1e9c9e7
+  Permission-Camera: 24c37a846ff69e0eb7fd4264346550850d5b707a
+  Permission-Contacts: 8e964a7bc2e71b8377af9d007699344294d3f333
+  Permission-FaceID: 686384632cc38c62752acfec5a8f5aa958d53849
+  Permission-LocationAccuracy: bdcb49d8a0112f5e09cb9860a28f69cbfa65fbbe
+  Permission-LocationAlways: 92bf7638da5852ddba7c29fda18ecd0ac246c813
+  Permission-LocationWhenInUse: 1c1f3c5dc7e33029c0a4a0846b97b4bf89d3244b
+  Permission-MediaLibrary: 01085a7e58d0ffc5a6ecba2ba7874404e8ac10db
+  Permission-Microphone: 4667fe94d91ca063175966062186ade404ed57d1
+  Permission-Motion: 9855ea95cebeadbca4467ab99b5b2efe40d0e569
+  Permission-Notifications: 2662b6885535a98892b8e48da04b74fc898d70f8
+  Permission-PhotoLibrary: 48e58291bd650b4f197cf542dad53f41dea4e84f
+  Permission-PhotoLibraryAddOnly: 90b427e4a2acd37d1128618704b53364d73826c2
+  Permission-Reminders: abfe3c6b64b840769d8d41dad13855dc3d4a8f53
+  Permission-Siri: 0e803bfece98ba36b59b623b9c2ccf306f4bfec4
+  Permission-SpeechRecognition: 03a7098acfc5bfa3a6cf02f08def1430ee82f110
+  Permission-StoreKit: 87ee7ea89653e86efe2680e14a62b3cdfa11e24f
   RCT-Folly: ec7a233ccc97cc556cf7237f0db1ff65b986f27c
   RCTRequired: 6d3e854f0e7260a648badd0d44fc364bc9da9728
   RCTTypeSafety: c1f31d19349c6b53085766359caac425926fafaa
@@ -871,11 +871,11 @@ SPEC CHECKSUMS:
   React-jsi: 67747b9722f6dab2ffe15b011bcf6b3f2c3f1427
   React-jsiexecutor: 80c46bd381fd06e418e0d4f53672dc1d1945c4c3
   React-jsinspector: cc614ec18a9ca96fd275100c16d74d62ee11f0ae
-  react-native-kakao-share-link: 1c322024412f4f11e0c5e6450e7807ee80c2265a
+  react-native-kakao-share-link: a13482db327a0f2eb9665be349d5389ee493e833
   react-native-maps: f4b89da81626ad7f151a8bfcb79733295d31ce5c
-  react-native-safe-area-context: b6e0e284002381d2ff29fa4fff42b4d8282e3c94
+  react-native-safe-area-context: 86612d2c9a9e94e288319262d10b5f93f0b395f5
   react-native-splash-screen: 200d11d188e2e78cea3ad319964f6142b6384865
-  react-native-webview: 6b7950628616679d81bdd75747e50cf6de9b5a5f
+  react-native-webview: f0da708d7e471b60ebdbf861c114d2c5d7f7af2d
   React-perflogger: 25373e382fed75ce768a443822f07098a15ab737
   React-RCTActionSheet: af7796ba49ffe4ca92e7277a5d992d37203f7da5
   React-RCTAnimation: 6a2e76ab50c6f25b428d81b76a5a45351c4d77aa
@@ -888,34 +888,34 @@ SPEC CHECKSUMS:
   React-RCTVibration: 24600e3b1aaa77126989bc58b6747509a1ba14f3
   React-runtimeexecutor: a9904c6d0218fb9f8b19d6dd88607225927668f9
   ReactCommon: 149906e01aa51142707a10665185db879898e966
-  RNCCheckbox: 6bd119c26c6eb8264a29d59ff66cb70a14de3349
-  RNCClipboard: 41d8d918092ae8e676f18adada19104fa3e68495
-  RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
+  RNCCheckbox: 7d36e3a79b7301e8b126c5136cc449af65d9cdab
+  RNCClipboard: 5e299c6df8e0c98f3d7416b86ae563d3a9f768a3
+  RNCMaskedView: f5c7d14d6847b7b44853f7acb6284c1da30a3459
   RNCPicker: 4850f485a2b6a51788c7582d90d4b7d0e1644036
-  RNDateTimePicker: 3d1931e387248cb8f1d1d33740d4a1a82dfe622a
-  RNDeviceInfo: ca017abd037def669329ed4f34796f4ef63d7035
-  RNExitApp: c4e052df2568b43bec8a37c7cd61194d4cfee2c3
+  RNDateTimePicker: 88dc10d685ce961339bad3353c64db96c5abd19b
+  RNDeviceInfo: 49f6d50f861c7810fac2dd9b71cfb56cc1940e14
+  RNExitApp: 7d81855142a4d11eb75f4f06fdebf5a950d7aef2
   RNGestureHandler: 7a5833d0f788dbd107fbb913e09aa0c1ff333c39
-  RNPermissions: 7043bacbf928eae25808275cfe73799b8f618911
+  RNPermissions: 3e5bb8afd93c787681bbacbf54d586a6272ecc92
   RNReanimated: 514a11da3a2bcc6c3dfd9de32b38e2b9bf101926
   RNScreens: 3d682bcaba69a4f8e55543d90818704f34338db1
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
-  UMAppLoader: 92d044af52626af3d81a69796ad666fc7a9a7d78
-  UMBarCodeScannerInterface: 3f6c1b09ef4b867ce752b8c0b3893bcf9cd85f32
-  UMCameraInterface: d516032121192fee9a6c93bdfff0bb2cc7282796
-  UMConstantsInterface: 6825ea3832d26ed392ca6eff2df84edd69968fd0
-  UMCore: 97ba5041c9c92317ce61739f6d126a692c8ef4a8
-  UMFaceDetectorInterface: 60b36b07faa539205efce30b20c192e058b31c23
-  UMFileSystemInterface: ab01294ce58a3c773aefb4a5b131ce589c199559
-  UMFontInterface: 85fe1b845fb7caab45e04d9ce47e1677a5ce90a5
-  UMImageLoaderInterface: 18f37df089b7e6d301e3acac025a8264d26b66d6
-  UMPermissionsInterface: 40b72935a7d12a3f60dc6b7bb99ce47908380cb1
-  UMReactNativeAdapter: 172def7895b2cb44a7dd021336e316d5fa8ea958
-  UMSensorsInterface: 4df9ec662134de5614ae61acc249d6912db87ca5
-  UMTaskManagerInterface: 4c60b43eaf3cb05a164bc9113258a171c18b7bf7
+  UMAppLoader: 515d02d30e29cf05bbe58f77c59f896840cc5895
+  UMBarCodeScannerInterface: 77a5bebdc21106979a363bb057c4fbb46aacc171
+  UMCameraInterface: 123f7ebc3f6d0915afd369f7133bf29231ed418b
+  UMConstantsInterface: e4358999ee6aeb248ba9584a6fbb409ae3ac36f8
+  UMCore: 171e3e5b94edec38519947a3831436b27bb4afdd
+  UMFaceDetectorInterface: f743f95c143144d69cb1efc8681d9b3515df2080
+  UMFileSystemInterface: c87240844f0337bff174cedc80282b62a5298095
+  UMFontInterface: 60ea8ac3aec17845ffeb4bd9ddd02f7f23049b7e
+  UMImageLoaderInterface: 8fdbaf4f610d6e0e1a9286db78e05294db950581
+  UMPermissionsInterface: 4351145563e703c521fe2299e08227bc3584b94a
+  UMReactNativeAdapter: c2a83677e340b1448d7dfa6412377dd8bbf62c2c
+  UMSensorsInterface: d7e32791c7d4e0fa9ae3e76698624f90494b7bd9
+  UMTaskManagerInterface: eee33176282a16e6348aabcbe89ebd363e69f9cb
   Yoga: 575c581c63e0d35c9a83f4b46d01d63abc1100ac
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
 PODFILE CHECKSUM: 3a34cad98c30a292308f8e0fb02c8d4bcb38f9e4
 
-COCOAPODS: 1.10.2
+COCOAPODS: 1.10.1
