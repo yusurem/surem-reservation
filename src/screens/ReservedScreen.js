@@ -216,6 +216,7 @@ QR코드 URL\n${qrLink}`;
                             <View style={styles.innerModal}>
                                 <TouchableOpacity
                                     // onPress={kakaoShare}
+                                    style={styles.btnStyle}
                                     onPress={kakaoLocation}
                                 >
                                     <View>
@@ -228,6 +229,7 @@ QR코드 URL\n${qrLink}`;
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     onPress={onShare}
+                                    style={styles.btnStyle}
                                 >
                                     <View>
                                         <Image
@@ -239,6 +241,7 @@ QR코드 URL\n${qrLink}`;
                                     </View>
                                 </TouchableOpacity>
                                 <TouchableOpacity
+                                    style={styles.btnStyle}
                                     onPress={ async () => {
                                         var url;
                                         if (Platform.OS === 'android') {
@@ -266,6 +269,7 @@ QR코드 URL\n${qrLink}`;
                                     </View>
                                 </TouchableOpacity>
                                 <TouchableOpacity
+                                    style={styles.btnStyle}
                                     onPress={() => {
                                         Clipboard.setString(message);
                                         if(Platform.OS === 'android'){
@@ -307,8 +311,10 @@ const styles = StyleSheet.create({
     },
     textStyle: {
         textAlign: 'center',
-        //borderRadius: 20,
-        fontSize: 15,
+        // backgroundColor: 'white',
+        borderRadius: 8,
+        fontSize: 13,
+        marginBottom: 2,
         padding: 2,
         paddingHorizontal: 10,
         color:'#333333'
@@ -354,24 +360,28 @@ const styles = StyleSheet.create({
         borderTopColor: '#5f6061'
     },
     innerModal:{
-        marginHorizontal: 48,
+        marginHorizontal: 20,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom:10
+    },
+    btnStyle: {
+        // borderColor: 'red',
+        // borderWidth: 1,
+        paddingHorizontal: 10
     },
     logoStyle: {
         width: 50,
         height: 50,
-        alignSelf:'center'
+        // alignSelf:'center'
         // resizeMode: 'contain',
         // borderColor: 'black',
         // borderWidth: 1
     },
     logoCaption: {
-        marginTop: 8,
+        marginTop: 2,
         textAlign: 'center',
-        fontSize: 15,
-        alignSelf:'center'
+        fontSize: 10,
+        // alignSelf:'center'
     },
     modal: {
         justifyContent: 'flex-end',
