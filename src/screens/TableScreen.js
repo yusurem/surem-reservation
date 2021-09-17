@@ -1210,21 +1210,40 @@ const TableScreen = ({ navigation, route }) => {
                             hideArrows={false}
                             renderArrow={(direction) => {
                                 if(direction === 'left'){
-                                    return <FontAwesome5 name="less-than" size={24} color="#BFBEBE" />;
+                                    // return <FontAwesome5 name="less-than" size={24} color="#BFBEBE" />;
+                                    return (
+                                        <View style={{ justifyContent: 'center', marginRight: 0 }}>
+                                            <Entypo name="chevron-thin-left" size={26} color="#BFBFBF" />
+                                        </View>
+                                    );
+
                                 }
                                 else{
-                                    return <FontAwesome5 name="greater-than" size={24} color="#BFBEBE" />;
+                                    // return <FontAwesome5 name="greater-than" size={24} color="#BFBEBE" />;
+                                    return (
+                                        <View style={{ justifyContent: 'center', marginLeft: 0}}>
+                                            <Entypo name="chevron-thin-right" size={26} color="#BFBFBF" />
+                                        </View>
+                                    );
                                 }
                             }}
                             renderHeader={(date) => {
                                 return (
-                                    <View style={styles.headerBox}>
-                                        <Text style={styles.header}>{date.getFullYear()}년 {date.getMonth() + 1}월</Text>
+                                    <View style={styles.calendarHeader}>
+                                        <Text style={styles.calendarHeaderText}>{date.getFullYear()}년 {date.getMonth() + 1}월</Text>
                                     </View>
                                 );
                             }}
                             theme={{
                                 'stylesheet.calendar.header': {
+                                    header: {
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-between',
+                                        paddingLeft: 0,
+                                        paddingRight: 0,
+                                        marginTop: 6,
+                                        alignItems: 'center'
+                                      },
                                     week: {
                                         flexDirection: 'row',
                                         justifyContent: 'space-around',
@@ -1430,6 +1449,12 @@ const styles = StyleSheet.create({
     calendar: {
         borderWidth: 1, 
         borderColor: 'black',
+    },
+    calendarHeader: {
+
+    },
+    calendarHeaderText: {
+
     },
     textStyle: {
         color: "white",
