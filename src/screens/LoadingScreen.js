@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 const LoadingScreen = ({ navigation, route }) => {
 
     return (    
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#F3F4F8' }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#F3F4F8' }} edges={['right', 'left', 'top']}>
             <View style={{ justifyContent:'center', height:'100%', width:'100%', alignItems:'center' }}>
                 {/* <Image style={styles.logo} source={require("../../assets/LoadingIcon.png")} /> */}
                 <ActivityIndicator size="large" color="gray"/>

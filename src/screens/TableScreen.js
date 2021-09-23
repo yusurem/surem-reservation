@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, useWindowDimensions, BackHandler, Alert, Image, FlatList, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, useWindowDimensions, BackHandler, Alert, Image, FlatList, ImageBackground, Platform } from 'react-native';
 import { MaterialCommunityIcons, AntDesign, FontAwesome5, Feather, Entypo } from '@expo/vector-icons';
 import axios from 'axios';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -1010,7 +1010,7 @@ const TableScreen = ({ navigation, route }) => {
 
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: 'white', }} edges={['right', 'left',]} >
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'white', }} edges={['right', 'left', 'top']} >
 
             {/* <View style={{borderWidth: 5, borderColor: 'black'}}>
                 <Image source={require('../../assets/tableBackground.png')} style={{resizeMode: 'contain'}}/>
@@ -1324,7 +1324,7 @@ const styles = StyleSheet.create({
         borderRadius: 35,
         borderWidth: 1,
         borderColor: 'white',
-        paddingVertical: 4,
+        paddingVertical: Platform.OS === 'android' ? 4 : 10,
         paddingHorizontal: 15,
         // maxWidth: '25%',
         justifyContent: 'center',
@@ -1338,7 +1338,7 @@ const styles = StyleSheet.create({
     currentBranch: {
         backgroundColor: 'white',
         borderRadius: 35,
-        paddingVertical: 4,
+        paddingVertical: Platform.OS === 'android' ? 4 : 10,
         paddingHorizontal: 15,
         justifyContent: 'center',
         marginRight: 10,
@@ -1357,23 +1357,12 @@ const styles = StyleSheet.create({
         fontSize: 16,
         textAlign: 'center',
     },
-    branchHolder: {
-        borderWidth: 2,
-        borderColor: 'white',
-        borderRadius: 35,
-        paddingVertical: 5,
-        paddingHorizontal: 15,
-        marginLeft: 15,
-    },
     branchSelector: {
         backgroundColor: '#2B60AD',
         borderRadius: 35,
-        paddingVertical: 5,
+        paddingVertical: Platform.OS === 'android' ? 4 : 10,
         paddingHorizontal: 10,
         // maxWidth: '30%'
-    },
-    branchHolderText: {
-        color: 'white'
     },
     branchSelectorText: {
         color: 'white',
@@ -1384,7 +1373,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         marginHorizontal: 20,
         marginTop: 12,
-        marginBottom: 22,
+        marginBottom: 12,
         alignItems: 'center'
     },
     dateStyle: {

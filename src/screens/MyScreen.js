@@ -394,7 +394,9 @@ const MyScreen = ({ navigation, route }) => {
                                 <View style={styles.infoTextBox}>
                                     <Text style={styles.infoText}>핸드폰 번호</Text>
                                 </View>
-                                <Text style={styles.infoText}>내 쿠폰 확인</Text>
+                                <View style={{ justifyContent: 'center', height: 30 }}>
+                                    <Text style={styles.infoText}>내 쿠폰 확인</Text>
+                                </View>
                             </View>
                             <View style={styles.infoValue}>
                                 <View style={styles.infoTextBox}>
@@ -404,6 +406,7 @@ const MyScreen = ({ navigation, route }) => {
                                     <Text style={styles.infoText}>{usercode.current.substring(0,3) + "-" + usercode.current.substring(3,7) + "-" + usercode.current.substring(7)}</Text>
                                 </View>
                                 <TouchableOpacity
+                                    style={{ justifyContent: 'center', height: 30 }}
                                     onPress={() => {
                                         // Alert.alert("쿠폰들");
                                         navigation.navigate("MyCoupon", {
@@ -433,7 +436,9 @@ const MyScreen = ({ navigation, route }) => {
                                 <View style={styles.infoTextBox}>
                                     <Text style={styles.infoText}>1:1 문의</Text>
                                 </View>
-                                <Text style={styles.infoText}>전화문의</Text>
+                                <View style={{ justifyContent: 'center', height: 30 }}>
+                                    <Text style={styles.infoText}>전화문의</Text>
+                                </View>
                             </View>
                             <View style={styles.infoValue}>
                                 <View style={styles.infoTextBox}>
@@ -459,37 +464,37 @@ const MyScreen = ({ navigation, route }) => {
                                         </TouchableOpacity>
                                     </View>
                                 </View>
-                                <View style={{ flexDirection: 'row'}}>
-                                        <TouchableOpacity
-                                            style={{ flexDirection: 'row', flex: 1 }}
-                                            onPress={ async () => {
-                                                var url;
-                                                if (Platform.OS === 'android') {
-                                                    url = `tel:${phoneNumber}`;
-                                                }
-                                                else  {
-                                                    url = `telprompt:${phoneNumber}`;
-                                                }
-                                                const supported = await Linking.canOpenURL(url);
+                                <View style={{ justifyContent: 'center', height: 30}}>
+                                    <TouchableOpacity
+                                        style={{ flexDirection: 'row', flex: 1 }}
+                                        onPress={ async () => {
+                                            var url;
+                                            if (Platform.OS === 'android') {
+                                                url = `tel:${phoneNumber}`;
+                                            }
+                                            else  {
+                                                url = `telprompt:${phoneNumber}`;
+                                            }
+                                            const supported = await Linking.canOpenURL(url);
 
-                                                if(supported){
-                                                    await Linking.openURL(url);
-                                                }
-                                                else {
-                                                    Alert.alert(`이 URL을 읽지 못합니다: ${url}`);
-                                                }
-                                            }}
-                                        >
-                                            <View style={{ flexDirection: 'row' }}>
-                                                <Text style={styles.infoText}>   </Text>
-                                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                                    {/* <MaterialCommunityIcons style={{}} name="greater-than" size={18} color="#6C6C6C" /> */}
-                                                    <Entypo name="chevron-thin-right" size={16} color="#999999" />
-                                                </View>
-                                                <View style={{ flex: 1 }}/>
+                                            if(supported){
+                                                await Linking.openURL(url);
+                                            }
+                                            else {
+                                                Alert.alert(`이 URL을 읽지 못합니다: ${url}`);
+                                            }
+                                        }}
+                                    >
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <Text style={styles.infoText}>   </Text>
+                                            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                                {/* <MaterialCommunityIcons style={{}} name="greater-than" size={18} color="#6C6C6C" /> */}
+                                                <Entypo name="chevron-thin-right" size={16} color="#999999" />
                                             </View>
-                                        </TouchableOpacity>          
-                                    </View>
+                                            <View style={{ flex: 1 }}/>
+                                        </View>
+                                    </TouchableOpacity>          
+                                </View>
                             </View>
                         </View>
 
@@ -672,19 +677,24 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#F5F5F5',
         borderTopLeftRadius: 10,
-        borderBottomLeftRadius: 10
+        borderBottomLeftRadius: 10,
+        // borderWidth: 1,
+        // borderColor: 'red'
     },
     infoValue: {
         flex: 2,
         backgroundColor: '#FFFFFF',
         borderTopRightRadius: 10,
-        borderBottomRightRadius: 10
-    },
-    infoText: {
-        marginVertical: 8,
-        marginLeft: 10,
+        borderBottomRightRadius: 10,
         // borderWidth: 1,
         // borderColor: 'red'
+    },
+    infoText: {
+        // marginVertical: 8,
+        marginLeft: 10,
+        // borderWidth: 1,
+        // borderColor: 'red',
+        fontSize: 14,
     },
     couponIcon: {
         marginVertical: 6,
@@ -700,7 +710,9 @@ const styles = StyleSheet.create({
     },
     infoTextBox: {
         borderBottomWidth: 1,
-        borderColor: '#B6B6B6'
+        borderColor: '#B6B6B6',
+        justifyContent: 'center',
+        height: 30
     },
     csBox: {
         marginTop: 12,

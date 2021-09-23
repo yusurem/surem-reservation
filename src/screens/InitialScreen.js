@@ -57,7 +57,7 @@ export default function InitialScreen({ navigation, route }) {
   }
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}} edges={['right', 'left']}>
       <View>
           <ImageBackground
             style={{
