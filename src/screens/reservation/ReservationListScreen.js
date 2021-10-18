@@ -543,9 +543,9 @@ export default function ReservationListScreen({ navigation }) {
               <TouchableOpacity style={{ flex: 1,justifyContent: 'space-between'}} onPress={()=>{}}>
                 <MaterialIcons name="cancel" size={26} color="#4084E4" />
               </TouchableOpacity>
-              <View style={{ alignSelf: 'center', flex: 4,justifyContent: 'space-between'}}>
-                <Text style={[{ width:'100%', fontSize: 20, color: '#FFFFFF',lineHeight:28,
-                textAlignVertical: 'center', textAlign: 'center', height: '100%', textAlignVertical: 'center' },{lineHeight: Platform.OS === 'ios' ? 80 : 30}]}>
+              <View style={{ alignSelf: 'center', flex: 4,justifyContent: 'space-between',alignSelf:'center'}}>
+                <Text style={[{ width:'100%', fontSize: 20, color: '#FFFFFF',
+                textAlignVertical: 'center', textAlign: 'center', height: '100%'},{lineHeight: Platform.OS === 'ios' ? 80 : 30}]}>
                   예약 변경하기
                 </Text>
               </View>
@@ -725,7 +725,7 @@ const styles = StyleSheet.create({
     width: '100%',
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
-    height: '15%',
+    height: 80,
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center'
