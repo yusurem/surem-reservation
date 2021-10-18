@@ -27,7 +27,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>kakaocbec4218e1e25512833065a67e2a9535</string>
+				<string>kakao0179ec85e7fb6a7dc7c88445b48b312b</string>
 			</array>
 		</dict>
 		<dict>
@@ -42,9 +42,14 @@
 	<key>GMSApiKey</key>
 	<string>AIzaSyDUqTjbGHxDv_SIMKHkQWlKPEiNx5COpJ4</string>
 	<key>KAKAO_APP_KEY</key>
-	<string>cbec4218e1e25512833065a67e2a9535</string>
+	<string>0179ec85e7fb6a7dc7c88445b48b312b</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
+		<string>naversearchapp</string>
+		<string>naversearchthirdlogin</string>
+		<string>kakaokompassauth</string>
+		<string>storykompassauth</string>
+		<string>kakaolink</string>
 		<string>kakaotalk</string>
 		<string>shinhan-sr-ansimclick</string>
 		<string>shinsegaeeasypayment</string>

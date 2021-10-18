@@ -29,10 +29,10 @@ export default function CountDownTimer(props){
   return (
     <View 
       style={{
-        marginLeft:'15%'
+        // marginLeft:'15%'
       }}>
         <Text
-          style={{ color:'red' }}
+          style={{ color: 'red', fontSize: 12 }}
         >인증번호 유효시간 {props.minutes}:{props.seconds < 10 ? `0${props.seconds}` : props.seconds}</Text>
     </View>
   );  

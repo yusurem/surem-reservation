@@ -13,9 +13,9 @@ import { URL } from '../constants';
 
 const db = SQLite.openDatabase('db.db');
 
-db.transaction(tx=>{
-  tx.executeSql('CREATE TABLE IF NOT EXISTS UserId (_id INTEGER PRIMARY KEY, secretCode TEXT, usercode TEXT, username TEXT);')
-})
+// db.transaction(tx=>{
+//   tx.executeSql('CREATE TABLE IF NOT EXISTS UserId (_id INTEGER PRIMARY KEY, secretCode TEXT, usercode TEXT, username TEXT);')
+// })
 
 const saveUserId = (secretcode,phoneNum,userName) => {
   db.transaction((tx)=>{

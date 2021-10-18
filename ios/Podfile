@@ -36,6 +36,7 @@ target 'reservation' do
   pod 'Permission-Siri', :path => "#{permissions_path}/Siri"
   pod 'Permission-SpeechRecognition', :path => "#{permissions_path}/SpeechRecognition"
   pod 'Permission-StoreKit', :path => "#{permissions_path}/StoreKit"
+  # pod 'KakaoSDK'
   # Uncomment the code below to enable Flipper.
   #
   # You should not install Flipper in CI environments when creating release

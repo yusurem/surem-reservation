@@ -15,6 +15,12 @@ import * as Notifications from 'expo-notifications';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { NaverLogin } from "@react-native-seoul/naver-login";
+import { logout, unlink } from '@react-native-seoul/kakao-login';
+import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import FootHeader from '../components/FootHeader';
+
+
 const MyScreen = ({ navigation, route }) => {
     const [name, setName] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
@@ -26,6 +32,7 @@ const MyScreen = ({ navigation, route }) => {
     const usercode = useRef(null);
     const secretCode = useRef(null);
     const username = useRef(null);
+    const loginType = useRef(null);
 
     const [serviceTerm, setServiceTerm] = useState(false);
     const [infoTerm, setInfoTerm] = useState(false);
@@ -66,7 +73,8 @@ const MyScreen = ({ navigation, route }) => {
                         usercode.current = results.rows.item(0).usercode;
                         // setSecretCode(results.rows.item(0).secretCode);
                         secretCode.current = results.rows.item(0).secretCode;
-                        username.current = results.rows.item(0).username
+                        username.current = results.rows.item(0).username;
+                        loginType.current = results.rows.item(0).loginType;
                         resolve();
                     },
                     (tx, error) => {
@@ -109,26 +117,23 @@ const MyScreen = ({ navigation, route }) => {
     }
 
     const deleteUserId = async () => {
-        try{
-            await db.transaction((tx)=>{
+        return new Promise((resolve, reject) => {
+            db.transaction((tx)=>{
                 tx.executeSql(
                     `delete from UserId;`,
                     [],
                     (tx, results) =>{
                         console.log('Deleting Users :: ',results)
+                        resolve("success");
                     },
                     () => {
-                        // Alert.alert("탈퇴하는데 문제가 생겼습니다, 잠시후 다시 시도해주시거나 고객센터로 문의해주세요.");
+                        Alert.alert("탈퇴하는데 문제가 생겼습니다, 잠시후 다시 시도해주시거나 고객센터로 문의해주세요.");
+                        reject("error");
                     }
                 )
             })
-        } catch (err) {
-            console.log(err)
-            Alert.alert("탈퇴하는데 문제가 생겼습니다, 잠시후 다시 시도해주시거나 고객센터로 문의해주세요.");
-            return "Error"
-        }
-        
-      }
+        })
+    }
 
     const quitMember = async () => {
         try{
@@ -384,6 +389,56 @@ const MyScreen = ({ navigation, route }) => {
                     <View style={styles.viewStyle}>
                         <View style={styles.infoHeader}>
                             <Text style={styles.headerText}>회원정보</Text>
+                            <TouchableOpacity
+                                style={styles.logoutButton}
+                                onPress={ async () => {
+                                    Alert.alert(
+                                        "로그아웃",
+                                        "정말로 로그아웃하겠습니까?", 
+                                        [
+                                        {
+                                            text: "아니요",
+                                            onPress: () => null,
+                                            style: "cancel"
+                                        },
+                                        { text: "예", 
+                                            onPress: async () => {
+                                                if(loginType.current === 'kakao'){
+                                                    console.log('kakao logout');
+                                                    await logout();
+                                                }
+                                                else if (loginType.current === 'naver'){
+                                                    console.log('naver logout');
+                                                    NaverLogin.logout();
+                                                }
+                                                else if (loginType.current === 'google'){
+                                                    console.log('google logout');
+                                                    try {
+                                                        await GoogleSignin.signOut();
+                                                    } catch (error) {
+                                                        Alert.alert('로그아웃 하는도중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.')
+                                                        console.error(error);
+                                                        return;
+                                                    }
+                                                }
+                                                await deleteUserId();
+                                                await Notifications.cancelAllScheduledNotificationsAsync();
+                                                db.transaction((tx) => {
+                                                    tx.executeSql('DROP TABLE IF EXISTS Branches;');
+                                                })
+                                                navigation.reset({
+                                                    index: 0, 
+                                                    routes: [
+                                                        {name: 'Initial'}
+                                                    ] 
+                                                });
+                                            }
+                                        }
+                                    ]);
+                                }}
+                            >
+                                <Text style={styles.logoutButtonText}>로그아웃</Text>
+                            </TouchableOpacity>
                         </View>
 
                         <View style={styles.infoBox}>
@@ -569,14 +624,34 @@ const MyScreen = ({ navigation, route }) => {
                                     },
                                     { text: "예", 
                                         onPress: async () => {
+                                            if(loginType.current === 'kakao'){
+                                                console.log('kakao unlink');
+                                                await unlink();
+                                            }
+                                            else if(loginType.current === 'google'){
+                                                console.log('google unlink');
+                                                try {
+                                                    await GoogleSignin.revokeAccess();
+                                                    // Google Account disconnected from your app.
+                                                    // Perform clean-up actions, such as deleting data associated with the disconnected account.
+                                                } catch (error) {
+                                                    console.error(error);
+                                                    Alert.alert('탈퇴하는데 문제가 발생헀습니다. 잠시 후 다시 시도해주세요.')
+                                                    return;
+                                                }
+                                            }
                                             const res = await quitMember();
                                             // erase data from sqlite database
                                             if(res.returnCode === 'E0000'){
                                                 await deleteUserId();
+                                                await Notifications.cancelAllScheduledNotificationsAsync();
+                                                db.transaction((tx) => {
+                                                    tx.executeSql('DROP TABLE IF EXISTS Branches;');
+                                                })
                                                 navigation.reset({
                                                     index: 0, 
                                                     routes: [
-                                                        {name: 'SignUp'}
+                                                        {name: 'Initial'}
                                                     ] 
                                                 });
                                             }
@@ -644,6 +719,8 @@ const MyScreen = ({ navigation, route }) => {
                             </View>
                         </Modal>                    
                     </View>
+                    
+                    <FootHeader />
                 </ScrollView>
             }
         </SafeAreaView> 
@@ -657,6 +734,20 @@ const styles = StyleSheet.create({
     infoHeader: {
         marginTop: 30,
         marginLeft: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginRight: 25
+    },
+    logoutButton: {
+        borderWidth: 1,
+        borderRadius: 15,
+        paddingHorizontal: 10,
+        paddingVertical: 3,
+        borderColor: '#B6B6B6'
+    },
+    logoutButtonText: {
+        fontSize: 13,
     },
     csHeader:{
         marginTop: 30,

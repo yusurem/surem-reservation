@@ -35,7 +35,16 @@
           <action android:name="android.intent.action.VIEW" />
           <category android:name="android.intent.category.DEFAULT" />
           <category android:name="android.intent.category.BROWSABLE" />
-          <data android:host="kakaolink" android:scheme="kakaocbec4218e1e25512833065a67e2a9535" />
+          <data android:host="kakaolink" android:scheme="kakao0179ec85e7fb6a7dc7c88445b48b312b" />
+        </intent-filter>
+        <intent-filter>
+          <action android:name="android.intent.action.VIEW" />
+          <category android:name="android.intent.category.DEFAULT" />
+          <category android:name="android.intent.category.BROWSABLE" />
+
+          <!-- Redirect URI: "kakao{NATIVE_APP_KEY}://oauth“ -->
+          <data android:host="oauth"
+              android:scheme="kakao0179ec85e7fb6a7dc7c88445b48b312b" />
         </intent-filter>
     </activity>
     <activity android:name="com.facebook.react.devsupport.DevSettingsActivity"/>

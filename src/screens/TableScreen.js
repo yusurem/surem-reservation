@@ -120,6 +120,13 @@ const TableScreen = ({ navigation, route }) => {
                             resolve("success");
                         },
                         (tx, error) => {
+                            console.log("there was an error!");
+                            navigation.reset({
+                                index: 0, 
+                                routes: [
+                                    {name: 'Branch'}
+                                ] 
+                            });
                             console.log(error);
                             reject('error');
                         }

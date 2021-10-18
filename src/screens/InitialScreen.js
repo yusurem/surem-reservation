@@ -10,8 +10,8 @@ const DEPT_CODE = "35--SX-DQ";
 
 const db = SQLite.openDatabase('db.db');
 
-db.transaction(tx=>{
-  tx.executeSql('CREATE TABLE IF NOT EXISTS UserId (_id INTEGER PRIMARY KEY, secretCode TEXT, usercode TEXT);')
+db.transaction((tx) => {
+  tx.executeSql('CREATE TABLE IF NOT EXISTS UserId (_id INTEGER PRIMARY KEY, secretCode TEXT, usercode TEXT, username TEXT, loginType TEXT);')
 })
 
 export default function InitialScreen({ navigation, route }) {
@@ -32,7 +32,7 @@ export default function InitialScreen({ navigation, route }) {
             // 이거 navigation.reset 하면 sqlite database 망가짐
             // loading screen 두번 나오는거 다르게 고쳐주세요
             if(route.params.notification === "reservation"){
-              navigation.navigate("Tab", { screen: "Reserved" });
+              navigation.navigate("Tab", { screen: "Reserved" }); // notificatoin 받았을때 넘어가는거
             }
             else{
               navigation.navigate("Tab");
@@ -82,7 +82,8 @@ export default function InitialScreen({ navigation, route }) {
               <TouchableOpacity
                 style={[ styles.resrvButton ]}
                 onPress={ async () => {
-                  navigation.reset({index: 0, routes: [{name: 'SignUp'}] })
+                  navigation.reset({index: 0, routes: [{name: 'PreSignUp'}] })
+                  // navigation.navigate("PreSignUp");
                 }}
               >
                 <Text style={ styles.buttonText }>서비스 시작하기</Text>

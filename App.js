@@ -26,7 +26,6 @@ import CalListScreen from './src/screens/CalListScreen';
 import OldAgenda from './src/screens/OldAgenda';
 import TableScreen from './src/screens/TableScreen';
 import DemoScreen from './src/screens/DemoScreen';
-import LoginScreen from './src/screens/member/LoginScreen';
 import TestScreen from './src/screens/TestScreen';
 import SignupScreen from './src/screens/member/SignUpScreen'
 import FindPassword from './src/screens/member/FindPasswordScreen'
@@ -45,6 +44,9 @@ import OldTableScreen from './src/screens/OldTableScreen';
 import CouponScreen from './src/screens/CouponScreen';
 import MyCouponScreen from './src/screens/MyCouponScreen';
 import PaymentPageScreen from './src/screens/PaymentPageScreen';
+import PreSignUpScreen from './src/screens/PreSignUpScreen';
+import SignUpConfirmScreen from './src/screens/SignUpConfirmScreen';
+import LoginScreen from './src/screens/LoginScreen';
 
 Font.loadAsync({'NanumSquareRegular':require('./assets/fonts/NanumSquareRegular.ttf')})
 Font.loadAsync({'NanumSquareBold':require('./assets/fonts/NanumSquareBold.ttf')})
@@ -64,7 +66,7 @@ const MainStack = () => {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="OldAgenda" component={OldAgenda} />
         <Stack.Screen name="Demo" component={DemoScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} />
+        {/* <Stack.Screen name="Login" component={LoginScreen} /> */}
         {/* <Stack.Screen name="Test" component={TestScreen} /> */}
         <Stack.Screen name="SignUp" component={SignupScreen}/>
         <Stack.Screen name="Loading" component={LoadingScreen}/>
@@ -407,7 +409,10 @@ function App() {
           }}
         >
             <Stack.Screen name="Initial" component={InitialScreen} initialParams={{ notification: notifType }}/>
+            <Stack.Screen name="PreSignUp" component={PreSignUpScreen} />
             <Stack.Screen name="SignUp" component={SignupScreen}/>
+            <Stack.Screen name="SignUpConfirm" component={SignUpConfirmScreen} />
+            <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="Tab" component={TabNav} />
         </Stack.Navigator>
       </NavigationContainer>

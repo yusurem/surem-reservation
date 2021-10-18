@@ -29,9 +29,9 @@ db.transaction(tx=>{
   tx.executeSql('CREATE TABLE IF NOT EXISTS AuthNumbers (_id INTEGER PRIMARY KEY, authNumber TEXT);')
 })
 
-db.transaction(tx=>{
-  tx.executeSql('CREATE TABLE IF NOT EXISTS UserId (_id INTEGER PRIMARY KEY, secretCode TEXT, usercode TEXT, username TEXT);')
-})
+// db.transaction(tx=>{
+//   tx.executeSql('CREATE TABLE IF NOT EXISTS UserId (_id INTEGER PRIMARY KEY, secretCode TEXT, usercode TEXT, username TEXT);')
+// })
 
 export default function SignUpScreen({ navigation }) {
   const navigationOptions = { header: null}
@@ -70,7 +70,7 @@ export default function SignUpScreen({ navigation }) {
     return text
   }
 
-  const sendMessage = (callphone,authNumberText) => {
+  const sendMessage = (callphone, authNumberText) => {
     console.log('CALLPHONE :: ', callphone)
     var data = JSON.stringify(
       {
@@ -154,11 +154,12 @@ export default function SignUpScreen({ navigation }) {
   const getPhoneNumber = async () => {
     setPhoneNum(await SuremSimData.getPhoneNumber())
     console.log('Hello',phoneNum)
+    setLoading(false);
   }
 
   const checkHandler = (newValue) => {
     setModalVisible(!isCheckAcceptedTerm);
-    console.log(isCheckAcceptedTerm)
+    // console.log(isCheckAcceptedTerm)
     if(isCheckAcceptedTerm){
       setIsCheckAcceptedTerm(!isCheckAcceptedTerm);
     }
@@ -171,7 +172,7 @@ export default function SignUpScreen({ navigation }) {
         getPhoneNumber();
       }
     }
-    hasUserId();
+    // hasUserId();
     return(()=>{})
   },[permissionState]);
 
@@ -301,7 +302,10 @@ export default function SignUpScreen({ navigation }) {
         }
         
         { isSentAuth && !isAuth === true ? 
-          <CountDownTimer minutes={minutes} seconds={seconds} setMinutes={setMinutes} setSeconds={setSeconds} setIsSentAuth={setIsSentAuth} />:null
+          <View style={{marginLeft: '15%'}}>
+            <CountDownTimer minutes={minutes} seconds={seconds} setMinutes={setMinutes} setSeconds={setSeconds} setIsSentAuth={setIsSentAuth} />
+          </View>
+          : null
         }
         <View height='5%'></View>
         <View
