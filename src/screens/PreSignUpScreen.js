@@ -365,7 +365,7 @@ const styles = StyleSheet.create({
         borderRadius: 15
     },
     bottomDescription: {
-        marginBottom: 60
+        marginBottom: 40
     },
     description: {
         textAlign: 'center',
