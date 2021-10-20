@@ -38,11 +38,13 @@ const SignUpConfirmScreen = ({ navigation, route }) => {
     const joinMember = async () => {
         try{
             console.log("Attempting to sign up user...");
+            // console.log(route.params.usercode);
+            // console.log(route.params.username);
             const response = await axios.post( URL + '/joinMember', {
                 usercode: route.params.usercode,
                 userpass: route.params.usercode,
                 username: route.params.username,
-                userCallphone: route.params.usercode,
+                userCallphone: route.params.loginType === 'google' ? 'n/a' : route.params.usercode,
             });
 
             console.log(`Got the response to register user!`);

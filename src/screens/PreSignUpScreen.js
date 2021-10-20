@@ -75,6 +75,7 @@ const PreSignUpScreen = ({ navigation, route }) => {
             // }
 
             console.log("Attempting to verify if user exists...");
+            console.log(userNum);
             const response = await axios.post( URL + '/getEncryptCode', {
                 usercode: userNum,
             });
