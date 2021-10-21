@@ -11,6 +11,11 @@
 #import <EXSplashScreen/EXSplashScreenService.h>
 #import <UMCore/UMModuleRegistryProvider.h>
 
+#import <RNKakaoLogins.h>
+#import <NaverThirdPartyLogin/NaverThirdPartyLoginConnection.h>
+#import <Firebase/Firebase.h>
+#import <RNGoogleSignin/RNGoogleSignin.h>
+
 #if defined(FB_SONARKIT_ENABLED) && __has_include(<FlipperKit/FlipperClient.h>)
 #import <FlipperKit/FlipperClient.h>
 #import <FlipperKitLayoutPlugin/FlipperKitLayoutPlugin.h>
@@ -18,10 +23,6 @@
 #import <FlipperKitNetworkPlugin/FlipperKitNetworkPlugin.h>
 #import <SKIOSNetworkPlugin/SKIOSNetworkAdapter.h>
 #import <FlipperKitReactPlugin/FlipperKitReactPlugin.h>
-
-#import <RNKakaoLogins.h>
-#import <NaverThirdPartyLogin/NaverThirdPartyLoginConnection.h>
-#import <Firebase/Firebase.h>
 
 static void InitializeFlipper(UIApplication *application) {
   FlipperClient *client = [FlipperClient sharedClient];
@@ -106,7 +107,11 @@ static void InitializeFlipper(UIApplication *application) {
 
 // Linking API
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
-  return [RCTLinkingManager application:application openURL:url options:options];
+  return [RCTLinkingManager application:application openURL:url options:options] ||  
+          [RNKakaoLogins handleOpenUrl: url] || 
+          [[NaverThirdPartyLoginConnection getSharedInstance] application:application openURL:url options:options] ||
+          [RNGoogleSignin application:application openURL:url options:options]
+          ;
 }
 
 // Universal Links
@@ -116,22 +121,22 @@ static void InitializeFlipper(UIApplication *application) {
                     restorationHandler:restorationHandler];
 }
 
-- (BOOL)application:(UIApplication *)app
-     openURL:(NSURL *)url
-     options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
- if([RNKakaoLogins isKakaoTalkLoginUrl:url]) {
-    return [RNKakaoLogins handleOpenUrl: url];
- }
+// - (BOOL)application:(UIApplication *)app
+//      openURL:(NSURL *)url
+//      options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+//  if([RNKakaoLogins isKakaoTalkLoginUrl:url]) {
+//     return [RNKakaoLogins handleOpenUrl: url];
+//  }
 
- return NO;
-}
+//  return NO;
+// }
 
-- (BOOL)application:(UIApplication *)application openURL:(nonnull NSURL *)url options:(nonnull NSDictionary<NSString *,id> *)options {
-  if ([url.scheme isEqualToString:@"your_apps_urlscheme"]) {
-    return [[NaverThirdPartyLoginConnection getSharedInstance] application:application openURL:url options:options];
-  }
+// - (BOOL)application:(UIApplication *)application openURL:(nonnull NSURL *)url options:(nonnull NSDictionary<NSString *,id> *)options {
+//   if ([url.scheme isEqualToString:@"com.surem.reservation"]) {
+//     return [[NaverThirdPartyLoginConnection getSharedInstance] application:application openURL:url options:options];
+//   }
 
-  return [RNGoogleSignin application:application openURL:url options:options];
-}
+//   return [RNGoogleSignin application:application openURL:url options:options];
+// }
 
 @end

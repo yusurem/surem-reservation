@@ -272,6 +272,7 @@ const PreSignUpScreen = ({ navigation, route }) => {
 
                 <TouchableOpacity
                     onPress={() => {
+                        console.log("GOING TO LOGIN");
                         navigation.navigate("Login");
                     }}
                 >

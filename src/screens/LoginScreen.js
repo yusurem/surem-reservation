@@ -22,7 +22,7 @@ const db = SQLite.openDatabase("db.db");
 
 
 const LoginScreen = ({ navigation, route }) => {
-    // console.log("LOGIN SCREEN RENDERED");
+    console.log("LOGIN SCREEN RENDERED");
     const [isAuthorized, setIsAuthorized] = useState(false);
     const [phoneNum, setPhoneNum] = useState("");
     const [authNumInput, setAuthNumInput] = useState(null);
@@ -191,12 +191,18 @@ const LoginScreen = ({ navigation, route }) => {
     }
 
     useEffect(()=>{
-        askPermission();
-        if(permissionState){
-            if(phoneNum == ""){
-                getPhoneNumber();
+        if(Platform.OS === 'android'){
+            askPermission();
+            if(permissionState){
+                if(phoneNum == ""){
+                    getPhoneNumber();
+                }
             }
         }
+        else {
+            setLoading(false);
+        }
+        
         return(()=>{})
     },[permissionState]);
 
