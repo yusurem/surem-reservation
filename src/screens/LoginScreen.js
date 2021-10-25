@@ -359,7 +359,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         // flex: 2,
         borderRadius: 10,
-        paddingLeft: 15
+        paddingLeft: 15,
+        paddingVertical: Platform.OS === 'android' ? 0 : 15
     },
     authNumBox: {
         // flexDirection: 'row',
@@ -387,7 +388,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginLeft: 8,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        // paddingVertical: Platform.OS === 'android' ? 0 : 15
     },
     checkAuthNumText: {
         color: 'white',
@@ -397,7 +399,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 10,
         paddingLeft: 15,
-        flex: 2
+        flex: 2,
+        paddingVertical: Platform.OS === 'android' ? 0 : 15
     },
     timerBox: {
         marginTop: 5,

@@ -166,12 +166,18 @@ export default function SignUpScreen({ navigation }) {
   }
 
   useEffect(()=>{
-    askPermission();
-    if(permissionState){
-      if(phoneNum == ""){
-        getPhoneNumber();
+    if(Platform.OS === 'android'){
+      askPermission();
+      if(permissionState){
+        if(phoneNum == ""){
+          getPhoneNumber();
+        }
       }
     }
+    else{
+      setLoading(false);
+    }
+    
     // hasUserId();
     return(()=>{})
   },[permissionState]);
