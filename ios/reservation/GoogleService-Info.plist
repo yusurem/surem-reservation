@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>763608579072-6pvjm7avv4alhpp0ttbk58tbrmf0ppl9.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.763608579072-6pvjm7avv4alhpp0ttbk58tbrmf0ppl9</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>763608579072-2m7tllnm8nnrakni1e06bba92v5g122n.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyB0OmxEczE2PMG9xusL_HVUGa3MWVW3qxQ</string>
+	<key>GCM_SENDER_ID</key>
+	<string>763608579072</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.surem.reservation</string>
+	<key>PROJECT_ID</key>
+	<string>surem-41e18</string>
+	<key>STORAGE_BUCKET</key>
+	<string>surem-41e18.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:763608579072:ios:853bf55b6fb979d9f7ace5</string>
+</dict>
+</plist>
